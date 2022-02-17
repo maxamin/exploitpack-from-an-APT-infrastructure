@@ -1,0 +1,15 @@
+mssql_auth
+dcedump
+rpcdump
+find_null_vnc
+oraclegetuser
+oraclegetinfo
+oraclegetpwd
+mssqlresolve
+userenum
+shareenum
+ftpd_check
+gethostbyname
+getprintproviders
+getremotelanguage
+icmpsweep

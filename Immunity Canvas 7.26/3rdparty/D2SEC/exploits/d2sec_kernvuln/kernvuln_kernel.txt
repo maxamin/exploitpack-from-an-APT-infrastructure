@@ -1,0 +1,16 @@
+d2sec_do_brk:32:CVE-2003-0961:do_brk vma overflow:2.4.10,2.4.12,2.4.13,2.4.14,2.4.15,2.4.16,2.4.17,2.4.18,2.4.19,2.4.20,2.4.21,2.4.22
+d2sec_mremap_pte:32:CVE-2004-0077:mremap missing do_munmap return check vulnerability:2.4.10,2.4.12,2.4.13,2.4.14,2.4.15,2.4.16,2.4.17,2.4.18,2.4.19,2.4.20,2.4.21,2.4.22,2.4.23,2.4.24
+d2sec_kmod:32:CVE-2003-0127:ptrace/kmod vulnerability:2.2.19,2.4.3,2.4.5,2.4.6,2.4.7,2.4.8,2.4.9,2.4.10,2.4.12,2.4.13,2.4.14,2.4.15,2.4.16,2.4.17,2.4.18,2.4.19,2.4.20
+d2sec_ptrace_setuid:32:CVE-2001-1384:ptrace/setuid exec vulnerability:2.2.5,2.2.6,2.2.7,2.2.8,2.2.9,2.2.10,2.2.11,2.2.12,2.2.13,2.2.14,2.2.15,2.2.16,2.2.17,2.2.18,2.2.19
+d2sec_elfdump:32:Unknown:binfmt_elf executable file read vulnerability:2.4.3,2.4.4,2.4.5,2.4.6,2.4.7,2.4.8,2.4.9,2.4.10,2.4.12,2.4.13,2.4.14,2.4.15,2.4.16,2.4.17,2.4.18,2.4.19,2.4.20,2.4.21,2.4.22,2.4.23,2.4.24,2.4.25,2.4.26,2.4.27,2.4.28,2.6.0,2.6.1,2.6.2,2.6.3,2.6.4,2.6.5
+d2sec_suid_dumpable:32:CVE-2006-2451:suid_dumpable vulnerability:2.6.13,2.6.13.1,2.6.13.5,2.6.14.7,2.6.15.7,2.6.16.22,2.6.16.23,2.6.17.1,2.6.17.2,2.6.17.3
+d2sec_sys_chown:32:CVE-2004-0497:sys_chown missing DAC controls on Linux:2.6.0,2.6.1,2.6.2,2.6.3,2.6.4,2.6.5,2.6.6,2.6.7
+d2sec_proc_control:32:CVE-2003-0937:/proc control vulnerability:2.6.0,2.6.1,2.6.2,2.6.3,2.6.4,2.6.5,2.6.6,2.6.7,2.6.8,2.6.8.1,2.6.9,2.6.10,2.6.11.12,2.6.12.4,2.6.13,2.6.13.1,2.6.13.5,2.6.14.7,2.6.15.7,2.6.16.22
+d2sec_vmsplice:32:CVE-2008-0600:vmsplice null pointer dereference:2.6.17.1,2.6.17.2,2.6.17.3,2.6.17.4,2.6.18.8,2.6.19.7,2.6.20.21,2.6.21.7,2.6.22.18,2.6.23.16,2.6.24.1
+d2sec_vmsplice2:32:CVE-2008-0009:vmsplice unchecked user-pointer dereference:2.6.23.1,2.6.23.2,2.6.23.3,2.6.23.4
+d2sec_bluetooth:32:Unknown:bluetooth stack overflow vulnerability:2.6.9,2.6.10
+d2sec_ptrace_execve:32:Unknown:ptrace/execve race condition vulnerability:2.2.7,2.2.9,2.2.11,2.2.12,2.2.15,2.2.17,2.2.18
+d2sec_ia32sys:64:CVE-2007-4573:ptrace x86_64 ia32syscall emulation vulnerability:2.6.9
+d2sec_notify:32:CVE-2009-1337:exit_notify() CAP_KILL verification vulnerability:2.6.23.4
+d2sec_mempodipper32:32:CVE-2012-0056:Linux Local Privilege Escalation via SUID /proc/pid/mem Write:3.1.0
+d2sec_mempodipper64:64:CVE-2012-0056:Linux Local Privilege Escalation via SUID /proc/pid/mem Write:3.1.0

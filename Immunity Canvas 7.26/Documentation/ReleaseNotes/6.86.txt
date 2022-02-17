@@ -1,0 +1,57 @@
+########################################################################
+#                       *CANVAS Release 6.86*                          #
+########################################################################
+
+*Date*: 20 March 2013
+
+*Version*: 6.86 ("Zwei")
+
+*Download URL*: https://canvas.immunityinc.com/cgi-bin/getcanvas.py
+
+*Release Notes*:
+
+For this release we bring you the latest Adobe Flash Player clientside
+(adobe_flash_regexp) and a privilege escalation module for MySQL.
+
+Moreover, we include a post-exploitation module for Windows 32 and
+Windows 64 MOSDEF nodes that will set the current thread I/O and memory
+priority to max.
+
+==Changes==
+
+o MOSDEF/Win64: New MOSDEF-wrapped functions, 'long long *' bugfix in cparse2
+
+o callbackloop (fixed stack corruptions)
+
+o clientd (can now run multiple instances on different ports)
+
+o java_MBeanInstantiator_findClass: updated to bypass the java security
+  warning
+
+==New Modules==
+
+o adobe_flash_regexp (Adobe Flash Player Regex Heap Overflow)
+
+o CVE_2012_5613 (MySQL Privilege Elevation Exploit)
+
+o threadio (Sets current thread IO and memory priority to max)
+
+*CANVAS Tips 'n' Tricks*:
+
+We have updated our java MBeanInstantiator module to bypass the security
+warning by serving it as a serialized applet using the technique described
+at: http://immunityproducts.blogspot.com.ar/2013/02/keep-calm-and-run-this-applet.html
+
+Do try it out and remember that you can use HTTP/HTTPS MOSDEF support in clientd
+to transparently make use of corporate proxies and get MOSDEF working in
+restrictive environments.
+
+*Links*:
+
+Support email      : support@immunityinc.com
+Sales support      : sales@immunityinc.com
+Support/Sales phone: +1 786-220-0600
+
+
+########################################################################
+########################################################################

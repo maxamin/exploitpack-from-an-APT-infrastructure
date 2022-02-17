@@ -1,0 +1,2 @@
+Resources/d2sec_shell
+Resources/d2sec_lib.so

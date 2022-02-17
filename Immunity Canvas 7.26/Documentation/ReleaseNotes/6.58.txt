@@ -1,0 +1,123 @@
+########################################################################
+#                       *CANVAS Release 6.58*                          #
+########################################################################
+
+*Date*: 23 May 2010
+
+*Version*: 6.58 ("TimeWarp")
+
+*Download URL*: https://canvas.immunityinc.com/cgi-bin/getcanvas.py
+
+*Release Notes*:
+
+==New Modules==
+
+getloggedinhashes - This module is useful especially on domains. Currently it
+only supports 32-bit but work is underweigh to port it to 64-bit MOSDEF.
+
+ie_peers_flash - This exploit defeats DEP by using the Immunity
+Flash-JIT code, which has itself been ported to Flash 9.
+
+ms10_025 - This exploit is reliable against Microsoft Media Server both
+pre- and post- the Microsoft failed patch. It steals the socket and has 
+otherwise been polished and should work for you in the wild.
+
+ms10_026 - This exploit (not elsewhere released) for Microsoft Media
+Player has been tested to work on IE 7 and XP SP3. This exploit works
+with the new ClientD.
+
+acrobat_exec - This exploit raised a lot of media publicity, but is still
+useful against unpatched Acrobat Reader and gullible users.
+
+java_deserialize and java_method_chain - Both modules target the same patch
+version of Java, although java_method_chain is less likely to be something an AV
+company has looked at. Both exploits work with the new ClientD.
+
+
+==Changes==
+
+Major revisions have been made to ClientD and to the internal CANVAS
+engine. The engine has been updated to suport Universal Listeners. This
+simple concept required major modifications internally, but now, for
+example, all of your attacks against ms08_067 can call back to port 25,
+whether you are attacking one host, or a class B. Universal Listeners
+are compatible with commandline usage as well.
+
+Likewise, ClientD now only accepts Universal MOSDEF or HTTP MOSDEF as
+callback types. Major changes have taken place inside ClientD, making it
+much faster and more reliable. It now orders exploits by their likelyhood
+of success against each target that connects, for example.
+
+Among the many ClientD changes. 
+
+o Reporting has been centralized, and the client-side reporting (for
+now, only Text), is much cleaner and easier to use.
+
+o Exploits have easy access to their session and recon information
+
+o Speed has been drastically improved
+
+o Many exploits and their shellcode have been extensively modified
+(SafeSEHsearchcode now supports VProtect and is used by
+acrobat_newplayer, f.e.).
+
+You will find documentation on how to write exploits that work with the
+new ClientD here: Documentation/CANVAS_Clientd.odt
+
+For those of you doing advanced CANVAS modifications, MOSDEF has been
+updated to support function pointers.
+
+
+==Upcoming training sessions==
+
+Please email sales@immunityinc.com for further information or to sign up.
+
+USA TRAINING
+Location: 1247 Alton Road, Miami Beach, Florida 33139
+
+July 19-22, 2010: Finding 0Days
+Duration: 4 days
+Cost: $4000 per person
+
+August 16-20, 2010: Unethical Hacking
+Duration: 5 days
+Cost: $5000 per person
+
+September 13-16, 2010: Heap Overflows
+Duration: 4 days
+Cost: $4000 per person
+
+October 18-19, 2010: CANVAS Training
+Duration: 2 days
+Cost: $2000 per person
+
+November 15-18, 2010: Finding 0Days
+Duration: 4 days
+Cost: $4000 per person
+
+December 13-17, 2010: Unethical Hacking
+Duration: 5 days
+Cost: $5000 per person
+
+*Forum*
+Still at https://forum.immunityinc.com/ :>
+
+*CANVAS Tips 'n' Tricks*:
+
+On unpatched hosts using Host Intrusion Protection as "virtual
+patching" you may find that raising your covertness bar to "2" will
+defeat it. If that doesn't work, try 5 or 11.
+
+You can use the -C 11 argument to set covertness to 11 from the command
+line.
+
+
+*Links*:
+
+Support email      : support@immunityinc.com
+Sales support      : sales@immunityinc.com
+Support/Sales phone: +1 786-220-0600
+
+
+########################################################################
+########################################################################

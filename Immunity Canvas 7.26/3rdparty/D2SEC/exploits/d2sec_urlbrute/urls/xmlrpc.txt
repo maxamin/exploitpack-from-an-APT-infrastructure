@@ -1,0 +1,10 @@
+/xmlrpc/
+/xmlrpc.php
+/xmlrpc/xmlrpc.php
+/community/xmlrpc.php
+/blogs/xmlsrv/xmlrpc.php
+/blog/xmlsrv/xmlrpc.php
+/blogtest/xmlsrv/xmlrpc.php
+/b2/xmlsrv/xmlrpc.php
+/b2evo/xmlsrv/xmlrpc.php
+/phpgroupware/xmlrpc.php

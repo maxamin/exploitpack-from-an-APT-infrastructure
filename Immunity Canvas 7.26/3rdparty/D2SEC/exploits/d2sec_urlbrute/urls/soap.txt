@@ -1,0 +1,5 @@
+/soapdocs/
+/soapdocs/webapps/soap/
+/soapdocs/webapps/soap/WEB-INF/config/
+/soap/servlet/
+/user/soapCaller.bs

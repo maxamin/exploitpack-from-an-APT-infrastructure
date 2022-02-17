@@ -1,0 +1,124 @@
+########################################################################
+#                       *CANVAS Release 6.50*                          #
+########################################################################
+
+*Date*: 09 September 2009
+
+*Version*: 6.50 (Adenine Release)
+
+*Release Notes*:
+
+Apologies for the slightly late release of the September version of CANVAS, we found some last minute issues during QA of the new Win32 rootkit (HCN) that we wanted to get right before we released - we hope you understand.
+
+This months release is a bumper edition, no less than 22 new modules!
+CANVAS 6.50 also introduces some significant new features along side new 
+exploit modules, most notably a brand new, built entirely from scratch, 
+Windows rootkit named HCN (that's Hydrogen Cyanide to those less 
+chemically inclined!). This first release of HCN offers a host of 
+features amongst rock solid reliability, but will be added to over the 
+next few months. We encourage you to test drive HCN and let us know what 
+you think. For an overview of HCN look in /Documentation for 
+hcn_for_canvas_brochure.pdf
+Another big new feature is SploitD, a clientside and email exploit attachment framework. This is also only the beginning of what you can expect to see from SploitD with regards to features, but we always prefer to get new stuff into your hands as soon as possible so we can get your feedback. In our tests we have found this to be a very effective attack vector.
+
+In the /Documentation/Tutorials directory you will find a new tutorial covering how to use HCN as well as some of the old tutorials converted to PDF. More will follow over the coming weeks.
+
+Other notable changes for this month is the updating of the graphics library (gaphas) that underlies the node manager view. It has been updated to the latest version and with it comes a significant increase in performance for nodes with multiple attached nodes, this is especially apparent on the win32 platform.
+
+Overall the September release contains the following changes and new modules:
+
+==New Modules==
+
+Proto ops null dereference linux kernel local (2.6.x)  (CVE-2009-2692)
+Windows Server Service Double Free (MS09_041) (CVE-2009-1544)
+IIS FTP NLST Stack Overflow (CVE-2009-3023)
+IIS FTP Globbing stack exhaustion DOS (CVE-2009-2521)
+Acute Control Panel 1.0.0 remote file inclusion (CVE-2009-1247)
+AdaptCMS Lite 1.x remote file inclusion (NoCVE)
+Easy PX 41 CMS 09.00.00B1 local file inclusion (NoCVE)
+WorkSimple 1.2.1 remote file inclusion (CVE-2008-5764)
+PHPSkelSite 1.4 remote file inclusion (CVE-2009-0595)
+Joomla Art Forms Component 2.1b7 remote file inclusion (NoCVE)
+Joomla Tree Flash Gallery 1.0 remote file inclusion (CVE-2008-6482)
+HCN Win32 Rootkit (NoCVE):
+	- HCN Load
+	- HCN UnLoad
+	- HCN Hide Directory
+	- HCN Hide Registry Key
+	- HCN Hide Process by PID
+	- HCN Hide Netstat
+	- HCN Beacon Listener
+	- HCN Beacon Config
+Sploitd clientside/email framework (NoCVE)
+Javascript recon browser plugin info grabber(NoCVE)
+SSH Reverse Tunnel (NoCVE)
+
+==Changes==
+
+New version of gaphas toolkit (0.40) used for the node manager view which gives significant performance increases .
+
+Removal of the 'Classic Node View' - all functionality is now accessible via the 'Node Manager'.
+
+GeoIP updated to the new Python library for cross platform unity (no more COM object for Windows). Requires using the City Database not the Country database - the city database is freely available from: if you don't already have it. 
+
+Tutorial PDF's added in /Documentation/Tutorials
+
+New button to access the node file browser added to the listener shell
+
+==Bug Fixes==
+
+Removal of nodes now is properly reflected in both node manager and command line interface
+
+Fix to module meta data to remove two false positives that were returned as true for any search string
+
+Fix occasional CLI scrolling bug
+
+==Known Issues==
+
+Hiding directory names/paths which contain spaces may have unexpected results on Windows 2000, unloading the rootkit from these systems will solve the problem.
+
+
+Until next month, Cheers
+Team Immunity
+
+
+*Postscript*:
+
+Forums down for maintenance sorry :(
+
+
+*Upcoming training*:
+
+USA TRAINING
+Location: 1247 Alton Road, Miami Beach, Florida
+
+September 14-17, 2009: Heap Overflows
+Duration: 4 days
+Cost: $4000 per person
+
+November 2-5, 2009: Finding 0days
+Duration: 4 days
+Cost: $4000 per person
+
+December 14-18, 2009: Unethical Hacking
+Duration: 5 days
+Cost: $5000 per person
+
+For more information contact admin@immunityinc.com
+
+
+*CANVAS Tips 'n' Tricks*:
+
+To shut down a child node you have established on an exploited system simply
+select it in the Node Management view and press 'delete' and confirm the
+prompt. The LocalNode is special and can never be deleted though.
+
+*Links*:
+
+Support email      : support@immunityinc.com
+Sales support      : sales@immunityinc.com
+Support/Sales phone: +1 786-220-0600
+
+
+########################################################################
+########################################################################

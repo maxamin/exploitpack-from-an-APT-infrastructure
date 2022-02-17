@@ -1,0 +1,33 @@
+D2 Exploitation Pack
+====================
+
+Copyright (c) 2007 DSquare Security, LLC
+
+
+License information
+-------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Local exploit
+---------------
+
+AIX diagrpt Arbitrary Privileged Program Execution
+
+Use d2sec_diagrpt and sh.
+
+Vulnerable:
+	IBM AIX 4.3.3
+	IBM AIX 4.3.2
+	IBM AIX 4.3.1
+	IBM AIX 4.3
+	IBM AIX 5.1
+
+Tested on: 
+	IBM AIX 4.3.3
+
+Réf:
+	CVE-2001-1080
+	http://www.securityfocus.com/bid/2916

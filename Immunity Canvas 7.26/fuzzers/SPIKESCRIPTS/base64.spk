@@ -1,0 +1,6 @@
+spk.s_string_variable("AAAA")
+spk.s_string("\r\n")
+spk.s_string_variable("BBBB")
+spk.s_string("\r\n")
+spk.s_string_variable("BB==")
+spk.s_string("\r\n")

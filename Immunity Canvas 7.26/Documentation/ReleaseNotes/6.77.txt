@@ -1,0 +1,62 @@
+########################################################################
+#                       *CANVAS Release 6.77*                          #
+########################################################################
+
+*Date*: 29 February 2012
+
+*Version*: 6.77 ("Synthetic Form")
+
+*Download URL*: https://canvas.immunityinc.com/cgi-bin/getcanvas.py
+
+*Release Notes*:
+
+Our new module for this release is CVE_2012_0056, a Linux local privilege
+escalation exploit that will get you root.
+
+Moreover, we include full ARM support for MOSDEF in the form of assembler
+and MOSDEF-C compiler frontend together with updated Linux ShellServer for 
+Android. Our Android clientsides have been updated to take advantage of
+these new features and are now spawning MOSDEF-capable Linux nodes.
+BuildCallbackTrojan has also been updated and can now generate ARM ELF 
+executable callbacks.
+
+==Changes==
+
+o Integrated ARM assembler/MOSDEF-C compiler frontend
+
+o Full MOSDEF support for Android
+
+o android_parentstylesheet now returns a MOSDEF Linux node
+
+o CVE_2010_1807 now returns a MOSDEF Linux node
+
+o Improvements to BuildCallbackTrojan (can generate ARM ELF callbacks)
+
+o Improvements to getpasswordhashes, getloggedinhashes, mosdefmigrate
+  (reliability fixes)
+
+
+==New Modules==
+
+o CVE_2012_0056 (Linux >= 2.6.39 local root)
+
+
+*Forum*
+
+Still at https://forum.immunityinc.com/ . Useful for all your many questions!
+
+*CANVAS Tips 'n' Tricks*:
+
+Experience our new ARM MOSDEF backend by trying out our improved Android clientside
+exploits. Start ClientD, add android_parentstylesheet and CVE_2010_1807 to allowed
+modules, sit back and enjoy!
+
+*Links*:
+
+Support email      : support@immunityinc.com
+Sales support      : sales@immunityinc.com
+Support/Sales phone: +1 786-220-0600
+
+
+########################################################################
+########################################################################

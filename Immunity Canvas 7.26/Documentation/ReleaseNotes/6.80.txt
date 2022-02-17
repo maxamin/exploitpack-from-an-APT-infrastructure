@@ -1,0 +1,56 @@
+########################################################################
+#                       *CANVAS Release 6.80*                          #
+########################################################################
+
+*Date*: 31 May 2012
+
+*Version*: 6.80 ("O2")
+
+*Download URL*: https://canvas.immunityinc.com/cgi-bin/getcanvas.py
+
+*Release Notes*:
+
+This release comes with one new exploit module, for the recent PHP-CGI
+remote vulnerability as described in CVE-2012-1823. Moreover, we include
+two new utility modules, a generic WAR MOSDEF trojan deployer and an IP->VHOST
+resolver.
+
+In terms of updates to CANVAS itself, ClientD has been overhauled with a
+completely new user interface and the MOSDEF OSX remote resolvers updated for
+the latest OSX versions.
+
+==Changes==
+
+o New ClientD UI
+
+o Updates to OSX remote resolvers
+
+
+==New Modules==
+
+o php_cgi_remote (CVE-2012-1823 PHP < 5.4 remote exploit)
+
+o BuildWARCallbackTrojan (Generic WAR deployment module)
+
+o ip_to_vhosts
+
+
+*Forum*
+
+Still at https://forum.immunityinc.com/ . Useful for all your many questions!
+
+*CANVAS Tips 'n' Tricks*:
+
+ClientD is one of our most important modules. Try out the new user interface
+today with some of our most heavy hitting exploits, java_rhino and 
+java_AtomicReferenceArray.
+
+*Links*:
+
+Support email      : support@immunityinc.com
+Sales support      : sales@immunityinc.com
+Support/Sales phone: +1 786-220-0600
+
+
+########################################################################
+########################################################################

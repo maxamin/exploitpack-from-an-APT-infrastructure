@@ -1,0 +1,74 @@
+#!/usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2009
+#
+
+import sys
+import os
+
+if '.' not in sys.path:
+    sys.path.append('.')
+
+from canvasexploit import canvasexploit
+from canvasengine import getModuleExploitClass
+from exploitutils import *
+
+NAME = 'D2SEC CreateDico'
+VERSION = '1.0'
+DESCRIPTION = 'Create URLs lists to use with d2sec_urlbrute.'
+
+DOCUMENTATION = {}
+DOCUMENTATION['Repeatability'] = 'Infinite'
+
+PROPERTY={}
+PROPERTY['TYPE'] = 'Tools'
+PROPERTY['SITE'] = 'Local'
+PROPERTY['ARCH'] = [ ["Linux"], ["Windows"], ["Solaris"], ["AIX"], ["FreeBSD"], ["MacOSX"], ["HP-UX"] ]
+
+# Modules used by d2sec_createdico
+GUI_VERSIONS     = {}
+GUI_VERSIONS[0]  = 'd2sec_canvasurls'
+GUI_VERSIONS[1]  = 'd2sec_tmpurls'
+
+class theexploit(canvasexploit):
+    def __init__(self):
+        canvasexploit.__init__(self)
+        
+        self.DicoUrls = {}
+        self.DicoUrls['d2sec_canvasurls'] = getModuleExploitClass('d2sec_canvasurls', which='d2sec_canvasurls')
+        self.DicoUrls['d2sec_tmpurls']    = getModuleExploitClass('d2sec_tmpurls', which='d2sec_tmpurls')
+        self.methods = ""
+        self.version = 0
+        self.name = NAME
+        return
+        
+    def show_available(self):
+        for local in self.DicoUrls:
+            self.log('available: %s' % local)
+        return
+
+    def getargs(self):
+        self.methods = self.argsDict.get('Methods', self.methods)
+        self.node = self.argsDict['passednodes'][0]
+        if not self.methods:
+            self.methods = GUI_VERSIONS[self.version]
+            self.log('[D2 LOG] tool %s selected' % self.methods)
+        return
+    
+    def run(self):
+        self.setInfo('%s' % NAME)
+
+        self.getargs()
+        if self.methods in self.DicoUrls:
+            self.setInfo('%s - (%s)' % (NAME, self.methods))
+            self.DicoUrls[self.methods]().exploit()
+                
+        self.setInfo('%s - (finished)' % NAME)
+        return 1 
+    
+if __name__ == '__main__':
+    'This module is meant to be run only within CANVAS'        

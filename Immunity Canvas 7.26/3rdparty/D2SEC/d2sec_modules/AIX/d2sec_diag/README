@@ -1,0 +1,41 @@
+D2 Exploitation Pack
+====================
+
+Copyright (c) 2007-2008 DSquare Security, LLC
+
+
+License information
+-------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Local exploit
+---------------
+
+IBM AIX Diag Local Privilege Escalation Vulnerability
+
+Use d2sec_diag.sh and sh:
+
+$ id
+uid=1000(compaq) gid=1000(users)
+$ ./d2sec_diag.sh
+# id
+uid=0(root) gid=0(system) groups=1000(users)
+# 
+
+Vulnerable:
+	IBM AIX 5.3 L
+	IBM AIX 5.2.2
+	IBM AIX 5.2 L
+	IBM AIX 5.1 L
+	IBM AIX 5.3
+	IBM AIX 5.2
+	IBM AIX 5.1
+
+Tested on: 
+	IBM AIX 5.2
+
+Réf:
+	http://www.securityfocus.com/bid/12041

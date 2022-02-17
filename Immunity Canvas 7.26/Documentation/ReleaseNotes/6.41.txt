@@ -1,0 +1,73 @@
+With Thanksgiving just gone and Christmas just around the corner the
+CANVAS 6.41 (TooMuchTurkey) release includes a number of new exploits,
+along with new features that we hope you will find as useful as we do.
+
+New exploits come in the shape of a Lotus Domino remote exploit, a post
+auth exploit in the GoodTech SSH server (to which the currently shipping
+server is still vulnerable) and Simple Machines Forum and Mantis
+bugtracker code execution vulnerabilities.
+
+Feature enhancements are where this months release really shines with a
+new ICMP MOSDEF proxy module, new internal threading model for parallel
+scans and improved SPIKE proxy support for POST's.
+
+In a recent assessment the Immunity penetration testing team found
+itself in a situation where they had command execution on a web server
+which was only allowed to talk to the outside world over ICMP. Because
+they were only able to execute commands as an unprivileged user,
+traditional WinPCAP based ICMP tunnelling solutions were not an option.
+To work around this limitation, the team developed an ICMP tunnelling
+solution that relies on the native Win32 ICMP API and does not require
+Administrator privileges. These efforts resulted in ICMP MOSDEF proxy we
+present to you today.
+
+Support for automated attack strategies is an area which will continue
+to improve moving forward, prior to the implementation of the new ideas
+we have in this space we wanted to build a really solid foundation to
+support this new functionality. This has been done, with the first
+modules to take advantage of the new threading model being massattack2
+and VulnAsses2 (The original massattack and VulnAssess modules are still
+available as well). We hope you will see lower resource utilisation and
+a modest speed improvement when using this new threaded modules.
+
+As always, the feedback we have received from you this last month has
+been invaluable and we encourage you to keep it coming - it has a direct
+impact on the next release and caused a number of bug fixes and glitches
+to be fixed this month.
+
+Finally, we are excited to be meeting a few of you in person at the
+CANVAS training class running here in sunny South Beach Miami on the
+15-16th December. It is going to be a great few days and there are still
+a couple of spots available, so if you like the sound of sun, sea &
+shellcode it's not too late to sign up (admin@immunityinc.com for details).
+
+Cheers
+Rich
+
+------
+ChangeLog:
+
+6.41 December 1 2008 ("TooMuchTurkey" release)
+
+This release includes the following CANVAS Early updates:
+
+Previous Month's CANVAS Early Updates:
+
+# November 24, 2008 Our Lotus Domino Notes 8.0.0 HTTP Accept-Language
+Overflow exploit is now working reliably against Windows 2003 (SP2)
+# November 12, 2008 GoodTech SSH Server (current distributed version is
+vulnerable) Post-Auth Remote Code Execution Exploit [2K, XP, 2K3]
+# November 6, 2008 Simple Machines Forum * => 1.1.6 Remote Code
+Execution Exploit
+# November 3, 2008 Mantis BugTracker Remote PHP code execution exploit.
+
+Feature updates:
+
+# ICMP proxy support for MOSDEF
+# Complete rethreading implementation for large parallel scans,
+providing new modules massattack2 and VulnAssess2
+# SPIKE proxy improved POST support
+
++ various GUI and docuemntation fixes in all sorts of places.
+
+

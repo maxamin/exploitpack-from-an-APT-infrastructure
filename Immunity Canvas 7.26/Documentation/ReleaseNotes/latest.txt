@@ -1,0 +1,43 @@
+########################################################################
+#                       *CANVAS Release 7.26*                          #
+########################################################################
+
+*Date*: 02 September 2020
+
+*Version*: 7.26
+
+*Download URL*: https://canvas.immunityinc.com/getcanvas
+
+*Release Notes*:
+
+In this CANVAS release we are bringing you 5 new modules and bugfixes.
+
+Our new modules include SMBGhost, both LPE and RCE versions. We are also including
+an exploit for a deserialization flaw in Microsoft SQL Server Reporting Services
+(CVE-2020-0618), a remote code execution exploit targeting Microsoft Exchange Server
+(CVE-2020-0688) and a local privilege escalation exploit targeting Microsoft Windows
+7/8.1 and 10.
+
+
+==Changes==
+
+o SPIKE proxy fix
+ o handling of 401 with empty body
+
+o Fixed an issue in ms08_034
+
+==New Modules==
+
+o SMBGHOST (CVE-2020-0796)
+
+o smbghost_lpe (CVE-2020-0796)
+
+o ssrs_viewstate_rce (CVE-2020-0618)
+
+o owa_rce (CVE-2020-0688)
+
+o menu_confusion_lpe (CVE-2019-0859)
+
+
+########################################################################
+########################################################################

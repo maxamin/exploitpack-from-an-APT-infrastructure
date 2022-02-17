@@ -1,0 +1,539 @@
+#!/usr/bin/env python
+##ImmunityHeader v1
+###############################################################################
+## File       :  libntlm.py
+## Description:
+##            :
+## Created_On :  Wed Jul 22 12:47:54 2009
+## Created_By :  Kostya Kortchinsky
+## Modified_On:  Mon Jul 12 15:53:29 2010
+## Modified_By:  Kostya Kortchinsky
+##
+## (c) Copyright 2009, Immunity, Inc. all rights reserved.
+###############################################################################
+
+import sys
+import time #Only used for NTLMv2
+from uuid import uuid4
+from struct import pack
+
+if '.' not in sys.path:
+    sys.path.append('.')
+
+try:
+    from Crypto.Cipher import DES
+    from Crypto.Cipher import ARC4
+    from Crypto.Hash import MD4, MD5 #for ntlm hash
+    from Crypto.Hash import HMAC
+except ImportError:
+    from libs.Crypto.Cipher import DES
+    from libs.Crypto.Cipher import RC4 as ARC4
+    from libs.Crypto.Hash import MD4, MD5
+    from libs.Crypto.Hash import HMAC
+
+from libs.newsmb.Struct import Struct
+
+NTLM_NEGOTIATE_MESSAGE    = 0x00000001
+NTLM_CHALLENGE_MESSAGE    = 0x00000002
+NTLM_AUTHENTICATE_MESSAGE = 0x00000003
+
+NTLMSSP_NEGOTIATE_56                       = 0x80000000 #X
+NTLMSSP_NEGOTIATE_KEY_EXCH                 = 0x40000000 #W
+NTLMSSP_NEGOTIATE_128                      = 0x20000000 #V
+#r1                                          0x10000000
+#r2                                          0x08000000
+#r3                                          0x04000000
+NTLMSSP_NEGOTIATE_VERSION                  = 0x02000000 #U
+#r4                                          0x01000000
+NTLMSSP_NEGOTIATE_TARGET_INFO              = 0x00800000 #T
+NTLMSSP_REQUEST_NON_NT_SESSION_KEY         = 0x00400000 #S
+#r5                                          0x00200000
+NTLMSSP_NEGOTIATE_IDENTIFY                 = 0x00100000 #R
+NTLMSSP_NEGOTIATE_EXTENDED_SESSIONSECURITY = 0x00080000 #Q
+NTLMSSP_TARGET_TYPE_SHARE                  = 0x00040000 #P
+NTLMSSP_TARGET_TYPE_SERVER                 = 0x00020000 #O
+NTLMSSP_TARGET_TYPE_DOMAIN                 = 0x00010000 #N
+NTLMSSP_NEGOTIATE_ALWAYS_SIGN              = 0x00008000 #M
+#r6                                          0x00004000
+NTLMSSP_NEGOTIATE_OEM_WORKSTATION_SUPPLIED = 0x00002000 #L
+NTLMSSP_NEGOTIATE_OEM_DOMAIN_SUPPLIED      = 0x00001000 #K
+NTLMSSP_NEGOTIATE_ANONYMOUS                = 0x00000800 #J #name not in [MS-NLMP], probably former r7
+NTLMSSP_NEGOTIATE_NT_ONLY                  = 0x00000400 #I
+NTLMSSP_NEGOTIATE_NTLM                     = 0x00000200 #H
+#r8                                          0x00000100
+NTLMSSP_NEGOTIATE_LM_KEY                   = 0x00000080 #G
+NTLMSSP_NEGOTIATE_DATAGRAM                 = 0x00000040 #F
+NTLMSSP_NEGOTIATE_SEAL                     = 0x00000020 #E
+NTLMSSP_NEGOTIATE_SIGN                     = 0x00000010 #D
+#r9                                          0x00000008
+NTLMSSP_REQUEST_TARGET                     = 0x00000004 #C
+NTLM_NEGOTIATE_OEM                         = 0x00000002 #B
+NTLMSSP_NEGOTIATE_UNICODE                  = 0x00000001 #A
+
+def assert_unicode(string):
+    """
+    Make sure string is unicode encoded, decode to unicode if not.
+    If string is None, return None.
+    """
+    if string == None or isinstance(string, unicode):
+        return string
+    else:
+        return unicode(string)
+
+def expandKey56To64(key):
+    data = [ ord(c) for c in key ]
+    l = len(key) << 3
+    bits = [0] * l
+    pos = 0
+    for ch in data:
+        i = 7
+        while i >= 0:
+            if ch & (1 << i) != 0:
+                bits[pos] = 1
+            else:
+                bits[pos] = 0
+            pos += 1
+            i -= 1
+    newbits = []
+    for i in range(0, len(bits), 7):
+        newbits += bits[i:i + 7]
+        bitcount = 0
+        for j in range(7):
+            if bits[i + j] == 1:
+                bitcount += 1
+        if (bitcount % 2) == 1:
+            newbits += [1]
+        else:
+            newbits += [0]
+    result = []
+    pos = 0
+    c = 0
+    while pos < len(newbits):
+        c += newbits[pos] << (7 - (pos % 8))
+        if (pos % 8) == 7:
+            result.append(c)
+            c = 0
+        pos += 1
+
+    key = ''.join([ chr(c) for c in result ])
+    return key
+
+def DESL(K, D):
+    K += '\0' * (21 - len(K))
+    K1 = K[:7]
+    K2 = K[7:14]
+    K3 = K[14:]
+    return DES.new(expandKey56To64(K1), DES.MODE_ECB).encrypt(D) + DES.new(expandKey56To64(K2), DES.MODE_ECB).encrypt(D) + DES.new(expandKey56To64(K3), DES.MODE_ECB).encrypt(D)
+
+def IsMD4Hash(Passwd):
+    if len(Passwd) != 32:
+        return False
+    try:
+        Passwd.decode('HEX')
+    except TypeError:
+        return False
+    return True
+
+def NTOWFv1(Passwd, User, UserDom):
+    if IsMD4Hash(Passwd) == False:
+        Passwd = Passwd.encode('UTF-16LE')
+        Hash = MD4.new(Passwd).digest()
+    else:
+        Hash = Passwd.decode('HEX')
+    return Hash
+
+def LMOWFv1(Passwd, User, UserDom):
+    Passwd = Passwd.encode('CP850')
+    Passwd = Passwd.upper()[:14]
+    Passwd += '\0' * (14 - len(Passwd))
+    return DES.new(expandKey56To64(Passwd[:7]), DES.MODE_ECB).encrypt('KGS!@#$%') + DES.new(expandKey56To64(Passwd[7:]), DES.MODE_ECB).encrypt('KGS!@#$%')
+
+def ComputeResponseNTLMv1(User, Passwd, UserDom, ServerChallenge, ClientChallenge, ServerName):
+    if User == u'':
+        return '\0', '', '\0' * 16
+    if IsMD4Hash(Passwd) != True:
+        ResponseKeyLM = LMOWFv1(Passwd, '', '')
+        LmChallengeResponse = DESL(ResponseKeyLM, ServerChallenge)
+    else:
+        LmChallengeResponse = '\0' * 24
+    ResponseKeyNT = NTOWFv1(Passwd, '', '')
+    NtChallengeResponse = DESL(ResponseKeyNT, ServerChallenge)
+    SessionBaseKey = MD4.new(ResponseKeyNT).digest()
+    return LmChallengeResponse, NtChallengeResponse, SessionBaseKey
+
+def createBlob(ServerName, ClientChallenge):
+    data = ''
+    data += pack('<BB', 1, 1)
+    data += pack('<HL', 0, 0)
+    data += pack('<Q', int((time.time() + 11644473600) * (10 ** 7)))
+    data += ClientChallenge
+    data += pack('<L', 0)
+    data += ServerName
+    data += pack('<L', 0)
+    return data
+
+def NTOWFv2(Passwd, User, UserDom):
+    if IsMD4Hash(Passwd) == False:
+        Passwd = Passwd.encode('UTF-16LE')
+        Hash = MD4.new(Passwd).digest()
+    else:
+        Hash = Passwd.decode('HEX')
+    return HMAC.new(Hash, User.upper().encode('UTF-16LE') + UserDom).digest()
+
+LMOWFv2 = NTOWFv2
+
+def ComputeResponseNTLMv2(User, Passwd, UserDom, ServerChallenge, ClientChallenge, ServerName):
+    if User == u'':
+        return '\0', '', '\0' * 16
+    ResponseKeyNT = NTOWFv2(Passwd, User, UserDom)
+    ResponseKeyLM = LMOWFv2(Passwd, User, UserDom)
+    Blob = createBlob(ServerName, ClientChallenge)
+    NTProofStr = HMAC.new(ResponseKeyNT, ServerChallenge + Blob).digest()
+    NTChallengeResponse = NTProofStr + Blob
+    LMChallengeResponse = HMAC.new(ResponseKeyLM, ServerChallenge + ClientChallenge).digest() + ClientChallenge
+    SessionBaseKey = HMAC.new(ResponseKeyNT, NTProofStr).digest()
+    return LMChallengeResponse, NTChallengeResponse, SessionBaseKey
+
+def SIGNKEY(NegFlg, RandomSessionKey, Mode):
+    if (NegFlg & NTLMSSP_NEGOTIATE_EXTENDED_SESSIONSECURITY) != 0:
+        if Mode == "Client":
+            return MD5.new(RandomSessionKey + "session key to client-to-server signing key magic constant\0").digest()
+        else:
+            return MD5.new(RandomSessionKey + "session key to server-to-client signing key magic constant\0").digest()
+    else:
+        return None
+
+def SEALKEY(NegFlg, RandomSessionKey, Mode):
+    if (NegFlg & NTLMSSP_NEGOTIATE_EXTENDED_SESSIONSECURITY) != 0:
+        if (NegFlg & NTLMSSP_NEGOTIATE_128) != 0:
+            SealKey = RandomSessionKey
+        elif (NegFlg & NTLMSSP_NEGOTIATE_56) != 0:
+            SealKey = RandomSessionKey[0:6]
+        else:
+            SealKey = RandomSessionKey[0:4]
+        if Mode == "Client":
+            return MD5.new(SealKey + "session key to client-to-server sealing key magic constant\0").digest()
+        else:
+            return MD5.new(SealKey + "session key to server-to-client sealing key magic constant\0").digest()
+    elif (NegFlg & NTLMSSP_NEGOTIATE_56) != 0:
+        return RandomSessionKey[0:6] + '\xa0'
+    else:
+        return RandomSessionKey[0:4] + '\xe5\x38\xb0'
+
+
+class NTLMException(Exception):
+    pass
+
+class NTLMNegotiate(Struct):
+    st = [
+        ['Signature'               , '8s', 'NTLMSSP\0'],
+        ['MessageType'             , '<L', NTLM_NEGOTIATE_MESSAGE],
+        ['NegotiateFlags'          , '<L', 0],
+        ['DomainNameLen'           , '<H', 0],
+        ['DomainNameMaxLen'        , '<H', 0],
+        ['DomainNameBufferOffset'  , '<L', 0],
+        ['WorkstationLen'          , '<H', 0],
+        ['WorkstationMaxLen'       , '<H', 0],
+        ['WorkstationBufferOffset' , '<L', 0],
+        ['ProductMajorVersion'     , '<B', 0], #The VERSION structure is present if NTLMSSP_NEGOTIATE_VERSION is set
+        ['ProductMinorVersion'     , '<B', 0],
+        ['ProductBuild'            , '<H', 0],
+        ['ReservedVersion'         , '3s', '\0\0\0'],
+        ['NTLMRevisionCurrent'     , '<B', 0],
+        ['DomainName'              , '0s', ''],
+        ['WorkstationName'         , '0s', ''],
+    ]
+
+    def __init__(self, data = None):
+        Struct.__init__(self, data)
+
+        if data is not None:
+            pos = self['DomainNameBufferOffset']
+            self['DomainName'] = data[pos:pos + self['DomainNameLen']]
+            pos = self['WorkstationBufferOffset']
+            self['WorkstationName'] = data[pos:pos + self['WorkstationLen']]
+        #self.debugprint()
+
+    def pack(self):
+        pos = self.calcsize()
+        self['DomainNameBufferOffset'] = pos
+        self['DomainNameLen'] = len(self['DomainName'])
+        self['DomainNameMaxLen'] = self['DomainNameLen']
+        pos += self['DomainNameLen']
+        self['WorkstationBufferOffset'] = pos
+        self['WorkstationLen'] = len(self['WorkstationName'])
+        self['WorkstationMaxLen'] = self['WorkstationLen']
+
+        data = Struct.pack(self)
+
+        return data + self['DomainName'] + self['WorkstationName']
+
+class NTLMChallenge(Struct):
+    st = [
+        ['Signature'               , '8s', 'NTLMSSP\0'],
+        ['MessageType'             , '<L', NTLM_CHALLENGE_MESSAGE],
+        ['TargetNameLen'           , '<H', 0],
+        ['TargetNameMaxLen'        , '<H', 0],
+        ['TargetNameBufferOffset'  , '<L', 0],
+        ['NegotiateFlags'          , '<L', 0],
+        ['ServerChallenge'         , '8s', '\0'*8],
+        ['Reserved'                , '8s', '\0'*8],
+        ['TargetInfoLen'           , '<H', 0],
+        ['TargetInfoMaxLen'        , '<H', 0],
+        ['TargetInfoBufferOffset'  , '<L', 0],
+        ['ProductMajorVersion'     , '<B', 0], #The VERSION structure is present if NTLMSSP_NEGOTIATE_VERSION is set
+        ['ProductMinorVersion'     , '<B', 0],
+        ['ProductBuild'            , '<H', 0],
+        ['ReservedVersion'         , '3s', '\0\0\0'],
+        ['NTLMRevisionCurrent'     , '<B', 0],
+        ['TargetName'              , '0s', ''],
+        ['TargetInfo'              , '0s', ''],
+    ]
+
+    def __init__(self, data = None):
+        Struct.__init__(self, data)
+
+        if data is not None:
+            pos = self['TargetNameBufferOffset']
+            self['TargetName'] = data[pos:pos + self['TargetNameLen']]
+            pos = self['TargetInfoBufferOffset']
+            self['TargetInfo'] = data[pos:pos + self['TargetInfoLen']]
+        #self.debugprint()
+
+    def pack(self):
+        pos = self.calcsize()
+        self['TargetNameBufferOffset'] = pos
+        self['TargetNameLen'] = len(self['TargetName'])
+        self['TargetNameMaxLen'] = self['TargetNameLen']
+        pos += self['TargetNameLen']
+        self['TargetInfoBufferOffset'] = pos
+        self['TargetInfoLen'] = len(self['TargetInfo'])
+        self['TargetInfoMaxLen'] = self['TargetInfoLen']
+
+        data = Struct.pack(self)
+
+        return data + self['TargetName'] + self['TargetInfo']
+
+class NTLMAuthenticate(Struct):
+    st = [
+        ['Signature'                             , '8s', 'NTLMSSP\0'],
+        ['MessageType'                           , '<L', NTLM_AUTHENTICATE_MESSAGE],
+        ['LmChallengeResponseLen'                , '<H', 0],
+        ['LmChallengeResponseMaxLen'             , '<H', 0],
+        ['LmChallengeResponseBufferOffset'       , '<L', 0],
+        ['NtChallengeResponseLen'                , '<H', 0],
+        ['NtChallengeResponseMaxLen'             , '<H', 0],
+        ['NtChallengeResponseBufferOffset'       , '<L', 0],
+        ['DomainNameLen'                         , '<H', 0],
+        ['DomainNameMaxLen'                      , '<H', 0],
+        ['DomainNameBufferOffset'                , '<L', 0],
+        ['UserNameLen'                           , '<H', 0],
+        ['UserNameMaxLen'                        , '<H', 0],
+        ['UserNameBufferOffset'                  , '<L', 0],
+        ['WorkstationLen'                        , '<H', 0],
+        ['WorkstationMaxLen'                     , '<H', 0],
+        ['WorkstationBufferOffset'               , '<L', 0],
+        ['EncryptedRandomSessionKeyLen'          , '<H', 0],
+        ['EncryptedRandomSessionKeyMaxLen'       , '<H', 0],
+        ['EncryptedRandomSessionKeyBufferOffset' , '<L', 0],
+        ['NegotiateFlags'                        , '<L', 0],
+        ['ProductMajorVersion'                   , '<B', 0], #The VERSION structure is present if NTLMSSP_NEGOTIATE_VERSION is set
+        ['ProductMinorVersion'                   , '<B', 0],
+        ['ProductBuild'                          , '<H', 0],
+        ['ReservedVersion'                       , '3s', '\0\0\0'],
+        ['NTLMRevisionCurrent'                   , '<B', 0],
+        ['MIC'                                   , '16s', '\0'*16],
+        ['LmChallengeResponse'                   , '0s', ''],
+        ['NtChallengeResponse'                   , '0s', ''],
+        ['DomainName'                            , '0s', ''],
+        ['UserName'                              , '0s', ''],
+        ['Workstation'                           , '0s', ''],
+        ['EncryptedRandomSessionKey'             , '0s', ''],
+    ]
+
+    def __init__(self, data = None):
+        Struct.__init__(self, data)
+
+        if data is not None:
+            pos = self['LmChallengeResponseBufferOffset']
+            self['LmChallengeResponse'] = data[pos:pos + self['LmChallengeResponseLen']]
+            pos = self['NtChallengeResponseBufferOffset']
+            self['NtChallengeResponse'] = data[pos:pos + self['NtChallengeResponseLen']]
+            pos = self['DomainNameBufferOffset']
+            self['DomainName'] = data[pos:pos + self['DomainNameLen']]
+            pos = self['UserNameBufferOffset']
+            self['UserName'] = data[pos:pos + self['UserNameLen']]
+            pos = self['WorkstationBufferOffset']
+            self['Workstation'] = data[pos:pos + self['WorkstationLen']]
+            pos = self['EncryptedRandomSessionKeyBufferOffset']
+            self['EncryptedRandomSessionKey'] = data[pos:pos + self['EncryptedRandomSessionKeyLen']]
+        #self.debugprint()
+
+    def pack(self):
+        pos = self.calcsize()
+        self['LmChallengeResponseBufferOffset'] = pos
+        self['LmChallengeResponseLen'] = len(self['LmChallengeResponse'])
+        self['LmChallengeResponseMaxLen'] = self['LmChallengeResponseLen']
+        pos += self['LmChallengeResponseLen']
+        self['NtChallengeResponseBufferOffset'] = pos
+        self['NtChallengeResponseLen'] = len(self['NtChallengeResponse'])
+        self['NtChallengeResponseMaxLen'] = self['NtChallengeResponseLen']
+        pos += self['NtChallengeResponseLen']
+        self['DomainNameBufferOffset'] = pos
+        self['DomainNameLen'] = len(self['DomainName'])
+        self['DomainNameMaxLen'] = self['DomainNameLen']
+        pos += self['DomainNameLen']
+        self['UserNameBufferOffset'] = pos
+        self['UserNameLen'] = len(self['UserName'])
+        self['UserNameMaxLen'] = self['UserNameLen']
+        pos += self['UserNameLen']
+        self['WorkstationBufferOffset'] = pos
+        self['WorkstationLen'] = len(self['Workstation'])
+        self['WorkstationMaxLen'] = self['WorkstationLen']
+        pos += self['WorkstationLen']
+        self['EncryptedRandomSessionKeyBufferOffset'] = pos
+        self['EncryptedRandomSessionKeyLen'] = len(self['EncryptedRandomSessionKey'])
+        self['EncryptedRandomSessionKeyMaxLen'] = self['EncryptedRandomSessionKeyLen']
+
+        data = Struct.pack(self)
+
+        return data + self['LmChallengeResponse'] + self['NtChallengeResponse'] + self['DomainName'] + self['UserName'] + self['Workstation'] + self['EncryptedRandomSessionKey']
+
+class NTLM:
+    def __init__(self, UserName = None, Password = None, Workstation = None, DomainName = None, Integrity = True, Confidentiality = True):
+        self.NegFlg = NTLMSSP_REQUEST_TARGET | NTLMSSP_NEGOTIATE_NTLM | NTLMSSP_NEGOTIATE_ALWAYS_SIGN \
+            | NTLMSSP_NEGOTIATE_UNICODE | NTLMSSP_NEGOTIATE_EXTENDED_SESSIONSECURITY | NTLMSSP_NEGOTIATE_128 \
+            | NTLMSSP_NEGOTIATE_56 | NTLMSSP_NEGOTIATE_LM_KEY
+        if Workstation != None:
+            self.NegFlg |= NTLMSSP_NEGOTIATE_OEM_WORKSTATION_SUPPLIED
+        if DomainName != None:
+            self.NegFlg |= NTLMSSP_NEGOTIATE_OEM_DOMAIN_SUPPLIED
+        if Integrity == True:
+            self.NegFlg |= NTLMSSP_NEGOTIATE_SIGN
+        if Confidentiality == True:
+            self.NegFlg |= NTLMSSP_NEGOTIATE_KEY_EXCH | NTLMSSP_NEGOTIATE_SEAL
+        self.ExportedSessionKey = None
+        if UserName == None:
+            UserName = u''
+        self.UserName = UserName
+        if Password == None:
+            Password = u''
+        self.Password = Password
+        (UserName, Password) = map(assert_unicode, (UserName, Password))
+        self.Workstation = Workstation
+        self.DomainName = DomainName
+        self.ServerChallenge = None
+        self.TargetInfo = None
+        self.ExportedSessionKey = None
+        self.ClientSigningKey = None
+        self.ServerSigningKey = None
+        self.ClientSeqNum = 0
+        self.ServerSeqNum = 0
+        self.ClientSealingKey = None
+        self.ServerSealingKey = None
+        self.ClientHandle = None
+        self.ServerHandle = None
+
+    def negotiate(self, data = None):
+        packet = NTLMNegotiate(data)
+        if data is not None:
+            #XXX: TODO --Kostya
+            return
+        else:
+            if self.Workstation != None:
+                packet['WorkstationName'] = self.Workstation.encode('CP850')
+            if self.DomainName != None:
+                packet['DomainName'] = self.DomainName.encode('CP850')
+            packet['NegotiateFlags'] = self.NegFlg
+            return packet.pack()
+
+    def challenge(self, data = None):
+        packet = NTLMChallenge(data)
+        if data is not None:
+            self.ServerChallenge = packet['ServerChallenge']
+            self.TargetInfo = packet['TargetInfo']
+        else:
+            pass
+        return
+
+    def authenticate(self, data = None):
+        packet = NTLMAuthenticate(data)
+        if (self.NegFlg & NTLMSSP_NEGOTIATE_EXTENDED_SESSIONSECURITY) == 0:
+            LmChallengeResponse, NtChallengeResponse, KeyExchangeKey = ComputeResponseNTLMv1('', self.Password, '', self.ServerChallenge, '', '')
+        elif (self.NegFlg & NTLMSSP_NEGOTIATE_EXTENDED_SESSIONSECURITY) != 0:
+            ClientChallenge = uuid4().bytes[:8] #Random 8 byte nonce
+            assert(len(ClientChallenge) == 8)
+            DomainName = self.DomainName
+            if self.DomainName == None:
+                DomainName = u''
+            LmChallengeResponse, NtChallengeResponse, KeyExchangeKey = ComputeResponseNTLMv2(self.UserName, self.Password, DomainName.encode('UTF-16LE'), self.ServerChallenge, ClientChallenge, self.TargetInfo)
+        packet['LmChallengeResponse'] = LmChallengeResponse
+        packet['NtChallengeResponse'] = NtChallengeResponse
+        packet['UserName'] = self.UserName.encode('UTF-16LE')
+        if self.Workstation != None:
+            packet['Workstation'] = self.Workstation.encode('UTF-16LE')
+        if self.DomainName != None:
+            packet['DomainName'] = self.DomainName.encode('UTF-16LE')
+        if (self.NegFlg & NTLMSSP_NEGOTIATE_KEY_EXCH) != 0:
+            self.ExportedSessionKey = uuid4().bytes #Random
+            assert(len(self.ExportedSessionKey) == 16)
+            packet['EncryptedRandomSessionKey'] = ARC4.new(KeyExchangeKey).encrypt(self.ExportedSessionKey)
+        else:
+            self.ExportedSessionKey = KeyExchangeKey
+            #packet['EncryptedRandomSessionKey'] = self.ExportedSessionKey #Why did I remove that? --Kostya
+
+        self.ClientSigningKey = SIGNKEY(self.NegFlg, self.ExportedSessionKey, "Client")
+        self.ServerSigningKey = SIGNKEY(self.NegFlg, self.ExportedSessionKey, "Server")
+        self.ClientSealingKey = SEALKEY(self.NegFlg, self.ExportedSessionKey, "Client")
+        self.ServerSealingKey = SEALKEY(self.NegFlg, self.ExportedSessionKey, "Server")
+        self.ClientHandle = ARC4.new(self.ClientSealingKey)
+        self.ServerHandle = ARC4.new(self.ServerSealingKey)
+        packet['NegotiateFlags'] = self.NegFlg
+        return packet.pack()
+
+    def __MAC(self, Handle, SigningKey, SeqNum, Message):
+        Signature = ''
+        Signature += pack('<L', 1)
+        if (self.NegFlg & NTLMSSP_NEGOTIATE_KEY_EXCH) == 0:
+            Signature += HMAC.new(SigningKey, pack('<L', SeqNum) + Message).digest()[:8]
+        else:
+            Signature += Handle.encrypt(HMAC.new(SigningKey, pack('<L', SeqNum) + Message).digest()[:8])
+        Signature += pack('<L', SeqNum)
+        return Signature
+
+    def MAC(self, Message, ClientMode = True):
+        if (self.NegFlg & NTLMSSP_NEGOTIATE_EXTENDED_SESSIONSECURITY) != 0:
+            if ClientMode == True:
+                Signature = self.__MAC(self.ClientHandle, self.ClientSigningKey, self.ClientSeqNum, Message)
+                self.ClientSeqNum += 1
+            else: #ServerMode
+                Signature = self.__MAC(self.ServerHandle, self.ServerSigningKey, self.ServerSeqNum, Message)
+                self.ServerSeqNum += 1
+            return Signature
+        else:
+            raise NTLMException('libntlm.MAC(): No NTLMv1 implementation yet!')
+
+    def __SEAL(self, Handle, SigningKey, SeqNum, Message):
+        SealedMessage = Handle.encrypt(Message)
+        return SealedMessage
+
+    def SEAL(self, Message, ClientMode = True):
+        if ClientMode == True:
+            #self.ClientHandle = ARC4.new(self.ClientSealingKey)
+            SealedMessage = self.__SEAL(self.ClientHandle, self.ClientSigningKey, self.ClientSeqNum, Message)
+        else: #ServerMode
+            #self.ServerHandle = ARC4.new(self.ServerSealingKey)
+            SealedMessage = self.__SEAL(self.ServerHandle, self.ServerSigningKey, self.ServerSeqNum, Message)
+        return SealedMessage
+
+    def UNSEAL(self, Message, ClientMode = True):
+        if ClientMode == True:
+            #self.ServerHandle = ARC4.new(self.ServerSealingKey)
+            UnsealedMessage = self.ServerHandle.decrypt(Message)
+        else:
+            #self.ClientHandle = ARC4.new(self.ClientSealingKey)
+            UnsealedMessage = self.ClientHandle.decrypt(Message)
+        return UnsealedMessage
+
+if __name__ == '__main__':
+    print 'N/A'

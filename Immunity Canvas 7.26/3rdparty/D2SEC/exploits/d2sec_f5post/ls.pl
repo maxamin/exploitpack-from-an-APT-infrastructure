@@ -1,0 +1,25 @@
+#!/usr/bin/perl
+
+$rep = $ARGV[0];
+$rep= "." if ! $rep;
+
+chdir($rep);
+opendir R, $rep or die("Could not open file ", $ARGV[0], "\n\n");
+@list=readdir(R);
+foreach $f (@list) {
+ next if $f eq "." or $f eq "..";
+ if (-f $f) {
+  print "  |--".$f." "x(30-length($f))."-";
+  print "r" if (-r $f);
+  print "w" if (-w $f);
+  print "x" if (-x $f);
+  print "\t";
+  print -s $f;
+  print "\n";
+ } else {
+  print " d $f\n";
+ }
+}
+closedir R;
+
+print;

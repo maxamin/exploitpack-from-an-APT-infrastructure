@@ -1,0 +1,85 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2015
+#
+
+import os, sys, time, re
+import httplib
+
+sys.path.append('.')
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+NAME        = 'd2sec_extracturl'
+DESCRIPTION ='Tool to extract and request url from a index webpage'
+VERSION     ='0.1'
+
+DOCUMENTATION                  = {}
+DOCUMENTATION['References']    = ''
+DOCUMENTATION['Repeatability'] = 'Infinite'
+DOCUMENTATION["Notes"]         = ""
+
+PROPERTY         = {}
+PROPERTY['TYPE'] = 'Tools'
+PROPERTY['SITE'] = 'Remote'
+PROPERTY['ARCH'] = [ ["Linux"], ["Windows"], ["Solaris"], ["AIX"], ["FreeBSD"], ["MacOSX"], ["HP-UX"] ]
+
+class theexploit(tcpexploit):
+  def __init__(self):
+    tcpexploit.__init__(self)        
+    self.name = NAME
+    self.host = ""
+    self.port = 80
+    self.vhost = self.host
+
+  def getArgs(self):
+    self.host = self.target.interface
+    self.port = int(self.argsDict.get('port',self.port))
+    self.vhost = self.argsDict.get("vhost",self.vhost)
+
+  def _request(self, url):
+    r = None
+    try:
+      import requests
+      r = requests.get(url=url)
+    except Exception, e:
+      self.log('[D2] Error: %s' % e)
+      return None
+    return r
+
+
+  def run(self):
+    nfo = []
+    if self.getArgs():
+      self.setInfo('[D2] %s attacking %s:%d - done (failed)' % (NAME,self.host,self.port))
+      return 0
+    self.log('[D2] %s running against %s:%d'%(NAME,self.host,self.port))
+    self.setInfo('[D2] %s attacking %s:%d - running'%(NAME,self.host,self.port))
+    index = self._request('http://%s' % self.vhost)
+    if index:
+      urls = re.findall(r'href=[\'"]?([^\'" >]+)', index.text)
+      if urls:
+        for url in urls:
+          if url[0] == '#':
+            continue
+          if 'http' not in url:
+            url = 'http://%s/%s' % (self.vhost, url)
+          if url not in nfo: nfo.append(url)
+    for url in nfo:
+      data = self._request(url)
+      self.log('[%d] %s' % (data.status_code, url))
+    self.setInfo('[D2] %s attacking %s:%d - done (success)' % (NAME,self.host,self.port))
+    return 1
+
+  def usage(self):
+    print 'Usage: %s -t host -p port -O https:[0|1] -O vhost:url' % (sys.argv[0])
+    sys.exit(0)
+
+if __name__=='__main__':
+  app = theexploit()
+  ret = standard_callback_commandline(app)

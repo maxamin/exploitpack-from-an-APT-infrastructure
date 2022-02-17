@@ -1,0 +1,54 @@
+VAASeline: VNC Attack Automation Suite
+(Rich Smith 2009 - rich [-at-] immunityinc.com)
+http://www.immunityinc.com/resources-freesoftware.shtml
+
+About:
+---------------
+VAASeline is an implementation of a technique by which a Remote Procedure Call (RPC) mechanism
+can be set up over the Remote FrameBuffer (RFB) protocol upon which VNC relies. The technique
+allows arbitrary actions to be scripted against a target running a VNC server without requiring
+user interaction.
+
+This technique was first presented at BlackHat EU 2009.
+
+This tarball include a Python module (VAASeline.py) which implements the technique in an easy
+to use way. It also includes a demo program to show off how to use the VAASeline module, as 
+well as a specific implemenation of some actions that VAASeline can be used to construct
+(ApplyVAASeline.py and cb_mon.vbs).
+
+Pre-requisites:
+---------------
+VAASeline using some other libraries to do bits an pieces of the RFB protocol, VAASeline concerns itself with implementing a RPC control channel over RFB not with the setting up of the initial RFB connection in the first place.
+
+The libraries can be found at:
+http://www.unixuser.org/~euske/vnc2swf/changes.html#old
+
+VAASeline requires version: 0.6.4 - old I know, but whatever - it does what we need very well.
+(http://www.unixuser.org/~euske/vnc2swf/pyvnc2swf-0.9.5.tar.gz)
+https://web.archive.org/web/20051025035824/http://www.unixuser.org/~euske/vnc2swf/pyvnc2swf-0.6.4.tar.gz
+
+Requires:
+rfb.py
+cripple_des.py
+image.py
+
+Copy to the libs subdir of VAASeline. Don't forget to thank Euske for his great work with pyvnc2swf :)
+
+Usage:
+-----------------
+run `python ./vaaseline-demo.py <ip of VNC server>`
+
+and a little demo of echoing, running a command (calc.exe) and uploading and executing a binary
+will be run. 
+NOTE: By deafult the binary that is attempted to be uploaded is 'uploadme.exe'
+
+VAASeline is really meant as a library on top of which to implement your own functionality. The
+demo program is just an example of how this can be achieved.
+
+More info:
+------------------
+For the paper and presentation given about the module and the technique in general, go to:
+http://www.immunityinc.com/resources-freesoftware.shtml
+or
+http://www.blackhat.com/html/bh-europe-09/bh-eu-09-speakers.html#Smith
+

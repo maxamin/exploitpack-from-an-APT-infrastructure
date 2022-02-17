@@ -1,0 +1,68 @@
+########################################################################
+#                       *CANVAS Release 6.78*                          #
+########################################################################
+
+*Date*: 30 March 2012
+
+*Version*: 6.78 ("5.25")
+
+*Download URL*: https://canvas.immunityinc.com/cgi-bin/getcanvas.py
+
+*Release Notes*:
+
+Our new module for this release is java_AtomicReferenceArray 
+(CVE-2012-0507) which has been available in CANVAS early updates
+(https://www.immunityinc.com/ceu-index.shtml) since March 7.
+
+It is a heavy-hitting exploit that affects a broad spectrum of
+Java versions and will be extremely useful in a lot of penetration
+testing assignments. Immunity's AlexM did a video demonstration
+a while back which can be seen here: 
+
+http://partners.immunityinc.com/movies/java_AtomicRefArr.mov
+
+Moreover, we include up to date documentation for our recently
+introduced ARM MOSDEF engine, ClientD bugfixes for NAT interfaces
+and, last but not least, HTTP/HTTPS callback support for
+BuildMOSDEFDLL.
+
+==Changes==
+
+o ARM Documentation
+
+o Improvements to BuildMOSDEFDLL (HTTP/HTTPS callback support)
+
+o ClientD updated to work better with NAT interfaces
+
+o Updates to keylog
+
+o Reliability updates to mosdefmigrate/processinject/injectdll
+
+
+==New Modules==
+
+o java_AtomicReferenceArray (Type Confusion Sandbox Bypass)
+
+
+*Forum*
+
+Still at https://forum.immunityinc.com/ . Useful for all your many questions!
+
+*CANVAS Tips 'n' Tricks*:
+
+The new HTTPS BuildMOSDEFDLL support can be used in order to establish an encrypted
+link between a MOSDEF process and CANVAS. CANVAS also supports encrypted executable
+trojans and we have had great success using them in order to evade various AV solutions.
+
+A new video that demonstrates these features has been posted at:
+http://partners.immunityinc.com/movies/CANVAS-678.mov
+
+*Links*:
+
+Support email      : support@immunityinc.com
+Sales support      : sales@immunityinc.com
+Support/Sales phone: +1 786-220-0600
+
+
+########################################################################
+########################################################################

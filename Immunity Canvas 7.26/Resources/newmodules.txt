@@ -1,0 +1,5 @@
+SMBGHOST
+smbghost_lpe
+ssrs_viewstate_rce
+owa_rce
+menu_confusion_lpe

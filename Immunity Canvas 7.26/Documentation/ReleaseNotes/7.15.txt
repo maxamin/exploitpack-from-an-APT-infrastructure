@@ -1,0 +1,65 @@
+########################################################################
+#                       *CANVAS Release 7.15*                          #
+########################################################################
+
+*Date*: 30 Aug 2017
+
+*Version*: 7.15
+
+*Download URL*: https://canvas.immunityinc.com/getcanvas
+
+*Release video*: https://vimeo.com/230504167
+
+*Release Notes*:
+
+In this CANVAS release we are bringing you 5 new modules and bugfixes.
+
+Our new modules include the smbloris module, an exploit targeting SAMBA
+4.x, two web exploits targeting Jenkins and VehicleWorkshop, and an exploit for
+the Windows Shell Link Vulnerability (CVE-2017-8464).
+
+
+==Changes==
+
+o WiFi_Key_dumper Linux support
+
+o Add configurable debug logging to Java MOSDEF
+
+o Add ability to specify your own SSL version in Spike
+
+o Add ability to convert screenshots to BMP (Linux)
+
+o Fixes in DLL callbacks (Windows)
+
+==New Modules==
+
+o smbloris
+
+o samba_is_known_pipename (CVE-2017-7494)
+
+o jenkins_xstream_rce (CVE-2017-2068)
+
+o special_lnk (CVE-2017-8464)
+
+o vehicleworkshop_upload
+
+
+*CANVAS Tips 'n' Tricks*:
+
+Did you know that CANVAS comes with the pty_shell module? When running
+CANVAS on Linux you can get a pseudo terminal on connected Linux nodes
+using only the standard dependencies CANVAS requires.
+
+1) Highlight the Linux node in the CANVAS node manager window
+2) Search for and run the pty_shell module via the module listing
+3) Check in on the logging tab to watch module progress
+4) When you see this error message: no gnome-vte installed, falling back
+to commandline handler your PTY is ready
+5) Select the shell window you spawned CANVAS from and you should see a
+"$" or "#", this window now acts as your PTY! You can use vi/vim or run
+other interactive non-curses binaries.
+6) When you're done just type exit!
+
+
+########################################################################
+########################################################################

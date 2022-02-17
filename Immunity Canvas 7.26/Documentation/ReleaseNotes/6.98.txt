@@ -1,0 +1,58 @@
+########################################################################
+#                       *CANVAS Release 6.98*                          #
+########################################################################
+
+*Date*: 30 January 2015
+
+*Version*: 6.98
+
+*Download URL*: https://canvas.immunityinc.com/cgi-bin/getcanvas.py
+
+*Release Notes*:
+
+For our first 2015 release of CANVAS we are bringing you 3 new modules and a new
+Kerberos library needed for our ms14_068 exploit. We also improved our smb library
+and fixed the BuildCallbackTrojan module for MacOS X.
+
+Our new modules include a local privilege escalation for MacOS X Mavericks (all versions),
+the infamous ms14_068 privilege escalation and a web exploit for a WordPress plugin
+(WP-EasyCart).
+
+Please note that from this release there is a new dependency for CANVAS:
+pyasn1
+
+Be sure to install it so that you will be able to run our latest ms14_068!
+
+==Changes==
+
+o BuildCallbackTrojan MacOS X fix
+
+o New kerberos library
+
+o smb library fixes
+
+o facedetection module removed (was deprecated)
+
+==New Modules==
+
+o osx_parsekeymapping (IOHIKeyboardMapper::parseKeyMapping local privilege escalation)
+
+o ms14_068 (kerberos privilege escalation)
+
+o wpeasycart_rce (WP-EasyCart Post-Auth file upload)
+
+
+*CANVAS Tips 'n' Tricks*:
+
+Did you know that we brought back our popular CANVAS + Nessus bundle?!
+Feel free to contact us at support@immunityinc.com for more details.
+
+*Links*:
+
+Support email       : support@immunityinc.com
+Sales support       : sales@immunityinc.com
+Support/Sales phone : +1 786-220-0600
+
+
+########################################################################
+########################################################################

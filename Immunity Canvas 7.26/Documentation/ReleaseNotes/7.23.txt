@@ -1,0 +1,81 @@
+########################################################################
+#                       *CANVAS Release 7.23*                          #
+########################################################################
+
+*Date*: 23 July 2019
+
+*Version*: 7.23
+
+*Download URL*: https://canvas.immunityinc.com/getcanvas
+
+*Release video*: https://vimeo.com/349688256/aecbf5cac5
+
+*Release Notes*:
+
+In this CANVAS release we are bringing you 9 new modules and bugfixes.
+
+Our new modules include an initial implementation of BLUEKEEP targeting Windows 7 SP1 32bit,
+one RCE targeting Exim 4.85+, four LPE targeting Windows and three modules
+for listing and executing commands on VirtualBox guests.
+
+We are also pushing a lot of bugfixes and updates for old modules to support
+Windows 64bit.
+
+
+==Changes==
+
+o MOSDEF fix (handling of 64bit integer comparisons)
+
+o AV evasion fix (avoid visible UI when executed)
+
+o VirtualBox Management Library (interact with guests from host via Python)
+ o Found in libs/virtualization
+
+o Commands updated to support 64bit
+ o wlanlist
+ o converttopowershell
+ o runpowershellscript
+ o powershellcommand
+ o wmi_persistence
+ o kerberos_ticket_list
+ o info_sessions
+ o get_dnscache
+ o diskspider
+ o deluser
+ o WiFi_Key_Dumper
+ o GetAddressBookInfo
+ o GetBrowserInfo
+ o domainname
+ o LogonUser
+ o arpscan
+
+==New Modules==
+
+o BLUEKEEP (CVE-2019-0708)
+
+o dde_closehandle_lpe (CVE-2019-0803)
+
+o exim_expansion_rce (CVE-2019-10149)
+
+o alpc_takeover_lpe (CVE-2019-0841)
+
+o destroyclass_uaf_lpe (CVE-2019-0623)
+
+o setwindowfnid_lpe (CVE-2018-8453)
+
+o vbox_vm_exec_cmd
+
+o vbox_vm_keystroke_injection
+
+o vbox_list_vms
+
+
+*CANVAS Tips 'n' Tricks*:
+
+vbox_vm_keystroke_injection can give you access to a VirtualBox guest without
+requiring credentials! Be sure to check it out, it is based on our new VirtualBox
+Management library that allows you to interact with VBox guests from hosts via
+Python.
+
+########################################################################
+########################################################################

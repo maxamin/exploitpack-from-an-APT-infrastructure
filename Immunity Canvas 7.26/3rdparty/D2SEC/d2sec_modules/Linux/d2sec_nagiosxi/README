@@ -1,0 +1,28 @@
+D2 Exploitation Pack
+====================
+
+Copyright (c) 2007-2011 DSquare Security, LLC
+
+License information
+-------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Local exploit
+---------------
+
+NagiosXI <= 2011R1.2 Privileges Escalation Vulnerability
+Tested on CentOS 5.6 
+
+
+How to use the exploit
+------------------------
+
+$ ./d2sec_nagiosxi
+SETUID ROOT OK
+RESETTING PERMS
+# 
+
+Don't forget to delete /tmp/chmod binary.

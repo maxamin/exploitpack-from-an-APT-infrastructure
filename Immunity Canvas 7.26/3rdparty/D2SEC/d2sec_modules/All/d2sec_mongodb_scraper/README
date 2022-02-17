@@ -1,0 +1,39 @@
+D2 Exploitation Pack
+====================
+
+Copyright (c) 2007-2015 DSquare Security, LLC
+
+
+License information
+-------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Description
+---------------
+
+This tool list and export databases from a MongoDB server 
+
+$ python d2sec_mongodb_scraper.py -h
+usage: d2sec_mongodb_scraper.py [-h] [-l] [-e] [-d DATABASE] [-c COLLECTION]
+                                [-t TARGETS]
+
+d2sec_mongodb_scraper.py - Tools to list and export MongoDB databases
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -l, --list            To list databases from a mongodb server
+  -e, --export          To export a databse with a specific collection
+  -d DATABASE, --database DATABASE
+                        The database you want to export
+  -c COLLECTION, --collection COLLECTION
+                        The collection you want to export
+  -t TARGETS, --targets TARGETS
+                        The target(s) you want to scan (192.168.0.1)
+
+For example:
+$ python d2sec_mongodb_scraper.py -l -t 192.168.8.0/24
+$ python d2sec_mongodb_scraper.py -t 192.168.8.1 -e -d db -c coll
+

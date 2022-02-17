@@ -1,0 +1,29 @@
+D2 Exploitation Pack
+
+Copyright (c) 2007-2016 DSquare Security, LLC
+All rights reserved.
+
+License information
+---------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Description
+-------------
+
+d2sec_gitlist_cache.sh and d2sec_gitlist_rce.py are two scripts to exploit
+CVE-2014-4511 vulnerability.
+
+d2sec_gitlist_cache.sh is useful to check if the cache is enabled. The cache can be
+used to upload a malicious php script with d2sec_gitlist_rce.py.
+
+d2sec_gitlist_rce.py exploits the RCE vulnerability.
+
+
+Usage
+------
+
+$ d2sec_gitlist_cache.sh http://www.victim.com
+$ d2sec_gitlist_rce.py http://www.victim.com id

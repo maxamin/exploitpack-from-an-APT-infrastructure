@@ -1,0 +1,94 @@
+########################################################################
+#                       *CANVAS Release 6.83*                          #
+########################################################################
+
+*Date*: 9 November 2012
+
+*Version*: 6.83 ("Tower")
+
+*Download URL*: https://canvas.immunityinc.com/cgi-bin/getcanvas.py
+
+*Release Notes*:
+
+We have a lot of new modules for this release. We start with clientsides
+for IE (ms12_037, ie_execCommand), a clientside for Adobe Flash 
+and a local privilege escalation exploit for Windows x64 (ms12_042).
+
+Moreover, we include remote exploits for Microsoft SharePoint Server
+and EMC networker and two remote recon modules for the DELL Chassis
+web interface.
+
+We conclude with a utility module (parallel_portscan) and a collection
+of local modules (info_sessions, wlanlist, passwordhints) that are handy
+to have in your toolkit.
+
+
+==Changes==
+
+o Major CANVAS core updates to support new Strategic framework
+
+o New JAVA MOSDEF implementation supports HTTP(S) MOSDEF callbacks
+
+o java_deserialize2, java_forName_getField, java_AtomicReferenceArray
+  updated to use it
+
+o New module types: localcommand and utility
+
+o Bugfixes to JavaNode
+
+
+==New Modules==
+
+o ms12_042 (MS12-042 Privilege Escalation Exploit)
+
+o ie_execCommand (IE execCommand() Use-After-Free exploit)
+
+o ms12_037 (MS12-037 Microsoft Internet Explorer Fixed Table Col Span Heap Overflow)
+
+o adobe_flash_otf_parsing (Adobe Flash Player 11.3.300.2x integer overflow font parsing code execution)
+
+o emc_networkerFS (EMC Networker format string exploitation)
+
+o CVE_2010_3964 (Microsoft SharePoint Server 2007 Arbitrary File Upload RCE)
+
+o dellchassis (DELL Web Interface Scanner)
+
+o delldrac (DELL Web Interface Scanner)
+
+o passwordhints (List user password hints)
+
+o info_sessions (List information about all active sessions)
+
+o wlanlist (List wireless network information)
+
+o parallel_portscan (Threaded TCP portscanner)
+
+
+*Forum*
+
+Still at https://forum.immunityinc.com/ . Useful for all your many questions!
+
+*CANVAS Tips 'n' Tricks*:
+
+This release includes a new Java MOSDEF implementation that enables the
+use of HTTP/HTTPS payloads. This can be very useful when your targets
+are in controlled/corporate environments that enforce the use of proxies.
+The new HTTP payloads will transparently use system-configured proxies
+(if present) giving you a point of entry into these type of networks.
+
+We have updated three of our latest Java modules to work with the
+new payloads: java_deserialize2, java_AtomicReferenceArray, java_forName_getField.
+
+A demo movie illustrating some of this month's new features can also
+be found here: http://partners.immunityinc.com/movies/canvasdemonov.mp4
+
+
+*Links*:
+
+Support email      : support@immunityinc.com
+Sales support      : sales@immunityinc.com
+Support/Sales phone: +1 786-220-0600
+
+
+########################################################################
+########################################################################

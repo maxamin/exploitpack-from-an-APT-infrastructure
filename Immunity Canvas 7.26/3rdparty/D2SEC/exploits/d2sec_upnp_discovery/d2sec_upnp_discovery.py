@@ -1,0 +1,113 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2016
+#
+
+###
+# STD Modules
+###
+import sys, time, os, re
+from socket import *
+
+sys.path.append(".")
+sys.path.append("../../")
+
+###
+# CANVAS Modules
+###
+import canvasengine
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+###
+# Description
+###
+NAME = "d2sec_upnp_discovery.py"
+VERSION = "0.2"
+DESCRIPTION = "UPnP locations discovery tool"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Tools"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [["All"]]
+
+DOCUMENTATION = {}
+DOCUMENTATION["Versions Affected"] = ""
+DOCUMENTATION["Date public"] = ""
+DOCUMENTATION["References"] = ""
+DOCUMENTATION["CVE Name"] = ""
+DOCUMENTATION["CVE Url"] = ""
+DOCUMENTATION["Notes"] = "This tool does a multicast request to discover UPnP devices. So use 239.255.255.250 as target argument." 
+
+###
+# Description
+###
+class theexploit (tcpexploit):
+    
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.name = NAME
+    self.default_ip = '239.255.255.250'
+    self.default_port = 1900
+    self.locations = []
+
+  def parse_ssdp_info(self, data):
+    location_regex = re.compile("location: (.+)\r\n", re.IGNORECASE)
+    location_result = location_regex.search(data.decode('ASCII'))
+    if location_result and (location_result.group(1) in self.locations) == False:
+      self.locations.append(location_result.group(1))
+
+  def send(self, data, sock):
+    try:
+      sock.sendto(data, (self.default_ip, self.default_port))
+      return True
+    except Exception, e:
+      self.log('[D2] %s' % e)
+      return False
+
+  def create_new_listener(self):
+    try:
+      sock = self.getudpsock()
+      sock.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
+      sock.bind(('', self.default_port))
+      return sock
+    except Exception, e:
+      self.log('[D2] %s' % e)
+      return False
+
+  def run(self):
+    self.setInfo('[D2] %s ' % NAME)
+    request = ('M-SEARCH * HTTP/1.1\r\n' +
+                    'HOST: %s:%sd\r\n' +
+                    'MAN: "ssdp:discover"\r\n' +
+                    'MX: 2\r\n' +
+                    'ST: ssdp:all\r\n' +
+                    '\r\n') % (self.default_ip, self.default_port)
+    self.log('[D2] UPNP locations discovery (wait 2min)...')
+    sock = self.create_new_listener()
+    if sock == False:
+      self.log('[D2] Failed to bind port %d' % self.default_port)
+      self.setInfo('[D2] %s - failed' % NAME)
+      return 0
+    self.send(request, sock)
+    sock.settimeout(3)
+    while True:
+      try:
+        self.parse_ssdp_info(sock.recv(1024))
+      except Exception, e:
+        self.log('[D2] Halted : %s' % e)
+        break
+    self.log('[D2] %s locations found...' % len(self.locations))
+    for location in self.locations:
+      self.log('\t[+] %s' % location) 
+    self.setInfo('[D2] %s - done' % NAME)
+    return 1
+
+if __name__ == '__main__':
+  print "Running CANVAS %s v %s" % (NAME,VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

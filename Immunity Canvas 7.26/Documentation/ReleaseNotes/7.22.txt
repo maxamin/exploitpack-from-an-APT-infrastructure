@@ -1,0 +1,62 @@
+########################################################################
+#                       *CANVAS Release 7.22*                          #
+########################################################################
+
+*Date*: 15 April 2019
+
+*Version*: 7.22
+
+*Download URL*: https://canvas.immunityinc.com/getcanvas
+
+*Video URL*: https://vimeo.com/319506545/700df0f25d
+
+*Release Notes*:
+
+In this CANVAS release we are bringing you 9 new modules and bugfixes.
+
+Our new modules include the SPECTRE exploit for Windows, two privilege
+escalation modules targeting Windows and Linux (Ubuntu), four remote code execution
+modules targeting Drupal, ColdFusion, Struts 2 and Exim, and two command modules
+able to retrieve a domain name (domainname) and credentials (getwindowscredentials)
+for a given Windows target.
+
+
+==Changes==
+
+o CommandLineExecuter fixes
+
+o linux installer fixes (add missing components)
+
+o win32 mosdef fixes (cleanup on disconnection)
+
+o AddNullShare improvements
+
+o AddUser 64bit support
+
+o jenkins_xstream_rce fixes
+
+o FileSystem Browser fixes
+
+==New Modules==
+
+o spectre_sam_leak (CVE-2017-5753)
+
+o setimeinfoex_lpe (CVE-2018-8120)
+
+o snapd_uid_overwrite (CVE-2019-7304)
+
+o drupal_services_rce (CVE-2019-6340)
+
+o coldfusion_rce (CVE-2018-15957)
+
+o struts2_default_action_mapper (CVE-2013-2251)
+
+o exim_heap_overflow (CVE-2018-6789)
+
+o getwindowscredentials
+
+o domainname
+
+
+########################################################################
+########################################################################

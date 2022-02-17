@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
+<!--Generated with glade3 3.4.5 on Wed Sep 30 13:59:17 2009 -->
+<glade-interface>
+  <widget class="GtkWindow" id="loader">
+    <property name="type_hint">GDK_WINDOW_TYPE_HINT_SPLASHSCREEN</property>
+    <property name="skip_taskbar_hint">True</property>
+    <property name="skip_pager_hint">True</property>
+    <property name="decorated">False</property>
+    <child>
+      <widget class="GtkVBox" id="vbox1">
+        <property name="visible">True</property>
+        <child>
+          <widget class="GtkImage" id="image1">
+            <property name="visible">True</property>
+            <property name="pixbuf">pixmaps/spray-canvas-immunity.png</property>
+          </widget>
+        </child>
+        <child>
+          <widget class="GtkProgressBar" id="progress_bar">
+            <property name="visible">True</property>
+          </widget>
+          <packing>
+            <property name="expand">False</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </widget>
+    </child>
+  </widget>
+</glade-interface>

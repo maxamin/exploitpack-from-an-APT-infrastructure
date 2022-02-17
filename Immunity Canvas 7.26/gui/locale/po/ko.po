@@ -1,0 +1,3199 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-03-04 13:27-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: canvasgui2_default.glade:524 canvasgui2_default.glade:537
+#: canvasgui2_default.glade:947 canvasgui2_default.glade:991
+#: ../canvasgui2_default.glade:524 ../canvasgui2_default.glade:537
+#: ../canvasgui2_default.glade:947 ../canvasgui2_default.glade:991
+msgid " "
+msgstr ""
+
+#: canvasgui2_default.glade:1979 ../canvasgui2_default.glade:1979
+msgid " Target(s) "
+msgstr "대상 (들)"
+
+#: canvasgui2_default.glade:752 ../canvasgui2_default.glade:752
+msgid "(Gets Current Working Directory)"
+msgstr "(현재 작업 디렉토리) 만든다"
+
+#: canvasgui2_default.glade:738 ../canvasgui2_default.glade:738
+msgid "."
+msgstr "."
+
+#: canvasgui2_default.glade:1418 ../canvasgui2_default.glade:1418
+#: ../canvasgui2_default.glade:405
+msgid "0.0.0.0"
+msgstr "0.0.0.0"
+
+#: canvasgui2_default.glade:2477 ../canvasgui2_default.glade:2477
+#: ../canvasgui2_default.glade:2130
+msgid "<b>Canvas Log</b>"
+msgstr "<b>캔버스 로그인</b>"
+
+#: canvasgui2_default.glade:2447 ../canvasgui2_default.glade:2447
+#: ../canvasgui2_default.glade:2071
+msgid "<b>Current Status</b>"
+msgstr "<b>현재 상태</b>"
+
+#: canvasgui2_default.glade:2548 ../canvasgui2_default.glade:2548
+#: ../canvasgui2_default.glade:2253
+msgid "<b>Data View</b>"
+msgstr "<b>데이터보기</b>"
+
+#: canvasgui2_default.glade:2508 ../canvasgui2_default.glade:2508
+#: ../canvasgui2_default.glade:2189
+msgid "<b>Debug Log</b>"
+msgstr "<b>디버그 로그</b>"
+
+#: canvasgui2_default.glade:2258 ../canvasgui2_default.glade:2258
+#: ../canvasgui2_default.glade:1994
+msgid "<b>Exploit Description</b>"
+msgstr "<b>공격에 대한 설명</b>"
+
+#: canvasgui2_default.glade:2675 ../canvasgui2_default.glade:2675
+msgid "<b>Host to Add:</b>"
+msgstr "<b>호스트를 추가하려면 :</b>"
+
+#: canvasgui2_default.glade:1285 ../canvasgui2_default.glade:1285
+msgid "<b>HostName or IP:</b>"
+msgstr "<b>호스트 이름 또는 IP :</b>"
+
+#: canvasgui2_default.glade:1065 canvasgui2_default.glade:3183
+#: ../canvasgui2_default.glade:1065 ../canvasgui2_default.glade:3183
+#: ../canvasgui2_default.glade:3052
+msgid "<b>Listening Port:</b>"
+msgstr "<b>듣기 포트 :</b>"
+
+#: canvasgui2_default.glade:2226 ../canvasgui2_default.glade:2226
+#: ../canvasgui2_default.glade:1935
+msgid "<b>Node Tree</b>"
+msgstr "<b>노드 트리</b>"
+
+#: canvasgui2_default.glade:2399 ../canvasgui2_default.glade:2399
+msgid "<b>Search Modules</b>"
+msgstr "<b>검색 모듈</b>"
+
+#: canvasgui2_default.glade:2582 ../canvasgui2_default.glade:2582
+#: ../canvasgui2_default.glade:2309
+msgid "<b>Set Covertness:</b>"
+msgstr "<b>설정 Covertness :</b>"
+
+#: canvasgui2_default.glade:3059 ../canvasgui2_default.glade:3059
+#: ../canvasgui2_default.glade:2870
+msgid "<b>Third Party Exploit Pack Information</b>"
+msgstr "<b>제 3 자 공격 팩 정보</b>"
+
+#: canvasgui2_default.glade:1080 canvasgui2_default.glade:3198
+#: ../canvasgui2_default.glade:1080 ../canvasgui2_default.glade:3198
+#: ../canvasgui2_default.glade:3024
+msgid "<b>Type of Listener:</b>"
+msgstr "<b>리스너의 종류 :</b>"
+
+#: canvasgui2_default.glade:1271 canvasgui2_default.glade:2688
+#: ../canvasgui2_default.glade:1271 ../canvasgui2_default.glade:2688
+msgid "<b>Type of OS:</b>"
+msgstr "<b>OS의 종류 :</b>"
+
+#: canvasgui2_default.glade:1338 ../canvasgui2_default.glade:1338
+#: ../canvasgui2_default.glade:140
+msgid "Add New Interface"
+msgstr "새 인터페이스 추가"
+
+#: canvasgui2_default.glade:1908 ../canvasgui2_default.glade:1908
+#: ../canvasgui2_default.glade:968
+msgid "Add Target Host"
+msgstr "대상 호스트 추가"
+
+#: canvasgui2_default.glade:174 ../canvasgui2_default.glade:174
+msgid "Add To Targets"
+msgstr "목표 추가"
+
+#: canvasgui2_default.glade:2631 ../canvasgui2_default.glade:2631
+msgid "Add a Host"
+msgstr "호스트 추가"
+
+#: canvasgui2_default.glade:1227 ../canvasgui2_default.glade:1227
+msgid "Add a host"
+msgstr "호스트 추가"
+
+#: canvasgui2_default.glade:2108 ../canvasgui2_default.glade:2108
+#: ../canvasgui2_default.glade:1743
+msgid "Add to Target"
+msgstr "대상에 추가"
+
+#: canvasgui2_default.glade:2783 ../canvasgui2_default.glade:2783
+#: ../canvasgui2_default.glade:2427
+msgid "All commands to be ran are located here"
+msgstr "모든 명령이 이곳에 위치해있습니다 쳤 수"
+
+#: canvasgui2_default.glade:354 ../canvasgui2_default.glade:354
+msgid "As Covert As Possible"
+msgstr "마찬가지로 잠복 가능성이"
+
+#: canvasgui2_default.glade:381 ../canvasgui2_default.glade:381
+msgid "As Reliable as Possible"
+msgstr "가능 한한 안정"
+
+#: canvasgui2_default.glade:684 canvasgui2_default.glade:2815
+#: ../canvasgui2_default.glade:684 ../canvasgui2_default.glade:2815
+#: ../canvasgui2_default.glade:2491
+msgid "Browse"
+msgstr "찾아보기"
+
+#: canvasgui2_default.glade:3032 ../canvasgui2_default.glade:3032
+#: ../canvasgui2_default.glade:2803
+msgid "CANVAS Exploit Packs"
+msgstr "캔버스에 익스플로잇 팩"
+
+#: canvasgui2_default.glade:261 ../canvasgui2_default.glade:261
+msgid "CANVAS Log"
+msgstr "캔버스 로그인"
+
+#: canvasgui2_default.glade:3049 ../canvasgui2_default.glade:3049
+#: ../canvasgui2_default.glade:2847
+msgid ""
+"CANVAS Professional has loaded the third party exploit packs listed below.\n"
+"These exploit packs add extra features and exploits to CANVAS Professional, "
+"but are not provided or supported by Immunity Inc. Use of third party "
+"exploit packs is subject to the license of the exploit pack, so be sure to "
+"be familiar with these terms before using third party functionality. "
+msgstr ""
+"캔버스 프로 페셔널 제 3 자에게 이용 팩을 아래 나열된로드하고있다.\n"
+"이러한 팩을 이용, 추가 기능과 캔버스를 전문으로 악용 추가"
+"하지만 제공되지 않았거나 내성 Inc.를 사용하여 타사에 의해 지원"
+"팩을 이용, 그래서 반드시 팩을 이용의 라이센스에 따라 달라질 수있습니다"
+"이러한 용어와 제 3 자의 기능을 사용하기 전에 알고 있어야."
+
+#: canvasgui2_default.glade:2208 ../canvasgui2_default.glade:2208
+#: ../canvasgui2_default.glade:1856
+msgid "CANVAS World Map"
+msgstr "캔버스 세계지도"
+
+#: canvasgui2_default.glade:1675 ../canvasgui2_default.glade:1675
+msgid "CANVAS World Service"
+msgstr "캔버스에 월드 서비스"
+
+#: canvasgui2_default.glade:1962 ../canvasgui2_default.glade:1962
+msgid "Callback "
+msgstr "콜백"
+
+#: canvasgui2_default.glade:2877 ../canvasgui2_default.glade:2877
+#: ../canvasgui2_default.glade:2585
+msgid "Change Directory"
+msgstr "디렉토리 변경"
+
+#: canvasgui2_default.glade:709 ../canvasgui2_default.glade:709
+msgid "Change the current directory"
+msgstr "현재 디렉토리 변경"
+
+#: canvasgui2_default.glade:2183 ../canvasgui2_default.glade:2183
+#: ../canvasgui2_default.glade:1813
+msgid "Classic Node View"
+msgstr "클래식 노드보기"
+
+#: canvasgui2_default.glade:368 ../canvasgui2_default.glade:368
+msgid "Covertness Bar"
+msgstr "Covertness 바"
+
+#: canvasgui2_default.glade:1011 canvasgui2_default.glade:3115
+#: ../canvasgui2_default.glade:1011 ../canvasgui2_default.glade:3115
+#: ../canvasgui2_default.glade:2952
+msgid "Create A New Listener"
+msgstr "새 수신기를 만듭니다"
+
+#: canvasgui2_default.glade:24 ../canvasgui2_default.glade:24
+msgid "Current Callback IP"
+msgstr "현재 콜백의 IP"
+
+#: canvasgui2_default.glade:287 ../canvasgui2_default.glade:287
+msgid "Debug Log"
+msgstr "디버그 로그"
+
+#: canvasgui2_default.glade:783 ../canvasgui2_default.glade:783
+msgid "Delete a file"
+msgstr "파일 삭제"
+
+#: canvasgui2_default.glade:596 ../canvasgui2_default.glade:596
+msgid "Dir"
+msgstr "만해"
+
+#: canvasgui2_default.glade:660 ../canvasgui2_default.glade:660
+#: ../canvasgui2_default.glade:3783
+msgid "Download"
+msgstr "다운로드"
+
+#: canvasgui2_default.glade:2855 ../canvasgui2_default.glade:2855
+#: ../canvasgui2_default.glade:2553
+msgid "Download a file"
+msgstr "다운로드 파일"
+
+#: canvasgui2_default.glade:497 ../canvasgui2_default.glade:497
+msgid "Download a file from the remote server (source file)"
+msgstr "다운로드 원격 서버 (소스 파일)에서 파일을"
+
+#: canvasgui2_default.glade:1444 ../canvasgui2_default.glade:1444
+#: ../canvasgui2_default.glade:352
+msgid "End Port"
+msgstr "끝 포트"
+
+#: canvasgui2_default.glade:1855 ../canvasgui2_default.glade:1855
+#: ../canvasgui2_default.glade:831
+msgid "Exit CANVAS GUI"
+msgstr "종료 캔버스의 GUI"
+
+#: canvasgui2_default.glade:1854 ../canvasgui2_default.glade:1854
+#: ../canvasgui2_default.glade:830
+msgid "Exits CANVAS GUI"
+msgstr "종료 캔버스의 GUI"
+
+#: canvasgui2_default.glade:3251 ../canvasgui2_default.glade:3251
+#: ../canvasgui2_default.glade:3158
+msgid "Filesystem Browser"
+msgstr "파일 시스템 브라우저"
+
+#: canvasgui2_default.glade:2310 ../canvasgui2_default.glade:2310
+#: ../canvasgui2_default.glade:1475
+msgid "GO"
+msgstr "GO"
+
+#: canvasgui2_default.glade:2899 ../canvasgui2_default.glade:2899
+#: ../canvasgui2_default.glade:2617
+msgid "Get Directory Listing"
+msgstr "디렉토리 목록을 가져오지"
+
+#: canvasgui2_default.glade:737 ../canvasgui2_default.glade:737
+msgid "Get directory listing"
+msgstr "디렉토리 목록을 가져오지"
+
+#: canvasgui2_default.glade:797 canvasgui2_default.glade:815
+#: canvasgui2_default.glade:833 canvasgui2_default.glade:851
+#: canvasgui2_default.glade:869 canvasgui2_default.glade:887
+#: canvasgui2_default.glade:905 canvasgui2_default.glade:923
+#: ../canvasgui2_default.glade:797 ../canvasgui2_default.glade:815
+#: ../canvasgui2_default.glade:833 ../canvasgui2_default.glade:851
+#: ../canvasgui2_default.glade:869 ../canvasgui2_default.glade:887
+#: ../canvasgui2_default.glade:905 ../canvasgui2_default.glade:923
+msgid "Go"
+msgstr "가다"
+
+#: canvasgui2_default.glade:1921 ../canvasgui2_default.glade:1921
+#: ../canvasgui2_default.glade:986
+msgid "Halt Current Exploit"
+msgstr "정지 전류 익스플로잇"
+
+#: canvasgui2_default.glade:1757 ../canvasgui2_default.glade:1757
+msgid "Host"
+msgstr "주최자"
+
+#: canvasgui2_default.glade:1497 ../canvasgui2_default.glade:1497
+#: ../canvasgui2_default.glade:240
+msgid "IP (external IP for NAT)"
+msgstr "NAT를위한 IP (외부 IP)"
+
+#: canvasgui2_default.glade:8 canvasgui2_default.glade:1835
+#: ../canvasgui2_default.glade:8 ../canvasgui2_default.glade:1835
+#: ../canvasgui2_default.glade:759
+msgid "Immunity CANVAS (http://www.immunityinc.com/)"
+msgstr "내성 캔버스 (http://www.immunityinc.com/)"
+
+#: canvasgui2_default.glade:1510 ../canvasgui2_default.glade:1510
+#: ../canvasgui2_default.glade:212
+msgid "Interface Name"
+msgstr "인터페이스 이름"
+
+#: canvasgui2_default.glade:115 ../canvasgui2_default.glade:115
+msgid "List of exploits and utility modules"
+msgstr "이용 및 유틸리티의 목록 모듈"
+
+#: canvasgui2_default.glade:417 canvasgui2_default.glade:2756
+#: ../canvasgui2_default.glade:417 ../canvasgui2_default.glade:2756
+#: ../canvasgui2_default.glade:2365
+msgid "Listener Shell"
+msgstr "리스너 쉘"
+
+#: canvasgui2_default.glade:3288 ../canvasgui2_default.glade:3288
+#: ../canvasgui2_default.glade:3242
+msgid "Module Log"
+msgstr "모듈 로그인"
+
+#: canvasgui2_default.glade:2068 ../canvasgui2_default.glade:2068
+#: ../canvasgui2_default.glade:1246 ../canvasgui2_default.glade:1272
+msgid "Modules"
+msgstr "모듈"
+
+#: canvasgui2_default.glade:1560 ../canvasgui2_default.glade:1560
+#: ../canvasgui2_default.glade:517
+msgid "My Screenshots"
+msgstr "내 스크린샷"
+
+#: canvasgui2_default.glade:1385 ../canvasgui2_default.glade:1385
+#: ../canvasgui2_default.glade:445
+msgid "NAT"
+msgstr "NAT를"
+
+#: canvasgui2_default.glade:1470 ../canvasgui2_default.glade:1470
+#: ../canvasgui2_default.glade:296
+msgid "NAT Interface"
+msgstr "NAT는 인터페이스"
+
+#: canvasgui2_default.glade:1484 ../canvasgui2_default.glade:1484
+#: ../canvasgui2_default.glade:268
+msgid "Netmask Bits (24 is class C)"
+msgstr "마스크 비트 (24 클래스 C)입니다"
+
+#: canvasgui2_default.glade:1149 canvasgui2_default.glade:1175
+#: ../canvasgui2_default.glade:1149 ../canvasgui2_default.glade:1175
+#: ../canvasgui2_default.glade:8 ../canvasgui2_default.glade:80
+msgid "Network Dump Filter String"
+msgstr "네트워크 덤프 필터 문자열"
+
+#: canvasgui2_default.glade:1590 ../canvasgui2_default.glade:1590
+#: ../canvasgui2_default.glade:592
+msgid "Network Dump Window"
+msgstr "네트워크 덤프 창"
+
+#: canvasgui2_default.glade:1432 ../canvasgui2_default.glade:1432
+#: ../canvasgui2_default.glade:384
+msgid "New Interface"
+msgstr "새로운 인터페이스"
+
+#: canvasgui2_default.glade:2151 ../canvasgui2_default.glade:2151
+#: ../canvasgui2_default.glade:1675
+msgid "Node Management"
+msgstr "노드 관리"
+
+#: canvasgui2_default.glade:1608 ../canvasgui2_default.glade:1608
+#: ../canvasgui2_default.glade:642
+msgid "Note to Add"
+msgstr "추가 참고 사항"
+
+#: canvasgui2_default.glade:2919 ../canvasgui2_default.glade:2919
+#: ../canvasgui2_default.glade:2646
+msgid "PWD - Gets current working Directory"
+msgstr "PWD - 현재 작업 디렉터리 되니까"
+
+#: canvasgui2_default.glade:1770 ../canvasgui2_default.glade:1770
+msgid "Password"
+msgstr "비밀 번호"
+
+#: canvasgui2_default.glade:2790 ../canvasgui2_default.glade:2790
+#: ../canvasgui2_default.glade:2447
+msgid "Pick file to upload"
+msgstr "업로드할 파일 선택"
+
+#: canvasgui2_default.glade:564 canvasgui2_default.glade:2930
+#: ../canvasgui2_default.glade:564 ../canvasgui2_default.glade:2930
+#: ../canvasgui2_default.glade:2662
+msgid "Piped Command"
+msgstr "사용한 명령"
+
+#: canvasgui2_default.glade:1744 ../canvasgui2_default.glade:1744
+msgid "Port"
+msgstr "포트"
+
+#: canvasgui2_default.glade:2331 ../canvasgui2_default.glade:2331
+#: ../canvasgui2_default.glade:1505
+msgid "Raw"
+msgstr "날 것의"
+
+#: canvasgui2_default.glade:2345 ../canvasgui2_default.glade:2345
+#: ../canvasgui2_default.glade:1524
+msgid "Regex"
+msgstr "정규식"
+
+#: canvasgui2_default.glade:1864 ../canvasgui2_default.glade:1864
+#: ../canvasgui2_default.glade:821
+msgid "Reload CANVAS Modules"
+msgstr "새로고침 캔버스 모듈"
+
+#: canvasgui2_default.glade:1863 ../canvasgui2_default.glade:1863
+#: ../canvasgui2_default.glade:820
+msgid "Reloads CANVAS Modules"
+msgstr "캔버스 다시 로드된 모듈"
+
+#: canvasgui2_default.glade:2119 ../canvasgui2_default.glade:2119
+#: ../canvasgui2_default.glade:1759
+msgid "Remove from Target"
+msgstr "제거 대상에서"
+
+#: canvasgui2_default.glade:187 ../canvasgui2_default.glade:187
+msgid "Remove from Targets"
+msgstr "목표물 제거"
+
+#: canvasgui2_default.glade:768 ../canvasgui2_default.glade:768
+msgid "Run a command and get the standard output."
+msgstr "실행 명령의 표준 출력을 얻을."
+
+#: canvasgui2_default.glade:2016 ../canvasgui2_default.glade:2016
+#: ../canvasgui2_default.glade:1161
+msgid "Screen Shots"
+msgstr "스크린 샷"
+
+#: canvasgui2_default.glade:1934 ../canvasgui2_default.glade:1934
+#: ../canvasgui2_default.glade:1004
+msgid "Set OS Configuration"
+msgstr "운영 체제 설정 구성"
+
+#: canvasgui2_default.glade:1092 canvasgui2_default.glade:3133
+#: ../canvasgui2_default.glade:1092 ../canvasgui2_default.glade:3133
+#: ../canvasgui2_default.glade:3128
+msgid "Set fromcreatethread"
+msgstr "설정 fromcreatethread"
+
+#: canvasgui2_default.glade:612 ../canvasgui2_default.glade:612
+msgid "Spawn Process"
+msgstr "산란 과정"
+
+#: canvasgui2_default.glade:2888 ../canvasgui2_default.glade:2888
+#: ../canvasgui2_default.glade:2601
+msgid "Spawn a Process"
+msgstr "산란 프로세스"
+
+#: canvasgui2_default.glade:1883 ../canvasgui2_default.glade:1883
+#: ../canvasgui2_default.glade:854
+msgid "Start New MOSDEF Listener"
+msgstr "새로 시작 MOSDEF 리스너"
+
+#: canvasgui2_default.glade:1457 ../canvasgui2_default.glade:1457
+#: ../canvasgui2_default.glade:324
+msgid "Start Port"
+msgstr "시작 포트"
+
+#: canvasgui2_default.glade:3273 ../canvasgui2_default.glade:3273
+#: ../canvasgui2_default.glade:3213
+msgid "Status Bar"
+msgstr "상태 표시줄"
+
+#: canvasgui2_default.glade:162 canvasgui2_default.glade:2097
+#: ../canvasgui2_default.glade:162 ../canvasgui2_default.glade:2097
+#: ../canvasgui2_default.glade:1727
+msgid "Target"
+msgstr "대상"
+
+#: canvasgui2_default.glade:2170 ../canvasgui2_default.glade:2170
+#: ../canvasgui2_default.glade:1782
+msgid "The information such as targets and interfaces"
+msgstr "목표와 인터페이스와 같은 정보를"
+
+#: canvasgui2_default.glade:118 ../canvasgui2_default.glade:118
+msgid "This lets you look at all the modules you can use"
+msgstr "이렇게하면 모든 모듈에서 사용할 수있는을 볼 수있습니다"
+
+#: canvasgui2_default.glade:2941 ../canvasgui2_default.glade:2941
+#: ../canvasgui2_default.glade:2678
+msgid "Unlink"
+msgstr "연결 해제"
+
+#: canvasgui2_default.glade:644 ../canvasgui2_default.glade:644
+msgid "Upload"
+msgstr "업로드"
+
+#: canvasgui2_default.glade:2866 ../canvasgui2_default.glade:2866
+#: ../canvasgui2_default.glade:2569
+msgid "Upload a File"
+msgstr "업로드 파일"
+
+#: canvasgui2_default.glade:677 ../canvasgui2_default.glade:677
+msgid ""
+"Upload a file to the remote server (click browse to pick, or type directly)"
+msgstr ""
+"업로드 원격 서버에 (클릭, 선택하거나 직접 입력할) 찾아보기 파일"
+
+#: canvasgui2_default.glade:1783 ../canvasgui2_default.glade:1783
+msgid "Username"
+msgstr "아이디"
+
+#: canvasgui2_default.glade:1847 ../canvasgui2_default.glade:1847
+#: ../canvasgui2_default.glade:802 ../canvasgui2_default.glade:3936
+msgid "_File"
+msgstr "_File"
+
+#: canvasgui2_default.glade:1876 ../canvasgui2_default.glade:1876
+#: ../canvasgui2_default.glade:844
+msgid "_Listeners"
+msgstr "_Listeners"
+
+#: canvasgui2_default.glade:628 ../canvasgui2_default.glade:628
+msgid "cd"
+msgstr "CD를"
+
+#: canvasgui2_default.glade:1706 ../canvasgui2_default.glade:1706
+msgid "localhost"
+msgstr "localhost를"
+
+#: canvasgui2_default.glade:117 ../canvasgui2_default.glade:117
+msgid "module_treeview"
+msgstr "module_treeview"
+
+#: canvasgui2_default.glade:580 ../canvasgui2_default.glade:580
+msgid "pwd"
+msgstr "pwd을"
+
+#: canvasgui2_default.glade:723 ../canvasgui2_default.glade:723
+msgid "spawn() on Windows, fexecve() on Unix"
+msgstr "(Windows 용), fexecve 유닉스 (한국 시간)에 산란"
+
+#: canvasgui2_default.glade:548 ../canvasgui2_default.glade:548
+msgid "unlink"
+msgstr "연결을 해제"
+
+#: canvasgui2_default.glade:1581 ../canvasgui2_default.glade:1581
+#: ../canvasgui2_default.glade:564
+msgid "window2"
+msgstr "window2"
+
+#: ../canvasgui2_default.glade:811
+msgid "Install GeoIP database...."
+msgstr "GeoIP 데이터베이스를 설치합니다 ...."
+
+#: ../canvasgui2_default.glade:853
+msgid "Start a MOSDEF listener service on the current callback interface"
+msgstr "시작 현재 콜백 인터페이스에 MOSDEF 리스너 서비스"
+
+#: ../canvasgui2_default.glade:867
+msgid "_Session"
+msgstr "_SESSION"
+
+#: ../canvasgui2_default.glade:877
+msgid "Define the name of the CANVAS session and switch to that session."
+msgstr "캔버스 세션의 이름을 정의하고 그 세션으로 전환합니다."
+
+#: ../canvasgui2_default.glade:878
+msgid "Set CANVAS Session Name"
+msgstr "캔버스에 세션 이름을 설정"
+
+#: ../canvasgui2_default.glade:887
+msgid "Save as much data from this session as we can"
+msgstr "우리가 할 수가이 세션에서 많은 데이터를 다른 이름으로 저장"
+
+#: ../canvasgui2_default.glade:888
+msgid "Save CANVAS Session"
+msgstr "할인 캔버스 세션"
+
+#: ../canvasgui2_default.glade:897
+msgid "Restore data from a previous session"
+msgstr "이전 세션에서 데이터를 복원"
+
+#: ../canvasgui2_default.glade:898
+msgid "Restore CANVAS Session"
+msgstr "캔버스 복원 세션"
+
+#: ../canvasgui2_default.glade:911
+msgid "_Help"
+msgstr "_Help"
+
+#: ../canvasgui2_default.glade:921
+msgid "About this CANVAS release"
+msgstr "이 캔버스에 대하여 릴리스"
+
+#: ../canvasgui2_default.glade:922
+msgid "About"
+msgstr "정보"
+
+#: ../canvasgui2_default.glade:931
+msgid "Check to see if this is the latest version of CANVAS available"
+msgstr "이 캔버스의 최신 버전을 사용할 수 있는지 확인하십시오"
+
+#: ../canvasgui2_default.glade:932
+msgid "Check for updates..."
+msgstr "업데이트 확인 ..."
+
+#: ../canvasgui2_default.glade:1048
+msgid ""
+"Current\n"
+"Callback"
+msgstr ""
+"현재\n"
+"콜백"
+
+#: ../canvasgui2_default.glade:1094
+msgid ""
+"Current \n"
+"Target(s) "
+msgstr ""
+"현재\n"
+"대상 (들)"
+
+#: ../canvasgui2_default.glade:1322
+msgid "ALL"
+msgstr "전체"
+
+#: ../canvasgui2_default.glade:1337
+msgid "MODULE NAME"
+msgstr "모듈 이름"
+
+#: ../canvasgui2_default.glade:1346
+msgid "CVE Name"
+msgstr "CVE 이름"
+
+#: ../canvasgui2_default.glade:1355
+msgid "CVE Url"
+msgstr "CVE 이전 URL"
+
+#: ../canvasgui2_default.glade:1364
+msgid "VENDOR"
+msgstr "꼬맹이"
+
+#: ../canvasgui2_default.glade:1373
+msgid "MSADV"
+msgstr "MSADV"
+
+#: ../canvasgui2_default.glade:1382
+msgid "OS"
+msgstr "운영 체제"
+
+#: ../canvasgui2_default.glade:1391
+msgid "TYPE"
+msgstr "종류"
+
+#: ../canvasgui2_default.glade:1400
+msgid "SITE"
+msgstr "SITE"
+
+#: ../canvasgui2_default.glade:1409
+msgid "ARCH"
+msgstr "ARCH"
+
+#: ../canvasgui2_default.glade:1418
+msgid "VERSION"
+msgstr "일본판"
+
+#: ../canvasgui2_default.glade:1427
+msgid "KERNELVER"
+msgstr "KERNELVER"
+
+#: ../canvasgui2_default.glade:1436
+msgid "THIRD PARTY"
+msgstr "제 3 자"
+
+#: ../canvasgui2_default.glade:1595
+msgid "Search"
+msgstr "검색"
+
+#: ../canvasgui2_default.glade:1899
+msgid "CmdLine"
+msgstr "cmdline"
+
+#: ../canvasgui2_default.glade:2695
+msgid "Open filesystem browser"
+msgstr "열기 파일 시스템 브라우저"
+
+#: ../canvasgui2_default.glade:3293
+msgid "Set CANVAS session name"
+msgstr "캔버스에 세션 이름을 설정"
+
+#: ../canvasgui2_default.glade:3366
+msgid "<b>Session name:</b>"
+msgstr "<b>세션 이름 :</b>"
+
+#: ../canvasgui2_default.glade:3398
+msgid "session_name"
+msgstr "session_name"
+
+#: ../canvasgui2_default.glade:3426
+msgid "Add a contact route"
+msgstr "연락처 경로를 추가합니다"
+
+#: ../canvasgui2_default.glade:3499
+msgid "<b>Email/IM/RSS</b>"
+msgstr "<b>이메일 / 메신저 / RSS</b>"
+
+#: ../canvasgui2_default.glade:3527
+msgid "<b>Type of Route:</b>"
+msgstr "<b>도로의 종류 :</b>"
+
+#: ../canvasgui2_default.glade:3604
+msgid "Application Name"
+msgstr "응용 프로그램 이름"
+
+#: ../canvasgui2_default.glade:3605
+msgid "Immunity Inc"
+msgstr "내성 Inc"
+
+#: ../canvasgui2_default.glade:3609
+msgid "translator-credits"
+msgstr "번역 - 크레딧"
+
+#: ../canvasgui2_default.glade:3634
+msgid "CANVAS Error"
+msgstr "캔버스에 오류가 발생했습니다"
+
+#: ../canvasgui2_default.glade:3684
+msgid "error goes here"
+msgstr "오류가 여기에 표시됩니다"
+
+#: ../canvasgui2_default.glade:3711
+msgid "Update check"
+msgstr "업데이트 확인"
+
+#: ../canvasgui2_default.glade:3865
+msgid ""
+"Version update msg here\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+msgstr ""
+"버전은 여기 msg 대화명 업데이트\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+
+#: ../canvasgui2_default.glade:3946
+msgid "Test1"
+msgstr "Test1"
+
+#: ../canvasgui2_default.glade:3954
+msgid "tes2"
+msgstr "tes2"
+
+#: ../canvasgui2_default.glade:3968
+msgid "Delete node ..."
+msgstr "삭제 노드 ..."
+
+#: ../canvasgui2_default.glade:4031
+msgid "Are you sure you want to delete this node?"
+msgstr "당신이이 노드를 삭제하시겠습니까?"
+
+#: ../canvasgui2_default.glade:4061
+msgid "Knowledge"
+msgstr "지식"
+
+#: ../canvasgui2_default.glade:4083
+msgid "Add new host"
+msgstr "새 호스트 추가"
+
+#: ../canvasgui2_default.glade:4092
+msgid "Forget all knowledge"
+msgstr "모든 지식은 잊어버려"
+
+#: ../canvasgui2_default.glade:4101
+msgid "Add hosts from file"
+msgstr "파일에서 호스트를 추가합니다"
+
+#: ../canvasgui2_default.glade:4120
+msgid "Interfaces"
+msgstr "인터페이스"
+
+#: ../canvasgui2_default.glade:4142
+msgid "Add interface"
+msgstr "인터페이스 추가"
+
+#: ../canvasgui2_default.glade:4211
+msgid "Help text goes here - overide in your python code!"
+msgstr "도움말 텍스트를 간다 - overide 당신은 python 코드에서!"
+
+#: ../canvasgui2_default.glade:4240
+msgid "All Knowledge"
+msgstr "모든 지식"
+
+#: ../canvasgui2_default.glade:4334
+msgid "Select the GeoIP data file ....."
+msgstr "GeoIP 데이터를 선택하고 파일을 ....."
+
+#: ../WorldMap/graph_base.glade:7
+msgid "CANVAS Nodes"
+msgstr "캔버스 노드"
+
+#: ../WorldMap/graph_base.glade:31
+msgid "close"
+msgstr "닫기"
+
+#: ../license_view.glade:46
+msgid "Accept"
+msgstr "수락"
+
+#: ../license_view.glade:55
+msgid "Decline"
+msgstr "거부"
+
+#: ../canvasguigtk2.py:1775 ../canvasguigtk2.py:1809
+msgid "Recon Tools"
+msgstr "정찰 도구"
+
+#: ../canvasguigtk2.py:800
+msgid ""
+"Your use of CANVAS is subject to certain terms and conditions, as specified "
+"in the CANVAS License. By using CANVAS, you agree to these terms."
+msgstr ""
+"캔버스의 사용은 특정 용어 및 조건, 지정된 따라 달라질 수있습니다"
+"캔버스에 라이선스했다. 캔버스를 사용하여이 약관에 동의합니다."
+
+#: ../canvasguigtk2.py:801
+msgid ""
+"One of these conditions is that the CANVAS license, as included with this "
+"package, is the sole description of your rights."
+msgstr ""
+"이러한 조건 중 하나의 캔버스에 라이선스이 포함되어있습니다"
+"패키지는, 귀하의 권리의 유일한 설명이다."
+
+#: ../canvasguigtk2.py:802
+msgid "Have you visited the CANVAS forum yet? https://forum.immunityinc.com"
+msgstr "아직 캔버스 포럼을 방문한 적이 있습니까? 은 https : / / forum.immunityinc.com"
+
+#: ../canvasguigtk2.py:803
+msgid "Local IP="
+msgstr "로컬 IP ="
+
+#: ../canvasguigtk2.py:805
+msgid "Your CANVAS subscription expires"
+msgstr "귀하의 캔버스에 가입 기간이 만료"
+
+#: ../canvasguigtk2.py:806
+msgid "Your CANVAS subscription is registered to"
+msgstr "귀하의 캔버스에 가입에 등록되어있습니다"
+
+#: ../canvasguigtk2.py:807
+msgid ""
+"If you are getting close to expiring, contact +1-786-220-0600 or "
+"admin@immunityinc.com to renew!"
+msgstr ""
+"만약 혹시라도 근처에 문의 +1-786-220-0600 또는 만료지고있다"
+"admin@immunityinc.com 갱신!"
+
+#: ../canvasguigtk2.py:1542
+msgid "Status"
+msgstr "상태"
+
+#: ../canvasguigtk2.py:1547
+msgid "Action"
+msgstr "액션"
+
+#: ../canvasguigtk2.py:1552
+msgid "Start Time"
+msgstr "시작 시간"
+
+#: ../canvasguigtk2.py:1557
+msgid "End Time"
+msgstr "종료 시간"
+
+#: ../canvasguigtk2.py:1562
+msgid "Information"
+msgstr "정보"
+
+#: ../canvasguigtk2.py:1794
+msgid "CANVAS Exploits"
+msgstr "캔버스 남용"
+
+#: ../canvasguigtk2.py:1797
+msgid "Control Active Listener"
+msgstr "제어 액티브 리스너"
+
+#: ../canvasguigtk2.py:1798
+msgid "For the active node"
+msgstr "활성 노드에 대한"
+
+#: ../canvasguigtk2.py:1801
+msgid "3rd Party Exploit Packs"
+msgstr "제 3 자 공격 팩"
+
+#: ../canvasguigtk2.py:1806
+msgid "Commands For Nodes"
+msgstr "명령 노드"
+
+#: ../canvasguigtk2.py:1807
+msgid "Post Exploit Control"
+msgstr "포스트 공격 제어"
+
+#: ../canvasguigtk2.py:1808
+msgid "Misc Tools"
+msgstr "기타 도구"
+
+#: ../canvasguigtk2.py:1810
+msgid "Recon Tools For Nodes"
+msgstr "정찰 도구 노드"
+
+#: ../canvasguigtk2.py:1811
+msgid "Remote recon tools that run against a target"
+msgstr "원격 정찰 도구를 실행하는 대상에 대해"
+
+#: ../canvasguigtk2.py:1812
+msgid "Denial of Service Modules"
+msgstr "서비스 거부 모듈"
+
+#: ../canvasguigtk2.py:1813
+msgid "Configuration Modules"
+msgstr "구성 모듈"
+
+#: ../canvasguigtk2.py:1814
+msgid "CANVAS Servers"
+msgstr "캔버스 서버"
+
+#: ../canvasguigtk2.py:1815
+msgid "Fuzzing Modules"
+msgstr "Fuzzing 모듈"
+
+#: ../canvasguigtk2.py:1816
+msgid "Cross Tool Interface"
+msgstr "크로스 도구 인터페이스"
+
+#: ../canvasguigtk2.py:1817
+msgid "Various tools for use post-intrusion."
+msgstr "를 사용하여 게시물에 대한 다양한 도구를 침입."
+
+#: ../canvasguigtk2.py:1818
+msgid "CANVAS Reports"
+msgstr "캔버스 리포트"
+
+#: ../canvasguigtk2.py:1823
+msgid "Local attacks that run against a node"
+msgstr "로컬 공격 노드에 대해 실행"
+
+#: ../canvasguigtk2.py:1824
+msgid "Client side attacks"
+msgstr "클라이언트 측면 공격"
+
+#: ../canvasguigtk2.py:1825
+msgid "Remote attacks"
+msgstr "원격 공격"
+
+#: ../canvasguigtk2.py:1826
+msgid "Attacks against Microsoft platforms"
+msgstr "마이크로 소프트 플랫폼에 대한 공격"
+
+#: ../canvasguigtk2.py:1827
+msgid "Attacks against unix platforms"
+msgstr "UNIX 플랫폼의 공격"
+
+#: ../canvasguigtk2.py:1828
+msgid "Attacks against web applications"
+msgstr "웹 애플 리케이션 공격"
+
+#: ../canvasguigtk2.py:2145
+msgid "Various tools for exploiting custom web applications"
+msgstr "사용자 정의 웹 애플 리케이션을위한 다양한 도구를 이용"
+
+msgid "User Defined Modules"
+msgstr "사용자 정의 모듈"
+
+msgid "New Monthly Modules"
+msgstr "새로운 월간 모듈"
+
+msgid "1024 CMS <= 1.4.4 Remote File Include"
+msgstr "1,024 CMS는 \"= 1.4.4 원격 파일 포함"
+
+msgid "3com's TFTP Server (UDP port 69) version 2.0.1 overflow in mode"
+msgstr "3Com의 TFTP Server 사용하기 (UDP 포트 69) 버전 2.0.1을 오버플로 모드에서"
+
+msgid "Misdesign in RDS.DataStore allows for arbitrary object execution"
+msgstr "Misdesign RDS.DataStore에있는 임의의 개체를 실행 허용"
+
+msgid "Creates an executable that will call back to MOSDEF"
+msgstr "그 뒤로 MOSDEF 실행 호출을 생성합니다"
+
+msgid "Creates an hlp file that will call back to MOSDEF"
+msgstr "그 뒤로 MOSDEF 전화 것입니다 hlp 파일을 만듭니다"
+
+msgid ""
+"Creates an executable that will call back to download and execute a file "
+"over HTTP/s"
+msgstr ""
+"그 뒤로를 다운로드하고 실행 파일을 실행 호출을 생성합니다"
+"HTTP를 통한 / s 이상"
+
+msgid ""
+"Create a working RSS reader widget that silently connects back to a CANVAS "
+"host"
+msgstr ""
+"가 자동으로 다시 캔버스에 연결하는 작업 RSS 리더 위젯 만들기"
+"주최자"
+
+msgid "CLOUDBURST VMware Workstation Guest Escape"
+msgstr "대량 VM웨어 워크 스테이션 민박집 탈출"
+
+msgid "Local privilege escalation for AIX 5.x"
+msgstr "프로방스 안에 AIX 5.x를위한 로컬 권한 상승"
+
+msgid "Local privilege escalation for Solaris 10"
+msgstr "솔라리스 10에 대한 로컬 권한 상승"
+
+msgid "Creates a process given a token"
+msgstr "프로세스 토큰을 주어 생성"
+
+msgid "DNS Baliwick attack"
+msgstr "DNS에 공격 Baliwick"
+
+msgid "prctl PR_SET_DUMPABLE Linux Local (2.6.13 < 2.6.17.4)"
+msgstr "prctl PR_SET_DUMPABLE 리눅스 로컬 (2.6.13 \"2.6.17.4)"
+
+msgid "Creates a primary token from another token"
+msgstr "생성 토큰에서 다른 토큰은 기본"
+
+msgid "EXPLOITDESCRIPTION"
+msgstr "EXPLOITDESCRIPTION"
+
+msgid ""
+"An obvious memory exaustion bug in Exchange Server 2000's MSRPC endpoint"
+msgstr ""
+"는 Exchange Server 2000 MSRPC 종점에서 확실한 메모리 exaustion 버그"
+
+msgid "Exits Windows - this will return, and then windows will shut down"
+msgstr "윈도우 종료 -이, 그리고 창문 폐쇄를 반환합니다"
+
+msgid "Tapi Stack Overflow"
+msgstr "TAPI 스택 오버플로"
+
+msgid "Foxit PDF reader permission bypass"
+msgstr "Foxit PDF 리더 권한 우회"
+
+msgid ""
+"A vulnerability in the way Windows 2000/XP handles GDI structures allows for "
+"writing to kernel space"
+msgstr ""
+"Windows 2000/XP를 GDI의 구조는 처리하는 방식에 취약점이있습니다"
+"커널 공간을 서면으로"
+
+msgid "Get as much info as we can from Outlook Address Book"
+msgstr "많은 정보로 나가 할 수있는 Outlook 주소록에서"
+
+msgid ""
+"Get as much info as we can from the installed web browsers of the current "
+"user: histories, bookmarks, cached password etc\n"
+"NOTE: If FF3 is open the sqlite files cannot be grabbed - I assume they are "
+"locked ?"
+msgstr ""
+"많은 정보에 설치된 웹 브라우저에서 우리가 할 수처럼 꺼져 현재"
+"사용자 : 역사, 북마크, 저장된 비밀 번호 등\n"
+"참고 : FF3 잡았 수없습니다 sqlite가 파일을 열 수있다 - 나는 그들이 가정"
+"잠겨?"
+
+msgid "COMMANDDESCRIPTION"
+msgstr "COMMANDDESCRIPTION"
+
+msgid "Gets the language of the node"
+msgstr "노드의 언어를 만든다"
+
+msgid ""
+"This module attempts to determine if a user is actively moving the mouse or "
+"typing on all selected nodes."
+msgstr ""
+"이 모듈은 시도를 결정하는 경우에 사용자가 적극적으로 마우 스나 이동합니다"
+"선택한 모든 노드에 입력합니다."
+
+msgid "IA WebMail <= 3.1 Stack Overflow"
+msgstr "아이오와 WebMail \"= 3.1 스택 오버플로"
+
+msgid "Compaq Insight CIM-XML exploit"
+msgstr "컴팩 인사이트 - CIM을 XML을 이용"
+
+msgid "Gets a primary token given a username and password"
+msgstr "악화되고 토큰을 기본 사용자 이름과 비밀 번호를 부여"
+
+msgid "MailEnable WebMail Authorization Buffer Overflow"
+msgstr "MailEnable WebMail 인증 버퍼 오버플로"
+
+msgid ""
+"Microsoft Windows Media Player Malformed PNG Remote Code Execution "
+"Vulnerability"
+msgstr ""
+"Microsoft는 Windows Media Player에서 잘못된 PNG로 인한 원격 코드 실행"
+"취약점"
+
+msgid ""
+"A stack overflow in the SUBSCRIBE IMAP call allows for a post-auth compromise"
+msgstr ""
+"사용자 가입 IMAP를 호출 스택 오버플로 게시물에 대한 허용 - 정식 타협"
+
+msgid "Check to see if NTLM auth worked on a web server"
+msgstr "NTLM을 인증하는 경우 웹 서버에 근무 확인하십시오"
+
+msgid ""
+"Incorrect DBUS deny statement setting allows access to NetworkManager "
+"secrets of other users (such WEP/WPA keys)"
+msgstr ""
+"DBUS 잘못된 정책 설정을 거부할 수있습니다 NetworkManager가에 대한 액세스"
+"다른 사용자의 비밀 (예 : WEP를 / WPA는 키)"
+
+msgid "PROC FS Linux 2.6.x local root exploit"
+msgstr "FS 2.6.x 리눅스 proc 디렉토리에 로컬 루트 악용"
+
+msgid "Test not for release"
+msgstr "테스트 릴리스되지 않은"
+
+msgid "Get a Win32 Node on a VNC system"
+msgstr "VNC를 시스템에서 Win32 노드 타"
+
+msgid "Safe Vulnerability Assessment Tool"
+msgstr "안전 보안 평가 도구"
+
+msgid "Poor input validation allows remote users to include remote files"
+msgstr "불쌍한 입력 유효성 검사를 원격 사용자가 원격 파일을 포함시킬 수있습니다"
+
+msgid "WS_FTPD Stack Overflow"
+msgstr "WS_FTPD 스택 오버플로"
+
+msgid "Get WEP and WPA keys off the target system"
+msgstr "WEP와 WPA를 대상 시스템에서 키 타"
+
+msgid "Abyss Web Server Overflow"
+msgstr "심연의 웹 서버 오버플로"
+
+msgid "Adobe Acrobat Reader 9.1.3/8.1.6 Heap Overflow leads to code execution"
+msgstr "Adobe Acrobat Reader가 9.1.3/8.1.6 힙 오버플로 실행 코드로 연결"
+
+msgid "Adobe Acrobat Flash Uninitialized object"
+msgstr "는 Adobe Acrobat 플래시 초기화되지 않은 개체"
+
+msgid "Adobe Acrobat Reader 9.0 Stack Overflow"
+msgstr "Adobe Acrobat Reader가 9.0 스택 오버플로"
+
+msgid "Adobe Acrobat Reader Stack Overflow"
+msgstr "Adobe Acrobat Reader가 스택 오버플로"
+
+msgid "Adobe Acrobat Reader Stack Overflow (Collab.getIcon)"
+msgstr "Adobe Acrobat Reader가 스택 오버플로 (Collab.getIcon)"
+
+msgid "Adobe Acrobat Reader Use After Free (DocMedia.newplayer)"
+msgstr "Adobe Acrobat Reader를 사용하여 무료 (DocMedia.newplayer 후)"
+
+msgid "Adobe Acrobat Reader Heap Overflow (ClodMeshDeclaration CVE-2009-2994)"
+msgstr "Adobe Acrobat Reader에서 힙 오버플로 (ClodMeshDeclaration CVE - 2009-2994)"
+
+msgid ""
+"Sends an activation packet to a host that has the MOSDEF rootkit running. "
+"Returns a Win32Node. Can take up to 60 seconds.Doesn't matter if the remote "
+"host has the Windows firewall turned on, because our rootkit sits below it."
+msgstr ""
+"그 MOSDEF 루트 킷은 실행중인 호스트에 인증 패킷을 보냅니다."
+"반환 Win32Node. 만약 원격 상관 60 seconds.Doesn '까지 소요될 수있습니다"
+"호스트 왜냐하면 우리 루트 킷은 아래에 앉아에 윈도우 방화벽이 켜져있다."
+
+msgid "Adds a host to the host knowledge tree"
+msgstr "호스트 지식을 나무에 호스트 추가"
+
+msgid "Adds a list of hosts from a file to the host knowledge tree"
+msgstr "파일을 호스트 지식 나무에서 호스트 목록에 추가"
+
+msgid "adds a null share on the local or remote machine"
+msgstr "로컬 또는 원격 컴퓨터에 null이 의견을 추가"
+
+msgid ""
+"Calls popen2() or equivalent to issue local command to add a user. Uses "
+"first selected node."
+msgstr ""
+"통화 popen2 () 또는 로컬 명령이 문제에 사용자를 추가하는 것과 동일. 용도"
+"첫 번째 노드를 선택."
+
+msgid ""
+"Poor input validation allows remote users to insert php code into the blog "
+"and execute commands"
+msgstr ""
+"불쌍한 입력 유효성 검사를 원격 사용자가 블로그에 PHP 코드를 삽입하실 수있습니다"
+"및 명령 실행"
+
+msgid "Calendar Manager stack overflow for AIX"
+msgstr "캘린더 관리자는 AIX에 대한 스택 오버플로"
+
+msgid "ttdbserver libtt.a _tt_internal_realpath stack overflow"
+msgstr "ttdbserver libtt.a _tt_internal_realpath 스택 오버플로"
+
+msgid "Alt-N Security Gateway 1.0.1 - Admin HTTP Server Overflow"
+msgstr "고도는 - N 보안 게이트웨이 1.0.1 - 관리자는 HTTP 서버 오버플로"
+
+msgid "Windows Animated Cursor Stack Overflow"
+msgstr "윈도우 애니메이션 커서 스택 오버플로"
+
+msgid ""
+"\n"
+"Apache 2.0.46-52 and IBM HTTP Web Server 2.0.42-47 are vulnerable to DoS via "
+"excessive use of spaces in an HTTP GET Request"
+msgstr ""
+"\n"
+"아파치 2.0.46-52 및 IBM HTTP 웹 서버를 통해 2.0.42-47 DoS 공격에 취약합니다"
+"공백을 과도하게 사용하여 HTTP GET 요청"
+
+msgid "Apache Chunked encoding exploit for win32"
+msgstr "Win32를위한 아파치 청크 분할 인코딩을 악용"
+
+msgid ""
+"Finds all the hosts on the local network interfaces using an brute force arp "
+"scan"
+msgstr ""
+"로컬 네트워크상의 모든 호스트를 찾습니다 무력을 사용하여 인터페이스를 ARP에"
+"스캔"
+
+msgid "Performs an ARP scan"
+msgstr "ARP에 스캔을 수행합니다"
+
+msgid "SAMBA api_lsa_lookup_sids Heap Overflow"
+msgstr "SAMBA는 힙 오버플로우 api_lsa_lookup_sids"
+
+msgid "Microsoft Scheduler Service NetrJobAdd"
+msgstr "Microsoft는 스케줄러 서비스 NetrJobAdd"
+
+msgid "Assess the exposure of a given box"
+msgstr "주어진 상자의 노출 평가"
+
+msgid "Try to hack into the given box"
+msgstr "주어진 상자에 해킹 시도"
+
+msgid "Tries to escalate privilege on a node"
+msgstr "시도 노드에 대한 권한을 확대하는"
+
+msgid "awservices.exe stack overflow"
+msgstr "스택 오버플로 awservices.exe"
+
+msgid "barryvancompo-0.3 Remote file include"
+msgstr "barryvancompo 0.3 원격 파일을 포함"
+
+msgid "Basic Authentication Bruteforce"
+msgstr "기본 인증 Bruteforce"
+
+msgid "Big Ant Messenging Server 2.2 - HTTP GET Stack Overflow"
+msgstr "빅 개미 Messenging 서버 2.2 - HTTP를 스택 오버플로 GET"
+
+msgid ""
+"It allows us to inject an executable file inside an OLE2 docfile and execute "
+"it using VBA."
+msgstr ""
+"우리 OLE2 docfile 안에 실행 파일을 삽입하고 실행할 수있습니다"
+"그것을 사용하여 VBA를."
+
+msgid "BlackIce stack overflow"
+msgstr "BlackICE 스택 오버플로"
+
+msgid "Blind ISAPI stack overflow brute forcer"
+msgstr "눈먼 짐승의 ISAPI 강제자 스택 오버플로"
+
+msgid "Blind SQL Injection"
+msgstr "블라인드 SQL 주입"
+
+msgid ""
+"Borland Interbase ibserver.exe Create-Request Buffer Overflow Vulnerability"
+msgstr ""
+"볼랜드 Interbase ibserver.exe 만들기 요청 버퍼 오버플로 취약점"
+
+msgid "Break Chroot on old Linux 2.2/2.4"
+msgstr "오래된 리눅스 2.2/2.4에서 휴식 chroot를"
+
+msgid "CA BrightStor ARCserve Backup Arbitrary Command Execution"
+msgstr "캘리포니아 BrightStor ARCserve Backup을 임의의 명령 실행"
+
+msgid "CA BrightStor ARCserve Backup Discovery Service Stack Overflow"
+msgstr "캘리포니아 BrightStor ARCserve Backup을 체험 서비스 스택 오버플로"
+
+msgid "CA BrightStor ARCserve Backup Media Server RPC Interface Stack Overflow"
+msgstr "캘리포니아 BrightStor ARCserve Backup은 미디어 서버 RPC 인터페이스 스택 오버플로"
+
+msgid "CA BrightStor ARCserve Backup RPC Interface ascore.dll Stack Overflow"
+msgstr "캘리포니아 BrightStor ARCserve Backup은 RPC 인터페이스 ascore.dll 스택 오버플로"
+
+msgid "CA License Manager Stack Overflow"
+msgstr "캘리포니아 라이센스 관리자 스택 오버플로"
+
+msgid "cachefsd .cfs_mnt File Stack Overflow (requires in.lpd for file upload)"
+msgstr ". cfs_mnt 파일 스택 오버플로 cachefsd (파일 업로드) in.lpd이 필요합니다"
+
+msgid "Flexible MOSDEF callbacks"
+msgstr "유연한 MOSDEF 콜백"
+
+msgid "cam.exe stack overflow."
+msgstr "스택 오버플로 cam.exe."
+
+msgid "CesarFTP Stack Overflow on MKD command"
+msgstr "CesarFTP 스택 오버플로 명령을 MKD"
+
+msgid "Changes directory. Uses first selected node."
+msgstr "디렉토리 변경. 가장 먼저 선택한 노드를 사용합니다."
+
+msgid "Checks to see if we're inside a VM"
+msgstr "만약 우리가 VM이 안에있어 있는지 확인"
+
+msgid "Local privilege escalation via chfn escape character"
+msgstr "chfn 이스케이프 문자를 통해 로컬 권한 상승"
+
+msgid "CitectSCADA ODBC Buffer Overflow"
+msgstr "CitectSCADA ODBC를 버퍼 오버플로"
+
+msgid "Citrix IMA Heap Overflow Demo"
+msgstr "시트릭스 IMA 힙 오버플로 데모"
+
+msgid "Citrix MetaFrame XP Print Provider Stack Overflow"
+msgstr "은 Citrix MetaFrame XP에서 인쇄 공급자는 스택 오버플로"
+
+msgid ""
+"Completely Clears the Application, System, And Security Event Logs in Windows"
+msgstr ""
+"완전히 지웁니다 응용 프로그램, 시스템 및 보안 이벤트 로그를 Windows에서"
+
+msgid ""
+"Creates spreadsheet and charts from SploitD pickles. Requires Open Office >= "
+"3.0"
+msgstr ""
+"SploitD 피클에서 스프레드 시트 및 차트를 만듭니다. 필요 오픈 오피스 \"="
+"3.0"
+
+msgid "HTTP Server for client side vulnerabilities"
+msgstr "HTTP 서버 클라이언트 측 취약점에 대한"
+
+msgid "rpc.cmsd xdr_array heap overflow"
+msgstr "rpc.cmsd xdr_array 힙 오버플로"
+
+msgid ""
+"Poor input validation allows remote users to call eval with their own "
+"contents"
+msgstr ""
+"불쌍한 입력 유효성 검사를 원격 사용자 평가 후면 자신과 통화하실 수있습니다"
+"내용"
+
+msgid "Ask for a file in MOSDEF C and create a tiny .exe"
+msgstr "MOSDEF C에서 파일에 대한 요청과 작은 만듭니다. exe를"
+
+msgid "Get the computer name"
+msgstr "컴퓨터 이름을 가져"
+
+msgid "Connects to remote MOSDEF service via TCP"
+msgstr "는 TCP를 통해 원격 MOSDEF 서비스에 연결"
+
+msgid ""
+"Builds, uploads and runs a MOSDEF callback trojan. This is useful when you "
+"have a less full-featured Node such as a PHP ScriptNode, JavaNode or "
+"UnixShell, and want the full MOSDEF capability."
+msgstr ""
+"빌드, 업로드 및 MOSDEF 콜백에 트로이 목마를 실행합니다. 이 때 유용합니다"
+"덜 완전한 PHP를 ScriptNode, JavaNode 또는 노드와 같은 기능을 가지고"
+"UnixShell, 그리고 전체 MOSDEF 기능을합니다."
+
+msgid "Remote vulnerablility in Coppermine gets Shell"
+msgstr "코퍼마인에 원격 vulnerablility 쉘되면"
+
+msgid "Attack Corptax"
+msgstr "공격 Corptax"
+
+msgid "cpCommerce 1.2.x Remote File Include"
+msgstr "cpCommerce 1.2.x 원격 파일 포함"
+
+msgid "CreateReport"
+msgstr "CreateReport"
+
+msgid "Creates a service on all selected nodes"
+msgstr "선택한 모든 노드에서 서비스를 생성"
+
+msgid "cutenews/strawberry Remote Code Execution"
+msgstr "cutenews / 딸기 원격 코드 실행"
+
+msgid "Stack overflow vulnerability in IBM DB2 JDBC Applet Server"
+msgstr "IBM의 DB2는 JDBC를 애플릿에서 스택 오버플로 취약점 서버"
+
+msgid "DCE Dumper"
+msgstr "DCE를 Dumper"
+
+msgid "Threaded SSH password bruteforcer"
+msgstr "스레드 SSH를 암호 bruteforcer"
+
+msgid "Deletes a service on all selected nodes"
+msgstr "삭제 선택한 모든 노드에서 서비스를"
+
+msgid ""
+"Calls popen2() or equivalent to issue local command to remove a user. Uses "
+"first selected node."
+msgstr ""
+"통화 popen2 () 또는 로컬 명령이 문제에 사용자를 제거하는 것과. 용도"
+"첫 번째 노드를 선택."
+
+msgid ""
+"Deploys a PINK drone to the remote workstation. Also generates the necessary "
+"text for the blog posting."
+msgstr ""
+"배포 원격 워크 스테이션에 분홍색 드론. 또한 필요한 생성"
+"블로그에 게시하는 텍스트."
+
+msgid "Gets directory listing"
+msgstr "디렉토리 목록을 만든다"
+
+msgid ""
+"Weakness where the Windows Defender API allows you to zero out a flag that "
+"bypasses a code signing check. This allows unsigned code to disable Windows "
+"Defender."
+msgstr ""
+"약점이 어디에 Windows Defender는 API를 사용하면 플래그를 0으로 허용합니다"
+"코드 서명을 확인 건너뛸 수있습니다. 이렇게하면 Windows에 서명을 해제 코드"
+"수비수."
+
+msgid ""
+"Disable Windows Firewall through COM interface in XP/2003 (Instantly) or by "
+"registry in Win7/Vista/2008 (need service restart to take effect)"
+msgstr ""
+"Windows 방화벽 해제 XP/2003에서 COM 인터페이스 (즉시) 또는를 통해"
+"Win7/Vista/2008에서 레지스트리 (필요한 서비스 적용)를 다시 시작합니다"
+
+msgid ""
+"Searches a remote node for a file pattern. Optionally can download all "
+"matching files automatically.Please note that searching the primary hard "
+"drive and/or downloading files can take a few minutes,unless CANVAS reports "
+"an error just be patient and you should see results."
+msgstr ""
+"파일 패턴에 대한 원격 노드를 검색합니다. 모두 선택을 다운로드할 수있습니다"
+"일치하는 파일을 참고 automatically.Please가 기본 하드 검색"
+"드라이브 및 / 또는 다운로드 파일이 걸릴 수있습니다 몇 분, 캔버스에보고하지 않으면"
+"오류가 좀 기다려 당신은 결과를 볼 수있습니다."
+
+msgid "Enumerate hosts in a domain based on a dictionary attack"
+msgstr "도메인을 기반으로 사전 공격에 열거 호스트"
+
+msgid "Dokeos LMS <= 1.8.5 Remote Code Execution"
+msgstr "Dokeos LMS \"= 1.8.5 원격 코드 실행"
+
+msgid "DokuWiki Spell Checker Embedded Link Arbitrary PHP Code Execution  "
+msgstr "DokuWiki는 맞춤법 검사기를 내장 임의의 PHP 코드를 실행 링크"
+
+msgid "DokuWiki 2009-02-14 Globals overwrite / Code execeution"
+msgstr "DokuWiki는 2009년 2월 14일 전역을 덮어쓸 / 코드 execeution"
+
+msgid "Lotus Domino IMAP4 Server CRAM-MD5 Stack Overflow"
+msgstr "IMAP4 서버의 Lotus Domino 빽빽하게의 MD5 스택 오버플로"
+
+msgid "Denial of service tool"
+msgstr "서비스 거부 도구"
+
+msgid "Downloads files through a supplied directory traversal vulnerability"
+msgstr "제공된 디렉토리를 통해 다운로드 파일의 취약점을 탐색"
+
+msgid "Download file. Uses first selected node."
+msgstr "다운로드 파일을 엽니다. 가장 먼저 선택한 노드를 사용합니다."
+
+msgid "Dragoon 0.1 Remote File Include"
+msgstr "사나운 0.1 원격 파일 포함"
+
+msgid "Provides a useful drink coaster! (drive D: is used)"
+msgstr "유용한 한잔 롤러코스터를 제공합니다! (D 드라이브 : 사용됩니다)"
+
+msgid "dtspcd heap overflow"
+msgstr "dtspcd 힙 오버플로"
+
+msgid "e107 CMS Code execution"
+msgstr "e107 CMS에서 코드 실행"
+
+msgid "Easy File Sharing Stack Overflow on PASS command"
+msgstr "간편한 파일 패스 명령은 스택 오버플로 공유"
+
+msgid "Easy Px 41 CMS v09.00.00B1 (fiche) Local File Include"
+msgstr "쉽게 CMS를 41 픽셀 v09.00.00B1 (fiche) 로컬 파일 포함"
+
+msgid "Stack overflow vulnerability in Novell eDirectory HTTP stack"
+msgstr "노벨 eDirectory에서 스택 오버플로 취약점은 HTTP를 스택"
+
+msgid "Sends email to every currently selected contact route of type 'email'"
+msgstr "타입 '의 모든 경로는 현재 선택한 연락처에 이메일을 보냅니다 이메일로'"
+
+msgid "Sends email via SMTP"
+msgstr "SMTP를 통해 이메일을 보냅니다"
+
+msgid "Gets the services and their state"
+msgstr "서비스의 상태로 만든다"
+
+msgid "Exit the process"
+msgstr "종료 과정"
+
+msgid "Exit the current thread"
+msgstr "현재 스레드 종료"
+
+msgid "EZNet stack overflow"
+msgstr "EZNet 스택 오버플로"
+
+msgid "Detect if someone is on the compromised computer with a webcam"
+msgstr "검색 만약 누군가 감염된 컴퓨터에있는 웹캠이다"
+
+msgid "Grab a picture from a webcam"
+msgstr "웹캠에서 잡아 사진"
+
+msgid "FileCOPA Stack Overflow on LIST command"
+msgstr "FileCOPA 스택 오버플로 목록에 명령을"
+
+msgid "Find Non-authenticated VNC Servers"
+msgstr "찾기 비 - VNC를 서버 인증"
+
+msgid "Firefox 3.5 Remote Code Execution"
+msgstr "파이어 폭스 3.5 원격 코드 실행"
+
+msgid ""
+"A flaw in the way Mozilla Firefox Javascript Engine handle the defineSetter "
+"method allows to simulate a JSObject from an arbitrary memory area"
+msgstr ""
+"Mozilla Firefox에서 자바 스크립트 엔진 defineSetter 처리하는 방식에 결함이"
+"메서드에 임의의 메모리 영역에서 JSObject 시뮬레이션할 수있습니다"
+
+msgid "FireFox UTF8 Stack Overflow"
+msgstr "FireFox UTF8 스택 오버플로"
+
+msgid ""
+"Adobe Flash Player (<= 9.0.115.0) DefineSceneAndFrameLabelData Tag Integer "
+"Overflow"
+msgstr ""
+"Adobe Flash Player를 ( \"= 9.0.115.0) DefineSceneAndFrameLabelData 태그 정수"
+"오버플로"
+
+msgid ""
+"A flaw in the way Adobe Flash handle the Long String Tags could lead into a "
+"buffer overflow."
+msgstr ""
+"어도비 플래시로 이어질 수있는 긴 문자열이 태그를 처리하는 방식에 결함이"
+"버퍼 오버플로."
+
+msgid "Foxit PDF Reader Action Overflow"
+msgstr "Foxit PDF 리더 액션 오버플로"
+
+msgid "Foxit Reader Javascript Function util.printf()"
+msgstr "Foxit Reader는 JavaScript 함수 util.printf ()"
+
+msgid "FP30REG.DLL Chunked Heap Overflow (MS03-051)"
+msgstr "FP30REG.DLL 청크 분할 힙 오버플로 (MS03 - 051)"
+
+msgid "Imports data from Foundstone scans into CANVAS"
+msgstr "Foundstone에서 수입 데이터를 캔버스로 스캔"
+
+msgid "Checks an FTP server for remote access with a few default usernames"
+msgstr "몇 가지 기본 사용자 이름으로 원격 액세스를위한 FTP 서버 점검"
+
+msgid "fuzzylime cms <= 3.01 Remote File include"
+msgstr "fuzzylime CMS는 \"= 3.01 원격 파일 포함"
+
+msgid "GREENAPPLE mrxsmb.sys remote ring0 exploit"
+msgstr "GREENAPPLE Mrxsmb.sys 원격 ring0 악용"
+
+msgid ""
+"Grab the local DNS cache from the compromised host, useful for backtracking "
+"any old queries."
+msgstr ""
+"되돌아 오는것에 대한 위험 잡아 호스트에서 로컬 DNS 캐시에 유용"
+"예전 쿼리합니다."
+
+msgid "Gets a dump of one process's memory"
+msgstr "한 프로세스의 메모리 덤프를 만든다"
+
+msgid "Calls getcwd() or equivalent. Uses first selected node."
+msgstr "통화 () 또는 동급 getcwd. 가장 먼저 선택한 노드를 사용합니다."
+
+msgid "Gets all the emails from a certain website/url."
+msgstr "특정 웹사이트 / 홈페이지의 모든 이메일을 가져옵니다."
+
+msgid "resolves a host to an ip"
+msgstr "IP에 호스트 해결"
+
+msgid "Get a key from the remote host"
+msgstr "원격 호스트에서 열쇠를 줘요"
+
+msgid "Get user password hashes for offline cracking"
+msgstr "오프라인 단속에 대한 사용자 암호를 해시 타"
+
+msgid "Gets process id on selected node"
+msgstr "악화되고 프로세스가 선택한 노드에 ID를"
+
+msgid "Get the print providers on a remote Windows machine"
+msgstr "원격 Windows 컴퓨터에서 인쇄 공급자 타"
+
+msgid "Enables a privilege"
+msgstr "활성화 권한"
+
+msgid "Gets process name of our current process"
+msgstr "우리가 현재 프로세스의 프로세스 이름을 만든다"
+
+msgid "Get the language pack of a remote Windows machine"
+msgstr "원격 Windows 컴퓨터의 언어 팩을 해"
+
+msgid "XXXXXXXXXXXXXXXXXXXXXXXXX"
+msgstr "XXXXXXXXXXXXXXXXXXXXXXXXX"
+
+msgid "Windows Remote Services Enumeration"
+msgstr "Windows 원격 서비스 열거형"
+
+msgid "Gets information on each thread in the process for all nodes"
+msgstr "프로세스의 각 스레드에있는 모든 노드에 대한 정보를 만든다"
+
+msgid "Gathers WWW hostnames for an IP address"
+msgstr "IP 주소에 대한 수집에서 WWW 호스트 이름"
+
+msgid ""
+"A buffer overflow in the OpenURL function allows us execute arbitrary code"
+msgstr ""
+"OpenURL 함수에서 버퍼 오버플로 우리가 임의 코드를 실행할 수있습니다"
+
+msgid ""
+"Overflow on commands issued by authenticated users in the Goodtech SSH server"
+msgstr ""
+"오버플로 명령을 Goodtech SSH를 서버에 인증된 사용자에 의해 발행에"
+
+msgid "gpsd"
+msgstr "gpsd"
+
+msgid "Grape Web Statistics Remote File include"
+msgstr "포도 웹 통계 원격 파일 포함"
+
+msgid ""
+"Overflow in URL handler SDSurf.dll that is injected into all browser "
+"processes by Green Dam."
+msgstr ""
+"오버플로 URL 처리기 SDSurf.dll에서 모든 브라우저에 주입"
+"그린 댐에 의해 처리합니다."
+
+msgid "GROUP-E 1.6.41 Remote file include"
+msgstr "그룹 이메일 1.6.41 원격 파일을 포함"
+
+msgid ""
+"There exists an Accept-Language Buffer Overflow in Novell GroupWise "
+"Messenger 2.0"
+msgstr ""
+"여기 노벨 그룹 와이즈에하는 accept - language 버퍼 오버플로가 존재"
+"메신저 2.0"
+
+msgid "Novell GroupWise WebAccess Base64 Decoding Stack Overflow"
+msgstr "노벨 그룹 와이즈 WebAccess Base64로 디코딩 스택 오버플로"
+
+msgid "Harbor Listen.exe"
+msgstr "하버 Listen.exe"
+
+msgid ""
+"Configure beacon callback host and port for HCN rootkit. The beacon interval "
+"determines how often the rootkit will attempt to connect to CANVAS. A "
+"successful beacon connection will give you a win32Node with full SYSTEM "
+"privileges.\n"
+"\n"
+"When running hcn_beaconlistener, make sure to set the same host/pair "
+"combination for the Beacon Host and Beacon Port settings."
+msgstr ""
+"신호를 콜백 구성 호스트 및 포트 HCN 루트 킷이다. 신호 간격"
+"얼마나 자주 루트킷 캔버스에 연결하려고 결정됩니다."
+"성공적인 신호를 연결하면 전체 시스템과 win32Node 줄 것이다"
+"권한.\n"
+"\n"
+"실행 hcn_beaconlistener 때, 동일한 호스트를 설정되었는지 확인 / 쌍"
+"비콘 신호 호스트 및 포트 설정에 대한 조합."
+
+msgid ""
+"\n"
+"This sets up the necessary listeners for the Windows rootkit to call to "
+"CANVAS and establish a SYSTEM shell. The Beacon Host and Beacon Port should "
+"be set to the same host/port that was set in hcn_beaconconfig. The CANVAS "
+"host/port is where the callback shell will call, you can have this set to a "
+"local CANVAS instance (it will start a listener on its own), or a remote "
+"listening post where you already have a WIN32MOSDEF callback listening.\n"
+"\n"
+"Note: Make sure to set the \"fromcreatethread\" option when starting your "
+"listener on a different host.\n"
+msgstr ""
+"\n"
+"윈도우 루트 킷에 대한 리스너가 필요한 경우이 설정을 호출"
+"캔버스와 시스템 쉘을 설정할 수있습니다. 비콘 신호 호스트 및 포트해야합니다"
+"동일한 호스트를 설정할 수 / 그 hcn_beaconconfig에 설정된 포트를 누릅니다. 캔버스"
+"호스트 / 포트 콜백 쉘, 당신이 전화 집합을 가질 수 것입니다"
+"캔버스 인스턴스를 로컬 (자체)에, 또는 원격 리스너가 시작됩니다"
+"게시물 수신 여기서 당신은 이미 WIN32MOSDEF 콜백을 듣고있다.\n"
+"\n"
+"참고 사항 : \\ \"fromcreatethread 설정되어 있는지 확인하십시오 \\\"옵션을 시작하면 귀하의"
+"서로 다른 호스트에 들어.\n"
+
+msgid ""
+"Hides a directory in the target node. Simply enter the directory like: c:"
+"\\MOSDEF and it will disappear from view."
+msgstr ""
+"대상 노드에 있도다 디렉터리에있습니다. 간단히 같은 디렉토리를 입력하십시오 :에 c :"
+"\\ \\ MOSDEF 그리고 시야에서 사라집니다."
+
+msgid ""
+"\n"
+"Hides network connection stats from programs like netstat.\n"
+"\n"
+"Some examples, assuming your target lives on 192.168.244.123 and your CANVAS "
+"host is at 192.168.244.1:\n"
+"\n"
+"Source: 192.168.244.123\n"
+"Dest  : 192.168.244.1\n"
+"\n"
+"This will hide the ports of your choosing where the connection was outbound "
+"to your CANVAS host. If you had a trojaned service running on your target "
+"and you wanted to hide the inbound connection you would do it like this:\n"
+"\n"
+"Source: 192.168.244.1\n"
+"Dest  : 192.168.244.123\n"
+"\n"
+"You must discard Dest address and port range for UDP port hide. Such "
+"information is not available inside internal Windows Kernel Network "
+"Structures.\n"
+msgstr ""
+"\n"
+"에서 netstat와 같은 프로그램에서 네트워크 연결을 통계 있도다.\n"
+"\n"
+"몇 가지 예제, 192.168.244.123하여 캔버스에 귀하의 타겟 생활 가정"
+"호스트 192.168.244.1입니다 :\n"
+"\n"
+"출처 : 192.168.244.123\n"
+"dest : 192.168.244.1\n"
+"\n"
+"이것은 당신이 원하는 포트를 숨기는 것입니다 아웃 바운드 연결이됐다가 어디"
+"귀하의 캔버스를 호스트합니다. 만약 당신이 목표를 실행하는 트로이 목마가 심어져 서비스를했다"
+"그리고 당신이 이렇게 할 것 인바 운드 연결을 숨기려하고 싶었 :\n"
+"\n"
+"출처 : 192.168.244.1\n"
+"dest : 192.168.244.123\n"
+"\n"
+"당신은 UDP 포트 범위 숨기기 Dest 주소와 포트를 폐기해야합니다. 이런"
+"정보는 내부 Windows 커널의 네트워크 안에없습니다"
+"구조.\n"
+
+msgid ""
+"Hides a running process from view of the operating system. Uses the process "
+"PID."
+msgstr ""
+"운영 체제의보기에서 셀레늄을 실행하는 프로세스. 를 사용하여 프로세스를"
+"PID를."
+
+msgid ""
+"Hides a registry key in the target node. Reg names must follow kernel "
+"registry names:\n"
+"\n"
+"    * HKEY_LOCAL_MACHINE = \\Registry\\Machine\n"
+"    * HKEY_USERS                = \\Registry\\User\n"
+"    * HKEY_CURRENT_USER  = \\Registry\\User\\User_SID\n"
+"    \n"
+"For example, to hide:\n"
+"\n"
+"HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\Run"
+"\\canvastrojan.exe\n"
+"\n"
+"you would use the following:\n"
+"\n"
+"\\REGISTRY\\MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\run"
+"\\canvastrojan.exe"
+msgstr ""
+"대상 노드에 있도다 레지스트리 키를 누릅니다. 등록 이름은 커널을 따라야합니다"
+"레지스트리 이름 :\n"
+"\n"
+"* HKEY_LOCAL_MACHINE을 = \\ \\ 레지스트리 \\ \\ 머신\n"
+"* HKEY_USERS로 = \\ \\ 레지스트리 \\ \\ 사용자\n"
+"* HKEY_CURRENT_USER = \\ \\ 레지스트리 \\ \\ 사용자 \\ \\ User_SID\n"
+"\n"
+"예를 들어, 숨길 수 :\n"
+"\n"
+"HKEY_LOCAL_MACHINE을 \\ \\ 소프트웨어 \\ \\ 마이크로 소프트 \\ \\ 윈도우 \\ \\ CurrentVersion \\ \\ 실행"
+"\\ \\ canvastrojan.exe\n"
+"\n"
+"당신은 다음을 사용할 것이다 :\n"
+"\n"
+"\\ \\ REGISTRY \\ \\ 기계 \\ \\ 소프트웨어 \\ \\ 마이크로 소프트 \\ \\ 윈도우 \\ \\ CurrentVersion \\ \\ 실행"
+"\\ \\ canvastrojan.exe"
+
+msgid "Installs the HCN rootkit."
+msgstr "HCN 루트 킷을 설치합니다."
+
+msgid "Removes HCN rootkit from target host."
+msgstr "HCN 대상 호스트에서 루트 킷을 제거합니다."
+
+msgid ""
+"Uses the Windows rootkit to hide files on the remote host. Renames an "
+"existing file with the 'mosdef' prefix. Keep in mind that running processes "
+"cannot have their executable's filename changed until they are stopped."
+msgstr ""
+"윈도우 루트 킷을 사용하는 원격 호스트에있는 파일을 숨길 수있습니다. 이름을 변경합니다"
+"'mosdef'기존의 파일에 접두사입니다. 명심 실행중인 프로세스"
+"그들은 중단하기 전까지 그들의 실행 파일 이름을 변경할 수없습니다."
+
+msgid ""
+"Hides a TCP port from the view of the operating system. Needs to have the "
+"MOSDEF rootkit loaded first."
+msgstr ""
+"운영 체제의보기에서 셀레늄의 TCP 포트. 욕구를"
+"MOSDEF 루트 킷을 먼저 읽어."
+
+msgid ""
+"Hides a running process from view of the operating system. Uses the process "
+"name (no extension)."
+msgstr ""
+"운영 체제의보기에서 셀레늄을 실행하는 프로세스. 를 사용하여 프로세스를"
+"이름 (확장명)."
+
+msgid ""
+"Hides a running process from view of the operating system. Uses the process "
+"PID (no extension)."
+msgstr ""
+"운영 체제의보기에서 셀레늄을 실행하는 프로세스. 를 사용하여 프로세스를"
+"PID는 (확장명)."
+
+msgid ""
+"Connects to HP Printers and provides basic file access (dir/upload/download)"
+msgstr ""
+"HP는 프린터에 연결하고 기본적인 파일 액세스를 제공합니다 (말일세 / 업로드 / 다운로드)"
+
+msgid "HTTP Proxy for MOSDEF Callbacks"
+msgstr "HTTP 프록시 콜백에 대한 MOSDEF"
+
+msgid "Fingerprint an HTTP Server"
+msgstr "지문 HTTP 서버"
+
+msgid "HTTP Server that uploads files for you"
+msgstr "HTTP 서버는 당신을 위해 업로드 파일"
+
+msgid "Driver Impersonation Attack Could Allow Local Privilege Escalation"
+msgstr "드라이버가 가장 공격이 허용될 수 로컬 권한 상승"
+
+msgid "ICECAST exploit"
+msgstr "ICECAST 악용"
+
+msgid "ICMP Proxy for MOSDEF Callbacks"
+msgstr "ICMP는 프록시 콜백에 대한 MOSDEF"
+
+msgid "Checks for ICMP messages against remote hosts"
+msgstr "수표는 ICMP 메시지를 원격 호스트에 대한"
+
+msgid ""
+"A flaw in the way of handling special characters in URIs. Requires IE7 + WMP"
+msgstr ""
+"URI에 특수 문자를 처리하는 방식에 결함이. 필요 IE7은 + WMP"
+
+msgid "Microsoft IE Comments Use-After-Free bug (Aurora)"
+msgstr "MS는 IE의 의견을 사용하여 프리 버그 (오로라) 후"
+
+msgid ""
+"A flaw in the MIME/type comprobation in IE that can be used to force IE to "
+"interpret non-html files."
+msgstr ""
+"MIME을에 결함 / IE에서 그렇게 IE를 강제로 사용할 수있는 형식 comprobation"
+"비 - HTML 파일을 해석."
+
+msgid "Client-Side vulnerability in IE"
+msgstr "클라이언트 - 사이드 IE에서 보안 취약점"
+
+msgid ""
+"A flaw in the way of handling special characters in URIs. Requires IE7 + "
+"Adobe Acrobat Reader"
+msgstr ""
+"URI에 특수 문자를 처리하는 방식에 결함이. 필요 IE7이 +"
+"Adobe Acrobat Reader가"
+
+msgid "DCE Interface ID's Query Tool"
+msgstr "DCE가 인터페이스 ID가 쿼리 도구"
+
+msgid "IIS 5.0 Webdav Indexed Directory Disclosure"
+msgstr "IIS 5.0은 WebDAV를 인덱스 디렉토리 공시"
+
+msgid "IIS 5.0 .asp Heap Overflow"
+msgstr "IIS 5.0에서. 힙 오버플로 ASP가"
+
+msgid "Poor input validation allows remote users to execute arbitrary commands"
+msgstr "불쌍한 입력 유효성 검사를 원격 사용자가 임의의 명령을 실행할 수있습니다"
+
+msgid ""
+"IIS 5.0 Webdav Indexed Directory Disclosure - IIS 6.0 Webdav Auth bypass"
+msgstr ""
+"IIS 5.0은 WebDAV를 인덱스 디렉토리 공시 - IIS 6.0은 WebDAV를 정식 바이패스"
+
+msgid "IIS FTP GLOBBING Stack Exhaustion"
+msgstr "IIS에서 FTP를 GLOBBING 스택 과로"
+
+msgid "IIS FTP NLST Stack Overflow"
+msgstr "IIS에서 FTP를 NLST 스택 오버플로"
+
+msgid "IMAIL Imap4 stack overflow in Login field"
+msgstr "IMAIL은 IMAP4를 로그인 필드에 스택 오버플로"
+
+msgid "IMail SMTPD32 Stack Overflow"
+msgstr "IMAIL은 SMTPD32 스택 오버플로"
+
+msgid "LSASRV.DLL LSASS.EXE stack overflow"
+msgstr "Lsasrv.dll Lsass.exe에서 스택 오버플로"
+
+msgid "Imports a port/vulnerability scan from an external tool"
+msgstr "수입 포트 / 외부 취약점 스캔 도구에서"
+
+msgid "in.lpd command execution (Solaris 8)"
+msgstr "in.lpd 명령을 실행 (솔라리스 8)"
+
+msgid "Upload a DLL and inject into a running process."
+msgstr "업로드 DLL과 실행중인 프로세스에 삽입."
+
+msgid "Installs MOSDEF service"
+msgstr "설치 MOSDEF 서비스"
+
+msgid "Installs remote MOSDEF service over SMB"
+msgstr "SMB 이상의 원격 설치 서비스 MOSDEF"
+
+msgid ""
+"Misdesign in a component of Macrovision InstallShield 2008 ActiveX version "
+"5.01.100.47363 allows for arbitrary code execution"
+msgstr ""
+"Misdesign 매크로 비전은 InstallShield 2008에서 ActiveX 버전의 구성 요소"
+"5.01.100.47363 임의의 코드 실행을 허용합니다"
+
+msgid "NULL Pointer Dereference bug in win32k.sys"
+msgstr "Win32k.sys에서 NULL 포인터 Dereference 버그"
+
+msgid "Gathers data needed for IP Fingerprinting from a remote host"
+msgstr "수집 데이터의 IP 지문에 대한 원격 호스트에서 필요한"
+
+msgid ""
+"Parse the results we get from OSDETECT/ipfingerpring to determine OS info"
+msgstr ""
+"구문 우리 OSDETECT 떨어져 결과 / OS의 정보를 확인 ipfingerpring"
+
+msgid "iPlanet Chunked Encoding Overflow"
+msgstr "iPlanet 청크 분할 인코딩을 오버플로"
+
+msgid "IpSwitch Calendar Directory Traversal"
+msgstr "IpSwitch 캘린더 디렉토리 탐색"
+
+msgid "Jaf-CMS Statistics Remote File include"
+msgstr "JAF - CMS는 통계 원격 파일 포함"
+
+msgid "Misdesign in Java deserializing allows JVM sandbox escape"
+msgstr "Misdesign Java에서 JVM을 deserializing 수있는 샌드 박스 탈출"
+
+msgid "Joomla 12pic Component Remote File Inclusion"
+msgstr "Joomla 12pic 구성 요소를 원격 파일 포함"
+
+msgid "Joomla! 1.5 Beta code execution"
+msgstr "Joomla! 1.5 베타 코드 실행"
+
+msgid "Joomla Chronoforms Component Remote File Inclusion"
+msgstr "Joomla Chronoforms 구성 요소를 원격 파일 포함"
+
+msgid "Joomla com_colorlab Component Remote File Inclusion"
+msgstr "Joomla com_colorlab 구성 요소를 원격 파일 포함"
+
+msgid "Joomla Component custompages Remote File Inclusion "
+msgstr "Joomla 구성 요소를 원격 파일 포함 custompages"
+
+msgid "Joomla Flashfun Component Remote File Inclusion"
+msgstr "Joomla Flashfun 구성 요소를 원격 파일 포함"
+
+msgid "Joomla FlashUploader Component Remote File Inclusion"
+msgstr "Joomla FlashUploader 구성 요소를 원격 파일 포함"
+
+msgid "Joomla jContentSubscription Component Remote File Inclusion"
+msgstr "Joomla jContentSubscription 구성 요소를 원격 파일 포함"
+
+msgid "Joomla JUser Component Remote File Inclusion"
+msgstr "Joomla JUser 구성 요소를 원격 파일 포함"
+
+msgid "Joomla mosDirectory Component Remote File Inclusion"
+msgstr "Joomla mosDirectory 구성 요소를 원격 파일 포함"
+
+msgid "Joomla mosMedia Component Remote File Inclusion"
+msgstr "Joomla mosMedia 구성 요소를 원격 파일 포함"
+
+msgid "Joomla com_mp3_allopass Component Remote File Inclusion"
+msgstr "Joomla 구성 요소를 원격 파일 포함 com_mp3_allopass"
+
+msgid "Joomla FlashQuiz 1.0.2 Remote File Inclusion "
+msgstr "Joomla FlashQuiz 1.0.2 원격 파일 포함"
+
+msgid "Joomla Slideshow Component Remote File Inclusion"
+msgstr "Joomla 슬라이드쇼 구성 요소를 원격 파일 포함"
+
+msgid "Joomla panoramic Component Remote File Inclusion"
+msgstr "Joomla 파노라마 구성 요소를 원격 파일 포함"
+
+msgid "Journalness <= 4.1 Remote Code Execution exploit"
+msgstr "Journalness \"= 4.1 원격 코드 실행을 악용"
+
+msgid "Retrieves installed browser plugin info"
+msgstr "브라우저의 플러그인 정보를 검색 설치"
+
+msgid "Simple Win32 Keylogger"
+msgstr "간단한 Win32에서의 Keylogger"
+
+msgid "Sends a terminate signal to the process identified by a PID"
+msgstr "보내는 프로세스의 PID에 의해 식별 신호 종료"
+
+msgid "Lamasoftware Remote file include"
+msgstr "Lamasoftware 원격 포함 파일"
+
+msgid "Linksys WRT54G apply.cgi buffer overflow"
+msgstr "링크시스 WRT54G apply.cgi 버퍼 오버플로"
+
+msgid "Interacts with linux rootkit"
+msgstr "리눅스 루트 킷과 상호 작용"
+
+msgid "Loads a LKM based 2.6 rootkit"
+msgstr "로드 LKM 루트킷 2.6을 기반으로"
+
+msgid "Installs the CANVAS Ring0 node."
+msgstr "설치 캔버스 Ring0 노드입니다."
+
+msgid "Local LPC privilege escalation [ Windows 2000 / XP / 2003 ]"
+msgstr "LPC 로컬 권한 상승 [윈도우 2000 / XP 용 / 2003]"
+
+msgid "Locates a node"
+msgstr "노드를 찾습니다"
+
+msgid "LookStrike Lan Manager v0.9 Remote file include"
+msgstr "LookStrike 짬 관리자를 나타낸다 원격 파일을 포함"
+
+msgid "Lotus Domino 8.0.0 HTTP Server - Accept-Language Overflow"
+msgstr "의 Lotus Domino 8.0.0 HTTP 서버 -하는 accept - language 오버플로"
+
+msgid "Loudblog Remote Code Execution"
+msgstr "Loudblog 원격 코드 실행"
+
+msgid "Litespeed HTTPD file disclosure"
+msgstr "Litespeed httpd는 파일 공개"
+
+msgid "MailEnable Stack Overflow"
+msgstr "MailEnable 스택 오버플로"
+
+msgid "MailEnable IMAP Login overflow"
+msgstr "MailEnable IMAP에 로그인 오버플로"
+
+msgid "Mantis BugTracker => 1.1.3 Remote Code Execution"
+msgstr "Mantis는 BugTracker = \"1.1.3 원격 코드 실행"
+
+msgid "Multi-threaded attack tool"
+msgstr "멀티 스레드 공격 도구"
+
+msgid "Multi-threaded attack tool (With improved threading)"
+msgstr "멀티 스레드 공격 도구의 향상된 스레딩 ()와 함께"
+
+msgid "MDaemon Stack Overflow"
+msgstr "MDaemon 스택 오버플로"
+
+msgid ""
+"Parses a memory dump for common pieces of information like email addresses, "
+"IP addresses, and more."
+msgstr ""
+"구문 분석 메모리 이메일 주소와 같은 정보의 일반적인 조각에 대한 덤프"
+"IP 주소, 그리고 더."
+
+msgid "Mindmeld Remote file include"
+msgstr "Mindmeld 원격 포함 파일"
+
+msgid "Man In the Middle Attack"
+msgstr "남자 중동 공격"
+
+msgid "Create/Modify a registry key "
+msgstr "만들기 / 레지스트리 키를 수정"
+
+msgid ""
+"Serves an installable ActiveX control to the target host. The ActiveX calls "
+"back a shell."
+msgstr ""
+"대상 호스트에 설치 ActiveX 컨트롤 중이죠. ActiveX를 호출"
+"다시 껍질."
+
+msgid "MOSDEF Process Migration"
+msgstr "MOSDEF 프로세스 마이 그 레이션"
+
+msgid "Detect if there is motion on the remote computer (using the webcam)"
+msgstr "경우에는 원격 컴퓨터에서 모션 감지 () 웹캠을 사용하여"
+
+msgid "IIS 5.0 IPP ISAPI (.printer) Overflow"
+msgstr "IIS 5.0에서 IPP ISAPI를 (. 프린터) 오버플로"
+
+msgid "IIS 5.0 Index Server ISAPI (.ida) Overflow"
+msgstr "IIS 5.0에서 인덱스 서버에서 ISAPI (. 아이다) 오버플로"
+
+msgid "Microsoft Windows RPC Locator locator.exe Stack Overflow"
+msgstr "는 Microsoft Windows RPC 로케이터 Locator.exe 스택 오버플로"
+
+msgid "Microsoft IIS 5.0 WebDav ntdll.dll Buffer Overflow"
+msgstr "Microsoft는 IIS 5.0은 WebDav Ntdll.dll은 버퍼 오버플로"
+
+msgid "IIS 5.0 Windows Media Services ISAPI (nsisslog.dll) Overflow"
+msgstr "IIS 5.0은 Windows Media 서비스에서 ISAPI (nsisslog.dll) 오버플로"
+
+msgid "Microsoft Windows RPC Interface Stack Overflow"
+msgstr "는 Microsoft Windows RPC 인터페이스 스택 오버플로"
+
+msgid "Microsoft Windows Workstation Service RPC Stack Overflow"
+msgstr "는 Microsoft Windows 워크 스테이션 서비스를 통한 RPC 스택 오버플로"
+
+msgid "MSASN1.DLL bitstring decoding heap overwrite"
+msgstr "MSASN1.DLL bitstring 디코딩 힙 덮어"
+
+msgid "Microsoft Windows LsaSs RPC lsasrv.dll Stack Overflow"
+msgstr "는 Microsoft Windows Lsass RPC를 Lsasrv.dll 스택 오버플로"
+
+msgid "Microsoft SSL PCT Hello Stack Overflow"
+msgstr "MS는 SSL을에서 PCT 안녕하세요 스택 오버플로"
+
+msgid "Microsoft Windows NetDDE RPC netdde.exe Stack Overflow"
+msgstr "는 Microsoft Windows NetDDE의 RPC를 netdde.exe 스택 오버플로"
+
+msgid "WINS Name Validation Stack Overflow"
+msgstr "WINS 이름 확인 스택 오버플로"
+
+msgid "Microsoft License Logging Service .data Buffer Overflow"
+msgstr "Microsoft는 라이센스 로깅 서비스. 데이터가 버퍼 오버플로"
+
+msgid ""
+"Microsoft Message Queuing Service GetQueueIdForDirectFormatName() Stack "
+"Overflow"
+msgstr ""
+"Microsoft는 메시지 대기열 서비스 GetQueueIdForDirectFormatName () 스택"
+"오버플로"
+
+msgid ""
+"MS Exchange 2000 contains a heap overflow flaw when handling the XLINK2STATE "
+"command"
+msgstr ""
+"MS 익스체인지 2000 힙 오버플로우 결함 XLINK2STATE 처리 포함"
+"명령"
+
+msgid "Microsoft Windows PnP umpnpmgr.dll RPC Stack Overflow"
+msgstr "는 Microsoft Windows PnP umpnpmgr.dll RPC를 스택 오버플로"
+
+msgid "Windows Telephony Service Stack Overflow"
+msgstr "윈도우 텔레포니 서비스 스택 오버플로"
+
+msgid "Windows Print Spooler win32spl.dll Heap Overflow"
+msgstr "윈도우 인쇄 스풀러 win32spl.dll 힙 오버플로"
+
+msgid "Microsoft Netware Service RPC Stack Overflow"
+msgstr "Microsoft는 넷웨어 서비스를 통한 RPC 스택 오버플로"
+
+msgid "Microsoft Windows Media Player Malformed PNG Vulnerability"
+msgstr "Microsoft는 Windows Media Player의 취약점으로 인한 잘못된 PNG로"
+
+msgid "RasMan RPC Server Signedness Bug"
+msgstr "RasMan RPC 서버 Signedness 버그"
+
+msgid "RasMan RPC Server Stack Overflow"
+msgstr "RasMan RPC 서버 스택 오버플로"
+
+msgid "Windows Server Service CanonicalizePathName() Stack Overflow"
+msgstr "윈도우 서버 서비스 CanonicalizePathName () 스택 오버플로"
+
+msgid "Internet Explorer Vector Markup Language Stack Overflow"
+msgstr "Internet Explorer의 벡터 마크업 언어 스택 오버플로"
+
+msgid "Internet Explorer WebViewFolderIcon setSlice() Overflow"
+msgstr "Internet Explorer를 WebViewFolderIcon setSlice () 오버플로"
+
+msgid "Microsoft Netware RPC Interface Stack Overflow"
+msgstr "Microsoft는 Netware를 RPC 인터페이스 스택 오버플로"
+
+msgid "Microsoft Workstation Service Overflow"
+msgstr "Microsoft는 워크 스테이션 서비스의 오버플로"
+
+msgid "Microsoft XML Core Services 4.0 Vulnerability"
+msgstr "일자 Microsoft XML Core Services 4.0을 취약점"
+
+msgid "Microsoft SNMP Service Remote Arbitrary GlobalFree"
+msgstr "Microsoft는 SNMP 서비스 원격 임의 GlobalFree"
+
+msgid "Microsoft Windows VML recolorinfo Bug"
+msgstr "는 Microsoft Windows에서 VML 버그 recolorinfo"
+
+msgid ""
+"Windows XP UPnP upnphost.dll CHttpRequest::GetServerVariable Stack Overflow"
+msgstr ""
+"Windows XP에서 UPnP를 Upnphost.dll CHttpRequest : : GetServerVariable 스택 오버플로"
+
+msgid "Microsoft DNS Server RPC Interface Stack Overflow"
+msgstr "마이크로 소프트 DNS 서버의 RPC 인터페이스 스택 오버플로"
+
+msgid ""
+"\n"
+"From CVE: vulnerability in the Windows Schannel Security Package for \n"
+"Microsoft Windows 2000 SP4, XP SP2, and Server 2003 SP1 and SP2, allows \n"
+"remote servers to execute arbitrary code or cause a denial of service \n"
+"via crafted digital signatures that are processed during an SSL \n"
+"handshake."
+msgstr ""
+"\n"
+"CVE 올린사람 : 윈도우 Schannel의 보안 패키지의 취약점에 대한\n"
+"마이크로 소프트는 Windows 2000 SP4, XP SP2로, 그리고 Server 2003 SP1 및 SP2를 수\n"
+"원격 서버에 임의의 코드를 실행하거나 서비스 거부가 발생할\n"
+"SSL을하는 동안 그 처리를 통해 만들어진 디지털 서명\n"
+"악수."
+
+msgid "Microsoft Agent URL InternetCanonicalizeUrlW Stack Overflow"
+msgstr "마이크로 소프트 에이전트의 URL을 InternetCanonicalizeUrlW 스택 오버플로"
+
+msgid "Outlook Express NNTP Heap Overflow"
+msgstr "Outlook Express의 NNTP를 힙 오버플로"
+
+msgid ""
+"Microsoft Message Queuing Service ReplaceDNSNameWithNetBiosName() Stack "
+"Overflow"
+msgstr ""
+"Microsoft는 메시지 대기열 서비스 ReplaceDNSNameWithNetBiosName () 스택"
+"오버플로"
+
+msgid "Microsoft Vista ALPC Dangling Pointer Overwrite"
+msgstr "MS의 윈도우 비스타 ALPC 매달려있는 포인터를 덮어 씁니다"
+
+msgid "Macrovision SecDrv.sys Arbitrary Overwrite"
+msgstr "매크로 비전 SecDrv.sys 임의의 덮어쓰기"
+
+msgid ""
+"Vulnerability in Windows Media File Format Could Allow Remote Code Execution"
+msgstr ""
+"취약점은 Windows Media 파일 형식으로 인한 원격 코드 실행"
+
+msgid "Windows TCP/IP IGMPv3 Kernel Pool Overflow"
+msgstr "윈도우 TCP / IP를 IGMPv3 커널 풀 오버플로"
+
+msgid "Integer Overflow in "
+msgstr "정수 오버플로"
+
+msgid ""
+"Vulnerability in VBScript and JScript Scripting Engines Could Allow Remote "
+"Code Execution"
+msgstr ""
+"취약점 VBScript 및 JScript 스크립팅 엔진에서 허용 수도 원격"
+"코드 실행"
+
+msgid "Vulnerability in Windows Kernel Could Allow Elevation of Privilege"
+msgstr "Windows 커널 취약점으로 권한 승격이 허용될 수있다이"
+
+msgid "Microsoft SAMI Buffer Overflow"
+msgstr "Microsoft는 사미 버퍼 오버플로"
+
+msgid "Microsoft WINS Server Vulnerability"
+msgstr "Microsoft WINS는 서버의 취약점으로 인한"
+
+msgid ""
+"Vulnerability in InternalOpenProfile function Could Allow Remote Code "
+"Execution"
+msgstr ""
+"InternalOpenProfile 함수 취약점으로 인한 원격 코드"
+"실행"
+
+msgid "Vulnerabilities in Event System Could Allow Remote Code Execution"
+msgstr "이벤트 시스템의 취약점으로 인한 원격 코드 실행"
+
+msgid ""
+"A buffer overflow in the GetDetailString allows us execute arbitrary code"
+msgstr ""
+"GetDetailString에 버퍼 오버플로 우리가 임의 코드를 실행할 수있습니다"
+
+msgid "Microsoft Host Integration Server RPC Interface Vulnerability"
+msgstr "Microsoft는 호스트 통합 서버 RPC 인터페이스의 취약점으로 인한"
+
+msgid "Windows Internet Printing Service Overflow"
+msgstr "Windows 인터넷 인쇄 서비스 오버플로"
+
+msgid "Windows SMB Server Overflow"
+msgstr "윈도우 SMB 서버가 오버플로"
+
+msgid "Windows Server Service CanonicalizePathName() Stack Underflow"
+msgstr "윈도우 서버 서비스 CanonicalizePathName () 스택 언더 플로"
+
+msgid "SMB Credential Reflection"
+msgstr "SMB 자격 반사"
+
+msgid "MS Internet Explorer XML Parsing Vulnerability"
+msgstr "MS Internet Explorer를 XML을 구문 분석 취약점"
+
+msgid ""
+"Memory corruption in Internet Explorer 7 allows arbitrary code execution."
+msgstr ""
+"Internet Explorer 7에서 메모리 손상을 임의의 코드가 실행될 수있습니다."
+
+msgid "Windows HTTP Service Integer Underflow"
+msgstr "윈도우 HTTP 서비스를 정수 언더 플로"
+
+msgid "Microsoft Windows Print Spooler Overflow"
+msgstr "는 Microsoft Windows Print Spooler를 오버플로"
+
+msgid "Microsoft Windows Print Spooler Arbitrary DLL Loading"
+msgstr "는 Microsoft Windows Print Spooler를 임의의 DLL을로드"
+
+msgid "Microsoft Embedded OpenType Font Engine Vulnerability"
+msgstr "MS는 오픈 타입 글꼴 엔진의 취약점으로 인한 임베디드"
+
+msgid "Microsoft DirectShow (msvidctl.dll) Vulnerability"
+msgstr "마이크로 소프트의 DirectShow (msvidctl.dll)의 취약점으로 인한"
+
+msgid "WINS Integer Overflow"
+msgstr "WINS는 정수 오버플로"
+
+msgid "Windows Server Service NetrGetJoinDomainInformation() Double Free"
+msgstr "윈도우 서버 서비스 NetrGetJoinDomainInformation ()를 두 번 무료"
+
+msgid "ASF_Audio_media Parsing bug"
+msgstr "ASF_Audio_media 구문 분석 버그"
+
+msgid "LSASS NTLM Authenticate Vulnerability"
+msgstr "LSASS는 NTLM 인증의 취약점으로 인한"
+
+msgid "MS09-061 Microsoft .NET CAS Type Verification Vulnerability"
+msgstr "MS09 - 061는 Microsoft. NET CAS를 입력 검증 취약점"
+
+msgid "ADFS Remote Code Execution"
+msgstr "ADFS 원격 코드 실행"
+
+msgid "msdtc MIDL_user_allocate bug"
+msgstr "msdtc를 MIDL_user_allocate 버그"
+
+msgid ""
+"A VDM process can trick a cs:eip check to allow access to a trusted function "
+"thru a #GP trap handler"
+msgstr ""
+"VDM 과정 CS가 트릭을 수있습니다 : EIP의 체크 기능을 신뢰할 수있는 액세스를 허용하도록"
+"# GP를 함정에 처리기를 통해"
+
+msgid "Enables an identity token and setthreadtokens it"
+msgstr "정체성을 활성화 토큰을하고 setthreadtokens"
+
+msgid "MSRPC MESSENGER Heap Overflow"
+msgstr "MSRPC 메신저 힙 오버플로"
+
+msgid "MS Internet Explorer 7 XML Parsing Stack Overflow"
+msgstr "석사 Internet Explorer 7에서 XML을 구문 분석 스택 오버플로"
+
+msgid "[0day] MSRPC Crash (INSTANTREPLAY)"
+msgstr "[0일] MSRPC 크래시 (INSTANTREPLAY)"
+
+msgid "Fuzzer for MSRPC Endpoints"
+msgstr "MSRPC Fuzzer 종점"
+
+msgid "Authentication with or without a pass"
+msgstr "인증 또는 통행증없이는"
+
+msgid "replwritetovarbin stored procedure overflow."
+msgstr "replwritetovarbin 절차를 오버플로 저장됩니다."
+
+msgid "MS SQL Hello Stack Overflow"
+msgstr "석사는 SQL 안녕하세요 스택 오버플로"
+
+msgid "MS SQL Injection Routines"
+msgstr "석사 SQL 주입 루틴"
+
+msgid "MS SQL Resolver Ping"
+msgstr "석사는 SQL 확인자 핑"
+
+msgid "MS SQL Resolver Stack Overflow"
+msgstr "석사는 SQL 확인자 스택 오버플로"
+
+msgid "WINS Pointer hijacking exploit"
+msgstr "WINS는 포인터를 이용 납치"
+
+msgid "MS Exchange 2000 contains a flaw when handling the XEXCH50 command"
+msgstr "MS 익스체인지 2000 결함 XEXCH50 명령 처리를 포함"
+
+msgid "MacOS X 10.4 mDNSResponder UPNP Remote Root Exploit"
+msgstr "맥 OS X 10.4 mDNSResponder UPnP는 원격 루트 익스플로잇"
+
+msgid "Authentication bypass with zeroed-string password"
+msgstr "인증을 우회 의하면 문자열 비밀 번호"
+
+msgid "Nagios < 3.1.1 statuswml.cgi Command Injection Vulnerability"
+msgstr "Nagios \"3.1.1 statuswml.cgi 명령을 주입 취약점"
+
+msgid "NAI Enterprise Virus 7.0 Stack Overflow"
+msgstr "NAI 엔터 프라이즈 바이러스 7.0 스택 오버플로"
+
+msgid "Imports data from other tools into CANVAS"
+msgstr "캔버스에 다른 도구에서 수입 데이터를"
+
+msgid "VERITAS NetBackup Java User Interface Format String"
+msgstr "베리타스 NetBackup 자바 사용자 인터페이스 형식 문자열"
+
+msgid "NETDDE.EXE Exploit through NetBIOS"
+msgstr "NETDDE.EXE 공격에서 NetBIOS를 통해"
+
+msgid "Novell NetMail Login Stack Overflow"
+msgstr "노벨 NetMail 로그인 스택 오버플로"
+
+msgid "Novell Netmail WebAdmin Stack Overflow"
+msgstr "노벨 Netmail WebAdmin 스택 오버플로"
+
+msgid "Netopia ADSL/Wireless information gathering"
+msgstr "네토피아 ADSL / 무선 정보 수집"
+
+msgid "netRisk Remote file include"
+msgstr "netRisk 원격 파일을 포함"
+
+msgid "NewsOffice 1.1 Remote File Include Vulnerabilitiy"
+msgstr "NewsOffice 1.1 원격 파일 포함 Vulnerabilitiy"
+
+msgid "NIPrint stack overflow"
+msgstr "NIPrint 스택 오버플로"
+
+msgid "Imports a port scan from an nmap xml output"
+msgstr "XML 출력 포트 nmap에서 수입 검사를"
+
+msgid "Symantec/Norton UPX overflow."
+msgstr "시만텍 / 노턴 UPX 오버플로."
+
+msgid "Netscape NSS Library Remote Compromise"
+msgstr "넷스케이프이 NSS 라이브러리 원격 손상될 수"
+
+msgid "Novell Netware Client for Windows Print Providor Stack Overflow"
+msgstr "노벨 NetWare 클라이언트 윈도우 인쇄 Providor 스택 오버플로에 대한"
+
+msgid "Novell Netware Client for Windows Print Provider Stack Overflow"
+msgstr "노벨 NetWare 클라이언트 윈도우 인쇄 공급자는 스택 오버플로에 대한"
+
+msgid ""
+"Create one pdf file that has multiple exploits for different pdf readers."
+msgstr ""
+"다른 PDF 리더에 대해 여러 개의 악성 코드가 하나의 pdf 파일을 만듭니다."
+
+msgid ""
+"A flaw in the java support over SQL queries allows an attacker to execute "
+"any static java method"
+msgstr ""
+"SQL 쿼리에 자바를 지원 취약성 공격을 실행할 수있습니다"
+"모든 정적 자바 메서드"
+
+msgid "OpenAds 2.4.0 <= x <= 2.4.2 Remote Code Execution"
+msgstr "OpenAds 2.4.0 \"= x\"= 2.4.2 원격 코드 실행"
+
+msgid "Open-Realty <= 2.4.3 Remote Code Execution"
+msgstr "오픈 리얼티 \"= 2.4.3 원격 코드 실행"
+
+msgid "OpenSSL key_arg_len Overflow"
+msgstr "key_arg_len은 OpenSSL 오버플로"
+
+msgid "HP OpenView Trace Service OVTrace.exe Stack Overflow"
+msgstr "HP의 오픈뷰 추적 서비스 OVTrace.exe 스택 오버플로"
+
+msgid "Oracle8i <= 8.1.7 TNS Listener Argument stack overflow"
+msgstr "Oracle8i \"= 8.1.7 조사 기관인 TNS Listener는 인수가 스택 오버플로"
+
+msgid "Oracle <= Oracle Info"
+msgstr "오라클 \"= 오라클 정보"
+
+msgid "Oracle <= Password"
+msgstr "오라클 \"= 비밀 번호"
+
+msgid "Oracle <= Usernames"
+msgstr "오라클 \"= 사용자 이름"
+
+msgid "OS Detection"
+msgstr "운영 체제 탐지"
+
+msgid "PacerCMS 0.6 Remote Code Execution"
+msgstr "PacerCMS 0.6 원격 코드 실행"
+
+msgid "Performs passive os detection"
+msgstr "수동 검색을 수행하는 운영 체제"
+
+msgid "PGP wdef IOCTL bug"
+msgstr "PGP는 wdef IOCTL 버그"
+
+msgid "PHP <= 4.3.7 memory_limit exploit"
+msgstr "PHP는 \"= 4.3.7 악용 memory_limit를"
+
+msgid "PHP 5.2.1 Rejected Session ID Double Free Exploit"
+msgstr "PHP는 5.2.1 거부 세션을 두 번 무료 익스플로잇 자료 ID"
+
+msgid "PHPauction GPL 2.51 Remote File include"
+msgstr "PHPauction GPL은 2.51 원격 파일 포함"
+
+msgid "phpBB Highlight code execution"
+msgstr "phpBB를 강조 표시하고 코드 실행"
+
+msgid "PHPBlock Remote File include"
+msgstr "PHPBlock 원격 파일 포함"
+
+msgid "php_callback client"
+msgstr "php_callback 클라이언트"
+
+msgid "PHPlinks Remote file include"
+msgstr "PHPlinks 원격 포함 파일"
+
+msgid "PHPList <= 2.10.7 Local File Include"
+msgstr "PHPList \"= 2.10.7 로컬 파일 포함"
+
+msgid "phpMyAdmin PHP injection 2.11.x - 2.11.9.4 and 3.x - 3.1.3.0"
+msgstr "PHP는 사출 2.11.x phpMyAdmin - 2.11.9.4와 3.x의 - 3.1.3.0"
+
+msgid ""
+"Poor input validation allows remote users to insert php code into the forum "
+"and execute commands"
+msgstr ""
+"불쌍한 입력 유효성 검사를 원격 사용자 포럼에 PHP 코드를 삽입하실 수있습니다"
+"및 명령 실행"
+
+msgid "phporacle Remote file include"
+msgstr "phporacle 원격 파일을 포함"
+
+msgid "phpProfiles Remote file include"
+msgstr "phpProfiles 원격 파일을 포함"
+
+msgid "phpQLAdmin 2.2.7 Remote file include"
+msgstr "phpQLAdmin 2.2.7 원격 파일을 포함"
+
+msgid "PHPSlash <= 0.8.1.1 Remote Code Execution"
+msgstr "PHPSlash \"= 0.8.1.1 원격 코드 실행"
+
+msgid "phpUserBase Remote file include"
+msgstr "phpUserBase 원격 파일을 포함"
+
+msgid "PHPyabs 0.1.2 Remote File Include"
+msgstr "PHPyabs 0.1.2 원격 파일 포함"
+
+msgid "Piwik Remote Code Execution"
+msgstr "Piwik 원격 코드 실행"
+
+msgid "Pluck 4.6.2 Local File Include"
+msgstr "뽑다 4.6.2 로컬 파일 포함"
+
+msgid "PNphpBB2 1.2i Local File Include"
+msgstr "PNphpBB2 1.2i 로컬 파일 포함"
+
+msgid "Podcast Generator <= 1.0 BETA 2 Remote file include"
+msgstr "팟캐스트 생성기 \"= 1.0 베타 2는 원격 파일을 포함"
+
+msgid "Portail Web Php Remote file include"
+msgstr "Portail 웹 Php 원격 포함 파일"
+
+msgid "Portscanner"
+msgstr "Portscanner"
+
+msgid "Scans for one port on many hosts"
+msgstr "여러 호스트에 하나의 포트에 대한 스캔"
+
+msgid "Injects a callback shellcode into a process"
+msgstr "주사 과정에 콜백 shellcode를"
+
+msgid ""
+"proto ops / udp_sendmsg null deref Linux Kernel local root (2.6.X 32bit "
+"Edition)"
+msgstr ""
+"프로토 작전 / null로 deref 리눅스 커널 로컬 루트 (2.6.x 32 비트 udp_sendmsg"
+"자용)"
+
+msgid "Gets a listing of the processes on all selected nodes"
+msgstr "선택한 모든 노드에 대한 프로세스의 목록을 만든다"
+
+msgid "CVS pserverd heap overflow"
+msgstr "CVS는 pserverd 힙 오버플로"
+
+msgid "PunBB RC1 Remote Code Execution"
+msgstr "PunBB RC1은 원격 코드 실행"
+
+msgid "PunBB user language include => code execution"
+msgstr "사용자 PunBB 언어 = \"코드 실행 문제를 포함"
+
+msgid "Imports data from QualysGuard 6.5 scans into CANVAS"
+msgstr "QualysGuard 로부터의 수입은 데이터를 캔버스에 6.5 스캔"
+
+msgid "Quantum Game Library 0.7.2c Remote file include"
+msgstr "퀀텀 게임 도서관 0.7.2c 원격 파일을 포함"
+
+msgid "Attacks hosts with exploits imported from Qualysreport"
+msgstr "Qualysreport에서 수입을 악용하는 공격을 호스트"
+
+msgid ""
+"Misdesign in a component of QuickTime 7.2 permits arbitrary code execution"
+msgstr ""
+"Misdesign의 QuickTime 7.2 구성 요소에서 임의의 코드가 실행될 수있습니다"
+
+msgid ""
+"A misdesign in the RTSP parser allows arbitrary execution using the Content-"
+"Type header"
+msgstr ""
+"RTSP를 파서에서 misdesign 임의의 콘텐츠를 사용하여 실행을 수있습니다 -"
+"Type 헤더"
+
+msgid "Apple QuickTime rtsp URL Handler Stack Overflow"
+msgstr "애플의 퀵타임은 RTSP URL 처리기는 스택 오버플로"
+
+msgid "QuickTeam Remote File Include"
+msgstr "QuickTeam 원격 파일 포함"
+
+msgid "Quinsonnas Mail Checker 1.55 Remote File Inclusion "
+msgstr "Quinsonnas 메일 검사기 1.55 원격 파일 포함"
+
+msgid "Attacks hosts with exploits imported from Rapid7 Reports"
+msgstr "이용 Rapid7 리포트에서 가져온 공격 호스트"
+
+msgid "Novadigm 3.1 radexecd.exe stack overflow."
+msgstr "Novadigm 3.1 radexecd.exe 스택 오버플로."
+
+msgid ""
+"Dumps all physical RAM available on target machine. Uses a kernel driver to "
+"bypass usermode restrictions in some versions of Windows."
+msgstr ""
+"모든 실제 RAM이 대상 컴퓨터에서 사용할 수 덤프. 를 사용하는 커널 드라이버"
+"일부 Windows 버전에서 UserMode 제한을 우회."
+
+msgid "Real Player ActiveX Import Stack Overflow"
+msgstr "리얼 플레이어 ActiveX를 가져오기 스택 오버플로"
+
+msgid "RealServer ../../ stack overflow"
+msgstr "RealServer ../../ 스택 오버플로"
+
+msgid "Helix Server Content-Length overflow."
+msgstr "헬릭스 서버 콘텐츠 길이 오버플로."
+
+msgid "Detect buggy authentication in RealVNC Servers"
+msgstr "RealVNC 서버에서 검색 버기 인증"
+
+msgid "Record audio from the microphone"
+msgstr "마이크 기록 음성"
+
+msgid "Record video from a webcam"
+msgstr "웹캠에서 레코드 동영상"
+
+msgid "Make a remark into the logs"
+msgstr "로그로 말하다"
+
+msgid "Creates spreadsheet from CANVAS session pickles. Requires Open Office."
+msgstr "캔버스 세션 피클에서 스프레드 시트를 만듭니다. 오픈 오피스가 필요합니다."
+
+msgid "Restarts a service on all selected nodes"
+msgstr "다시 시작 선택한 모든 노드에서 서비스를"
+
+msgid "Rexd remote \"exploit\""
+msgstr "Rexd 원격 \\ \"악용 \\\""
+
+msgid "Remove a Directory. Uses first selected node."
+msgstr "디렉토리를 제거합니다. 가장 먼저 선택한 노드를 사용합니다."
+
+msgid "RoundCube Webmail Pre-Authentication Code Execution"
+msgstr "RoundCube 웹메일 일 Pre - 인증 코드 실행"
+
+msgid "SunRPC Port Mapper"
+msgstr "SunRPC 포트 매퍼"
+
+msgid "Rsync Heap Overflow"
+msgstr "rsync 힙 오버플로"
+
+msgid "Test of RTSP library"
+msgstr "시험은 RTSP의 도서관"
+
+msgid "Calls popen2() or equivalent. Uses first selected node."
+msgstr "통화 popen2 () 또는 동급. 가장 먼저 선택한 노드를 사용합니다."
+
+msgid "Starts up a sniffer instance"
+msgstr "시작 스니퍼 인스턴스를 최대"
+
+msgid "Sadmind Remote Exploit for Solaris"
+msgstr "Sadmind 원격 공격 Solaris 용"
+
+msgid "Steal files from target machine through Safari local file:/// URI"
+msgstr "Safari는 로컬 파일을 통해 대상 컴퓨터에서 빼간 파일 : / / / URI를"
+
+msgid "Steal files from target machine through Safari XSL local file access"
+msgstr "Safari는 XSL은 로컬 파일 액세스를 통해 대상 컴퓨터에서 빼간 파일"
+
+msgid "Samba Nttrans Overflow"
+msgstr "삼바 Nttrans 오버플로"
+
+msgid "Samba Trans2 Stack Overflow"
+msgstr "삼바 Trans2 스택 오버플로"
+
+msgid "SamiFTP Stack Overflow on USER command"
+msgstr "SamiFTP 스택 오버플로 사용자 명령"
+
+msgid "SAPDB Stack Overflow"
+msgstr "SAPDB 스택 오버플로"
+
+msgid "savant web server stack overflow."
+msgstr "장애야 웹 서버 스택 오버플로."
+
+msgid "Grab a picture of the screen"
+msgstr "화면을 잡아 사진"
+
+msgid ""
+"Stack overflow on parsing the Cookie/Session paramater of a HTTP POST "
+"request."
+msgstr ""
+"쿠키 파싱에 스택 오버플로 / HTTP POST를이 세션 paramater"
+"요청."
+
+msgid "Set the osdetection configuration information"
+msgstr "osdetection 설정 구성 정보"
+
+msgid "Sets the thread token (0 for reverttoself)"
+msgstr "설정 스레드 토큰 (0 RevertToSelf에 대한)"
+
+msgid "Sets the user ID on Unix-family systems"
+msgstr "설정 사용자가 유닉스에 대한 자료 ID - 가족 시스템"
+
+msgid ""
+"Get a list of shares from the remote machine using srvsvc::NetrShareEnum"
+msgstr ""
+"srvsvc를 사용하여 원격 컴퓨터에서 주식의 목록을 가져 : : NetrShareEnum"
+
+msgid "Format string exploit for versions 1.9.4 and 1.9.2"
+msgstr "포맷 문자열 버전 1.9.4 및 1.9.2에 대한 악용"
+
+msgid "SiteX <= 0.7.4.418 Local File Include"
+msgstr "SiteX \"= 0.7.4.418 로컬 파일 포함"
+
+msgid "SL Web Supervisor HTTP Subversion Stack Overflow"
+msgstr "SL 웹 수퍼바이저 HTTP를 Subversion을 스택 오버플로"
+
+msgid "Smallaxe Remote file include"
+msgstr "Smallaxe 원격 포함 파일"
+
+msgid "SmarTag Bug on Microsoft Word"
+msgstr "Microsoft Word에서에 대한 버그 SmarTag"
+
+msgid "Smart Publisher 1.0.1 PHP code execution"
+msgstr "스마트 제작사 1.0.1 PHP 코드를 실행"
+
+msgid "SMB2 Negotiate Pointer Dereference Vulnerability"
+msgstr "SMB2 협상 포인터 취약점 Dereference"
+
+msgid "Slow SMB bruteforcer"
+msgstr "느린 SMB bruteforcer"
+
+msgid "smbclient"
+msgstr "smbclient"
+
+msgid "Simple Machines Forum => 1.1.6 CSRF Remote Code Execution"
+msgstr "간단한 기계 포럼 = \"1.1.6 CSRF 원격 코드 실행"
+
+msgid "Simple Machines Forum 1.1.2 - 1.1.3 Remote Code Execution"
+msgstr "간단한 기계 포럼 1.1.2 - 1.1.3 원격 코드 실행"
+
+msgid "Simple Machines Forum => 1.1.6 Remote Code Execution"
+msgstr "간단한 기계 포럼 = \"1.1.6 원격 코드 실행"
+
+msgid "Fingerprints SMTP servers by sending various requests"
+msgstr "다양한 요청에 의해 지문을 보내는 SMTP 서버"
+
+msgid ""
+"Use a web search query to generate a list of SMTP servers for fingerprinting"
+msgstr ""
+"웹 검색 쿼리를 사용하여 지문에 대한 SMTP 서버의 목록을 생성합니다"
+
+msgid "snmpXdmid Buffer Overflow"
+msgstr "snmpXdmid 버퍼 오버플로"
+
+msgid "Snort <= 2.6.2 DCE/RPC reassembly exploit"
+msgstr "콧바람을 \"= 2.6.2 DCE를 / RPC를 이용 reassembly"
+
+msgid "Solaris printer configuration stack overflow"
+msgstr "솔라리스 프린터 구성 스택 오버플로"
+
+msgid "Local privilege escalation [ Solaris 7/8/9 (sun4u) ]"
+msgstr "로컬 권한 상승 [솔라리스 7/8/9 (sun4u)]"
+
+msgid ""
+"Telnet to host without having to authenticate due to flaw in environment "
+"variable passing"
+msgstr ""
+"텔넷 결함으로 인해 환경에서 인증하지 않고 호스트"
+"변수 전달"
+
+msgid "Local privilege escalation for Solaris"
+msgstr "Solaris 용 로컬 권한 상승"
+
+msgid "Sourdough Remote FIle Include"
+msgstr "아님 원격 파일을 포함"
+
+msgid "spawns an executable on the remote host"
+msgstr "원격 호스트에서 실행 급부상"
+
+msgid "Windows Service Pack Detection"
+msgstr "Windows 서비스 팩 감지"
+
+msgid ""
+"Misdesign in a component of Microsoft Speech API 4 allows for arbitrary code "
+"execution"
+msgstr ""
+"Misdesign Microsoft 음성 API를 4 구성 요소에서 임의의 코드 허용"
+"실행"
+
+msgid ""
+"Run a web proxy as if you were on a remote box, with specialized attack "
+"functionality"
+msgstr ""
+"웹 프록시를 실행하는 것처럼 원격 상자에서 전문적인 공격했다"
+"기능"
+
+msgid ""
+"Dumps connection settings (including passwords) from SQL Server Management "
+"Studio 2008"
+msgstr ""
+"SQL Server를 관리에서 비밀 번호를 포함한 덤프 연결 설정 ()"
+"스튜디오 2008"
+
+msgid "Create a reverse SSH tunnel between you and the target"
+msgstr "당신과 대상 사이에 SSH를 역방향 터널을 만들기"
+
+msgid ""
+"Stack-based buffer overflow in the pdg2.dll ActiveX control in SSReader 4.0"
+msgstr ""
+"스택 - SSReader 4.0 pdg2.dll ActiveX 컨트롤 기반의 버퍼 오버플로"
+
+msgid "Starts a remote service over SMB"
+msgstr "시작 SMB 이상의 원격 서비스"
+
+msgid "Starts a service on all selected nodes"
+msgstr "시작은 선택한 모든 노드에서 서비스를"
+
+msgid "Snort <= 2.4.2 BO pp exploit"
+msgstr "콧바람을 \"= 2.4.2 볼로냐 pp 악용"
+
+msgid "Stops a service on all selected nodes"
+msgstr "중지 선택한 모든 노드에서 서비스를"
+
+msgid "Configuration setting TEMPLATE"
+msgstr "구성 설정을 템플릿"
+
+msgid "Strawberry 1.1.1 Local File Include"
+msgstr "딸기 1.1.1 로컬 파일 포함"
+
+msgid "SugarCRM <= 5.2.0e Remote Code Execution"
+msgstr "슈가 CRM \"= 5.2.0e 원격 코드 실행"
+
+msgid "Sun Java HsbParser.getSoundBank Stack Buffer Overflow Vulnerability"
+msgstr "썬 자바 HsbParser.getSoundBank 스택 버퍼 오버플로 취약점"
+
+msgid "Solaris Login Overflow"
+msgstr "솔라리스 로그인 오버플로"
+
+msgid "Solaris Login pamh Overflow"
+msgstr "솔라리스 로그인 pamh 오버플로"
+
+msgid "Subversion utf-8 Apache2/WebDAV Stack Overflow"
+msgstr "Subversion을 UTF - 8로 Apache2/WebDAV 스택 오버플로"
+
+msgid "Switch our user context to another user with a username/password combo."
+msgstr "사용자 이름 / 암호 조합을 가진 다른 사용자에게 우리가 사용자 컨텍스트로 전환합니다."
+
+msgid "Symantec Alert Management System 2 Stack Overflow"
+msgstr "시만텍 경보 관리 시스템 2 스택 오버플로"
+
+msgid "Symantec Remote Management Rtvscan.exe Stack Overflow"
+msgstr "시만텍의 원격 관리 Rtvscan.exe 스택 오버플로"
+
+msgid ""
+"Gets basic OS information from a node. It's like osdetect, but for running "
+"on a node, instead of against a target."
+msgstr ""
+"노드에서 기본 운영 체제 정보를 가져옵니다. 그것은 osdetect처럼하지만 실행하기위한"
+"노드 대신 타겟 반대했다."
+
+msgid "TCP Hello World test (for bouncing tests)"
+msgstr "는 TCP Hello World를 시험 (시험을 위해선)에 대한"
+
+msgid "Finds all the hosts on the local network interfaces"
+msgstr "로컬 네트워크에서 찾은 모든 호스트 인터페이스"
+
+msgid "Telnet Brute Force"
+msgstr "텔넷 브루트 포스"
+
+msgid "Telnet Banner Grabber (used for osdetect)"
+msgstr "텔넷 배너 Grabber (osdetect 사용)"
+
+msgid "Poor input validation allows remote users to call system(command)"
+msgstr "불쌍한 입력 유효성 검사를 원격 사용자가 시스템 (명령)를 호출할 수있습니다"
+
+msgid "Test module for the PHP safemode bypass"
+msgstr "PHP가 안전 모드 우회 테스트 모듈"
+
+msgid "Scan the box for exploitability."
+msgstr "exploitability에 대한 상자를 검색합니다."
+
+msgid ""
+"Used in the testomatic framework to connect and send commands to a remote "
+"testomatic node."
+msgstr ""
+"testomatic 프레임 워크에 연결하여 원격으로 명령을 보내는 데 사용"
+"testomatic 노드입니다."
+
+msgid "testsploit (Used for MOSDEF testing)"
+msgstr "testsploit (MOSDEF 테스트에 사용)"
+
+msgid "Fuzzer for TFTP Servers"
+msgstr "Fuzzer TFTP 서버에 대한"
+
+msgid "TFTP Server for uploading files"
+msgstr "TFTP Server 사용하기 파일을 업로드하기"
+
+msgid "[0day] TightVNC integer overflow (client-side)"
+msgstr "[0일] TightVNC 정수 오버플로 (클라이언트 쪽)"
+
+msgid "TikiWiki function create exploit"
+msgstr "TikiWiki 기능을 이용해 만들"
+
+msgid "IBM Tivoli Storage Manager Express CAD Service Buffer Overflow"
+msgstr "IBM 티볼리 스토리지 매니저 익스프레스 CAD 데이터 서비스의 버퍼 오버플로"
+
+msgid "Trend Micro ServerProtect StCommon.dll RPC Stack Overflow"
+msgstr "트렌드 마이크로 ServerProtect StCommon.dll RPC를 스택 오버플로"
+
+msgid "Trend Micro ServerProtect Agent RPC Stack Overflow"
+msgstr "트렌드 마이크로 ServerProtect 에이전트를 통한 RPC 스택 오버플로"
+
+msgid "Change file access and modification time on selected node"
+msgstr "변경 파일에 대한 액세스 및 선택된 노드 변경 시간"
+
+msgid ""
+"Change file access and modification time srcfile->dstfile on selected node"
+msgstr ""
+"변경 파일 액세스 및 수정 시간 srcfile 선택한 노드에 \"dstfile"
+
+msgid "CANVAS Traceroute"
+msgstr "캔버스 Traceroute"
+
+msgid "TrixBox (Asterisk) PBX Remote Command Execution"
+msgstr "TrixBox (별표)가 PBX에 원격 명령 실행"
+
+msgid "rpc.ttdbserverd xdr_array Heap Overflow"
+msgstr "rpc.ttdbserverd xdr_array 힙 오버플로"
+
+msgid "TWiki SEARCH variable arbitrary shell command execution"
+msgstr "TWiki 찾기 변수는 임의의 쉘 명령을 실행"
+
+msgid "udevd NETLINK messaging exploit"
+msgstr "udevd NETLINK 악용 메시징"
+
+msgid "Scans for open UDP Ports"
+msgstr "오픈 UDP 포트에 대한 스캔"
+
+msgid ""
+"Scans for one port on many hosts - reports hosts that have the port closed"
+msgstr ""
+"여러 호스트에 하나의 포트에 대한 스캔 - 그 포트를 닫은 리포트 호스트"
+
+msgid "umpnpmgr.dll/srvsvc memory exhaustion via msrpc"
+msgstr "를 통해 umpnpmgr.dll / srvsvc 메모리 고갈 MSRPC"
+
+msgid ""
+"Tries to connect to a host and port and convert that into a Unix Shell Server"
+msgstr ""
+"시도 호스트 및 포트에 연결하고 변환은 유닉스 쉘 Server에"
+
+msgid "CANVAS Unlink"
+msgstr "캔버스를 연결 해제"
+
+msgid "Removes the CANVAS rootkit."
+msgstr "캔버스에 루트 킷을 제거합니다."
+
+msgid "Upload and Excute a shell-giving Exploit Binary"
+msgstr "업로드 및 Excute 쉘을주는 공격 이진"
+
+msgid "Upload file. Uses first selected node."
+msgstr "업로드 파일입니다. 가장 먼저 선택한 노드를 사용합니다."
+
+msgid "Create domains to check for phishing"
+msgstr "도메인 만들기 피싱에 대한 확인"
+
+msgid "Get a list of users"
+msgstr "사용자의 목록을 가져"
+
+msgid "Break PHP Safemode with Usort Vulnerability"
+msgstr "브레이크 PHP가 안전 모드 usort 취약점과"
+
+msgid "ut2004 stack overflow with \\secure\\"
+msgstr "ut2004 \\과 \\ 보안 \\ 오버플로우 스택 \\"
+
+msgid "Utorrent announcement overflow"
+msgstr "uTorrent 발표 오버플로"
+
+msgid "Veritas Backup Exec stack overflow"
+msgstr "베리타스 백업 Exec 스택 오버플로"
+
+msgid "VisualPic 0.3.1 Remote File Include"
+msgstr "VisualPic 0.3.1 원격 파일 포함"
+
+msgid "vmsplice Linux Kernel local root"
+msgstr "vmsplice 리눅스 커널 로컬 루트"
+
+msgid "VMware dhcpd Stack Overflow"
+msgstr "VM웨어 스택 오버플로 dhcpd가있습니다"
+
+msgid ""
+"A flaw in the way MS Excel handle the Shared String Table could lead into an "
+"integer overflow."
+msgstr ""
+"MS 엑셀로 이어질 수있는 공유 문자열 테이블을 처리하는 방식에 결함이"
+"정수 오버플로."
+
+msgid "Exchangepop3 Stack Based overflow in rcpt to: command"
+msgstr "Exchangepop3 RCPT에서 스택 오버플로 기반 : 명령을"
+
+msgid "Remote Buffer Overflow on Login"
+msgstr "원격 버퍼 오버플로 로그인을"
+
+msgid "Winamp 5.12 .pls overflow"
+msgstr "윈앰프 5.12. pls 오버플로"
+
+msgid "Winproxy Stack Overflow"
+msgstr "Winproxy 스택 오버플로"
+
+msgid "w3who.dll stack overflow"
+msgstr "스택 오버플로 w3who.dll"
+
+msgid "WarFTP 1.65 Stack Overflow on USER command"
+msgstr "WarFTP 1.65 스택 오버플로 사용자 명령"
+
+msgid "Tries to exploit all known web vulnerabilities against a server"
+msgstr "하려고하면 서버에 대해 알려진 모든 웹 취약점을 악용하려면"
+
+msgid "Attempt to brute force POST based web logins given a password dict"
+msgstr "무력을 기반으로 웹 게시하려고 비밀 번호를 DICT 주어진 로그인"
+
+msgid ""
+"Remote root exploit for Perl efix svarg index bug, through webmin miniserv.pl"
+msgstr ""
+"원격 루트는 Perl, Webmin은 miniserv.pl 통해 svarg 지수는 버그를 악용하는 efix"
+
+msgid "wFTPD Stack Overflow on the SIZE command"
+msgstr "wFTPD 스택 오버플로 크기 명령"
+
+msgid "Gets the first external IP off of a traceroute"
+msgstr "Traceroute의 최초의 외부 IP를 끊으면"
+
+msgid "Gets id result on each selected node"
+msgstr "선택한 각 노드에 ID가 결과를 만든다"
+
+msgid "Windows 7 Netbios Crash"
+msgstr "윈도 7 netbios 크래시"
+
+msgid "Wingate 6.1.1 stack overflow"
+msgstr "윈게이트 6.1.1 스택 오버플로"
+
+msgid ""
+"A vulnerability in the way NPF.sysd handles IOCTL arguments allows for "
+"writing to kernel space"
+msgstr ""
+"NPF.sysd IOCTL 인자를 처리하는 방법에 대한 취약점 수"
+"커널 공간을 서면으로"
+
+msgid "Misdesign in WMF file parser allows for shellcode execution"
+msgstr "Misdesign WMF는 파일 파서에 shellcode를 실행할 수있습니다"
+
+msgid "Eudora Qualcomm WorldMail 3.0 IMAP4 stack overflow"
+msgstr "Eudora는 QUALCOMM WorldMail 3.0은 IMAP4를 스택 오버플로"
+
+msgid "WordPress plugin BackUpWordPress <= 0.4.2b Remote File Inclusion"
+msgstr "WordPress의 플러그인 BackUpWordPress \"= 0.4.2b 원격 파일 포함"
+
+msgid "WordPress 2.2.2 SQL injection/Command execution"
+msgstr "WordPress의 2.2.2 SQL 주입 / 명령 실행"
+
+msgid "Wordpress plugin myflash Remote File Inclusion"
+msgstr "WordPress의 플러그인 myflash 원격 파일 포함"
+
+msgid "Wordpress Plugin Sniplets 1.1.2 Remote Code Execution exploit"
+msgstr "WordPress의 플러그인 Sniplets 1.1.2 원격 코드 실행을 악용"
+
+msgid "WordPress Plugin Sniplets 1.1.2 Remote File Include"
+msgstr "WordPress의 플러그인 Sniplets 1.1.2 원격 파일 포함"
+
+msgid "Ipswitch WS_FTP Server XCRC Stack Overflow"
+msgstr "Ipswitch Ws_ftp 서버 XCRC 스택 오버플로"
+
+msgid "WuFTPD SITE EXEC Formatstring Bug"
+msgstr "WuFTPD SITE EXEC Formatstring 버그"
+
+msgid "WuFTPD Globbing Arbitrary Free"
+msgstr "WuFTPD Globbing 임의 무료"
+
+msgid "Vulnerability in XFS allows for remote compromise as NOBODY user"
+msgstr "아무도 XFS의 취약점으로 인한 원격 사용자에게 타협을 허용"
+
+msgid "Buffer overflow in If-Modified-Since gets a remote shell"
+msgstr "의 If - Modified - Since에 버퍼 오버플로 원격 셸되면"
+
+msgid "XML RPC For CANVAS Web Service"
+msgstr "XML을 통한 RPC 캔버스에 웹 서비스에 대한"
+
+msgid "X11 server for local vulnerabilities"
+msgstr "로컬 취약점의 X11 서버"
+
+msgid "Test"
+msgstr "시험"
+
+msgid "ypbind YPBINDPROC_DOMAIN Stack Overflow"
+msgstr "ypbind YPBINDPROC_DOMAIN 스택 오버플로"
+
+msgid "yppasswdd YPPASSWD_UPDATE Stack Overflow"
+msgstr "yppasswdd YPPASSWD_UPDATE 스택 오버플로"
+
+msgid "imail imap4 stack overflow in Login field"
+msgstr "IMAIL은 로그인 필드에 스택 오버플로 IMAP4를"
+
+msgid "ZenCart 1.3.8 Remote Code Execution"
+msgstr "ZenCart 1.3.8 원격 코드 실행"
+
+msgid "Discovers services on the .local. domain advertised over zeroconf"
+msgstr ". 지역에서 서비스를 발견하다. 도메인 Zeroconf 이상의 광고"
+
+msgid "Set as target host"
+msgstr "대상 호스트로 설정"
+
+msgid "Set as additional target host"
+msgstr "설정을 추가 대상 호스트로"
+
+msgid "Unset as targeted host"
+msgstr "UNSET 타겟 호스트로"
+
+msgid "Forget this host knowledge"
+msgstr "이 호스트의 지식을 잊어버려"
+
+msgid "Save host to file"
+msgstr "호스트 파일에 저장"
+
+msgid "Don't try to delete the loopback interface, please"
+msgstr "루프백 인터페이스, 제발 삭제하려고하지 마십시오"
+
+msgid "Add note to host"
+msgstr "호스트에 메모 추가"
+
+msgid "Set as callback interface"
+msgstr "설정 콜백 인터페이스"
+
+msgid "Check for listener connection"
+msgstr "확인 리스너 연결하기위한"
+
+msgid "View all knowledge"
+msgstr "모든 지식보기"
+
+msgid "Active Listeners"
+msgstr "액티브 청취자"
+
+msgid "Unset FromCreateThread"
+msgstr "UNSET FromCreateThread"
+
+msgid "Set FromCreateThread"
+msgstr "설정 FromCreateThread"
+
+msgid "Target Host"
+msgstr "대상 호스트"
+
+msgid "Stop Exploit"
+msgstr "공격 중지"
+
+msgid "OS Config"
+msgstr "운영 체제 설정"

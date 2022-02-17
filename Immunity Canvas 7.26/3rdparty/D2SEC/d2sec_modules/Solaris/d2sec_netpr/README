@@ -1,0 +1,36 @@
+D2 Exploitation Pack
+
+Copyright (c) 2007-2008 DSquare Security, LLC
+All rights reserved.
+
+License information
+---------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Description
+------------
+
+Solaris netpr Buffer Overflow Vulnerability
+
+Simple to use :
+
+$ ./d2sec_netpr
+
+Don't forget to clean log. For example, on our box with a quick but
+dirty method :) :
+
+# tail messages.verbose 
+Oct 17 21:23:43 solaris8 bsd-gw[18354]: [ID 937800 lpr.error] request to  (unknow
+
+# grep -v 'lpr.error' messages.verbose > .m
+# cat .m > messages.verbose
+# rm -f .m
+
+Tested on:
+	SunOS 5.8
+
+Ref.:
+	http://www.securityfocus.com/bid/1200/info

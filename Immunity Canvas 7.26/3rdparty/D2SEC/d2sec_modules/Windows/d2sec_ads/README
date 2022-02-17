@@ -1,0 +1,101 @@
+D2 Exploitation Pack
+
+Copyright (c) 2007-2009 DSquare Security, LLC
+All rights reserved.
+
+License information
+---------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Description
+------------
+
+d2sec_ads is a tool to play with NTFS streams on Windows:
+
+C:\d2sec_ads>d2sec_ads.exe
+D2SEC (c) 2007-2009 d2sec_ads
+
+d2sec_ads [cdglpg] <arg>
+
+  c <file> : remove the NTFS stream from a file
+  d <file> <stream> <size> : hexdump a NTFS stream into a file
+  g <file> [<dest file>] : extract file from the file NTFS Stream
+  l <file> : list NTFS streams names of a file
+  p <file> <data file> : write data into a new NTFS stream of the file
+  r <host> <arg1> <arg2> ...
+
+Examples 
+---------
+
+C:\>d2sec_ads.exe l x.exe
+D2SEC (c) 2007-2009 d2sec_ads
+
+[#] list NTFS stream
+NTFS stream of x.exe:
+ ::$DATA (0xa000 bytes)
+
+C:\d2sec_ads>type test
+"test d2sec_ads"
+
+C:\d2sec_ads>d2sec_ads.exe p x.exe test
+D2SEC (c) 2007-2009 d2sec_ads
+
+[#] put NTFS stream
+bytes written: 5 (filename)
+read bytes   : 19 (data)
+written bytes: 19 (data)
+test inserted in x.exe
+
+C:\d2sec_ads>d2sec_ads.exe l x.exe
+D2SEC (c) 2007-2009 d2sec_ads
+
+[#] list NTFS stream
+NTFS stream of x.exe:
+ ::$DATA (0xa000 bytes)
+ :d2secd:$DATA (0x13 bytes)  <-- data
+ :d2secf:$DATA (0x5 bytes)   <-- filename
+
+C:\d2sec_ads>d2sec_ads.exe d x.exe
+d2secd 16
+D2SEC (c) 2007-2009 d2sec_ads
+
+[#] dump NTFS stream
+22 74 65 73 74 20 64 32  73 65 63 5f 61 64 73 22  | "test d2sec_ads"
+
+C:\d2sec_ads>d2sec_ads.exe d x.exe
+d2secf 16
+D2SEC (c) 2007-2009 d2sec_ads
+
+[#] dump NTFS stream
+d2secf stream is only 0x5 bytes
+74 65 73 74 00                                    | test.
+
+C:\d2sec_ads>d2sec_ads.exe c x.exe
+D2SEC (c) 2007-2009 d2sec_ads
+
+[#] clean NTFS stream
+removing test ...
+x.exe:d2secd deleted
+x.exe:d2secf deleted
+
+C:\d2sec_ads>d2sec_ads.exe p x.exe
+c:\windows\system32\calc.exe
+D2SEC (c) 2007-2009 d2sec_ads
+
+[#] put NTFS stream
+bytes written: 9 (filename)
+read bytes   : 113664 (data)
+written bytes: 113664 (data)
+c:\windows\system32\calc.exe inserted in x.exe
+
+C:\d2sec_ads>d2sec_ads.exe r x.exe
+D2SEC (c) 2007-2009 d2sec_ads
+
+[#] run NTFS stream
+Process argv: x.exe
+Process PID: 1764
+
+and calc.exe is running.

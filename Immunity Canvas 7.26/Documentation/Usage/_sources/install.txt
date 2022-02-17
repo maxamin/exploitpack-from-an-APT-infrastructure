@@ -1,0 +1,187 @@
+.. canvas installation documentation**
+
+
+******************
+Installing CANVAS
+******************
+
+Supported Platforms
+===================
+CANVAS is a product developed completely using Python, thus technically any platform and operating system that can run python and meet the package dependencies of CANVAS, can be used to run CANVAS. However Immunity officially supports installation of CANVAS only on Windows, Linux (Ubuntu) and OS X. Basic instructions for Installing
+CANVAS on these platforms are provided in this document. CANVAS can also be installed and used within a virtual machine. This is our recommended method of using CANVAS if you are using CANVAS on an unsupported platform, or you want to have a clean and isolated enviroment. Users who are using CANVAS on restricted environments might also prefer to use a virtual machine for CANVAS instead. 
+
+CANVAS is mainly developed and tested to run on Linux, and it is the platform that CANVAS shines on. You might notice that you may loose a few features of CANVAS if you run it on Windows. Some of the features of CANVAS (a few number of modules and tools) also require privilaged access to the operating system to perform correctly. For this reason, we always recommend our users to try to start using CANVAS on Linux. If you have been a Windows user, this is a good chance for you to practice your Linux skills too! 
+
+Hardware Requirements
+=====================
+CANVAS is very lightweight and can be used on any system that is capable of running Linux or Windows. It is recommended to have at least 5GB of disk space and 1GB of memory on the system or virtual machine that is being used for CANVAS. CANVAS can be also run out of the box on Kali/Backtrack live operating system. One of the interesting features of CANVAS is that it can also run on headless systems in command line mode, in which it requires even less hardware resources. This means you can even run CANVAS on your Android based phones or tablets, although it is not officially supported by Immunity.
+
+
+CANVAS dependencies
+===================
+CANVAS dependes on the following (free) software packages to run
+
+	#. Python 2.6 or 2.7
+	#. GTK
+	#. PyCrypto (some modules require it)
+	#. Py-GTK, and its associated libraries
+	#. Pyasn1
+	#. ZeroMQ/PyZMQ (Only for CANVAS STRATEGIC)
+
+
+Linux:
+------
+If you are going to run CANVAS on Linux, you need to install the following listed packages by either using the paclkage management solution that your distro provides (apt, yum, aptitude...) or compile them from source code. Note that
+whatever architecture you are using (x86/64bit) and your Python installation is, your packages must be for the same architecture of the Python that is installed. You can get your python version by running the following command ``python --version``.
+If you are using a different Linux distribution package names might be different, so you need to use the package search commands available to find the right name for your distribution. Python (pip) package names are often the same across distributions though.
+
+1. python26 or python27
+2. GTK2
+3. pycairo
+4. pygobject
+5. pycrypto
+6. pygtk
+7. pyasn1
+   
+ Above packages can be installed in Ubuntu (16.04, 16.10) with the following command. ::
+
+ 
+        sudo apt-get install python-pip
+        sudo pip install pycrypto
+        sudo pip install pyasn1
+        sudo apt-get install gtk2.0
+        sudo apt-get install python-glade2
+ 
+     
+
+
+Windows:
+--------
+Windows users can download a zip file with all the dependencies (except *pycrypto*) and installation instructions for that from Immunity web site. The package is available at the following link:
+	http://www.immunityinc.com/downloads/CANVAS_WIN32_DEPS_01_2015.zip
+
+Due to export-control restrictions, we can not ship the pycrypto libraries. You can download a binary installer for windows that matches your Python version from here:
+	http://www.voidspace.org.uk/python/modules.shtml
+
+.. tip:: Since Python 2.7.9, Python on windows is also provided with the *pip* tool for managing python libraries. The pip command is not included in the PATH by default.
+          If you want to use *pip* on windows, you should update your system PATH to include ``c:\\python27\\scripts``. After that you should be able to install libraries
+          with *pip*, for example ``pip install pyopenssl``. Note that you should run the command in an elevated-access command prompt.
+
+.. tip:: As of 2/27/2017, it has come to our attention that PyCrypto will not properly install on many 64 bit Windows platforms. The solution to this is to install the 32-bit version of Python on top of a 64 bit Windows and use the 32 bit versions of all libraries
+  
+  
+
+After extracting the downloaded zip file, follow the installation steps as below:
+
+1. Install the python package by double clicking **python-2.7.5.msi**. This will install the base Python 2.7 runtime 
+   and its standard libraries, and add Python to the system PATH.
+2. Install the *pywin32* package by double clicking **pywin32-218.win32-py2.7.exe** and use the default installation options.
+3. Install the GTK+ package by double clicking **pygtk-all-in-one-2.24.2.win32-py2.7.msi**. GTK+ is the cross platform library CANVAS 
+   uses to create its graphical user interface (GUI). This installer package also contains other required GUI dependencies *GObject* and *Cairo*. 
+   Please follow the default installation options.
+
+4. Install the pyasn1 module:
+
+	4.1  Open a cmd.exe console and set the current directory to the ./pyasn1-0.1.7 which you previously extracted from downloaded zip file.
+	4.2  Type the following command which will install the *pyasn1* library: ``python.exe setup.py install``
+
+
+5.  (Optional) For `CANVAS STRATEGIC <http://security.alien8.net/new_immunity_products>`_, you need to install *pyzmq* library 
+    as well, by double clocking **pyzmq-13.1.0.win32-py2.7.exe**.
+6.  If you would like to use the World Map IP address to geographical location mapping 
+    feature of the CANVAS GUI then there are some further packages which need to installed.
+
+   6.1 Install the GeoIP com object.
+          - The source code can be downloaded from `here <https://github.com/maxmind/geoip-api-mscom/tree/master/GeoIpComEx>`_ 
+          - Compile the source code 
+
+   6.2 Once downloaded unzip the GeoIP com object and install it by copying *GeoIpComEx.dll* to the *SYSTEM32* folder. 
+       After this open cmd.exe as Administrator, cd into the SYSTEM32 directory and run: ::
+       
+           regsvr32 GeoIpComEx.dll
+
+   6.3 The GeoIP mapping database also needs to be downloaded, this can be found at http://www.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz       
+   6.4 Uncompress the downloaded file. If your system does not recognise the .gz extension try using a different decompression program such as `7zip <http://www.7-zip.org/>`_ or `winrar <http://www.rarlab.com/>`_ which understands this filetype.
+   6.5 You want to name the decompressed database file *GeoIPCity.dat* and place it in the *CANVAS-<your username here>\\gui\\WorldMap\\* directory.
+   6.6 Correct installation of World Map dependencies can be be veried by the absence of a red message box in the top left corner of the World Map tab in the CANVAS GUI.
+	    
+
+.. warning:: CANVAS requires to make a lot of network connections, and in most of exploit modules also needs to be able to open 
+             ports and listen to them. In windows this often causes problems if you have the windows firewall enabled (by defailt).
+             To avoid that, you should either disable the windows firewall, or properly configure it to whitelist Python process,
+             and also allowing inbound traffic to the ports you tend to use for reverse connections.
+
+.. warning:: Canvas does not get along well with any antivirus software, or the built-in malware protection that is included in Windows.
+             Please make sure you have your antivirus product uninstalled
+             before extracting Canvas. Another solution would be excluding Canvas directory from scanning and live monitor in running antivirus softwares and Windows Defender. 
+
+.. note:: Windows by default have multiple services running, such as RPC and Netbios, that listen on ports 135, 139 and 445 TCP and UDP.
+          Normally this will not interfear with CANVAS, however if you are planning to use any of the modules in CANVAS that needs to run
+          its own RPC or SMB server on those ports, you will not be able to do that in windows! The only reasonable solution for this is 
+          to run CANVAS in a Linux virtual machine. 
+
+
+If you feel you need more visual and step by step guide about installing CANVAS on windows, you can also check out the video we have
+created that walks you through every step from downloading to lunching CANVAS on windows from ` this link <https://vimeo.com/album/3385053/video/131572388>`_.
+More Canvas videos and installation guides can be found at our Vimeo Canvas album available at https://vimeo.com/album/3385053 .
+
+
+
+OSX:
+----
+OSX users can download an installer with most dependencies for that plafform from Immunity web-site from: 
+  http://immunityinc.com/downloads/PyGTK.pkg
+
+OS X has its own version of Python so beside the GTK dependencies, you probably need to only install the *Pyasn1* library which is missing.
+
+Having *macports* or *homebrew* installed on your OSX, you can also use these pakcage managers to automatically download and install required
+dependencies for you. If you use this method instead of downloading the pyGTK package, please make sure you only use one of them for your package 
+managements on the system, and avoid installing both *macports* and *homebrew* on the system. This will cause package version conflics that are often 
+not easy to  find and resolve. As OSX comes with Python 2.7 pre-installed you should also consider the Python version your system is using, 
+before installing dependencies using any package manager. The *Pyasn1* library is often causing such conflicts, and although you may have installed the library using the package manager, CANVAS still fails to start because of not meeting all required dependencies. 
+
+Macports downlads and installs packages from source, so building a large package such as pyGTK and all of its dependencies will take some time! 
+To install PyGTK using *macports*, you can use the following command ::
+
+	$ port install py-pyGTK
+
+or the following command if you are using Homebrew instead of Macports ::
+
+	$ brew install pygtk
+
+If even after trying above command  in *brew* and trying to run Canvas you still get an error message regarding missing *gtk.glade* dependency, try the following command instead ::
+
+	$ brew install --verbose --with-libglade pygtk
+
+.. tip:: Immunity does not support Macports or Homebrew, however if you decide to use any of them as an alternative pakage 
+         manager, we do recommend using Homebrew.
+
+.. tip:: If you use Homebrew package manager to install Python dependencies, note that Homebrew installs its own version of Python and dependencies
+          and packages installed for it will NOT be shared with the builtin OSX python. This is a benefit, as you will not alter the OS python installation
+          and you can easily cleanup things and remove installed packages, if something goes wrong.
+
+
+
+To install pyasn1 you can use the *pip* command ::
+
+	$ sudo pip install pyasn1
+
+To make sure you have the latest version of pyasn1 installed, check if a version already exists using ``pip show pyasn1`` command and then 
+you can include the ``sudo pip install pyasn1 --upgrade`` switch to upgrade the library to its latest version.
+
+.. note:: If you are installing CANVAS within a virtual machine, where possible, it is highly recommended use the VM network adapter in *bridge* mode. CANVAS uses connect-back shellcodes by default, which means exploited hosts will need to call back to the IP address of the machine running CANVAS. If the virtual machine is not connected directly to the network (via bridge mode), this will fail because the virtual machine will not be accessible directly becase of virtualization software NAT. 
+
+.. to-do: add VM network config screen-shot here. 
+
+
+.. tip:: Every time you lunch CANVAS, it creates or appends detailed logs to a file in its directory named canvas.log which is the first place you
+		  should look at if you start experiencing problems. If you are contacting Immunity for support, we may ask you to provide us a copy of that
+		  file for troubleshooting. 
+
+
+
+
+
+
+
+

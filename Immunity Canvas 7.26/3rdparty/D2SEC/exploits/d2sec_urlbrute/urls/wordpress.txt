@@ -1,0 +1,3 @@
+/wordpress/
+/wp/
+/wordpress/xmlrpc.php

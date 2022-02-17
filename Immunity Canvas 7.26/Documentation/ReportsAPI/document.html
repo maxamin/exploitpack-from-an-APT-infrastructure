@@ -1,0 +1,169 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>document &mdash; CANVAS Reports 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="CANVAS Reports 0.1 documentation" href="index.html" />
+    <link rel="up" title="Reference" href="reference.html" />
+    <link rel="next" title="utils" href="utils.html" />
+    <link rel="prev" title="collector" href="collector.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="utils.html" title="utils"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="collector.html" title="collector"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">CANVAS Reports 0.1 documentation</a> &raquo;</li>
+          <li><a href="reference.html" accesskey="U">Reference</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-libs.reports.document">
+<span id="document"></span><h1>document<a class="headerlink" href="#module-libs.reports.document" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="libs.reports.document.ReportDocument">
+<em class="property">class </em><tt class="descclassname">libs.reports.document.</tt><tt class="descname">ReportDocument</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#libs.reports.document.ReportDocument" title="Permalink to this definition">¶</a></dt>
+<dd><p>odfpy wrapper for the XML files in an OpenDocument.</p>
+<p>odfpy provides a high-level API that gives you full control to edit
+every aspect of an OpenDocument. This class wraps that API and provides
+some helper methods and some CANVAS specific utils.</p>
+<dl class="method">
+<dt id="libs.reports.document.ReportDocument.addRowToTableRows">
+<tt class="descname">addRowToTableRows</tt><big>(</big><em>rows</em>, <em>rowdata</em><big>)</big><a class="headerlink" href="#libs.reports.document.ReportDocument.addRowToTableRows" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a row to a TableRows element.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="libs.reports.document.ReportDocument.doc">
+<tt class="descname">doc</tt><a class="headerlink" href="#libs.reports.document.ReportDocument.doc" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="libs.reports.document.ReportDocument.edit">
+<tt class="descname">edit</tt><big>(</big><em>data</em><big>)</big><a class="headerlink" href="#libs.reports.document.ReportDocument.edit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstract method to apply further customizations to the report.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="libs.reports.document.ReportDocument.getObjectByName">
+<tt class="descname">getObjectByName</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#libs.reports.document.ReportDocument.getObjectByName" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="libs.reports.document.ReportDocument.save">
+<tt class="descname">save</tt><big>(</big><em>filename=None</em><big>)</big><a class="headerlink" href="#libs.reports.document.ReportDocument.save" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="libs.reports.document.ReportDocument.updateCoverDate">
+<tt class="descname">updateCoverDate</tt><big>(</big><big>)</big><a class="headerlink" href="#libs.reports.document.ReportDocument.updateCoverDate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the first Date field to the current datetime.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="libs.reports.document.ReportDocument.valueType">
+<tt class="descname">valueType</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#libs.reports.document.ReportDocument.valueType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an OpenDocument type name for the <em>value</em>.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="collector.html"
+                        title="previous chapter">collector</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="utils.html"
+                        title="next chapter">utils</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/document.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="utils.html" title="utils"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="collector.html" title="collector"
+             >previous</a> |</li>
+        <li><a href="index.html">CANVAS Reports 0.1 documentation</a> &raquo;</li>
+          <li><a href="reference.html" >Reference</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012 Immunity, Inc..
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

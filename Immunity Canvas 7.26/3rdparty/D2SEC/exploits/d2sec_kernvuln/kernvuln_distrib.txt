@@ -1,0 +1,30 @@
+d2sec_do_brk:Red Hat Linux release 9 (Shrike):2.4.20-8:32:CVE-2003-0961:do_brk vma overflow
+d2sec_kmod:Red Hat Linux release 8.0 (Psyche):2.4.18-14:32:CVE-2003-0127:ptrace/kmod vulnerability
+d2sec_proto_ops.tgz:CentOS release 4.8:2.6.9-67.0.22.ELsmp:32:CVE-2009-2692:sock_sendpage() NULL Pointer Dereference Vulnerability
+d2sec_proto_ops.tgz:CentOS release 4.8:2.6.9-78.0.8.ELsmp:32:CVE-2009-2692:sock_sendpage() NULL Pointer Dereference Vulnerability
+d2sec_proto_ops.tgz:CentOS release 4.8:2.6.9-78.0.22.ELsmp:32:CVE-2009-2692:sock_sendpage() NULL Pointer Dereference Vulnerability
+d2sec_proto_ops.tgz:CentOS release 5.2:2.6.18-92.el5:32:CVE-2009-2692:sock_sendpage() NULL Pointer Dereference Vulnerability
+d2sec_proto_ops.tgz:CentOS release 5.4:2.6.18-8.el5:32:CVE-2009-2692:sock_sendpage() NULL Pointer Dereference Vulnerability
+d2sec_proto_ops.tgz:Red Hat Enterprise Linux WS release 4 (Nahant Update 7):2.6.9-78.0.1.ELsmp:32:CVE-2009-2692:sock_sendpage() NULL Pointer Dereference Vulnerability
+d2sec_proto_ops.tgz:Red Hat Enterprise Linux ES release 4 (Nahant Update 8):2.6.9-67.0.4.ELsmp:32:CVE-2009-2692:sock_sendpage() NULL Pointer Dereference Vulnerability
+d2sec_proto_ops.tgz:Red Hat Enterprise Linux Server release 5.2 (Tikanga):2.6.18-53.1.14.el5:32:CVE-2009-2692:sock_sendpage() NULL Pointer Dereference Vulnerability
+d2sec_proto_ops.tgz:Debian GNU/Linux 4.0:2.6.28.7:32:CVE-2009-2692:sock_sendpage() NULL Pointer Dereference Vulnerability
+d2sec_proto_ops.tgz:Debian GNU/Linux squeeze/sid:2.6.26-1-686:32:CVE-2009-2692:sock_sendpage() NULL Pointer Dereference Vulnerability
+d2sec_udp_sendmsg:Debian GNU/Linux 4.0 x86:2.6.18-6-686:32:CVE-2009-2698:'udp_sendmsg()' MSG_MORE Flag Local Privilege Escalation Vulnerability
+d2sec_udp_sendmsg:CentOS 4.6:2.6.18 x86_64:64:CVE-2009-2698:'udp_sendmsg()' MSG_MORE Flag Local Privilege Escalation Vulnerability
+d2sec_pipe:Debian GNU/Linux 5.0 x86:2.6.26-2:32:CVE-2009-3547:'pipe.c' local privilege escalation vulnerability
+d2sec_pipe:Debian GNU/Linux 4.0 x86:2.6.18-6:32:CVE-2009-3547:'pipe.c' local privilege escalation vulnerability
+d2sec_pipe:CentOS 5.4:2.6.18-164.el5:32:CVE-2009-3547:'pipe.c' local privilege escalation vulnerability
+d2sec_pipe:Red Hat Enterprise Linux 5.4:2.6.18-164.2.1.el5:32:CVE-2009-3547:'pipe.c' local privilege escalation vulnerability
+d2sec_capsysadmin:Ubuntu 10.10:2.6.35-22-generic:32:CVE-2010-4347:CAP_SYS_ADMIN local privilege escalation vulnerability
+d2sec_nelson:Ubuntu 10.10:2.6.35-22-generic:32:CVE-2010-4258:Faulty clone(2) implementation vulnerability
+d2sec_nelson:Ubuntu 10.04:2.6.32-24-generic:32:CVE-2010-4258:Faulty clone(2) implementation vulnerability
+d2sec_rds:Ubuntu 9.10:2.6.31:32:CVE-2010-3904:Reliable Datagram Sockets (RDS) Protocol Local Privilege Escalation vulnerability
+d2sec_rds:Ubuntu 10.04:2.6.32:32:CVE-2010-3904:Reliable Datagram Sockets (RDS) Protocol Local Privilege Escalation vulnerability
+d2sec_rds:Ubuntu 10.04:2.6.32:64:CVE-2010-3904:Reliable Datagram Sockets (RDS) Protocol Local Privilege Escalation vulnerability
+d2sec_sockdiag:Arch Linux:3.3.1-1-ARCH:64:CVE-2013-1763:sock_diag_handlers[] Local Privilege Escalation vulnerability
+d2sec_sockdiag:Arch Linux:3.4.7-1-ARCH:64:CVE-2013-1763:sock_diag_handlers[] Local Privilege Escalation vulnerability
+d2sec_sockdiag:Arch Linux:3.7.4-1-ARCH:64:CVE-2013-1763:sock_diag_handlers[] Local Privilege Escalation vulnerability
+d2sec_perf_swevent_init:CentOS:2.6.32:64:CVE-2013-2094:Linux kernel perf_swevent_init Local Privilege Escalation vulnerability
+d2sec_recvmmsg:Ubuntu 13.10:3.11.0-12-generic:64:CVE-2014-0038:Linux Kernel 'compat_sys_recvmmsg()' Function Remote Memory Corruption Vulnerability
+d2sec_ofs:Ubuntu 15.04:3.19.0-15-generic:64:CVE-2015-1328:Linux Kernel Overlayfs Local Privilege Escalation Vulnerability

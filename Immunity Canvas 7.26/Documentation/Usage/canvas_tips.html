@@ -1,0 +1,392 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Canvas Tips and Tricks &mdash; Immunity CANVAS 1 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="Immunity CANVAS 1 documentation" href="index.html"/>
+        <link rel="next" title="Canvas Video Tutorials" href="canvas_videos.html"/>
+        <link rel="prev" title="Post-Exploitation" href="post_exploitation.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Immunity CANVAS
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="license.html">CANVAS EULA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installing CANVAS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="terminology.html">Terminology</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_intro.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_basics.html">CANVAS Basic Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basics_win_remote.html">Exploiting Windows Remotely</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basics_win_local.html">Exploiting Windows Locally (Privilege Escalation)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basics_clientside.html">Exploiting Client-Side Vulnerablities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="post_exploitation.html">Post-Exploitation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Canvas Tips and Tricks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_videos.html">Canvas Video Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_advanced.html">CANVAS Advanced Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_strategic.html">CANVAS Strategic</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">Immunity CANVAS</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Canvas Tips and Tricks</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/canvas_tips.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="canvas-tips-and-tricks">
+<h1>Canvas Tips and Tricks<a class="headerlink" href="#canvas-tips-and-tricks" title="Permalink to this headline">¶</a></h1>
+<p>On every release of Canvas among the new version changes we also provide a short tip about Canvas capabilities and how to use them.
+Here is a collection of those tips ordered by release dates. Going through them gives you ideas about features and methods of Canvas
+that you might have not  been aware of, without going through entire Canvas documentation.</p>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p>Want to start a Listener on a host you&#8217;ve already compromised?</p>
+<ol class="last arabic simple">
+<li>Select the node in the CANVAS Node View window by left clicking it</li>
+<li>Right click the node, mouse over the interface you want and select <code class="docutils literal"><span class="pre">set</span> <span class="pre">as</span> <span class="pre">callback</span> <span class="pre">interface</span></code></li>
+<li>Use the listeners menu to Start a New MOSDEF listener, select them appropriate type (hint: it&#8217;s usually &#8216;universal&#8217;)</li>
+<li>The CANVAS Log tab should then show &#8220;Listener Requested on &lt;ip&gt;:&lt;port&gt;&#8221;</li>
+<li>Once you&#8217;ve run the exploit that will connect to the newly started listener, right click the node again, mouse over the appropriate interface and select &#8216;check for new connection&#8217; to receive your shell!</li>
+</ol>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">You can now right-click on any user through our ActiveDirectory Browser and obtain more information belonging to the selected user!</p>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">You can export the list of all current CANVAS modules included in the release version you are running through the following command:
+(from within your CANVAS_ROOT) <code class="docutils literal"><span class="pre">./canvasengine.py</span> <span class="pre">-e</span></code> This will generate a CVE keyed XML file (exploits.xml) in your CANVAS_ROOT.</p>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">You can check any operation done by a specific module by double clicking on it from within the Current Status tab. The log window will now also
+report information from any sub-module that needed to be run as part of the original module.</p>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">Following what we did with our August release of CANVAS, this month we are including a lot of new functionalities for our new PowerShell Nodes.
+Now you can press &lt;space&gt; on a PowerShell Node to get the Active Directory Browser, right click on hosts and get more shells!</p>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">In this release we are including our new PowerShell capabilities! Be sure to check them out. As a result, through our <code class="docutils literal"><span class="pre">ms14_064_ie_oleaut32</span></code>
+module you will now get a fully working PowerShell Node. The Node has all the capabilities of other Nodes with the advantage of being able to
+run natively powershell code! You can now also invoke an interactive powershell console right from the command line. To generate PowerShell callback scripts you can use our new BuildPowershellCallback module, and powershellcommand to run powershell code on the target Node.</p>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p>In this release we started refactoring CANVAS code to be more efficient and easier to understand. As you can see from the included changelog, we
+reorganized our exploits directory to be a bit clearer. As an example:</p>
+<p><code class="docutils literal"><span class="pre">CANVAS/exploits/remote/windows/ms08_067/ms08_067.py</span></code>
+<code class="docutils literal"><span class="pre">CANVAS/exploits/clientside/windows/ms14_064_ie_oleaut32/ms14_064_ie_oleaut32.py</span></code>
+<code class="docutils literal"><span class="pre">CANVAS/exploits/local/unix/recvmmsg/recvmmsg.py</span></code></p>
+<p class="last">You&#8217;ll note we&#8217;ve segregated modules based on their type and operating system. This should hopefully be more intuitive than just placing everything in the root of the exploits directory. We are allowing a transition period in which you will still be able to place exploits inside the root of exploits/, although that won&#8217;t be the case in the future and you will have to place them in their respective subdirectories.</p>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p>Did you know you can run CANVAS as a headless server? Our usual process uses three tabs:</p>
+<ul class="simple">
+<li>Tab 1: <code class="docutils literal"><span class="pre">sudo</span> <span class="pre">python</span> <span class="pre">cmdline.py</span> <span class="pre">--server</span> <span class="pre">start</span></code></li>
+<li>Tab 2: <code class="docutils literal"><span class="pre">sudo</span> <span class="pre">python</span> <span class="pre">cmdline.py</span></code></li>
+<li>Tab 3: <code class="docutils literal"><span class="pre">/bin/bash</span></code></li>
+</ul>
+<p>Tab 1 starts the engine, you&#8217;ll see your CANVAS log output here and any stray print()&#8217;s that are used.</p>
+<p>Tab 2 is your command line interface for receiving shells.</p>
+<p>Tab 3 is handy to interact with the file system on the CANVAS host as needed.</p>
+<p>If I wanted to start a universal MOSDEF listener on port 443 I would do the following steps in tab 2:</p>
+<ol class="last arabic simple">
+<li><strong>interfaces</strong> &#8211; This will tell me the network interface # and corresponding IP address</li>
+<li><strong>types</strong> &#8211; This would list all the types of listeners I can start</li>
+<li><strong>bind</strong> &lt;listener type&gt; &lt;interface #&gt; &lt;port&gt; &#8211; Starts the listener</li>
+<li><strong>listeners</strong> &#8211; Verifies the listener has started</li>
+</ol>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">Don&#8217;t forget that CANVAS can import data from many of your favorite tools like Nessus, NMAP, Qualys and Nexpose. Check out the modules under           Import/Export.</p>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">That red text you see whenever you get a shell is pulled from fortunes.txt. You can safely remove that file if you prefer not to see it or add         quotes from your own team!</p>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">If you want to change the default callback port, check canvas.conf. It&#8217;s full of useful options that you may not know about like starting                      automatic listeners each time you start CANVAS!</p>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">Did you know that we brought back our popular CANVAS + Nessus bundle?! Feel free to contact us at support at immunityinc.com for more details.</p>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">We bring you important fixes for our MOSDEF protocol (Linux, PHP) in our current release. Now you can fully take advantage of our PHP exploits,
+transforming a php node into a full x86_64 mosdef node and combining that with our local privilege escalation modules!</p>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">With our current release you have plenty of options for fully compromising your targets. Our <code class="docutils literal"><span class="pre">linux_futex_requeue</span></code> exploit supports a huge list of   kernels! Be sure to check all the info inside the Notes section of the module.</p>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">We have a new x86_64 Linux Remote Resolver. Fancying to run a pcap sniffer over a 64bit CANVAS node? You can now! Did you know that mqac is still      a zero day? And it might stay like that forever.</p>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">MOSDEF Linux 64bit is the big change in this release. We are now loading our exploit list with 64bit exploits and you can make full use of CANVAS
+on 64bit nodes without requiring the 32bit compat libraries.</p>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">Our new Wordpress fingerprinting module is using a combination of css and js file fingeprinting and is very flexible regarding user                            customization. It makes an excellent module for first time user modification, for someone looking to understand and extend CANVAS.</p>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">Our latest Windows privilege escalation (CVE_2013_3881) will automatically update the privileges on the active MOSDEF node to SYSTEM and migrate into lsass. This is an excellent module to use in combination with <code class="docutils literal"><span class="pre">windows_sniffer</span></code>.</p>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">White Phosphorus exploit pack has been integrated and can be found under the &#8220;Exploit Packs&#8221; menu. What does this mean in practical terms?
+~150 new modules for you to examine and deploy!</p>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">We received a lot of requests for a malicious Java MOSDEF applet and we include java_generic_mosdef with this release. This is a module that           supports all our clientd payloads (TCP/HTTP/HTTPS) and uses a Java applet as the delivery mechanism.</p>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">We have updated all our DLL payloads to better work with our new <code class="docutils literal"><span class="pre">inject_from_mem</span></code> module. They will now adhere to DllInit semantics and properly initialize MOSDEF in a new thread. To try the new injector, simply <code class="docutils literal"><span class="pre">BuildMOSDEFDLL</span></code> and <code class="docutils literal"><span class="pre">inject_from_mem</span></code>.</p>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">We have updated our java MBeanInstantiator module to bypass the security warning by serving it as a serialized applet using the technique                      described at: <a class="reference external" href="http://immunityproducts.blogspot.com.ar/2013/02/keep-calm-and-run-this-applet.html">http://immunityproducts.blogspot.com.ar/2013/02/keep-calm-and-run-this-applet.html</a> Do try it out and remember that you can use HTTP/              HTTPS MOSDEF support in clientd to transparently make use of corporate proxies and get MOSDEF working in restrictive environments.</p>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">We have another ClientD demo for you this month, showcasing our latest Java exploit:
+<a class="reference external" href="http://partners.immunityinc.com/movies/CANVAS-MBeanInstantiator.mov">http://partners.immunityinc.com/movies/CANVAS-MBeanInstantiator.mov</a>
+As with all our recent clientsides, the exploit will utilize our new Java MOSDEF implementation to transparently make use of system-configured proxies on the remote end. All you need to do is enable the relevant tunneling options in ClientD!</p>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">Taking advantage of our recently introduced Java MOSDEF HTTP/HTTPS payloads, our Java clientsides for this release are ready to transparently
+use system-configured proxies in order to escape controlled/corporate environments. All you need to do is enable the relevant options in ClientD!
+A demo movie illustrating some of this month&#8217;s new features can also be found here: <a class="reference external" href="http://partners.immunityinc.com/movies/canvasdemodec.mp4">http://partners.immunityinc.com/movies/canvasdemodec.mp4</a></p>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">This release includes a new Java MOSDEF implementation that enables the use of HTTP/HTTPS payloads. This can be very useful when your targets
+are in controlled/corporate environments that enforce the use of proxies. The new HTTP payloads will transparently use system-configured proxies
+(if present) giving you a point of entry into these type of networks. We have updated three of our latest Java modules to work with the new payloads: <code class="docutils literal"><span class="pre">java_deserialize2</span></code>, <code class="docutils literal"><span class="pre">java_AtomicReferenceArray</span></code>, <code class="docutils literal"><span class="pre">java_forName_getField</span></code>.
+A demo movie illustrating some of this month&#8217;s new features can also be found here: <a class="reference external" href="http://partners.immunityinc.com/movies/canvasdemonov.mp4">http://partners.immunityinc.com/movies/canvasdemonov.mp4</a></p>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">You can try out our new reporting framework by simply running canvas_report or by visiting <em>Report &gt; Generate Report</em> in the menu. There are two               reports that one can generate: <em>Canvas</em> and <em>Clientside</em> (uses data from ClientD sessions). As opposed to our old reporting engine, report generation is        entirely standalone and does not depend on OpenOffice installation. The resulting ODT files can be viewed in OpenOffice and other OpenDocument-compatible applications.</p>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">You can try out our new SSL MOSDEF by simply enabling it in the configuration dialog. New MOSDEF callback connections to compatible ShellServers       will be automatically upgraded to SSL, taking advantage of our recently introduced Unix remote resolvers.</p>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">ClientD is one of our most important modules. Try out the new user interface today with some of our most heavy hitting exploits, <code class="docutils literal"><span class="pre">java_rhino</span></code> and <code class="docutils literal"><span class="pre">java_AtomicReferenceArray</span></code>.</p>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">One can get useful information out of smbversion that can be used for fairly accurate OS fingerprinting. Just another useful recon module to have in your arsenal!</p>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">The new <em>HTTPS BuildMOSDEFDLL</em> support can be used in order to establish an encrypted link between a MOSDEF process and CANVAS. CANVAS also supports encrypted executable trojans and we have had great success using them in order to evade various AV solutions. A new video that demonstrates these features has been posted at:http://partners.immunityinc.com/movies/CANVAS-678.mov</p>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">Experience our new <em>ARM MOSDEF</em> backend by trying out our improved Android clientside exploits. Start <em>ClientD</em>, add <code class="docutils literal"><span class="pre">android_parentstylesheet</span></code> and <code class="docutils literal"><span class="pre">CVE_2010_1807</span></code> to allowed modules, sit back and enjoy!</p>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">You can try out our improved mosdefmigrate by running <code class="docutils literal"><span class="pre">getpasswordhashes</span></code> or <code class="docutils literal"><span class="pre">getloggedinhashes</span></code> on your Windows 7 box but you can also use it to migrate MOSDEF into any process that you like!</p>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">eb application vulnerabilities are often the easiest way into a target network and our new Plone/Zope exploit offers reliable remote exploitation
+through a blind command execution window. Try it and see how easy it is!</p>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="canvas_videos.html" class="btn btn-neutral float-right" title="Canvas Video Tutorials" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="post_exploitation.html" class="btn btn-neutral" title="Post-Exploitation" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Immunity Inc..
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

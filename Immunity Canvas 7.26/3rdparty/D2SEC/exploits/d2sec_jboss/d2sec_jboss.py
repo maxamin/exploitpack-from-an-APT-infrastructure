@@ -1,0 +1,104 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2010
+#
+
+import sys, os, string, time, re
+import pygtk
+import gobject
+import logging
+import socket
+
+pygtk.require("2.0")
+import gtk
+import gtk.glade
+
+sys.path.append(".")
+sys.path.append(os.path.join(os.getcwd(), '3rdparty/D2SEC/libs'))
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+import canvasengine
+from canvasexploit import canvasexploit
+
+import appli.jboss
+
+# GUI info
+NAME = "d2sec_jboss"
+DESCRIPTION = "Module to check JBoss servers security" 
+VERSION="1.0"
+
+DOCUMENTATION = {}
+DOCUMENTATION['VENDOR'] = ""
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION['Date public'] = ""
+DOCUMENTATION['References'] = ""
+DOCUMENTATION['Versions Affected'] = ""
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = ""
+DOCUMENTATION["CVE Url"] = ""
+
+DOCUMENTATION["Notes"] = ""
+
+PROPERTY={}
+PROPERTY['TYPE'] = 'Tools'
+PROPERTY['SITE'] = 'Remote'
+PROPERTY['ARCH'] = [["Linux"], ["Windows"]]
+
+class theexploit(canvasexploit):
+  def __init__(self):
+    canvasexploit.__init__(self)
+    self.name = NAME
+    self.host = ''
+    self.port = 80
+    
+  def test(self):
+    try:
+      s = socket.socket()
+      s.connect((self.host,self.port))
+    except Exception, e:
+      self.log('[D2] %s' % e)
+      return 0
+    return 1
+    
+  def run(self):
+    self.host = self.target.interface	
+    self.port = int(self.argsDict.get('port', self.port))
+
+    self.setInfo('[D2] %s attacking %s - running'%(NAME,self.host))
+    if not self.test():
+      return 0
+
+    discovery = [
+      appli.jboss.server_info,
+      appli.jboss.jmx_console,
+      appli.jboss.web_invoker,
+      appli.jboss.vulnerabilities,
+    ]
+
+    infos = []
+    self.result = ''
+    self.log('[D2] Server JBoss %s:%s' % (self.host, self.port))
+    self.log('-' * 64)
+    for fct in discovery:
+      infos = fct(self.host, self.port)
+      if infos:
+        for info in infos:
+          self.result += '%s' % info
+          self.log('[D2] %s' % info)
+    self.setInfo('[D2] %s attacking %s - done' % (NAME,self.host))
+    return 1
+
+  def usage(self):
+  	print 'Usage: %s -t host -p port' % sys.argv[0]
+  	return
+
+if __name__ == '__main__':
+  print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

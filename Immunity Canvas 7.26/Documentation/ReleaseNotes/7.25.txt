@@ -1,0 +1,74 @@
+########################################################################
+#                       *CANVAS Release 7.25*                          #
+########################################################################
+
+*Date*: 28 February 2020
+
+*Version*: 7.25
+
+*Download URL*: https://canvas.immunityinc.com/getcanvas
+
+*Release Notes*:
+
+In this CANVAS release we are bringing you 7 new modules and bugfixes. We have
+updated our installers in order to include a new dependency for our curveball
+module (pyopenssl).
+
+Our new modules include a total of four Remote Code Execution modules targeting:
+- Ruby on Rails (2)
+- Citrix ADC/Gateway
+- rConfig
+
+We also added a module for the curveball vulnerability and two post-exploitation
+modules for iDrac (retrieve list of users, remove user).
+
+In addition to our modules we are also pushing a lot of bugfixes and updates
+in order to support Windows 64bit on old modules.
+
+
+==Changes==
+
+o exploitmanager fix
+
+o get_token_info no longer freezes other modules (e.g. GetSystem)
+
+o Commands updated to support 64bit
+ o dump_certstore
+ o ps_networkinfo
+ o ps_invokemimikatz
+ o ad_adminhunter
+ o ad_check4PSadmin
+ o ad_dlexecute_psmosdef
+ o ad_getcomputers
+ o ad_getdomainusers
+ o ad_getlocalusers
+ o ad_getuserdetails
+
+o GetSystem fixes and improvements
+ o blacklisted event_viewer_mscfile
+ o get_token_info is the first module to be called
+
+==New Modules==
+
+o netscaler_traversal_rce (CVE-2019-19781)
+
+o curveball (CVE-2020-0601)
+
+o rails_activestorage_rce (CVE-2019-5420)
+
+o rails_accept_readfile (CVE-2019-5418)
+
+o rconfig_ajaxserver_rce (CVE-2019-16662)
+
+o del_idrac_user
+
+o get_idrac_users
+
+
+*CANVAS Tips 'n' Tricks*:
+
+The rails_activestorage_rce module only affects apps deployed in production mode and uses
+rails_accept_readfile to read files needed to obtain Remote Code Execution.
+
+########################################################################
+########################################################################

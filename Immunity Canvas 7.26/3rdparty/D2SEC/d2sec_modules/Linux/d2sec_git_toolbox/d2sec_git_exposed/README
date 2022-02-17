@@ -1,0 +1,25 @@
+D2 Exploitation Pack
+
+Copyright (c) 2007-2016 DSquare Security, LLC
+All rights reserved.
+
+License information
+---------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Description
+-------------
+
+d2sec_git_exposed is a simple tool to have the source of a website if the
+folder .git is exposed by a directory listing.
+
+Binaries wget et git are necessary.
+
+
+Usage
+------
+
+$ d2sec_git_exposed.sh www.victim.com

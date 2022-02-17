@@ -1,0 +1,146 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2016
+#
+
+###
+# STD Modules
+###
+import sys, time, os, re
+from socket import *
+import requests
+import xml.etree.ElementTree as ET
+
+sys.path.append(".")
+sys.path.append("../../")
+
+###
+# CANVAS Modules
+###
+import canvasengine
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+###
+# Description
+###
+NAME = "d2sec_upnp_location.py"
+VERSION = "0.1"
+DESCRIPTION = "Tool to parse a UPnP location XML"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Tools"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [["All"]]
+
+DOCUMENTATION = {}
+DOCUMENTATION["Versions Affected"] = ""
+DOCUMENTATION["Date public"] = ""
+DOCUMENTATION["References"] = ""
+DOCUMENTATION["CVE Name"] = ""
+DOCUMENTATION["CVE Url"] = ""
+DOCUMENTATION["Notes"] = """Usage for example: python2 3rdparty/D2SEC/exploits/d2sec_upnp_location/d2sec_upnp_location.py -t 192.168.1.17 -p 9000 -O uri:'/DeviceDescription.xml'"""
+
+
+###
+# Description
+###
+class theexploit (tcpexploit):
+    
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.name = NAME
+    self.port = 0
+    self.uri = ''
+
+  def getargs(self):
+    self.host = self.target.interface
+    self.port = int(self.argsDict.get('port', self.port))
+    self.uri = self.argsDict.get('uri', self.filename)
+    if len(self.uri) > 0 and self.uri[0] == '/':
+      self.uri = self.uri[1:]
+    return 0
+
+  def display_attribute(xml, xml_name, print_name):
+    try:
+      nfo = xml.find(xml_name).text
+      self.log('\t-> %s: %s' % (print_name, nfo))
+    except AttributeError:
+      return
+
+  def parse_attributes(self, xml):
+    self.log('Attributes:')
+    attributes = {
+      "deviceType": "Device Type",
+      "friendlyName": "Friendly Name",
+      "manufacturer": "Manufacturer",
+      "manufacturerURL": "Manufacturer URL",
+      "modelDescription": "Model Description",
+      "modelName": "Model Name",
+      "modelNumber": "Model Number",
+      "modelURL": "Model URL",
+      "presentationURL": "Presentation URL",
+    }
+    for attribute, desc in attributes.items():
+      try:
+        self.log('\t-> %s: %s' % (desc, xml.find('./{urn:schemas-upnp-org:device-1-0}device/{urn:schemas-upnp-org:device-1-0}%s' % attribute).text))
+      except AttributeError:
+        continue
+
+  def parse_services(self, xml):
+    self.log('Services:')
+    services = xml.findall(".//*{urn:schemas-upnp-org:device-1-0}serviceList/")
+    cpt = 1
+    for service in services:
+      self.log('\t[%d] service:' % cpt)
+      self.log('\t\t-> Service Type: %s' % service.find('./{urn:schemas-upnp-org:device-1-0}serviceType').text)
+      self.log('\t\t-> Service Id: %s' % service.find('./{urn:schemas-upnp-org:device-1-0}serviceId').text)
+      api = 'http://%s:%d%s' % (self.host, self.port, service.find("./{urn:schemas-upnp-org:device-1-0}SCPDURL").text)
+      self.log('\t\t-> Control: %s' % service.find('./{urn:schemas-upnp-org:device-1-0}controlURL').text)
+      self.log('\t\t-> Events: %s' % service.find('./{urn:schemas-upnp-org:device-1-0}eventSubURL').text)
+      cpt += 1
+      data = requests.get(api, timeout=2)
+      try:
+        xml = ET.fromstring(data.text)
+      except Exception, e:
+        self.log('[D2] Failed XML parsing: %s' % e)
+        return
+      self.log('\t\t-> API: %s'%api) 
+      actions = xml.findall(".//*{urn:schemas-upnp-org:service-1-0}action")
+      act = 1
+      for action in actions:
+        self.log('\t\t\t-> %s' % action.find('./{urn:schemas-upnp-org:service-1-0}name').text)
+
+
+  def run(self):
+    self.setInfo('[D2] %s ' % NAME)
+    self.getargs()
+    location = 'http://%s:%d/%s' % (self.host, self.port, self.uri)
+    self.log('[D2] UPnP location: %s' % location)
+    data = requests.get(location, timeout=2)
+    if data.headers.get('server'):
+      self.log('Server: %s' % data.headers.get('server'))
+    try:
+      xml = ET.fromstring(data.text)
+    except Exception, e:
+      self.log('[D2] Failed XML parsing: %s' % e)
+      self.setInfo('[D2] %s - failed' % NAME)
+      return 1
+    self.parse_attributes(xml)
+    self.parse_services(xml)
+    self.setInfo('[D2] %s - done' % NAME)
+    return 1
+
+  def usage(self):
+    print 'Usage: %s -t target -p port -O uri:<uri>' % sys.argv[0]
+    sys.exit(0)
+
+
+if __name__ == '__main__':
+  print "Running CANVAS %s v %s" % (NAME,VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

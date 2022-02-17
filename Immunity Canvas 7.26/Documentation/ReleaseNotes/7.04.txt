@@ -1,0 +1,76 @@
+########################################################################
+#                       *CANVAS Release 7.04*                          #
+########################################################################
+
+*Date*: 31 August 2015
+
+*Version*: 7.04
+
+*Download URL*: https://canvas.immunityinc.com/cgi-bin/getcanvas.py
+
+*Release Notes*:
+
+In this CANVAS release we are bringing you 4 new modules and many updates to our
+modules and libraries.
+
+Our new modules include rootpipe #2 (CVE-2015-3673), a local privilege escalation
+in ESET Smart Security (CVE-2014-4973), and PowerShell related modules since CANVAS
+is now able to handle PowerShell Nodes.
+
+==Changes==
+
+o New PowerShell Node Capabilities
+
+o New wkssvc library
+
+o Complete rewrite of userenum
+ o Bugfixes
+ o Support for Win 2012
+ o Providing more and better output
+ o Kerberos support
+
+o 64bit support for atmfd_local_buffer_underflow
+
+o dcedump improvements
+ o Ability to query port 445 using domain credentials
+
+o ifids improvements
+ o Kerberos support
+ o Now accepts credentials
+ o Bugfixes
+
+o LSARPC library bugfixes
+
+o libdcerpc bugfixes
+
+
+==New Modules==
+
+o osx_rootpipe2
+
+o ESET_EpFwNDIS
+
+o BuildPowershellCallback
+
+o powershellcommand
+
+
+*CANVAS Tips 'n' Tricks*:
+
+In this release we are including our new PowerShell capabilities! Be sure to check
+them out. As a result, through our ms14_064_ie_oleaut32 module you will now get
+a fully working PowerShell Node. The Node has all the capabilities of other Nodes
+with the advantage of being able to run natively powershell code!
+You can now also invoke an interactive powershell console right from the command line.
+To generate PowerShell callback scripts you can use our new BuildPowershellCallback
+module, and powershellcommand to run powershell code on the target Node.
+
+*Links*:
+
+Support email       : support@immunityinc.com
+Sales support       : sales@immunityinc.com
+Support/Sales phone : +1 786-220-0600
+
+
+########################################################################
+########################################################################

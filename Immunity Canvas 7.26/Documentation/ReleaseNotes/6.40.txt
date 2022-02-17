@@ -1,0 +1,52 @@
+This month we are proud to release many new exploits and additional
+functionality in your CANVAS Monthly Update. Today several new
+vulnerabilities were announced in Adobe Reader 8.1.2 - a reliable
+exploit for one of these is included this month (acrobat_js3). Likewise,
+the MS08-067 exploit included in CANVAS is the most reliable exploit
+available (even on Windows XP/2003 with DEP AlwaysOn!).
+
+In the Windows world, the CANVAS Windows rootkit can now hide files, and
+has been updated for reliability. This month's CANVAS also includes a
+ram dumper utility which can be used to download a copy of a machine's
+entire live memory for forensics or for analysis.
+
+If you're doing Unix penetration testing, you'll be interested in the
+new local exploits for AIX 5.1 and 5.2. A full changelog is included
+below. As always, if you have any questions or need help, do not
+hesitate to contact us!
+
+
+6.40 November 4 2008 (Election day release!!)
+
+This release includes the following CANVAS Early updates:
+
+Previous Month's CANVAS Early Updates
+# November 4, 2008 Adobe Acrobat Reader util.printf() exploit
+# November 3, 2008 Mantis BugTracker Remote PHP code execution exploit.
+# October 28, 2008 Module to brute force the basic authentication used
+in most common routers administration panel.
+# October 27, 2008 The Windows rootkit has been updated with file and
+directory hiding capabilities.
+# October 24, 2008 Exploit (Windows 2000 (All SP's) and XP (SP0) and
+2K3 (SP0) all languages, XP (SP2/SP3) and 2K3 (SP1/SP2) English) for the
+Windows Server Service Vulnerability (MS08-067)
+# October 23, 2008 AIX Local Root Exploitation support (CVE-2007-4513 added)
+# October 22, 2008 Exploit (Windows 2000) for the Windows Internet
+Printing Service Vulnerability (MS08-062)
+# October 20, 2008 AIX Local Root Exploitation support (updated)
+# October 20, 2008 The newest enhancement to the ram_dumper module has
+the driver dump the contents of RAM directly across the network back to
+CANVAS.
+# October 17, 2008 PoC (command execution) for the Microsoft HIS
+Vulnerability (MS08-059)
+# October 17, 2008 PoC (overflow trigger, BSOD) for the Windows SMB
+Server Vulnerability (MS08-063)
+
+Feature updates:
+
+# SSH_brute updates
+# Nessus report support updated to handle Nessus 3 format reports
+# VulnAssess updated to allow toggleable whereami and traceroute features
+# Spike proxy updates - improved JSON support
+
+

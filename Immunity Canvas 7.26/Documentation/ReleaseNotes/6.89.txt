@@ -1,0 +1,49 @@
+########################################################################
+#                       *CANVAS Release 6.89*                          #
+########################################################################
+
+*Date*: 26 August 2013
+
+*Version*: 6.89 ("Cell")
+
+*Download URL*: https://canvas.immunityinc.com/cgi-bin/getcanvas.py
+
+*Release Notes*:
+
+For this release we bring you the latest IE8 clientside (ms13_056),
+two privilege escalation modules for Linux and FreeBSD (for CVE-2013-2094
+and CVE-2013-2171) and a generic Java MOSDEF applet module.
+
+Finally, we have updated acrobat_xfa to work with Acrobat Reader 11.
+
+==Changes==
+
+o acrobat_xfa (Adobe Reader 11 support)
+
+==New Modules==
+
+o ms13_056 (Clientside exploit for IE8 DirectShow GIF rendering)
+
+o java_generic_mosdef (Generic Java MOSDEF applet)
+
+o maptrace (FreeBSD MMAP/PTRACE privilege escalation)
+
+o perf_swevent_init (Linux escalation through CVE-2013-2094)
+
+*CANVAS Tips 'n' Tricks*:
+
+We received a lot of requests for a malicious Java MOSDEF applet
+and we include java_generic_mosdef with this release. This is a module
+that supports all our clientd payloads (TCP/HTTP/HTTPS) and uses
+a Java applet as the delivery mechanism.
+
+
+*Links*:
+
+Support email      : support@immunityinc.com
+Sales support      : sales@immunityinc.com
+Support/Sales phone: +1 786-220-0600
+
+
+########################################################################
+########################################################################

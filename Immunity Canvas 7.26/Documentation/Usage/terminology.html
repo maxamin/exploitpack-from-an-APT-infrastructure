@@ -1,0 +1,250 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Terminology &mdash; Immunity CANVAS 1 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="Immunity CANVAS 1 documentation" href="index.html"/>
+        <link rel="next" title="Getting Started" href="canvas_intro.html"/>
+        <link rel="prev" title="Installing CANVAS" href="install.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Immunity CANVAS
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="license.html">CANVAS EULA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installing CANVAS</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Terminology</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_intro.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_basics.html">CANVAS Basic Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basics_win_remote.html">Exploiting Windows Remotely</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basics_win_local.html">Exploiting Windows Locally (Privilege Escalation)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basics_clientside.html">Exploiting Client-Side Vulnerablities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="post_exploitation.html">Post-Exploitation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_tips.html">Canvas Tips and Tricks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_videos.html">Canvas Video Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_advanced.html">CANVAS Advanced Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_strategic.html">CANVAS Strategic</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">Immunity CANVAS</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Terminology</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/terminology.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="terminology">
+<h1>Terminology<a class="headerlink" href="#terminology" title="Permalink to this headline">¶</a></h1>
+<p>CANVAS consists of a large number of modules, libraries and tools each of which is developed for a very specific case and purpose.</p>
+<p>Some of the terminologies used in CANVAS are unique to CANVAS, while other terms may differ from the way it used by other companies. Below is a list of some of the most common terminologies and what they mean in CANVAS and other Immunity products.</p>
+<dl class="docutils">
+<dt>Active Node :</dt>
+<dd>The active node, which by default is the local node when CANVAS is first started, is where the  executed modules run against. If we add a new host as a target to our Knowledge, it automatically becomes the active node. There are some modules that should be run specifically against local or remote active nodes.
+We can also choose multiple active nodes at the same time. This allows running a module against multiple hosts at the same time. The CANVAS GUI allows you to  select multiple nodes by either right-click menu actions, or Ctrl+Click on nodes in the nodes management tab.</dd>
+<dt>Commands :</dt>
+<dd>In CANVAS, everything is designed and developed as a module. A series of modules in CANVAS are categorized as <em>commands</em>. Command modules in CANVAS are used to run simple tasks against a local or remote node. For example, there are commands to gain extra information about a node, such as list of users, version information and running processes.  Commands are categorized based on the operating systems in CANVAS.</dd>
+<dt>Exploit :</dt>
+<dd>If you have purchased CANVAS, you are likely already familiar with this term. In short, an exploit is a piece of code, tool or technique used to confirm that an identified vulnerability is practically usable and can be used to access or gather information from the targeted host, service or software. Exploits are categorized based on where they are run from, how they are delivere, and what are their impacts. A detailed description about types of exploits
+found in CANVAS can be found <a class="reference external" href="https://www.immunityinc.com/downloads/Exploit_Categories_Explained.pdf">here</a></dd>
+<dt>Knowledge :</dt>
+<dd>Whenever we define a new target for CANVAS, or scan the network with CANVAS modules to identify some hosts and services, we end up with  a list of properties for each host. For example if we sweep the network for an open port, each host with that open port will have a saved Knowledge item     maintained by CANVAS with those results. If we run another module to identify the operating system of a host, result of that module is added to the Knowledge for that host. Some modules in CANVAS refer to this prior execution, for example to check for the OS version details or to make sure the right payload is sent to the target. In CANVAS GUI you can right-click on a node, and view the Knowledge about it in a separated window.
+CANVAS is constantly collecting information in the background, from executed modules and network traffic to update the knowledge list.</dd>
+<dt>Listener :</dt>
+<dd>Listener is a module and component of the CANVAS framework used to serve incoming connections from exploited hosts or services. Often this listener is used as an incoming connection initiated by MOSDEF that tries to connect back to the CANVAS host to provide remote access.</dd>
+</dl>
+<p>CANVAS does other listeners besides MOSDEF. For example there are listeners to for PHP, JAVA and Microsoft PowerShell node callbacks.</p>
+<p>Note, however, that there are many features that are available in CANVAS only if you have access to a MOSDEF node. In most cases, having some requirements met, we can upgrade PHP/JAVA/... nodes to a fully functional MOSDEF node.</p>
+<dl class="docutils">
+<dt>MOSDEF :</dt>
+<dd>MOSDEF in simple words, is what many other call shellcode and/or  payload. After a vulnerablity is exploited on a target MOSDEF is executed on the host. It can be as  simple as a command-execution shell code, or a listening or reverse bind shell. In most cases, the payload concept in other tools and exploits, is a very static and pre-defined. CANVAS however, takes a different approach and this is one of the shining and most powerful features CANVAS provides.</dd>
+</dl>
+<p>MOSDEF can be described as a sophisticated in-memory C compiler that dynamically compiles and executes whatever you feed it, in the memory and context of the process you have exploited. This provides endless possibilities and freedom once you gain access to a process. MOSDEF is developed to support all major operating systems and architectures. Moreover MOSDEF can callback over HTTP, SSL or even over DNS or ICMP protocols! Once you successfully exploit a target and have an instance of MOSDEF running on it, you can use MOSDEF as your remote agent to scan, exploit and connect to other hosts that are otherwise unreachable to your host directly. You can learn more about internals of MOSDEF from Dave Aitel&#8217;s talks in 2003 <a class="reference external" href="http://www.immunityinc.com/resources/papers-presentations.html">here</a>.</p>
+<dl class="docutils">
+<dt>Node :</dt>
+<dd>Node is any local or remote host currently running a module of CANVAS or that we have gained access to through running one of CANVAS modules. A local node is typically referred to the host running CANVAS. The CANVAS GUI has a dedicated tab for managing nodes where the nodes can be interacted with and are displayed in a graphical map.</dd>
+<dt>Pivoting :</dt>
+<dd>Pivoting in Canvas means using a node other than the node CANVAS is running on to exploit or run a command against another target.  For example, suppose you manage to gain access to a public web server using one of the CANVAS web exploits, and get back a MOSDEF node. There are probably some hosts inside the target network, which are not directly visible from Internet, but the exploited web server can reach them. CANVAS allows you to easily and transparently use the MOSDEF node on the public web server as a middle proxy, to explore the internal hosts and exploit them. CANVAS provides some unique and interesting pivoting capabilities which are covered in more detail in other sections of this users manual.</dd>
+<dt>Session :</dt>
+<dd>Each time we launch CANVAS and run modules, a series of information and <em>knowledge</em> are recorded as session information. CANVAS allows saving and restoring the information as a <em>session</em>, which is a great feature if you want to save your works and resume it later, or even share with someone. Note that once you close your session, even if you have saved it, your active connections such as exploited hosts will be lost!</dd>
+<dt>Tools :</dt>
+<dd>Similar to commands, tool modules are developed to perform tasks against selected nodes, however tools are usually more complicated and automate a series of commands and tasks. Among the more interesting tools provided with CANVAS are the password bruteforce modules.</dd>
+<dt>Trojan :</dt>
+<dd>As the name implies, a trojan will allow us persistent access to targeted host, after we successfully gain initial access. In the CANVAS world, a trojan is an instance of MOSDEF that we install or execute on a host via any of available methods. Once a CANVAS trojan is installed and running on the target host, it can be used to gain access to that host in the future, without the need to exploit any vulnerability. This is especially useful when you have longer penetration test sessions and would like to maintain your access to compromised hosts for followup work.</dd>
+</dl>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="canvas_intro.html" class="btn btn-neutral float-right" title="Getting Started" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="install.html" class="btn btn-neutral" title="Installing CANVAS" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Immunity Inc..
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,484 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-01-26 12:45-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: canvasgui2_default.glade:524 canvasgui2_default.glade:537
+#: canvasgui2_default.glade:947 canvasgui2_default.glade:991
+#: ../canvasgui2_default.glade:524 ../canvasgui2_default.glade:537
+#: ../canvasgui2_default.glade:947 ../canvasgui2_default.glade:991
+msgid " "
+msgstr ""
+
+#: canvasgui2_default.glade:1979 ../canvasgui2_default.glade:1979
+msgid " Target(s) "
+msgstr ""
+
+#: canvasgui2_default.glade:752 ../canvasgui2_default.glade:752
+msgid "(Gets Current Working Directory)"
+msgstr ""
+
+#: canvasgui2_default.glade:738 ../canvasgui2_default.glade:738
+msgid "."
+msgstr ""
+
+#: canvasgui2_default.glade:1418 ../canvasgui2_default.glade:1418
+msgid "0.0.0.0"
+msgstr ""
+
+#: canvasgui2_default.glade:2477 ../canvasgui2_default.glade:2477
+msgid "<b>Canvas Log</b>"
+msgstr ""
+
+#: canvasgui2_default.glade:2447 ../canvasgui2_default.glade:2447
+msgid "<b>Current Status</b>"
+msgstr ""
+
+#: canvasgui2_default.glade:2548 ../canvasgui2_default.glade:2548
+msgid "<b>Data View</b>"
+msgstr ""
+
+#: canvasgui2_default.glade:2508 ../canvasgui2_default.glade:2508
+msgid "<b>Debug Log</b>"
+msgstr ""
+
+#: canvasgui2_default.glade:2258 ../canvasgui2_default.glade:2258
+msgid "<b>Exploit Description</b>"
+msgstr ""
+
+#: canvasgui2_default.glade:2675 ../canvasgui2_default.glade:2675
+msgid "<b>Host to Add:</b>"
+msgstr ""
+
+#: canvasgui2_default.glade:1285 ../canvasgui2_default.glade:1285
+msgid "<b>HostName or IP:</b>"
+msgstr ""
+
+#: canvasgui2_default.glade:1065 canvasgui2_default.glade:3183
+#: ../canvasgui2_default.glade:1065 ../canvasgui2_default.glade:3183
+msgid "<b>Listening Port:</b>"
+msgstr ""
+
+#: canvasgui2_default.glade:2226 ../canvasgui2_default.glade:2226
+msgid "<b>Node Tree</b>"
+msgstr ""
+
+#: canvasgui2_default.glade:2399 ../canvasgui2_default.glade:2399
+msgid "<b>Search Modules</b>"
+msgstr "<b>KOREAN TEST SEARCH MODULES</b>"
+
+#: canvasgui2_default.glade:2582 ../canvasgui2_default.glade:2582
+msgid "<b>Set Covertness:</b>"
+msgstr ""
+
+#: canvasgui2_default.glade:3059 ../canvasgui2_default.glade:3059
+msgid "<b>Third Party Exploit Pack Information</b>"
+msgstr ""
+
+#: canvasgui2_default.glade:1080 canvasgui2_default.glade:3198
+#: ../canvasgui2_default.glade:1080 ../canvasgui2_default.glade:3198
+msgid "<b>Type of Listener:</b>"
+msgstr ""
+
+#: canvasgui2_default.glade:1271 canvasgui2_default.glade:2688
+#: ../canvasgui2_default.glade:1271 ../canvasgui2_default.glade:2688
+msgid "<b>Type of OS:</b>"
+msgstr ""
+
+#: canvasgui2_default.glade:1338 ../canvasgui2_default.glade:1338
+msgid "Add New Interface"
+msgstr ""
+
+#: canvasgui2_default.glade:1908 ../canvasgui2_default.glade:1908
+msgid "Add Target Host"
+msgstr ""
+
+#: canvasgui2_default.glade:174 ../canvasgui2_default.glade:174
+msgid "Add To Targets"
+msgstr ""
+
+#: canvasgui2_default.glade:2631 ../canvasgui2_default.glade:2631
+msgid "Add a Host"
+msgstr ""
+
+#: canvasgui2_default.glade:1227 ../canvasgui2_default.glade:1227
+msgid "Add a host"
+msgstr ""
+
+#: canvasgui2_default.glade:2108 ../canvasgui2_default.glade:2108
+msgid "Add to Target"
+msgstr ""
+
+#: canvasgui2_default.glade:2783 ../canvasgui2_default.glade:2783
+msgid "All commands to be ran are located here"
+msgstr ""
+
+#: canvasgui2_default.glade:354 ../canvasgui2_default.glade:354
+msgid "As Covert As Possible"
+msgstr ""
+
+#: canvasgui2_default.glade:381 ../canvasgui2_default.glade:381
+msgid "As Reliable as Possible"
+msgstr ""
+
+#: canvasgui2_default.glade:684 canvasgui2_default.glade:2815
+#: ../canvasgui2_default.glade:684 ../canvasgui2_default.glade:2815
+msgid "Browse"
+msgstr ""
+
+#: canvasgui2_default.glade:3032 ../canvasgui2_default.glade:3032
+msgid "CANVAS Exploit Packs"
+msgstr ""
+
+#: canvasgui2_default.glade:261 ../canvasgui2_default.glade:261
+msgid "CANVAS Log"
+msgstr ""
+
+#: canvasgui2_default.glade:3049 ../canvasgui2_default.glade:3049
+msgid ""
+"CANVAS Professional has loaded the third party exploit packs listed below.\n"
+"These exploit packs add extra features and exploits to CANVAS Professional, "
+"but are not provided or supported by Immunity Inc. Use of third party "
+"exploit packs is subject to the license of the exploit pack, so be sure to "
+"be familiar with these terms before using third party functionality. "
+msgstr ""
+
+#: canvasgui2_default.glade:2208 ../canvasgui2_default.glade:2208
+msgid "CANVAS World Map"
+msgstr ""
+
+#: canvasgui2_default.glade:1675 ../canvasgui2_default.glade:1675
+msgid "CANVAS World Service"
+msgstr ""
+
+#: canvasgui2_default.glade:1962 ../canvasgui2_default.glade:1962
+msgid "Callback "
+msgstr ""
+
+#: canvasgui2_default.glade:2877 ../canvasgui2_default.glade:2877
+msgid "Change Directory"
+msgstr ""
+
+#: canvasgui2_default.glade:709 ../canvasgui2_default.glade:709
+msgid "Change the current directory"
+msgstr ""
+
+#: canvasgui2_default.glade:2183 ../canvasgui2_default.glade:2183
+msgid "Classic Node View"
+msgstr ""
+
+#: canvasgui2_default.glade:368 ../canvasgui2_default.glade:368
+msgid "Covertness Bar"
+msgstr ""
+
+#: canvasgui2_default.glade:1011 canvasgui2_default.glade:3115
+#: ../canvasgui2_default.glade:1011 ../canvasgui2_default.glade:3115
+msgid "Create A New Listener"
+msgstr ""
+
+#: canvasgui2_default.glade:24 ../canvasgui2_default.glade:24
+msgid "Current Callback IP"
+msgstr ""
+
+#: canvasgui2_default.glade:287 ../canvasgui2_default.glade:287
+msgid "Debug Log"
+msgstr ""
+
+#: canvasgui2_default.glade:783 ../canvasgui2_default.glade:783
+msgid "Delete a file"
+msgstr ""
+
+#: canvasgui2_default.glade:596 ../canvasgui2_default.glade:596
+msgid "Dir"
+msgstr ""
+
+#: canvasgui2_default.glade:660 ../canvasgui2_default.glade:660
+msgid "Download"
+msgstr ""
+
+#: canvasgui2_default.glade:2855 ../canvasgui2_default.glade:2855
+msgid "Download a file"
+msgstr ""
+
+#: canvasgui2_default.glade:497 ../canvasgui2_default.glade:497
+msgid "Download a file from the remote server (source file)"
+msgstr ""
+
+#: canvasgui2_default.glade:1444 ../canvasgui2_default.glade:1444
+msgid "End Port"
+msgstr ""
+
+#: canvasgui2_default.glade:1855 ../canvasgui2_default.glade:1855
+msgid "Exit CANVAS GUI"
+msgstr ""
+
+#: canvasgui2_default.glade:1854 ../canvasgui2_default.glade:1854
+msgid "Exits CANVAS GUI"
+msgstr ""
+
+#: canvasgui2_default.glade:3251 ../canvasgui2_default.glade:3251
+msgid "Filesystem Browser"
+msgstr ""
+
+#: canvasgui2_default.glade:2310 ../canvasgui2_default.glade:2310
+msgid "GO"
+msgstr ""
+
+#: canvasgui2_default.glade:2899 ../canvasgui2_default.glade:2899
+msgid "Get Directory Listing"
+msgstr ""
+
+#: canvasgui2_default.glade:737 ../canvasgui2_default.glade:737
+msgid "Get directory listing"
+msgstr ""
+
+#: canvasgui2_default.glade:797 canvasgui2_default.glade:815
+#: canvasgui2_default.glade:833 canvasgui2_default.glade:851
+#: canvasgui2_default.glade:869 canvasgui2_default.glade:887
+#: canvasgui2_default.glade:905 canvasgui2_default.glade:923
+#: ../canvasgui2_default.glade:797 ../canvasgui2_default.glade:815
+#: ../canvasgui2_default.glade:833 ../canvasgui2_default.glade:851
+#: ../canvasgui2_default.glade:869 ../canvasgui2_default.glade:887
+#: ../canvasgui2_default.glade:905 ../canvasgui2_default.glade:923
+msgid "Go"
+msgstr ""
+
+#: canvasgui2_default.glade:1921 ../canvasgui2_default.glade:1921
+msgid "Halt Current Exploit"
+msgstr ""
+
+#: canvasgui2_default.glade:1757 ../canvasgui2_default.glade:1757
+msgid "Host"
+msgstr ""
+
+#: canvasgui2_default.glade:1497 ../canvasgui2_default.glade:1497
+msgid "IP (external IP for NAT)"
+msgstr ""
+
+#: canvasgui2_default.glade:8 canvasgui2_default.glade:1835
+#: ../canvasgui2_default.glade:8 ../canvasgui2_default.glade:1835
+msgid "Immunity CANVAS (http://www.immunityinc.com/)"
+msgstr ""
+
+#: canvasgui2_default.glade:1510 ../canvasgui2_default.glade:1510
+msgid "Interface Name"
+msgstr ""
+
+#: canvasgui2_default.glade:115 ../canvasgui2_default.glade:115
+msgid "List of exploits and utility modules"
+msgstr ""
+
+#: canvasgui2_default.glade:417 canvasgui2_default.glade:2756
+#: ../canvasgui2_default.glade:417 ../canvasgui2_default.glade:2756
+msgid "Listener Shell"
+msgstr ""
+
+#: canvasgui2_default.glade:3288 ../canvasgui2_default.glade:3288
+msgid "Module Log"
+msgstr ""
+
+#: canvasgui2_default.glade:2068 ../canvasgui2_default.glade:2068
+msgid "Modules"
+msgstr ""
+
+#: canvasgui2_default.glade:1560 ../canvasgui2_default.glade:1560
+msgid "My Screenshots"
+msgstr ""
+
+#: canvasgui2_default.glade:1385 ../canvasgui2_default.glade:1385
+msgid "NAT"
+msgstr ""
+
+#: canvasgui2_default.glade:1470 ../canvasgui2_default.glade:1470
+msgid "NAT Interface"
+msgstr ""
+
+#: canvasgui2_default.glade:1484 ../canvasgui2_default.glade:1484
+msgid "Netmask Bits (24 is class C)"
+msgstr ""
+
+#: canvasgui2_default.glade:1149 canvasgui2_default.glade:1175
+#: ../canvasgui2_default.glade:1149 ../canvasgui2_default.glade:1175
+msgid "Network Dump Filter String"
+msgstr ""
+
+#: canvasgui2_default.glade:1590 ../canvasgui2_default.glade:1590
+msgid "Network Dump Window"
+msgstr ""
+
+#: canvasgui2_default.glade:1432 ../canvasgui2_default.glade:1432
+msgid "New Interface"
+msgstr ""
+
+#: canvasgui2_default.glade:2151 ../canvasgui2_default.glade:2151
+msgid "Node Management"
+msgstr ""
+
+#: canvasgui2_default.glade:1608 ../canvasgui2_default.glade:1608
+msgid "Note to Add"
+msgstr ""
+
+#: canvasgui2_default.glade:2919 ../canvasgui2_default.glade:2919
+msgid "PWD - Gets current working Directory"
+msgstr ""
+
+#: canvasgui2_default.glade:1770 ../canvasgui2_default.glade:1770
+msgid "Password"
+msgstr ""
+
+#: canvasgui2_default.glade:2790 ../canvasgui2_default.glade:2790
+msgid "Pick file to upload"
+msgstr ""
+
+#: canvasgui2_default.glade:564 canvasgui2_default.glade:2930
+#: ../canvasgui2_default.glade:564 ../canvasgui2_default.glade:2930
+msgid "Piped Command"
+msgstr ""
+
+#: canvasgui2_default.glade:1744 ../canvasgui2_default.glade:1744
+msgid "Port"
+msgstr ""
+
+#: canvasgui2_default.glade:2331 ../canvasgui2_default.glade:2331
+msgid "Raw"
+msgstr ""
+
+#: canvasgui2_default.glade:2345 ../canvasgui2_default.glade:2345
+msgid "Regex"
+msgstr ""
+
+#: canvasgui2_default.glade:1864 ../canvasgui2_default.glade:1864
+msgid "Reload CANVAS Modules"
+msgstr ""
+
+#: canvasgui2_default.glade:1863 ../canvasgui2_default.glade:1863
+msgid "Reloads CANVAS Modules"
+msgstr ""
+
+#: canvasgui2_default.glade:2119 ../canvasgui2_default.glade:2119
+msgid "Remove from Target"
+msgstr ""
+
+#: canvasgui2_default.glade:187 ../canvasgui2_default.glade:187
+msgid "Remove from Targets"
+msgstr ""
+
+#: canvasgui2_default.glade:768 ../canvasgui2_default.glade:768
+msgid "Run a command and get the standard output."
+msgstr ""
+
+#: canvasgui2_default.glade:2016 ../canvasgui2_default.glade:2016
+msgid "Screen Shots"
+msgstr ""
+
+#: canvasgui2_default.glade:1934 ../canvasgui2_default.glade:1934
+msgid "Set OS Configuration"
+msgstr ""
+
+#: canvasgui2_default.glade:1092 canvasgui2_default.glade:3133
+#: ../canvasgui2_default.glade:1092 ../canvasgui2_default.glade:3133
+msgid "Set fromcreatethread"
+msgstr ""
+
+#: canvasgui2_default.glade:612 ../canvasgui2_default.glade:612
+msgid "Spawn Process"
+msgstr ""
+
+#: canvasgui2_default.glade:2888 ../canvasgui2_default.glade:2888
+msgid "Spawn a Process"
+msgstr ""
+
+#: canvasgui2_default.glade:1883 ../canvasgui2_default.glade:1883
+msgid "Start New MOSDEF Listener"
+msgstr ""
+
+#: canvasgui2_default.glade:1457 ../canvasgui2_default.glade:1457
+msgid "Start Port"
+msgstr ""
+
+#: canvasgui2_default.glade:3273 ../canvasgui2_default.glade:3273
+msgid "Status Bar"
+msgstr ""
+
+#: canvasgui2_default.glade:162 canvasgui2_default.glade:2097
+#: ../canvasgui2_default.glade:162 ../canvasgui2_default.glade:2097
+msgid "Target"
+msgstr ""
+
+#: canvasgui2_default.glade:2170 ../canvasgui2_default.glade:2170
+msgid "The information such as targets and interfaces"
+msgstr ""
+
+#: canvasgui2_default.glade:118 ../canvasgui2_default.glade:118
+msgid "This lets you look at all the modules you can use"
+msgstr ""
+
+#: canvasgui2_default.glade:2941 ../canvasgui2_default.glade:2941
+msgid "Unlink"
+msgstr ""
+
+#: canvasgui2_default.glade:644 ../canvasgui2_default.glade:644
+msgid "Upload"
+msgstr ""
+
+#: canvasgui2_default.glade:2866 ../canvasgui2_default.glade:2866
+msgid "Upload a File"
+msgstr ""
+
+#: canvasgui2_default.glade:677 ../canvasgui2_default.glade:677
+msgid ""
+"Upload a file to the remote server (click browse to pick, or type directly)"
+msgstr ""
+
+#: canvasgui2_default.glade:1783 ../canvasgui2_default.glade:1783
+msgid "Username"
+msgstr ""
+
+#: canvasgui2_default.glade:1847 ../canvasgui2_default.glade:1847
+msgid "_File"
+msgstr ""
+
+#: canvasgui2_default.glade:1876 ../canvasgui2_default.glade:1876
+msgid "_Listeners"
+msgstr ""
+
+#: canvasgui2_default.glade:628 ../canvasgui2_default.glade:628
+msgid "cd"
+msgstr ""
+
+#: canvasgui2_default.glade:1706 ../canvasgui2_default.glade:1706
+msgid "localhost"
+msgstr ""
+
+#: canvasgui2_default.glade:117 ../canvasgui2_default.glade:117
+msgid "module_treeview"
+msgstr ""
+
+#: canvasgui2_default.glade:580 ../canvasgui2_default.glade:580
+msgid "pwd"
+msgstr ""
+
+#: canvasgui2_default.glade:723 ../canvasgui2_default.glade:723
+msgid "spawn() on Windows, fexecve() on Unix"
+msgstr ""
+
+#: canvasgui2_default.glade:548 ../canvasgui2_default.glade:548
+msgid "unlink"
+msgstr ""
+
+#: canvasgui2_default.glade:1581 ../canvasgui2_default.glade:1581
+msgid "window2"
+msgstr ""

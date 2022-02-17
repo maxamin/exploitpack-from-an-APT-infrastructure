@@ -1,0 +1,62 @@
+RUNNING VISUALSPLOIT ON WINDOWS
+===============================
+
+Untar VisualSploit into CANVAS root directory using winzip or winrar. 
+If it gives you an error about corruption, ignore it. 
+
+This will create a CANVAS/VisualSploit_NAME/$
+
+From CANVAS root directory, move VisualSploit_NAME to VisualSploit
+
+X:\CANVAS\ move VisualSploit_NAME VisualSploit
+
+then,
+
+Use vsrun.bat located at CANVAS/ to start the VisualSploit GUI. 
+
+
+All vsrun.bat does is set up the path environment variable so python can find
+the GTK libraries. 
+
+Note for users of SPANISH WINDOWS:
+
+path that is looking for is \Program Files\Common files\ but the installation
+of those three packages was in other path, because the Windows is in Spanish,
+the correct path is \Archivos de Programas\Archivos Comunes\.
+
+
+RUNNING VISUALSPLOIT ON LINUX
+=============================
+
+Untar VisualSploit into CANVAS root directory using tar. 
+
+CANVAS/$ tar zxvf VisualSploit_NAME.tar.gz
+
+This will create a CANVAS/VisualSploit_NAME/$
+
+Change to CANVAS root directory
+
+cd CANVAS
+
+and move VisualSploit_NAME to VisualSploit
+
+CANVAS/$ mv VisualSploit_NAME VisualSploit
+
+then,
+
+
+from CANVAS root directory execute:
+
+CANVAS/$ python -W VisualSploit/main.py
+
+Please be sure to have python bin in system PATH, otherwise
+full path will be needed.
+
+For example:
+
+CANVAS/$ /usr/bin/python -W VisualSploit/main.py
+
+
+
+
+

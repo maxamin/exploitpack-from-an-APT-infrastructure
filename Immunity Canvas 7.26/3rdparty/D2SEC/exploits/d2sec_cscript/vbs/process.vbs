@@ -1,0 +1,21 @@
+'
+' Proprietary D2 Exploitation Pack source code - use only under the license
+' agreement specified in LICENSE.txt in your D2 Exploitation Pack
+'
+' Copyright DSquare Security, LLC, 2007-2009
+'
+
+strComputer = "."
+Set objWMIService = GetObject("winmgmts:" _
+     & "{impersonationLevel=impersonate}!\\" & strComputer & "\root\cimv2" )
+
+Set colProcess = objWMIService.ExecQuery("Select * from Win32_Process")
+
+For each objProc in colProcess
+	WScript.Echo "[#] Name:" & vbTab & objProc.Properties_("Name").Value & " (" & objProc.Properties_("ProcessId").Value & ")"
+	If objProc.GetOwner ( User, Domain ) = 0 Then	
+		WScript.Echo "Owner:" & vbTab & vbTab & Domain & "\" & User
+	End if
+	WScript.Echo "Cmdline:" & vbTab & objProc.Properties_("CommandLine").Value
+	WScript.Echo
+Next

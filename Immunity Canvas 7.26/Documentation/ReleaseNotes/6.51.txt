@@ -1,0 +1,109 @@
+########################################################################
+#                       *CANVAS Release 6.51*                          #
+########################################################################
+
+*Date*: 05 October 2009
+
+*Version*: 6.51 (ThanksForAllTheFish Release)
+
+*Release Notes*:
+
+An exploit for the much awaited SMBv2 Vulnerability (CVE-2009-3103) has
+been addded to CANVAS this month. Two versions exist, a local
+token-stealing exploit, and a remote connect-back exploit, both reliably
+working against Windows Vista and Server 2008 SP1 and SP2 on x86
+architectures. Be careful, using those exploits against x64 machines
+will result in a blue screen!
+
+Also new this month is the native .app version of CANVAS for OS X which includes all the dependencies bundled together along with CANVAS. This means that now on a mac all you need to do is download the .app, unzip it and double click and you are ready to go - nothing else needed.
+
+A new shellscript installer for CANVAS along with it's dependencies (on Ubuntu, Debian, Fedora and Redhat) - This is still BETA so all feedback on peoples experience using this would be appreciated. This can be found in installCANVAS/installCANVAS.sh .
+
+New install documentation for Windows, Linux and OS X in the /Documentation Directory.
+
+In the /Documentation/Tutorials directory you will find a new tutorial covering how to use HCN as well as some of the old tutorials converted to PDF. More will follow over the coming weeks.
+
+The October release contains the following changes and new modules:
+
+==New Modules==
+
+SMBv2 local execution  (CVE-2009-3103 & MS KB975497)
+SMBv2 remote execution (CVE-2009-3103 & MS KB975497)
+Word Press Sniplets 1.1.2 & 1.2.2 remote file include (CVE-2008-1059)
+Strawberry 1.1.1 local file include (CVE-2009-1774)
+SiteX <= 0.7.4.418 local file include (NoCVE)
+cpCommerce 1.2.x remote file include (CVE-2009-1936)
+Qt quickteam 2 remote file inlcude (CVE-2009-1551)
+
+==Changes==
+
+New standalone .app available for OS X - this comes bundled with all the required dependencies (Python, GTK2, PyGTK etc etc). Just drag, drop and double click :) (Tested on Tiger (Intel & PPC), Leopard (Intel & PPC) and Snow Leopard (Intel))
+
+New install script for Linux, also grabs dependencies for Fedora, Redhat, Debian and Ubuntu. This is BETA so please let us know how you get on with this.
+
+New dependency checking with gui pop up message boxes (even if it is the GUI dependencies that are missing!) informing of missing dependencies along with links to the relevant webpages.
+
+New splash screen - can be controlled through the variable 'splashscreen' in canvas.conf.
+
+CANVAS can now be downloaded packaged in .tar.gz, .zip and a passworded .zip (to help avoid filtering gateways corrupting files)
+
+==Bug Fixes==
+
+Updated multiple client side modules to be more compatible with the sploitd delivery method: 
+
+  acrobat_flash, acrobat_js, acrobat_js4, flash_duke, ms06_057, ms07_051,
+  ms08_033, FoxitLaunchit, foxit_printf, ms06_024, ms06_071, ms07_004,
+  ms09_002, ms09_029, ooo_230, acrobat_js3, firefox_35, flash_wild,
+  foxit_Action, ie_setexpression, ms06_014, ms06_055, ms09_032,
+  real_import, utorrent & js_recon.
+
+screengrab permissions check error when saving captures to a directory with incorrect permissions
+
+getpriv & processinject incorrect return code/unpacking  fixes
+
+qgimport multiple fixes to deal with a wider range of qualys imports
+
+MS08_068 message format error 
+
+Cheers
+Rich
+
+
+*Postscript*:
+
+Forums back up: https://forum.immunityinc.com
+
+
+*Upcoming training*:
+
+USA TRAINING
+Location: 1247 Alton Road, Miami Beach, Florida
+
+November 2-5, 2009: Finding 0days
+Duration: 4 days
+Cost: $4000 per person
+
+December 8-9, 2009: CANVAS Training
+Duration: 2 days
+Cost: $2000 per person
+
+December 14-18, 2009: Unethical Hacking
+Duration: 5 days
+Cost: $5000 per person
+
+For more information contact admin@immunityinc.com
+
+
+*CANVAS Tips 'n' Tricks*:
+
+Pressing 't' on the Node Manager View will automatically reorder the nodes to collect them all together neatly.
+
+*Links*:
+
+Support email      : support@immunityinc.com
+Sales support      : sales@immunityinc.com
+Support/Sales phone: +1 786-220-0600
+
+
+########################################################################
+########################################################################

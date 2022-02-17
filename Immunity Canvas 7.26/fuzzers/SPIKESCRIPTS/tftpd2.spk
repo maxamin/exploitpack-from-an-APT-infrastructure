@@ -1,0 +1,9 @@
+#Fuzzer for fuzzing tftp
+#fuzzers/spike.py -t 192.168.103.130 -s fuzzers/SPIKESCRIPTS/tftpd2.spk -P UDP -V 1:0 -p 69
+
+#0x02 is Write Request: could be a variable here to fuzz other opcodes
+spk.s_int(0x02, "BIGENDIANHALFWORD")
+spk.s_string_variable("Hello.txt") #filename
+spk.s_binary("00")
+spk.s_string_variable("octet") #mode (netascii/octet/etc)
+spk.s_binary("00")

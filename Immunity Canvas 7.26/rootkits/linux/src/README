@@ -1,0 +1,156 @@
+Debug Register Rootkit 0.1 - reference implementation
+=====================================================
+
+About
+=====
+
+DR features a reference implementation of a IA32 debug register based 
+rootkit hooking engine. It does not modify IDT or syscall_table at all 
+but still provides transparent syscall hooking on IA32 Linux 2.6.
+
+Features
+========
+
+SystemCall hooking without modifying IDT, or syscall_table, at all. Not 
+even for a milisecond(tm). Using hardware execute and read breakpoints.
+
+Details
+=======
+
+DR places a hardware breakpoint on the syscall handler, and the 
+resulting trap places a memory watch on the syscall_table entry for the 
+__NR_syscall of the intercepted syscall. It does this for both INT 0x80
+and sysenter based system calls.
+
+When the memory watch for the syscall_table entry kicks in, the trap 
+handler then redirects execution for that syscall to a syscall hook.
+
+Example Flow
+============
+
+Execute global breakpoint on syscall handler in dr0, syscall is called, 
+breakpoint kicks in. Modified do_debug handler places global read watch 
+on syscall_table[__NR_syscall]. When syscall is called, memory access 
+breakpoint kicks in. Modified do_debug handler places function pointer 
+to hooked syscall in task regs eip. Execution is redirected to hooked 
+syscall. Repeat.
+
+[  864.447800] ******* LOADING IA32 DR HOOKING ENGINE *******
+[  864.447868] *** loader: handler for INT 128: C0104210
+[  864.447923] *** loader: syscall_table: C02FC540
+[  864.447934] *** loader: syscall_call call *table(,eax,4): C010424B
+[  864.447952] *** loader: handler for INT 1: C02F4360
+[  864.448085] *** loader: INT 1 handler patched to use __my_do_debug
+[  864.448165] *** loader: initialized hook_table
+[  864.448199] *** loader: systenter_entry call *table(,eax,4): C01041CB
+...
+[  871.592214] *** dr0/dr1 trap: setting read watch on syscall_NR of 220 at C02FC8B0
+[  871.598191] *** got dr2 trap (syscall_table watch)
+[  871.598723] *** hooked __NR_220 to E0AC7350
+
+Using the memory watch approach, one does not have to modify IDT or 
+syscall_table ever. This is an original* approach, but considering we 
+_are_ the debugger .. one could dream up a million other viable and 
+fruitful solutions to non-memory modifying DR rootkits.
+
+* Peer review showed that this approach was first published in 2006
+by Pierre Falda [3]
+
+Limitations
+===========
+
+This is a reference implementation. A lot more can be done to actually 
+be hidden. Production code will include kmalloc based non-LKM code 
+handling. Full Global Detect debug register access detection support, 
+and additional memory watching for the debug ENTRY call offset patch.
+
+Additional testing is required to check for scheduler issues and other 
+racy problems. This reference implementation is intended as a case study 
+into the general rootkit approach now that the cat is out of the bag.
+
+The provided example hooks serve as a basic example rootkit known to
+suffer the following limitations:
+
+Detection
+=========
+
+In it's current form there is no prevention of someone else accessing 
+the debug registers. This could be easily added with GD access flag 
+control, however this is left as an exercise to the reader.
+
+Furthermore this module behaves like a normal LKM in that is has symbols 
+and is resident in memory like a normal LKM. This can be bypassed by 
+porting the module init to a kmalloc based loading logic. To be added in 
+v0.2.
+
+- Detection via module based symbols
+- Detection via granted access to hardware debug registers
+- Detection via timing logic
+- Detection via open("/proc/hiddenpid/stat"); success
+
+Adding/Changing hooks
+=====================
+
+All hooks are defined in hooktable.h. A good example template is the 
+hook_example_exit function. Once a hook is added to the global hook
+table, it will be automagically used by the hooking engine.
+
+     10 asmlinkage static void hook_example_exit(int status);
+
+    ...
+
+    149 asmlinkage /* required: args passed on stack to syscall */
+    150 static void hook_example_exit(int status)
+    151 {
+    152     /* standard hook prologue */
+    153     asmlinkage int (*orig_exit)(int status);
+    154     void **sys_p    = (void **)sys_table_global;
+    155     orig_exit       = (int (*)())sys_p[__NR_exit];
+
+    ...
+
+    167     else
+    168         return orig_exit(status);
+    169 }
+
+You then initialize this function in the global hook_table as such:
+
+    121     hook_table[__NR_exit]         = (void *)hook_example_exit;
+
+The hooking engine was designed to be very friendly and open to
+modification/extension. It was designed to provide a more current
+hooking engine for existing sycall_table based rootkit logic. All
+rootkit specific logic lives in hooktable.h.
+
+Todo
+====
+
+- move to kmalloc based init loader, -EINVAL return
+- improve hooks to do proper '/proc' and getdents handling
+- move /proc handling to inode based checks
+- instruction emulation for outside debug register access GD stylee
+
+Credits
+=======
+
+The debug register based hooking engine was written by Bas Alberts, all 
+additional hooks contained in hooktable.h, besides the example hook_exit 
+were written by Daniel Palacio.
+
+References
+==========
+
+1) The IA32 Software Developers Manual Vol. 3B, Chapter 18
+2) Mistifying the debugger, Phrack 65-8, halfdead
+3) Abuso dell Hard Hardware nell Attaco al Kernel di Linux, AntiFork 
+   Research, Pierre Falda
+
+Licence
+=======
+
+GPLv2
+
+Contact
+=======
+
+bas.alberts@immunityinc.com / support@immunityinc.com

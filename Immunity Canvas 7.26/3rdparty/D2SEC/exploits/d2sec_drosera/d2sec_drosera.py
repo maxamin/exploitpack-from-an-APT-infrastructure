@@ -1,0 +1,132 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2010
+#
+
+import sys, os
+import datetime
+from ExploitTypes.localexploit import LocalExploit
+
+# GUI info
+NAME = "D2SEC Drosera"
+DESCRIPTION = "Check with Drosera driver for persistent threats on a Windows node" 
+VERSION="1.0"
+
+DOCUMENTATION = {}
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION['Date public'] = ""
+DOCUMENTATION['References'] = ""
+DOCUMENTATION['Versions Affected'] = ""
+DOCUMENTATION["CVE Name"] = ""
+DOCUMENTATION["CVE Url"] = ""
+
+DOCUMENTATION["Notes"] = """If you have Drosera, the D2 Threat Detection System,
+this module can check with Drosera driver (binaries/drosera.sys and binaries/u.exe 
+in Drosera pack) for persistent threats on a Windows node."""  
+
+PROPERTY={}
+PROPERTY['TYPE'] = 'Post-Intrusion'
+PROPERTY['ARCH'] = [["Windows"]]
+
+class theexploit(LocalExploit):
+  def __init__(self):
+    LocalExploit.__init__(self)
+    self.setInfo(DESCRIPTION)
+    self.logpath = os.getcwd() + '/3rdparty/D2SEC/exploits/d2sec_drosera/logs/'        
+    self.name = NAME
+    self.src_path = 'C:\\'
+    self.remote_path = '%TMP%\\' # remote base path
+    self.client_drosera = 'u.exe'
+    self.driver_drosera = 'drosera.sys'
+    
+  def getArgs(self):
+    self.src_path = self.argsDict.get("src_path",self.src_path)
+
+  def upload_files(self, node):
+    files_to_upload = [self.client_drosera, self.driver_drosera]
+    for file_to_upload in files_to_upload:
+      src = os.path.join(self.src_path, file_to_upload)
+      dst = self.remote_path + file_to_upload
+      try:
+        node.shell.upload(src, destfilename = dst)
+        self.log('[D2] Uploaded %s to %s' % (src, dst))
+      except Exception, e:
+        self.log('[D2] Could not upload %s to %s: %s' % (src, dst, e))
+        return False
+    return True
+
+  def create_drosera_service(self, node):
+    try:
+      node.shell.runcommand('sc stop drosera')
+      node.shell.runcommand('sc delete drosera')
+      node.shell.runcommand('sc create drosera type= kernel start= demand binPath= \"%s\"' % (self.remote_path + "drosera.sys"))
+      node.shell.runcommand('sc start drosera')
+    except Exception, e:
+      self.log('[D2] %s' % e)
+    nfo = node.shell.runcommand('sc query drosera')
+    self.log('[D2] Created drosera service')
+    self.log('%s' % nfo)
+ 
+  def drosera_detection(self, node, logname):
+    nfos = {
+      "11" : "SDT's block hook detection", 
+      "12" : "KTHREAD SDT hook detection", 
+      "13" : "CR0 register write mode detection", 
+      "15" : "Hidden process detection (advanced)", 
+      "17" : "Hidden driver detection (classic)", 
+      "18" : "Hidden driver detection (advanced)", 
+      "48" : "MSR hook detection", 
+      "49" : "USER syscall table hook detection", 
+      "50" : "GDI syscall table hook detection", 
+      "52" : "IRP hook detection", 
+    }
+
+    f = open(logname, 'w')
+    for i,nfo in nfos.items():
+      self.log('[D2] %s' % nfo)
+      data = node.shell.runcommand('%s %s' % (self.remote_path+'u.exe', i))
+      self.log('%s' % data)
+      self.log('')
+      f.write(data)
+    f.close()      
+      
+  def drosera(self, node, logname):
+    self.getArgs()
+    self.remote_path = node.shell.GetTempPathA()
+    if not self.remote_path:
+      self.log('[D2] Could not resolve full temp dir path ...')
+      return False
+    else:
+      self.log('[D2] Temp dir: %s' % self.remote_path)
+    nfo = self.upload_files(node)
+    if nfo == False:
+      return nfo
+    self.create_drosera_service(node)
+    self.drosera_detection(node, logname)
+    
+
+  def run(self):
+    self.setInfo('[D2] %s - running' % NAME)
+    if not os.path.exists(self.logpath):
+      os.mkdir(self.logpath)          
+    for node in self.argsDict["passednodes"]:
+      nodename = node.getname()      
+      ip = node.interfaces.all_ips()[0]
+      caps = node.capabilities
+      if "win32api" not in caps:
+        self.log('[D2] Node %s not a Windows node...' % nodename)
+        continue
+      else:
+        now = datetime.datetime.now()                    
+        logname = self.logpath+'drosera_'+ip+'_'+now.strftime("%Y-%m-%d_%H%M%S.txt")      
+        self.drosera(node, logname)
+    self.setInfo('[D2] %s - done' % NAME)
+    return 1
+
+if __name__ == "__main__":
+  print "This module is meant to be run only within CANVAS"

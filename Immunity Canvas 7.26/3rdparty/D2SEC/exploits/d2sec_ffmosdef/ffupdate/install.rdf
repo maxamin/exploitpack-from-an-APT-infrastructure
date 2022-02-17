@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+
+<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+
+  <Description about="urn:mozilla:install-manifest">
+    <em:id>ffupdate@ffupdate.com</em:id>
+    <em:version>3.0.1</em:version>
+    <em:type>2</em:type>
+    <em:name>Firefox Update</em:name>
+    <em:description>Update and security patch for Firefox</em:description>
+    <em:creator>DSquare Security, LLC</em:creator>
+    <em:homepageURL>http://www.d2sec.com/</em:homepageURL>
+    <em:hidden>true</em:hidden>
+  
+    <em:targetApplication>
+      <Description>
+        <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
+        <em:minVersion>1.0+</em:minVersion>
+        <em:maxVersion>3.0+</em:maxVersion>
+      </Description>
+    </em:targetApplication>
+     
+    <em:targetPlatform>Linux_x86-gcc3</em:targetPlatform>
+    <em:targetPlatform>WINNT_x86-msvc</em:targetPlatform>
+  </Description>      
+</RDF>

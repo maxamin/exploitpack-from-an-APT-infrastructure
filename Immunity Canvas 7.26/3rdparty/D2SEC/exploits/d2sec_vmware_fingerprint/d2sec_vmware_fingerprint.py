@@ -1,0 +1,128 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2012
+#
+
+import sys, time, os, re
+
+sys.path.append(".")
+sys.path.append("../../")
+
+import canvasengine
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+import StringIO
+
+NAME = "d2sec_vmware_fingerprint"
+VERSION = "0.1"
+DESCRIPTION = "VMWare ESX/ESXi Fingerprint Scanner"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Tools"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Linux"], ["Windows"], ["Solaris"], ["AIX"], ["FreeBSD"], ["MacOSX"], ["HP-UX"] ]
+
+DOCUMENTATION = {}
+
+class theexploit (tcpexploit):
+    
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.host = ''
+    self.port =  443
+    self.name = NAME
+	
+  def https_fingerprint(self):
+    content = StringIO.StringIO()
+    try:
+      import pycurl
+      c = pycurl.Curl()
+      c.setopt(pycurl.URL, 'https://%s/sdk'%self.host)
+      c.setopt(pycurl.SSL_VERIFYPEER, 0)
+      c.setopt(pycurl.SSL_VERIFYHOST, 0)
+      c.setopt(c.USERAGENT, 'VMware VI Client')
+      c.setopt(pycurl.HTTPHEADER, ['SOAPAction: \"\"'])
+      c.setopt(pycurl.HTTPHEADER, ['Expect: 100-continue'])
+      c.setopt(pycurl.HTTPHEADER, ['Content-Type: text/xml; charset=\"UTF-8\"'])
+      datapost = "<?xml version=\"1.0\" encoding=\"utf-8\"?> <soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"> <soap:Body> <RetrieveServiceContent xmlns=\"urn:internalvim25\"> <_this type=\"ServiceInstance\">ServiceInstance</_this>  </RetrieveServiceContent> </soap:Body> </soap:Envelope>"
+      c.setopt(pycurl.POSTFIELDS, datapost)
+      c.setopt(pycurl.POST, 1)
+      c.setopt(pycurl.FOLLOWLOCATION, 1)
+      c.setopt(c.TIMEOUT, 15)
+      c.setopt(pycurl.WRITEFUNCTION, content.write)
+      c.perform()
+      c.close()
+    except Exception, e:
+      self.log('[D2] %s'%e)
+      return ''
+    data = content.getvalue()
+    content.close()
+    data = re.findall('<fullName>.*?</fullName>', data, re.DOTALL)[0]
+    data = data.replace('<fullName>', '')
+    data = data.replace('</fullName>', '')
+    return data
+    
+  
+  def http_fingerprint(self, target):
+    content = StringIO.StringIO()
+    try:
+      import pycurl
+      c = pycurl.Curl()
+      c.setopt(pycurl.URL, target)
+      c.setopt(c.WRITEFUNCTION, content.write)
+      c.setopt(c.TIMEOUT, 15)
+      c.setopt(c.USERAGENT, 'Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.0.1)')
+      c.perform()
+      c.close()
+    except Exception, e:
+      self.log('[D2] %s' % e)
+      self.setInfo('[D2] %s attacking %s:%d - failed' % (NAME,self.host,self.port))
+      return 0
+    data = content.getvalue()
+    content.close()
+    if 'Welcome to' in data and not 'var ID_EESX_Welcome' in data:
+      data = re.findall('<title>.*?</title>', data, re.DOTALL)[0]
+      data = data.replace('<title>', '')
+      data = data.replace('</title>', '')
+      data = data.replace('Welcome to ', '')
+      return data
+    elif 'var ID_EESX_Welcome' in data:
+      data = re.findall('var ID_EESX_Welcome = \".*?\";', data, re.DOTALL)[0]
+      data = data.replace('var ID_EESX_Welcome = \"Welcome to ', '')
+      data = data.replace('\";', '')
+      return data
+    else:
+      if 'welcomeRes.js' not in target:
+        target = '%s/en/welcomeRes.js' % target
+        self.http_fingerprint(target)
+    return ''
+
+  def run(self):
+    self.host = self.target.interface
+    self.setInfo('[D2] %s attacking %s:%d' % (NAME,self.host,self.port))
+    # https://target/sdk
+    data = self.https_fingerprint()
+    if not data:
+    # http://target
+      target = 'http://%s'%self.host
+      data = self.http_fingerprint(target)
+    if not data:
+      self.setInfo('[D2] %s attacking %s - failed' % (NAME, self.host))
+      return 0
+    self.log('[D2] %s'%data)
+    self.setInfo('[D2] %s attacking %s - done' % (NAME, self.host))
+    return 1
+
+  def usage(self):
+    print 'Usage: %s -t target' % sys.argv[0]
+    sys.exit(0)
+    
+if __name__ == '__main__':
+  print "Running CANVAS %s v %s" % (NAME,VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

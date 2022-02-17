@@ -1,0 +1,156 @@
+########################################################################
+#                       *CANVAS Release 6.44*                          #
+########################################################################
+
+*Date*: 04 Mar 2009
+
+*Version*: 6.44 (Tangelo)
+
+*Release Notes*:
+
+The March release of CANVAS is here and contains a whole stack of new
+features and modules.
+
+A module for the Internet Explorer uninitialized memory corruption bug
+client side (MS09-002, CVE-2009-0075) is included for use against
+Windows XP SP2 systems. New web exploit modules also come in force with
+five new PHP exploits for vulnerabilities in: 1024CMS(No CVE as yet),
+phplist(CVE-2008-5887), phpSlash(CVE 2009-0517), phpYabs(No CVE, Bugtraq
+ID 33670) and Sourdough(No CVE as yet).
+Other new modules are GetBrowserInfo and GetAddressBookInfo which are
+post-exploitation information gathering modules aimed at getting as much
+data as possible from the browsers and address books of the users of a
+system. Currently they are aimed at Win32 systems only and the IE,
+Firefox2/3 and Chrome browsers and Outlook address book. Expect these
+capabilities to expand over time and more information gathering modules
+to come as well.
+Finally a DNS enumerator module has been added to aid in the discovery
+of hosts in a supplied domain, two word lists (dns.txt and
+dns-short.txt) are also included in the Resources sub directory but you
+can always throw a custom word list into the module for a more
+customised approach.
+
+The GUI has seen a few more tweaks this month with the search modules
+tab moving from the right hand pane to the left (as it made more sense
+for it to be here!), the node manager now has a splash of colour with
+different node classes being rendered in different colours to aid
+differentiation on complex attacks, the current session name being
+displayed in the title bar and the inclusion of 'Check for updates'
+functionality from the Help menu.
+
+Finally I want to thank all those who responded to the survey we sent
+out a couple of months ago. We found all the feedback useful and has
+been taken on board. You will hopefully have started to see some of the
+suggestions making their way out into CANVAS already. Pretty much all
+the suggestions for specific features we thought to be great so we
+expect to bring them to you over time, but the winning of the feature
+request to be done first is:
+
+'....Being able to save your state/project....'
+
+The winner has already been notified but we are pretty sure this is a
+feature which many other people will also find valuable so we are
+pleased to be able to work on making this happen as soon as possible.
+
+Just because the survey is over does not mean that we don't want to hear
+idea and requests you have for CANVAS, if you have something you think
+we should hear drop us a line.
+
+Cheers, Rich.
+
+
+*Changelog*:
+
+* GetAddressBookInfo module for grabbing contents of users Outlook
+address book
+* DNSFind module for finding hosts in a given domain
+* Reliable exploit for MS09-002 against IE7 on XP SP2
+* GetBrowserInfo module to grab browser related information from Win32
+Nodes (IE, Firefox and Google Chrome).
+# February 10, 2009 PHPyabs 0.1.2 Remote File Include exploit
+* 1024 CMS <= 1.4.4 Remote File Include exploit
+* PHPSlash <= 0.8.1.1 Remote Code Execution exploit
+* PHPList <= 2.10.8 Local File Include exploit
+* Sourdough Remote File Include exploit
+
+* Auto and manual version check and update code added
+* GUI updates and tweaks
+
+
+*Third Party Spotlight*:
+
+Long time CANVAS third party pack VulnDisco is still continuing to make
+strides in both new modules and new ways to contribute. Vulndisco has
+over 260 modules with new 0day being added every month, the release of
+VulnDisco 8.6 will bring a further 5 new 0day to add to the pack.
+
+VulnDisco is also unique in their use of 'research licenses'. Research
+licenses are for people who are able to contribute something to
+VulnDisco (not just 0days, but fixes, patches, advices, new targets ..etc).
+
+If you want to find out more about the VulnDisco pack or the details of
+research licenses then contact: info@intevydis.com or visit:
+http://intevydis.com .
+
+More information can be found about all third party CANVAS packs at :
+http://forum.immunityinc.com/index.php?board=8.0
+
+
+*Postscript*:
+
+CANVAS session support overview:
+http://forum.immunityinc.com/index.php?topic=325.0
+
+CANVAS Binder module explained:
+http://forum.immunityinc.com/index.php?topic=311.0
+
+Introduction to coding CANVAS modules part1:
+http://forum.immunityinc.com/index.php?topic=338.0
+
+Python 2.6 + dependencies bundle for Windows:
+http://forum.immunityinc.com/index.php?topic=329.0
+
+
+*Upcoming training*:
+
+March 9-12, 2009: Finding 0days
+Duration: 4 days
+Cost: $4000 per person
+
+April 13-17, 2009: Unethical Hacking
+Duration: 5 days
+Cost: $5000 per person
+
+May 11-14, 2009: Heap Overflows
+Duration: 4 days
+Cost: $4000 per person
+
+June 1-2, 2009: CANVAS Training
+Duration: 2 days
+Cost: $2000 per person
+
+All training takes place at Immunity HQ in Miami Beach, Florida.
+For more information contact admin@immunityinc.com
+
+
+*CANVAS Tips 'n' Tricks*:
+
+Too much output in your Canvas Log Window? Ctrl-A to select all the text
+and delete will clear it out so as you can identify new output easier,
+but don't worry the text that you just trashed is still kept in the
+CANVAS.log of your session directory for future reference.
+
+
+*Links*:
+
+CANVAS forums      : http://forum.immunityinc.com
+Support email      : support@immunityinc.com
+Sales support      : sales@immunityinc.com
+Support/Sales phone: +1 786-220-0600
+
+CANVAS Release RSS :
+http://forum.immunityinc.com/index.php?type=rss;action=.xml;board=2.0
+
+
+########################################################################
+########################################################################

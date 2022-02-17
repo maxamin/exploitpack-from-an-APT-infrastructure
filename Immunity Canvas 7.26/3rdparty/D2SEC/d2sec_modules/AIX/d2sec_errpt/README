@@ -1,0 +1,32 @@
+D2 Exploitation Pack
+====================
+
+Copyright (c) 2007-2008 DSquare Security, LLC
+
+
+License information
+-------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Local exploit
+---------------
+
+AIX ERRPT Local Buffer Overflow 
+
+Use d2sec_errpt.
+
+Vulnerable:
+	IBM AIX 4.3.3
+	IBM AIX 4.3.2
+	IBM AIX 4.3.1
+	IBM AIX 4.3
+	IBM AIX 5.1
+
+Tested on: 
+	IBM AIX 4.3.3
+
+Ref:
+	http://www.securityfocus.com/bid/5885

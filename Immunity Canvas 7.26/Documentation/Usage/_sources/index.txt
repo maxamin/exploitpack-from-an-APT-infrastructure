@@ -1,0 +1,68 @@
+.. Immunity CANVAS documentation master file, created by
+   sphinx-quickstart on Fri Oct  2 12:09:15 2015.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+Immunity CANVAS Users Manual
+===========================================
+
+.. is this how comments look?
+
+Welcome to the Immunity CANVAS users manual. This document will walk you through the steps 
+of installing and using the product, covering both basic and advanced usages of the product.
+
+.. more to be addded from canvas web page here
+
+****************
+Obtaining CANVAS
+****************
+
+If you have purchased a license for Immunity CANVAS and have a valid subscription, you should have
+received an email from us that contains your credentials to the clients login page, where you will be ownloading your copy of CANVAS. By visiting https://canvas.immunityinc.com/getcanvas you will see the license agreement page, which beyou should
+accept before being allowed to download the product. Having your username and password entered, you can also select from the three options for downloading CANVAS based on the platform you are using. One of the options is to download CANVAS as a password protected zip file. This is specially useful if you are downloading the product
+from a corporate network which might control internet traffic for malwares and virus files. Dowloading  CANVAS in the password protected zip form will ensure that your download will not be interrupted by an anti-virus product over the network. If you receive an error message after login about your subscription being expired, please contact sales@immunityinc.com . 
+
+..
+
+.. warning:: CANVAS is not an anti-virus friendly product! Most of anti-virus products detect some components of CANVAS as malware. Thus please ensure you have your anti-virus disabled, or excluding the CANVAS installation directory from scanning.
+
+  
+
+
+
+
+
+Table of contents
+=================
+.. toctree::
+   :maxdepth: 3
+   :glob:
+
+   license
+   install
+   terminology
+   canvas_intro
+   canvas_basics
+   basics_win_remote
+   basics_win_local
+   basics_clientside
+   post_exploitation
+   canvas_tips
+   canvas_videos
+   canvas_advanced
+   canvas_strategic
+
+
+   	
+
+
+
+
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
+

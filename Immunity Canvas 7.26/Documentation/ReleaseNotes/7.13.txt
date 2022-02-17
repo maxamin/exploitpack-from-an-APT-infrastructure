@@ -1,0 +1,73 @@
+########################################################################
+#                       *CANVAS Release 7.13*                          #
+########################################################################
+
+*Date*: 20 Mar 2017
+
+*Version*: 7.13
+
+*Download URL*: https://canvas.immunityinc.com/getcanvas
+
+*Release Notes*:
+
+In this CANVAS release we are bringing you 7 new modules and important bugfixes.
+
+Our new modules include one local privilege escalation exploit for ms16_111,
+one UAC bypass through TpmInit, two clientside modules exploiting CVE-2016-9949
+and JetBrains (CSRF allowing RCE). We are also including two command modules
+(getintegritylevel and check_admin_user) and a new way of building
+MOSDEF callbacks by injecting a MOSDEF payload into existing binaries
+(32bit only for now).
+
+
+==Changes==
+
+o Minor improvements to report generation
+
+o Updated wp_finger to be compatible with recent versions
+
+o Fix pivoting with linux64 nodes
+
+o userenum fixes
+
+o shareenum fixes
+
+o Major improvements to our Kerberos library
+ o New AES ciphers supported
+ o ccache API improvements
+ o Updated all kerberos-related modules to use new interfaces
+
+o autohack improvements
+ o Added support for CISCO
+ o More organized information provided to users
+
+o Powershell Listener fixes
+
+o Updated install information in our documentation (pycrypto on 64bit)
+
+
+==New Modules==
+
+o ms16_111
+
+o tpminit_wbemcomn
+
+o apport_crash_handler (CVE-2016-9949)
+
+o jetbrains_rce
+
+o getintegritylevel
+
+o check_admin_user
+
+o inject_mosdef
+
+
+*CANVAS Tips 'n' Tricks*:
+
+You can now inject a MOSDEF callback payload into existing binaries thanks to
+inject_mosdef! It will soon support 64bit too.
+
+
+########################################################################
+########################################################################

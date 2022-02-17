@@ -1,0 +1,73 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2010
+#
+
+import sys, os, string, re
+import datetime
+
+sys.path.append(".")
+sys.path.append(os.path.join(os.getcwd(), '3rdparty/D2SEC/libs'))
+sys.path.append(os.path.join(os.getcwd(), '3rdparty/D2SEC/libs/ext'))
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+import discovery.vhost
+
+# GUI info
+NAME = "d2sec_vhostdiscovery"
+DESCRIPTION = "Fetching vhosts about a www server" 
+VERSION="1.1"
+
+DOCUMENTATION = {}
+DOCUMENTATION['VENDOR'] = ''
+DOCUMENTATION["Repeatability"] = 'Infinite'
+DOCUMENTATION['Date public'] = ''
+DOCUMENTATION['References'] = ''
+DOCUMENTATION['Versions Affected'] = ''
+DOCUMENTATION["CERT Advisory"] = ''
+DOCUMENTATION["CVE Name"] = ''
+DOCUMENTATION["CVE Url"] = ''
+
+PROPERTY = {}
+PROPERTY["TYPE"]= "Recon"
+PROPERTY["SITE"]=  "Remote"
+PROPERTY["ARCH"]= [ ["All"] ]
+
+class theexploit(tcpexploit):
+
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.name = NAME
+    self.host = ''
+    self.port = 443
+
+  def run(self):
+    self.host = self.target.interface
+    self.port = int(self.argsDict.get("port",self.port))
+    self.setInfo('[D2] %s attacking %s - running' % (NAME,self.host))
+    reverse = discovery.vhost.reversedns(self.host)
+    cname = discovery.vhost.getcname(self.host, self.port)
+    try:
+      vhosts = discovery.vhost.vhost_check(self.host)
+    except Exception, e:
+      self.log('[D2] %s' % e)
+      self.setInfo('[D2] %s attacking %s - failed' % (NAME,self.host))
+    self.log('[D2] Fetched vhosts')
+    self.log('Reverse DNS: %s' % reverse)
+    self.log('SSL CNAME: %s' % cname)
+    for vhost in vhosts:
+      self.log('%s' % vhost)
+    self.setInfo('[D2] %s attacking %s - done' % (NAME,self.host))
+    return 1
+
+if __name__ == '__main__':
+  print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

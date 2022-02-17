@@ -1,0 +1,32 @@
+'
+' Proprietary D2 Exploitation Pack source code - use only under the license
+' agreement specified in LICENSE.txt in your D2 Exploitation Pack
+'
+' Copyright DSquare Security, LLC, 2007-2009
+'
+
+const HKEY_LOCAL_MACHINE = &H80000002
+
+strComputer  = "."
+strKeyPath   = "HARDWARE\DEVICEMAP\Scsi\Scsi Port 0\Scsi Bus 0\Target Id 0\Logical Unit Id 0"
+strValueName = "Identifier"
+
+Set objReg = GetObject("winmgmts:" _
+     & "{impersonationLevel=impersonate}!\\" & strComputer & "\root\default:StdRegProv" )
+
+objReg.GetExpandedStringValue HKEY_LOCAL_MACHINE, strKeyPath, strValueName, strValue
+ 
+If InStr(Lcase(strValue), "vmware") then
+	Wscript.echo "[D2] Target is a VMware virtual machine"
+Else If InStr(Lcase(strValue), "vbox") then
+	Wscript.echo "[D2] Target is a Sun Virtual Box virtual machine"
+Else If InStr(Lcase(strValue), "xen") then
+	Wscript.echo "[D2] Target is a Xen virtual machine"
+Else If InStr(Lcase(strValue), "virtual hd") then
+	Wscript.echo "[D2] Target is a Hyper-V/Virtual Server virtual machine"
+Else
+	Wscript.echo "[D2] Logical Unit Id 0 : " & strValue
+End If
+End If
+End If
+End If

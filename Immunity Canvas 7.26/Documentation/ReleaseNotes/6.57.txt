@@ -1,0 +1,133 @@
+########################################################################
+#                       *CANVAS Release 6.57*                          #
+########################################################################
+
+*Date*: 05 April 2010
+
+*Version*: 6.57 ("Monarch")
+
+*Download URL*: https://canvas.immunityinc.com/cgi-bin/getcanvas.py
+
+*Release Notes*:
+
+==IMPORTANT Security Note==
+
+CANVAS will start two different listeners on your local system that can
+be used to obtain local root access. The XML-RPC endpoint, and the
+OpenOffice UNO endpoint. You can disable these through canvas.conf if
+you are using CANVAS on a multi-user system (which is not recommended).
+
+
+==New Modules==
+
+pty-shell - on Linux nodes (and currently only on Linux hosts with
+gnome-vt installed) this will pop up a PTY window, allowing you to use
+VIM or other tools that require a PTY on your LinuxNode. Of course, you
+cannot use other MOSDEF functionality while you do this.
+
+ie_peers_setattribute - An exploit module for IE_PEERS that should work
+reliably. This exploit will defeat DEP, and of course supports HTTP and
+HTTPS MOSDEF shellcode. It also supports some non-English Windows
+targets - these will be auto-targted if using clientd and associated
+jsrecon. They can also be set manually from the commandline if using
+httpserver.
+
+acrobat_exec - The simple PDF execution vulnerability is now in CANVAS.
+
+acrobat_libtiff - This overflow is in CANVAS (although it may not
+defeat DEP targets)
+
+ngnix has been updated to include support for 0.7 and 0.8 version
+targets. This means the vast majority of running nginx servers are
+targetable.
+
+xserver - CANVAS now includes an integrated XServer - this is useful
+when using local exploits that require a valid X server connectback.
+
+
+==Changes==
+
+CANVAS's GUI is now heavily localized - this includes the targeting and
+"Stop" buttons, the node "right-click" commands, and the exploit
+descriptions. Several Asian language localizations are included, and
+we'll help you get another language into CANVAS if you need it (we use
+an automatic Google-Translate script for a large part of this). Please
+note, if you don't have the font's installed for a particular language
+that you are targeting you may run into trouble while hacking it. (i.e.
+if hacking Traditional Chinese Windows, we recommend you have the
+Traditional Chinese fonts installed). Generally we at Immunity install
+a large variety of fonts on our attack systems since you may not know
+ahead of time what language your targets will be running.
+
+A new Javascript obfuscation layer was added - this allows prevention
+of your exploits by many secondary protection mechanisms
+(IDS/IPS/AV,etc). (See the ie peers exploit for a demo).
+
+The Node File view now supports multiple drives on Windows.
+
+Major improvements have been made to the in-GUI commandline interface.
+__engine__ is defined as the current CANVAS engine when in PyShell mode
+- allowing you to use it for automated scripting. A bug in bind-shells
+from the in-GUI commandline was also fixed.
+
+The reporting engine now can export timeline reports in OpenOffice,
+XML, DOC, or PDF formats. This relies on pyuno, which is currently only
+available on Linux. (apt-get install pyuno, or yum install pyuno should
+work for you). Feel free to send us any ideas you want on other
+reporting formats!
+
+ClientD has been updated to define a self.plugin_info inside the
+exploits it uses. This allows client-sides to do much easier targeting
+at runtime.
+
+A bug in chunkedaddencoder was fixed for people using it with large
+sets of bad characters.
+
+==Upcoming training sessions==
+
+Please email sales@immunityinc.com for further information or to sign up.
+
+USA TRAINING
+Location: 1247 Alton Road, Miami Beach, Florida 33139
+
+March 15-18, 2010: Finding 0days
+Duration: 4 days
+Cost: $4000 per person
+
+April 12-16, 2010: Unethical Hacking
+Duration: 5 days
+Cost: $5000 per person
+
+May 10-13, 2010: Heap Overflows
+Duration: 4 days
+Cost: $4000 per person
+
+June 21-22, 2010: CANVAS Training
+Duration: 2 days
+Cost: $2000 per person
+
+July 19-22, 2010: Finding 0Days
+Duration: 4 days
+Cost: $4000 per person
+
+August 16-20, 2010: Unethical Hacking
+Duration: 5 days
+Cost: $5000 per person
+
+
+*Forum*
+Still at https://forum.immunityinc.com/ :>
+
+*CANVAS Tips 'n' Tricks*:
+
+Hit the spacebar on new nodes to see the file view!
+
+*Links*:
+
+Support email      : support@immunityinc.com
+Sales support      : sales@immunityinc.com
+Support/Sales phone: +1 786-220-0600
+
+
+########################################################################
+########################################################################

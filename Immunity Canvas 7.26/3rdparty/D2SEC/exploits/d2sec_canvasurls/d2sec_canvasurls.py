@@ -1,0 +1,107 @@
+#!/usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2009
+#
+
+import sys
+import os
+
+if '.' not in sys.path:
+    sys.path.append('.')
+
+from canvasexploit import canvasexploit
+import canvasengine
+from exploitutils import *
+
+NAME = 'D2SEC CanvasUrls'
+VERSION = '1.0'
+DESCRIPTION = 'Tool to create URLs list from CANVAS Web exploits. To use with d2sec_urlbrute.'
+
+DOCUMENTATION = {}
+DOCUMENTATION['Repeatability'] = 'Infinite'
+DOCUMENTATION['Notes'] = 'Save URLs list in 3rdparty/D2SEC/exploits/d2sec_urlbrute/urls/canvasurls.txt'
+
+PROPERTY = {}
+PROPERTY['TYPE'] = 'Tools'
+PROPERTY['SITE'] = 'Local'
+PROPERTY['ARCH'] = [ ["Linux"], ["Windows"], ["Solaris"], ["AIX"], ["FreeBSD"], ["MacOSX"], ["HP-UX"] ]
+
+class d2sec_canvasurls(canvasexploit):
+	def __init__(self):
+		canvasexploit.__init__(self)
+
+		self.dico = []
+		self.logfile = None
+		return
+        
+	def exploit(self):
+		self.setInfo('%s' % NAME)
+
+		for (root, dirs, files) in os.walk(os.getcwd() + "/exploits/", True, None):
+			for file in files:
+					if file.find("dialog.glade2") > -1 or file.find(".pyc") > -1 or file.find("d2sec_canvasurls") > -1:
+						continue
+
+					if file.find(".py") >= 0:
+						file = os.path.join(root,file)
+					try:
+						o = open(file, "r")
+					except:
+						continue
+					buf = o.readlines()
+					o.close()
+
+					for b in buf:
+						if b.find("for basepath in [self.basepath") >= 0:
+							b = b.replace("for basepath in [self.basepath,", "")
+							b = b.replace("]:", "")
+							b = b.replace("\"", "")
+							b = b.replace(" ", "")
+							b = b.replace("\n", "")
+							b = b.replace("\t", "")
+							b = b.split(",")
+							for u in b:	
+								if len(u) > 2:
+									if u[0] != '/': u = '/'+u
+									if u[-1:] != '/': u = u + "/"
+									if u not in self.dico:
+										self.dico.append(u)
+							
+		# Check if urls exist in another files
+		files = os.listdir(os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_urlbrute/urls/")
+		for file in files:
+			urls = open(os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_urlbrute/urls/%s" % file, "r").readlines()
+			for url in urls:
+				url = url[:-1]
+				if url in self.dico:
+					self.dico.remove(url) 
+
+		# Save urls in 3rdparty/D2SEC/exploits/d2sec_urlbrute/urls/canvasurls.txt
+		destfile = os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_urlbrute/urls/canvasurls.txt"
+		try:
+			o = open("%s" % destfile, "w")
+		except:
+			self.log("[D2 LOG] Can't open %s" % destfile)
+			return 1
+
+		for url in self.dico:
+			o.write("%s\n" % url)
+		
+		o.close()
+
+		self.setInfo('%s - (finished)' % NAME)
+		return 0
+    
+class theexploit(canvasexploit):
+    def __init__(self):
+        canvasexploit.__init__(self)
+        self.name = "D2SEC CanvasUrls"
+        return
+
+    def run(self):
+        self.log("This module is used from d2sec_createdico tool")
+        return False

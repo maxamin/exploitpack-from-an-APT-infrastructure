@@ -1,0 +1,8 @@
+ # config file 
+
+listen = 0.0.0.0
+port = 53
+user=nobody
+domain = domain
+key = foobar
+resources = ssh:127.0.0.1:1088

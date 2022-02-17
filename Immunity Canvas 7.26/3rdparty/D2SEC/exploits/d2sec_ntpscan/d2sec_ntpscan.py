@@ -1,0 +1,117 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2009
+#
+
+import sys, os
+import datetime
+import socket
+import select
+from struct import unpack, pack
+
+sys.path.append(".")
+sys.path.append(os.path.join(os.getcwd(), '3rdparty/D2SEC/libs'))
+sys.path.append(os.path.join(os.getcwd(), '3rdparty/D2SEC/d2sec_modules/All/d2sec_django'))
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+import net.misc
+import proto.ntp
+
+# Django
+os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
+try:
+  import www.database
+except:
+  pass
+
+# GUI info
+NAME = "NTP Server Scanner"
+DESCRIPTION = "Obtain the list of recent clients and peers from an NTP server" 
+VERSION="1.0"
+
+DOCUMENTATION = {}
+DOCUMENTATION['VENDOR'] = ""
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION['Date public'] = ""
+DOCUMENTATION['References'] = ""
+DOCUMENTATION['Versions Affected'] = ""
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = ""
+DOCUMENTATION["CVE Url"] = ""
+DOCUMENTATION["Notes"] = "" 
+
+PROPERTY         = {}
+PROPERTY['TYPE'] = 'Tools'
+PROPERTY['SITE'] = 'Remote'
+PROPERTY['ARCH'] = [ ["Linux"], ["Windows"], ["Solaris"], ["AIX"], ["FreeBSD"], ["MacOSX"], ["HP-UX"] ]
+
+class theexploit(tcpexploit):
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.name = NAME
+    self.host = ''
+    self.port = 123 
+    self.dbsave = 0
+    
+  def getArgs(self):
+    self.host = self.target.interface
+    self.port = int(self.argsDict.get('port',self.port))
+    self.dbsave = int(self.argsDict.get("dbsave",self.dbsave))
+
+  def run(self):
+    self.getArgs()
+
+    self.log('[D2 LOG] %s running against %s:%d' % (NAME,self.host,self.port))
+    self.setInfo('%s attacking %s:%d - running' % (NAME,self.host,self.port))
+
+    sock = proto.ntp.create_socket()
+    
+    self.result = '\n'
+    self.result += 'List of recent clients (monlist)\n'
+    self.result += '--------------------------------\n'
+    payload = proto.ntp.create_payload_monlist()
+    if proto.ntp.send_payload(sock, payload, self.host, self.port):
+      return 0
+    result = proto.ntp.recv_data(sock, payload, self.host, self.port)
+    for r in result:
+     if r:
+        self.result += '%s\n' % r
+
+    self.result += '\nList of peers (listpeers)\n'
+    self.result += '---------------------------\n'
+    payload = proto.ntp.create_payload_listpeer() 
+    if proto.ntp.send_payload(sock, payload, self.host, self.port):
+      return 0
+    result = proto.ntp.recv_data(sock, payload, self.host, self.port)
+    for r in result:
+      if r:
+        self.result += '%s\n' % r
+    self.log(self.result)
+
+    if self.dbsave:
+      try:
+        self.db = www.database.db()
+        target  = self.db.db_unique_host(title=self.host, host=self.host)
+        service = self.db.db_unique_service(target, '%d/tcp' % self.port)
+        info    = self.db.db_unique_info(target, service, 'NTP Server Scanner', 'd2sec_ntp', self.result)
+      except Exception, e:
+        self.log('[D2 LOG] %s' % e)
+        self.log('[D2 LOG] Django (http://www.djangoproject.com/) installed ?')
+
+    self.setInfo('%s attacking %s:%d - done' % (NAME,self.host,self.port))
+    return 1
+
+  def usage(self):
+    print 'Usage: %s -t host -p port -O dbsave:[0|1]' % (sys.argv[0])
+    return
+
+if __name__ == '__main__':
+  print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

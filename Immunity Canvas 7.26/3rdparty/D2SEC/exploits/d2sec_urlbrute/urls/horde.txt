@@ -1,0 +1,13 @@
+/horde/
+/horde-imp/
+/horde2/README
+/horde-3.0.5/README
+/horde-3.0.6/README
+/horde-3.0.7/README
+/horde-3.0.8/README
+/horde-3.0.9/README
+/horde3/README
+/horde/README
+/imp/
+/imp/horde/
+/webmail/horde/

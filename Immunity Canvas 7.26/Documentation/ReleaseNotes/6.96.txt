@@ -1,0 +1,65 @@
+########################################################################
+#                       *CANVAS Release 6.96*                          #
+########################################################################
+
+*Date*: 19 November 2014
+
+*Version*: 6.96
+
+*Download URL*: https://canvas.immunityinc.com/cgi-bin/getcanvas.py
+
+*Teaser URL*:   https://vimeo.com/112270746
+
+*Release Notes*:
+
+In this current CANVAS release we are bringing you 10 new exploit modules and bugfixes
+on Win8.1 x86_64 MOSDEF. The new modules include a linux local privilege escalation,
+two windows local privilege escalation, a flash browser exploit and four web exploits
+for famous and widely used components (drupal, joomla, wordpress).
+
+==Changes==
+
+o Win8.1 x86_64 MOSDEF fixes
+
+o Improvements on our internal APIs for writing exploits (WindowsLocalExploit, LinuxLocalExploit)
+
+o linux_pppol2tp x86_64 support and new targets (more info inside the Notes section of the module)
+
+==New Modules==
+
+o linux_futex_requeue (Linux 32/64 local privilege escalation)
+
+o adobe_flash_copypixelstobytearray (Flash heap overflow)
+
+o ms14_040 (Windows 7 32bit local privilege escalation)
+
+o joomla_mm_rce (RCE on Joomla Media Manager <= 3.1.4)
+
+o vbox_guest (Windows XP SP3 local privilege escalation)
+
+o CVE_2014_5460 (Shell upload in Tribulant's Slideshow Gallery for WP)
+
+o wpdm_fileupload (Shell upload in WordPress Download Manager)
+
+o wptouch_nonce (Shell upload in the WPTouch WordPress Plugin)
+
+o drupal_name_sqli (Drupal SQL Injection CVE-2014-3704 - Changes user password)
+
+o drupal_name_sqli_callback (Drupal SQL Injection CVE-2014-3704 - Callback)
+
+
+*CANVAS Tips 'n' Tricks*:
+
+With our current release you have plenty of options for fully compromising your
+targets. Our linux_futex_requeue exploit supports a huge list of kernels! Be sure
+to check all the info inside the Notes section of the module.
+
+*Links*:
+
+Support email       : support@immunityinc.com
+Sales support       : sales@immunityinc.com
+Support/Sales phone : +1 786-220-0600
+
+
+########################################################################
+########################################################################

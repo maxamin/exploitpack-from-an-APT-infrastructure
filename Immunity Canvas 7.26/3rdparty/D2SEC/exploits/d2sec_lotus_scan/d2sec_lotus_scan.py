@@ -1,0 +1,105 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2008
+#
+
+import os, sys, socket
+import re
+
+from httplib import HTTPConnection, HTTPSConnection
+from string import *
+
+sys.path.append(".")
+sys.path.append(os.path.join(os.getcwd(), '3rdparty/D2SEC/libs'))
+
+from canvasexploit import canvasexploit
+
+from exploitutils import *
+import libs.canvasos as canvasos
+import canvasengine
+
+import appli.lotus
+
+NAME="Lotus Notes Scanner"
+DESCRIPTION="Lotus Notes Scanner"
+DOCUMENTATION={}
+
+VERSION="1.0"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Tool"
+PROPERTY['ARCH'] = [ ["All"] ]
+
+affectsList=["Tools"]
+
+runAnExploit_gtk2 = canvasengine.runAnExploit_gtk2
+runExploit = canvasengine.runExploit
+
+class theexploit(canvasexploit):
+  def __init__(self):
+    canvasexploit.__init__(self)
+    self.name = NAME
+    self.host = "" 
+    self.port = 80
+    self.checkacl = 1
+
+  def getargs(self):
+    self.host = self.target.resolved_from
+    self.port = int(self.argsDict.get("port",self.port))
+    self.checkacl = int(self.argsDict.get("checkacl",self.checkacl))
+
+  def run(self):
+    self.setInfo("%s (in progress)"%(NAME))
+    self.getargs()
+    self.result = ''
+
+    self.log('[D2] Check HTTP server header')
+    version = appli.lotus.check_header_server(self.host, self.port)
+    if version:
+      self.result += 'Version: %s' % version
+      self.log('Version: %s' % version)
+    else:
+      self.log('No header')
+
+    self.log('[D2] Fingerprint')
+    versions = appli.lotus.fingerprint(self.host, self.port)
+    if versions:
+      for version in versions:
+        self.result += 'Version found: %s' % version
+        self.log("Version found: %s" % version)
+    else:
+      self.log("No server version")
+
+    self.log('[D2] Check acl')
+    if self.checkacl:
+      (auth, anonymous) = appli.lotus.checkacl(self.host, self.port)
+      if anonymous:
+        self.result += 'Bases with anonymous access :'
+        self.log("Bases with anonymous access :")
+        for anon in anonymous:
+          self.result += '\t%s' % anon
+          self.log('\t%s'% anon)
+        self.log('\n')
+      if auth:
+        self.result += 'Bases with authentication access :'
+        self.log('Bases with authentication access :')
+        for b in auth:
+          self.result += '\t%s' % b
+          self.log('\t%s'% b)
+
+    self.setInfo("%s - done (success !)"%(NAME))
+    return
+
+  def usage(self):
+    print "Usage: "+sys.argv[0]+" -t target [-p port:80] -O https:[0|1] -O hproxy:host -O pproxy:port -O checkacl:[0|1]"
+    sys.exit(0)
+	
+if __name__=="__main__":
+  print "Running CANVAS %s v %s" % (NAME,VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)
+  

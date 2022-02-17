@@ -1,0 +1,333 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2013
+#
+
+import sys, os, re, string
+import pygtk
+import gobject
+import md5
+import imp
+import traceback
+try:
+  import telnetlib, socket, requests
+except Exception, e:
+  print '[D2] d2sec_pwnrouter: %s'%e
+
+
+pygtk.require("2.0")
+import gtk
+import gtk.glade
+
+sys.path.append(".")
+
+from canvasexploit import canvasexploit
+from canvaserror import *
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+NAME = "PwnRouter - Embedded Devices Exploitation Tool"
+DESCRIPTION = "Embedded devices exploitation tool."
+VERSION = "1.0"
+
+DOCUMENTATION = {}
+DOCUMENTATION['VENDOR'] = None
+DOCUMENTATION["Date public"] = None
+DOCUMENTATION["CERT Advisory"] = None
+DOCUMENTATION["Repeatability"] = None
+DOCUMENTATION["References"] = None
+DOCUMENTATION["CVE Name"] = None
+DOCUMENTATION["CVE Url"] = None
+DOCUMENTATION["Notes"] = ""
+
+PROPERTY={}
+PROPERTY['TYPE'] = "Tools"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["All"] ]
+
+class Fingerprint:
+
+  def __init__(self, host):
+    self.nfo = {}
+    self.host = host
+
+  def telnet_fingerprint(self, host, port):
+    try:
+      tn = telnetlib.Telnet(host)
+      content = tn.read_until("Login: ", timeout=3)
+      content = content.split('\r\n')
+    except Exception, e:
+      return
+    if len(content[0]) > 2:
+      if 'login' in content[0].lower():
+        return
+      if host not in self.nfo:
+        self.nfo[host] = []
+      self.nfo[host].append('%s (port %s)'%(content[0], port))
+
+  def realm_fingerprint(self, host, port):
+    try:
+      r = requests.get('http://%s:%s/' % (host, port), timeout=3)
+      basic = r.headers['www-authenticate']
+      basic = basic.split('"')[1:-1]
+      if re.compile('\w+-\w+').search(basic[0]):
+        if host not in self.nfo:
+          self.nfo[host] = []
+        self.nfo[host].append('%s (port %s)'%(basic[0], port))
+    except Exception, e:
+      return
+
+  def display_result(self):
+    vendors = {
+      'DL': 'D-LINK',
+      'MM': 'MMC',
+      'TD': 'TP-LINK',
+      'MW': 'Mediwave',
+      'BC': 'Broadcom',
+    }
+    for host, fps in self.nfo.items():
+      v = ''
+      for fp in fps:
+        if fp[0:2] in vendors:
+          v += '%s %s, ' % (vendors[fp[0:2]], fp)
+        else:
+          v += '%s, ' % fp
+      v = v[:-2]
+    return v
+
+  def run(self):
+    fct_fingerprint = [
+      (self.realm_fingerprint, '80'),
+      (self.realm_fingerprint, '8080'),
+      (self.realm_fingerprint, '7547'),
+      (self.telnet_fingerprint, '23'),
+    ]
+    for fct in fct_fingerprint:
+      fct[0](self.host, fct[1])
+    if self.nfo:
+      return self.display_result()
+    else:
+      return 'Model and version not found...'
+
+class theexploit(canvasexploit):
+
+  def __init__(self):
+    canvasexploit.__init__(self)
+    self.name = NAME
+    self.host = ''
+    self.port = 80    
+
+  def load_module(self, code_path):
+    try:
+      try:
+        code_dir = os.path.dirname(code_path)
+        code_file = os.path.basename(code_path)
+        fin = open(code_path, 'rb')
+        return  imp.load_source(md5(code_path).hexdigest(), code_path, fin)
+      finally:
+        try: fin.close()
+        except: pass
+    except ImportError, x:
+      traceback.print_exc(file = sys.stderr)
+      raise
+    except:
+      traceback.print_exc(file = sys.stderr)
+      raise
+
+  def cancel_dialog1(self, widget):
+    self.dlg.destroy()
+
+  def startGUI(self):
+    self.column_names = ['Vendor', 'Model', 'Vulnerability', 'CVE', 'Reference', 'Exploit']
+    self.gladefile = os.getcwd()+'/3rdparty/D2SEC/exploits/d2sec_pwnrouter/dialog2.glade2'
+
+    self.wTree = gtk.glade.XML(self.gladefile)
+    self.dlg = self.wTree.get_widget("exploit_dialog")
+    self.dlg.set_size_request(1280, 768)
+    self.dlg.set_icon_from_file(os.getcwd()+'/3rdparty/D2SEC/exploits/d2sec_pwnrouter/d2.ico')
+    dic = {"on_cancel_clicked" : self.cancel_dialog1,
+      "on_exploit_clicked" : self.exploit_gui,
+      "on_snmp_clicked" : self.snmp_gui,
+      "on_fingerprint_clicked" : self.fingerprint_gui}
+    self.wTree.signal_autoconnect(dic)
+
+    self.treeview = self.wTree.get_widget("mytree")
+    self.treeList = gtk.ListStore(str, str, str, str, str, str)
+    self.treeview.set_model(self.treeList)
+    self.treeselection = self.treeview.get_selection()
+    self.treeselection.connect('changed', self.on_treeview_selection_changed)
+
+    self.column = [None] * len(self.column_names)
+
+    self.column[0] = gtk.TreeViewColumn(self.column_names[0], gtk.CellRendererText(), text=0)
+    self.column[0].set_resizable(True)
+    self.column[0].set_sort_column_id(0)
+
+    self.column[1] = gtk.TreeViewColumn(self.column_names[1], gtk.CellRendererText(), text=1)
+    self.column[1].set_resizable(True)
+    self.column[1].set_sort_column_id(1)
+
+    self.column[2] = gtk.TreeViewColumn(self.column_names[2], gtk.CellRendererText(), text=2)
+    self.column[2].set_resizable(True)
+    self.column[2].set_sort_column_id(1)
+
+    self.column[3] = gtk.TreeViewColumn(self.column_names[3], gtk.CellRendererText(), text=3)
+    self.column[3].set_resizable(True)
+    self.column[3].set_sort_column_id(1)
+
+    self.column[4] = gtk.TreeViewColumn(self.column_names[4], gtk.CellRendererText(), text=4)
+    self.column[4].set_resizable(True)
+    self.column[4].set_sort_column_id(1)
+
+    self.column[5] = gtk.TreeViewColumn(self.column_names[5], gtk.CellRendererText(), text=5)
+    self.column[5].set_resizable(True)
+    self.column[5].set_sort_column_id(1)
+
+    self.treeview.append_column(self.column[0])
+    self.treeview.append_column(self.column[1])
+    self.treeview.append_column(self.column[2])
+    self.treeview.append_column(self.column[3])
+    self.treeview.append_column(self.column[4])
+    self.treeview.append_column(self.column[5])
+    
+    self.exploitbutton = self.wTree.get_widget("exploitbutton")
+
+    self.h = self.wTree.get_widget("host")
+    self.h.set_text(self.host)
+
+    listdir = os.listdir(os.getcwd() + '/3rdparty/D2SEC/exploits/d2sec_pwnrouter/Ressources/')
+    for file in listdir:
+      if file == '.' or file == '..': continue
+      if '.pyc' in file: continue
+      m  = self.load_module(os.getcwd() + '/3rdparty/D2SEC/exploits/d2sec_pwnrouter/Ressources/%s'%file)
+      for model in m._model_:
+        self.treeList.append([m._vendor_, model, m._vuln_, m._cve_, m._ref_, file])
+
+    self.dlg.set_position(gtk.WIN_POS_CENTER_ALWAYS)
+    self.dlg.show()
+
+  def on_treeview_selection_changed(self, selection):
+    (model, iter) = selection.get_selected()
+    if (iter == None):
+      return			
+    exploit = model.get_value(iter, 5)
+    exploit = os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_pwnrouter/Ressources/%s" % exploit
+    m  = self.load_module(exploit)  
+    p = self.wTree.get_widget("port")
+    p.set_value(m._port_)      
+    
+  def cancel_dialog4(self, widget):
+    self.expdlg.destroy()
+
+  def runexploit(self, widget): 
+    self.port = self.wTree.get_widget("port").get_value_as_int()      
+    nfo  = "%s\n\n" % NAME
+    func = None
+    if (self.treeselection.count_selected_rows() > 0):
+      model, paths = self.treeselection.get_selected_rows()
+      for path in paths:
+        iter = self.treeList.get_iter(path)
+        exploit = model.get_value(iter, 5)
+    exploit = os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_pwnrouter/Ressources/%s" % exploit
+    m  = self.load_module(exploit)
+    nfo += "[#] Vendor: %s\n" % m._vendor_
+    nfo += "[#] Model: %s\n" % model.get_value(iter, 1)
+    nfo += "[#] Vulnerability: %s\n" % m._vuln_
+    nfo += "[#] CVE: %s\n" % m._cve_
+    nfo += "[#] Reference: %s\n\n" % m._ref_    
+    nfo += "Host: %s\n\n" % self.host
+    nfo += os.popen(exploit+" %s %d" % (self.host, self.port)).read()
+    return nfo
+
+  def exploit_gui(self, widget):
+    self.gladefile2 = os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_pwnrouter/dialog4.glade2"
+    self.wTree2 = gtk.glade.XML(self.gladefile2)
+    self.expdlg = self.wTree2.get_widget("result_dialog")
+    self.expdlg.set_size_request(550, 300)
+    self.expdlg.set_icon_from_file(os.getcwd()+'/3rdparty/D2SEC/exploits/d2sec_pwnrouter/d2.ico')
+    dic = {"on_cancel_clicked" : self.cancel_dialog4}
+    self.wTree2.signal_autoconnect(dic)
+    nfo = self.runexploit(self.dlg)
+    self.c = self.wTree2.get_widget("exploitinfo")
+    self.buffer = self.c.get_buffer()
+    self.buffer.set_text(nfo)
+    
+  def cancel_dialog3(self, widget):
+    self.snmpdlg.destroy()
+
+  def snmp_gui(self, widget):
+    self.gladefile2 = os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_pwnrouter/dialog3.glade2"
+    self.wTree2 = gtk.glade.XML(self.gladefile2)
+    self.snmpdlg = self.wTree2.get_widget("snmp_dialog")
+    self.snmpdlg.set_size_request(600, 300)
+    self.snmpdlg.set_icon_from_file(os.getcwd()+'/3rdparty/D2SEC/exploits/d2sec_pwnrouter/d2.ico')
+    dic = {"on_cancel_clicked" : self.cancel_dialog3,
+      "on_ok_clicked" : self.snmp_walk}
+    self.wTree2.signal_autoconnect(dic)
+
+
+  def snmp_walk(self, widget):
+    try:
+      import netsnmp
+    except:
+      self.log('[D2] Module netsnmp not present. You can download and install this module at this url: http://www.net-snmp.org/wiki/index.php/Python_Bindings')
+      return 
+    community = oid = version = ''
+    self.c = self.wTree2.get_widget("community")
+    community = self.c.get_text()
+    self.c = self.wTree2.get_widget("version")
+    version = self.c.get_value_as_int()
+    self.c = self.wTree2.get_widget("oid")
+    oid = self.c.get_text()
+    self.c = self.wTree2.get_widget("snmpinfo")
+    self.buffer = self.c.get_buffer()
+    vars = netsnmp.VarList(netsnmp.Varbind(oid))
+    res  = netsnmp.snmpwalk(vars, Version = version, DestHost = self.host, Community = community)
+    nfo = ''
+    for var in vars:
+      nfo += "ifIndex value = %s\tifDescr value = %s\n" % (var.iid, var.val)
+    self.buffer.set_text(nfo)
+    
+  def cancel_dialog5(self, widget):
+    self.fgptdlg.destroy()
+
+  def fingerprint(self, widget):
+    self.c = self.wTree2.get_widget("model")
+    model = Fingerprint(self.host).run()
+    self.buffer = self.c.get_buffer()
+    self.buffer.set_text(model)
+
+
+  def fingerprint_gui(self, widget):
+    self.gladefile2 = os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_pwnrouter/dialog5.glade2"
+    self.wTree2 = gtk.glade.XML(self.gladefile2)
+    self.fgptdlg = self.wTree2.get_widget("fingerprint_dialog")
+    self.fgptdlg.set_icon_from_file(os.getcwd()+'/3rdparty/D2SEC/exploits/d2sec_pwnrouter/d2.ico')
+    dic = {"on_cancel_clicked" : self.cancel_dialog5,
+      "on_start_clicked" : self.fingerprint}
+    self.wTree2.signal_autoconnect(dic)
+
+  def do_gui_operation(self, function, *args, **kw):
+    def idle_func():
+      gtk.gdk.threads_enter()
+      try:
+        function(*args, **kw)
+        return False
+      finally:
+        gtk.gdk.threads_leave()
+    gobject.idle_add(idle_func)
+
+  def run(self):
+    self.host = self.target.interface
+    for node in self.argsDict["passednodes"]:
+      self.node = node
+      self.do_gui_operation(self.startGUI)
+    return 1
+
+if __name__ == "__main__":
+  print "This module is meant to be run only within CANVAS"
+

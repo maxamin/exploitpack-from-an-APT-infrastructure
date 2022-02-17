@@ -1,0 +1,103 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2010
+#
+
+import os, sys, time
+
+sys.path.append('.')
+sys.path.append(os.path.join(os.getcwd(), '3rdparty/D2SEC/libs/parser'))
+sys.path.append(os.path.join(os.getcwd(), '3rdparty/D2SEC/d2sec_modules/All/d2sec_django'))
+
+import nmap
+import xml.sax
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+# Django
+os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
+try:
+  import www.database
+except:
+  pass
+
+NAME        = 'D2 NmapXML'
+DESCRIPTION = 'Importing scan from a XML log file in a database'
+VERSION     = '0.1'
+
+DOCUMENTATION                  = {}
+DOCUMENTATION['References']    = ''
+DOCUMENTATION['Repeatability'] = 'Infinite'
+DOCUMENTATION["Notes"]         = ''
+
+PROPERTY         = {}
+PROPERTY['TYPE'] = 'Tools'
+PROPERTY['SITE'] = 'Local'
+PROPERTY['ARCH'] = [ ["Linux"], ["Windows"], ["Solaris"], ["AIX"], ["FreeBSD"], ["MacOSX"], ["HP-UX"] ]
+
+class theexploit(tcpexploit):
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.filename = ''
+
+  def getArgs(self):
+    self.filename = self.argsDict.get("filename",self.filename)
+    if os.path.isfile(self.filename) == False:
+      self.log('[D2 LOG] %s unknown' % self.filename)
+      return 1
+    return 0
+
+  def run(self):
+    hostname = ''
+    hostip = ''
+
+    if self.getArgs():
+      self.setInfo('[D2 LOG] %s - done (failed)' % NAME)
+      return 0
+
+    self.log('[D2 LOG] %s running' % NAME)
+    self.setInfo('[D2 LOG] %s running' % NAME)
+
+    self.log("[D2 LOG] Importing scan from file %s" % self.filename)
+    self.log("[D2 LOG] Making sure it is XML NMAP")
+    t = nmap.nmapxml().test(self.filename)
+    if t == 0:
+      print("[D2 LOG] Error with this file.")
+      return 0
+    print("[D2 LOG] Nmap XML scan detected")
+      
+    parser = xml.sax.make_parser()
+    handler = nmap.nmapxml()
+    parser.setContentHandler(handler)
+    parser.parse(self.filename)
+    for i in handler.mapping:
+      hostip = handler.mapping[i]['address']
+      hostname = handler.mapping[i]['hostname']
+
+    self.log('[D2 LOG] Save info in a database')
+    try:
+      self.db = www.database.db()
+      target  = self.db.db_unique_host(title=hostname, host=hostip)
+      for port in handler.mapping[i]['ports']:
+        service = self.db.db_unique_service(target, '%d/tcp' % int(port['port']))
+    except Exception, e:
+      self.log('[D2 LOG] %s' % e)
+      self.log('[D2 LOG] Django (http://www.djangoproject.com/) installed ?')
+      self.setInfo('[D2 LOG] %s - done' % NAME)
+      return 1
+
+    self.setInfo('[D2 LOG] %s - done (failed)' % NAME)
+    return 0
+
+  def usage(self):
+    print 'Usage: %s -O filename:\'filename\' -O dbsave:[0|1]' % (sys.argv[0])
+    sys.exit(0)
+
+if __name__=='__main__':
+  app = theexploit()
+  ret = standard_callback_commandline(app)

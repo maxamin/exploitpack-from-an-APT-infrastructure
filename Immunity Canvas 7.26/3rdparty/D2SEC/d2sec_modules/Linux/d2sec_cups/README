@@ -1,0 +1,25 @@
+D2 Exploitation Pack
+====================
+
+Copyright (c) 2007-2013 DSquare Security, LLC
+
+
+License information
+-------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Local exploit
+---------------
+
+CUPS CVE-2012-5519 Local Privilege Escalation Vulnerability
+
+CVE Name : CVE-2012-5519
+CVE URL  : http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2012-5519
+
+How to use the exploit
+------------------------
+
+$ ./d2sec_cups.sh

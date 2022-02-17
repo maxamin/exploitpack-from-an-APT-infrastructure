@@ -1,0 +1,86 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2013
+#
+
+import sys
+
+if '.' not in sys.path:
+  sys.path.append('.')
+
+from exploitutils import *
+from tcpexploit import *
+from libs.canvasos import *
+
+import StringIO
+
+
+# GUI information
+VERSION                = "0.1"
+NAME                   = "d2sec_hnap_detect"
+DESCRIPTION            = "Tool to detect HNAP on devices"
+GTK2_DIALOG            = "dialog.glade2"
+CHANGELOG              = ""
+
+DOCUMENTATION          = {}
+DOCUMENTATION["References"] = "http://www.cisco.com/web/partners/downloads/guest/hnap_protocol_whitepaper.pdf"
+DOCUMENTATION["Notes"] = ""
+
+PROPERTY               = {}
+PROPERTY['TYPE']       = "Tool"
+PROPERTY['SITE']       = "Remote" 
+PROPERTY['ARCH']       = [ ["All"] ]
+
+# Exploit Code
+class theexploit(canvasexploit):
+
+  def __init__(self):
+    canvasexploit.__init__(self)
+    self.name = NAME
+    self.host = '' 
+    self.ports = [80, 8099]
+
+  def run(self):
+    hnap = 0
+    self.host = self.target.interface
+    self.setInfo("%s attacking %s" % (NAME,self.host))
+    try:
+      import pycurl
+    except Exception, e:
+      self.log('[D2] %s' % e)
+      self.log('[D2] Install module python-pycurl')
+      return ''
+    for port in self.ports:
+      content = StringIO.StringIO()
+      try:
+        c = pycurl.Curl()
+        c.setopt(pycurl.URL, 'http://%s:%d/HNAP1/' % (self.host, port))
+        c.setopt(c.USERAGENT, 'Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.0.1)')
+        c.setopt(c.TIMEOUT, 15)
+        c.setopt(c.WRITEFUNCTION, content.write) 
+        c.perform()
+        c.close()
+      except Exception, e:
+        #self.log('[D2] %s' % e)
+        continue
+      data = content.getvalue()
+      content.close()
+      if "<SOAPActions>" in data and "http://purenetworks.com/HNAP1" in data:
+        self.log('[D2] HNAP is enable on %s' % self.host) 
+        hnap = 1
+        break
+    if hnap == 0:
+      self.log('[D2] HNAP is disable on %s' % self.host)
+    self.setInfo("%s attacking %s - finished" %(NAME,self.host))
+    return 1
+
+if __name__ == "__main__":
+  print "Running CANVAS %s v %s" % (NAME,VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)
+
+

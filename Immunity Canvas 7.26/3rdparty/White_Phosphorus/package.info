@@ -1,0 +1,21 @@
+# CANVAS Third Party Exploit Pack Meta Data
+
+[main]
+name = White_Phosphorus
+
+longName = White Phosphorus Exploit Pack
+author = Immunity
+version = 1.28
+demo = No
+contactUrl = http://www.immunityinc.com
+contactEmail = support@immunityinc.com
+contactPhone = + 1 786 220 0600
+
+# Filenames of README and LICENSE
+license = license.txt
+readme = readme.txt
+# This directory and all subdirs are pushed into the python sys.path
+libdirs = libs  
+
+# one of these per path that has exploits in it
+[exploits]

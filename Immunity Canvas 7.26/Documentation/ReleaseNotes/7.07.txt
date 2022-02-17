@@ -1,0 +1,73 @@
+########################################################################
+#                       *CANVAS Release 7.07*                          #
+########################################################################
+
+*Date*: 25 November 2015
+
+*Version*: 7.07
+
+*Download URL*: https://canvas.immunityinc.com/getcanvas
+
+*Release Notes*:
+
+In this CANVAS release we are bringing you 8 new modules and bugfixes.
+
+Our new modules include the last vBulletin RCE, an exploit for the arbitrary file read
+vulnerability affecting Mozilla Firefox, and 6 new modules that will allow you
+to remotely interact with a Windows Registry.
+
+
+==Changes==
+
+o Fix for PowerShell Node/Listener
+
+o New modules right-click context menu (Add/Remove to/from Favorites)
+
+o Disable DNS resolution on session import
+
+o Bugfixes and improvements over the winreg API
+
+o Improvements on reg_dump
+
+o Bugfixes on the LSARPC library
+
+
+==New Modules==
+
+o vbulletin_preauth_decodeArguments
+
+o firefox_pdfjs_filereader
+
+o reg_fingerprint
+
+o reg_loggedon
+
+o reg_create_key
+
+o reg_delete_key
+
+o reg_add_value
+
+o reg_delete_value
+
+
+*CANVAS Tips 'n' Tricks*:
+
+You can export the list of all current CANVAS modules included in the release version
+you are running through the following command:
+
+(from within your CANVAS_ROOT)
+./canvasengine.py -e
+
+This will generate a CVE keyed XML file (exploits.xml) in your CANVAS_ROOT.
+
+
+*Links*:
+
+Support email       : support@immunityinc.com
+Sales support       : sales@immunityinc.com
+Support/Sales phone : +1 786-220-0600
+
+
+########################################################################
+########################################################################

@@ -1,0 +1,49 @@
+***********
+Terminology
+***********
+
+CANVAS consists of a large number of modules, libraries and tools each of which is developed for a very specific case and purpose. 
+
+Some of the terminologies used in CANVAS are unique to CANVAS, while other terms may differ from the way it used by other companies. Below is a list of some of the most common terminologies and what they mean in CANVAS and other Immunity products. 
+
+Active Node : 
+    The active node, which by default is the local node when CANVAS is first started, is where the  executed modules run against. If we add a new host as a target to our Knowledge, it automatically becomes the active node. There are some modules that should be run specifically against local or remote active nodes.
+    We can also choose multiple active nodes at the same time. This allows running a module against multiple hosts at the same time. The CANVAS GUI allows you to  select multiple nodes by either right-click menu actions, or Ctrl+Click on nodes in the nodes management tab.
+
+Commands : 
+    In CANVAS, everything is designed and developed as a module. A series of modules in CANVAS are categorized as *commands*. Command modules in CANVAS are used to run simple tasks against a local or remote node. For example, there are commands to gain extra information about a node, such as list of users, version information and running processes.  Commands are categorized based on the operating systems in CANVAS.
+
+Exploit : 
+    If you have purchased CANVAS, you are likely already familiar with this term. In short, an exploit is a piece of code, tool or technique used to confirm that an identified vulnerability is practically usable and can be used to access or gather information from the targeted host, service or software. Exploits are categorized based on where they are run from, how they are delivere, and what are their impacts. A detailed description about types of exploits
+    found in CANVAS can be found `here <https://www.immunityinc.com/downloads/Exploit_Categories_Explained.pdf>`_
+
+Knowledge : 
+    Whenever we define a new target for CANVAS, or scan the network with CANVAS modules to identify some hosts and services, we end up with  a list of properties for each host. For example if we sweep the network for an open port, each host with that open port will have a saved Knowledge item     maintained by CANVAS with those results. If we run another module to identify the operating system of a host, result of that module is added to the Knowledge for that host. Some modules in CANVAS refer to this prior execution, for example to check for the OS version details or to make sure the right payload is sent to the target. In CANVAS GUI you can right-click on a node, and view the Knowledge about it in a separated window.
+    CANVAS is constantly collecting information in the background, from executed modules and network traffic to update the knowledge list. 
+
+Listener : 
+    Listener is a module and component of the CANVAS framework used to serve incoming connections from exploited hosts or services. Often this listener is used as an incoming connection initiated by MOSDEF that tries to connect back to the CANVAS host to provide remote access. 
+
+CANVAS does other listeners besides MOSDEF. For example there are listeners to for PHP, JAVA and Microsoft PowerShell node callbacks.
+    
+Note, however, that there are many features that are available in CANVAS only if you have access to a MOSDEF node. In most cases, having some requirements met, we can upgrade PHP/JAVA/... nodes to a fully functional MOSDEF node. 
+
+MOSDEF : 
+    MOSDEF in simple words, is what many other call shellcode and/or  payload. After a vulnerablity is exploited on a target MOSDEF is executed on the host. It can be as  simple as a command-execution shell code, or a listening or reverse bind shell. In most cases, the payload concept in other tools and exploits, is a very static and pre-defined. CANVAS however, takes a different approach and this is one of the shining and most powerful features CANVAS provides. 
+
+MOSDEF can be described as a sophisticated in-memory C compiler that dynamically compiles and executes whatever you feed it, in the memory and context of the process you have exploited. This provides endless possibilities and freedom once you gain access to a process. MOSDEF is developed to support all major operating systems and architectures. Moreover MOSDEF can callback over HTTP, SSL or even over DNS or ICMP protocols! Once you successfully exploit a target and have an instance of MOSDEF running on it, you can use MOSDEF as your remote agent to scan, exploit and connect to other hosts that are otherwise unreachable to your host directly. You can learn more about internals of MOSDEF from Dave Aitel's talks in 2003 `here <http://www.immunityinc.com/resources/papers-presentations.html>`_.
+
+Node : 
+    Node is any local or remote host currently running a module of CANVAS or that we have gained access to through running one of CANVAS modules. A local node is typically referred to the host running CANVAS. The CANVAS GUI has a dedicated tab for managing nodes where the nodes can be interacted with and are displayed in a graphical map. 
+
+Pivoting :
+    Pivoting in Canvas means using a node other than the node CANVAS is running on to exploit or run a command against another target.  For example, suppose you manage to gain access to a public web server using one of the CANVAS web exploits, and get back a MOSDEF node. There are probably some hosts inside the target network, which are not directly visible from Internet, but the exploited web server can reach them. CANVAS allows you to easily and transparently use the MOSDEF node on the public web server as a middle proxy, to explore the internal hosts and exploit them. CANVAS provides some unique and interesting pivoting capabilities which are covered in more detail in other sections of this users manual.
+
+Session : 
+    Each time we launch CANVAS and run modules, a series of information and *knowledge* are recorded as session information. CANVAS allows saving and restoring the information as a *session*, which is a great feature if you want to save your works and resume it later, or even share with someone. Note that once you close your session, even if you have saved it, your active connections such as exploited hosts will be lost!
+
+Tools : 
+    Similar to commands, tool modules are developed to perform tasks against selected nodes, however tools are usually more complicated and automate a series of commands and tasks. Among the more interesting tools provided with CANVAS are the password bruteforce modules. 
+    
+Trojan : 
+    As the name implies, a trojan will allow us persistent access to targeted host, after we successfully gain initial access. In the CANVAS world, a trojan is an instance of MOSDEF that we install or execute on a host via any of available methods. Once a CANVAS trojan is installed and running on the target host, it can be used to gain access to that host in the future, without the need to exploit any vulnerability. This is especially useful when you have longer penetration test sessions and would like to maintain your access to compromised hosts for followup work. 

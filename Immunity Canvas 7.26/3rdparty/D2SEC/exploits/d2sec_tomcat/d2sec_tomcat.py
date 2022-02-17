@@ -1,0 +1,92 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2010
+#
+
+import sys, os, string, time, re
+import pygtk
+import gobject
+import logging
+
+pygtk.require("2.0")
+import gtk
+import gtk.glade
+
+sys.path.append(".")
+sys.path.append(os.path.join(os.getcwd(), '3rdparty/D2SEC/libs'))
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+import canvasengine
+from canvasexploit import canvasexploit
+
+import appli.tomcat
+
+# GUI info
+NAME = "D2SEC Tomcat"
+DESCRIPTION = "Pentesting Tomcat servers" 
+VERSION="1.0"
+
+DOCUMENTATION = {}
+DOCUMENTATION['VENDOR'] = ""
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION['Date public'] = ""
+DOCUMENTATION['References'] = ""
+DOCUMENTATION['Versions Affected'] = ""
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = ""
+DOCUMENTATION["CVE Url"] = ""
+
+DOCUMENTATION["Notes"] = ""
+
+PROPERTY={}
+PROPERTY['TYPE'] = 'Tools'
+PROPERTY['SITE'] = 'Remote'
+PROPERTY['ARCH'] = [["Linux"], ["Windows"]]
+
+class theexploit(canvasexploit):
+  def __init__(self):
+    canvasexploit.__init__(self)
+    self.name = NAME
+    self.host = ''
+    self.port = 80
+    
+  def run(self):
+    self.host = self.target.interface	
+    self.port = int(self.argsDict.get('port', self.port))
+
+    self.setInfo('[D2 LOG] %s attacking %s - running'%(NAME,self.host))
+
+    discovery = [
+      appli.tomcat.check_version,
+      appli.tomcat.manager,
+      appli.tomcat.admin,
+    ]
+
+    self.result = ''
+    self.log('[D2 LOG] Server Tomcat %s:%s' % (self.host, self.port))
+    self.log('\n')
+    for fct in discovery:
+      infos = fct(self.host, self.port)
+      if infos:
+        for info in infos:
+          self.result += '%s' % info
+          self.log('[D2 LOG] %s' % info)
+      self.log('\n')
+
+    self.setInfo('[D2 LOG] %s attacking %s - done' % (NAME,self.host))
+    return 1
+
+  def usage(self):
+  	print 'Usage: %s -t host -p port' % (sys.argv[0])
+  	return
+
+if __name__ == '__main__':
+  print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

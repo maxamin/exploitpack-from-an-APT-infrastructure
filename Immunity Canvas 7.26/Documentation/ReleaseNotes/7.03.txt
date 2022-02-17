@@ -1,0 +1,64 @@
+########################################################################
+#                       *CANVAS Release 7.03*                          #
+########################################################################
+
+*Date*: 31 July 2015
+
+*Version*: 7.03
+
+*Download URL*: https://canvas.immunityinc.com/cgi-bin/getcanvas.py
+
+*Release Notes*:
+
+In this CANVAS release we are bringing you 4 new modules and updates.
+
+Our new modules include a Use-After-Free in Adobe Flash Player (CVE-2015-5119),
+a local privilege escalation for Windows (CVE-2015-2387), an OSX local privilege
+escalation through DYLD_PRINT_TO_FILE and an import module for AVDS XML reports.
+
+==Changes==
+
+o Fix an issue with kerberos_ticket_list on targets not part of a domain
+
+o Improve userenum by adding kerberos support and ability to provide credentials
+
+o Exploits tree filesystem reorganization
+
+
+==New Modules==
+
+o adobe_flash_valueof
+
+o atmfd_pool_buffer_underflow
+
+o osx_dyld_print_to_file
+
+o avdsimport
+
+
+*CANVAS Tips 'n' Tricks*:
+
+In this release we started refactoring CANVAS code to be more efficient
+and easier to understand. As you can see from the included changelog, we
+reorganized our exploits directory to be a bit clearer. As an example:
+
+CANVAS/exploits/remote/windows/ms08_067/ms08_067.py
+CANVAS/exploits/clientside/windows/ms14_064_ie_oleaut32/ms14_064_ie_oleaut32.py
+CANVAS/exploits/local/unix/recvmmsg/recvmmsg.py
+
+You'll note we've segregated modules based on their type and operating
+system. This should hopefully be more intuitive than just placing
+everything in the root of the exploits directory. We are allowing a
+transition period in which you will still be able to place exploits
+inside the root of exploits/, although that won't be the case in the
+future and you will have to place them in their respective subdirectories.
+
+*Links*:
+
+Support email       : support@immunityinc.com
+Sales support       : sales@immunityinc.com
+Support/Sales phone : +1 786-220-0600
+
+
+########################################################################
+########################################################################

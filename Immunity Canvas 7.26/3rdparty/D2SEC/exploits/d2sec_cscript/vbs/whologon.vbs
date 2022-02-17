@@ -1,0 +1,16 @@
+'
+' Proprietary D2 Exploitation Pack source code - use only under the license
+' agreement specified in LICENSE.txt in your D2 Exploitation Pack
+'
+' Copyright DSquare Security, LLC, 2007-2009
+'
+
+strComputer = "."
+Set objWMIService = GetObject("winmgmts:" _
+     & "{impersonationLevel=impersonate}!\\" & strComputer & "\root\cimv2" )
+
+Set colComputer = objWMIService.ExecQuery("Select * from Win32_ComputerSystem")
+
+For each objComputer in colComputer
+	WScript.Echo objComputer.Username & " is logged on"
+Next

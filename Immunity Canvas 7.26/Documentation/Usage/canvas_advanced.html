@@ -1,0 +1,371 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>CANVAS Advanced Usage &mdash; Immunity CANVAS 1 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="Immunity CANVAS 1 documentation" href="index.html"/>
+        <link rel="next" title="CANVAS Strategic" href="canvas_strategic.html"/>
+        <link rel="prev" title="Canvas Video Tutorials" href="canvas_videos.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Immunity CANVAS
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="license.html">CANVAS EULA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installing CANVAS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="terminology.html">Terminology</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_intro.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_basics.html">CANVAS Basic Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basics_win_remote.html">Exploiting Windows Remotely</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basics_win_local.html">Exploiting Windows Locally (Privilege Escalation)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basics_clientside.html">Exploiting Client-Side Vulnerablities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="post_exploitation.html">Post-Exploitation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_tips.html">Canvas Tips and Tricks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_videos.html">Canvas Video Tutorials</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">CANVAS Advanced Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#using-canvas-behind-nat">Using CANVAS Behind NAT</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#setting-port-forwarding">Setting Port Forwarding</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#creating-virtual-interface">Creating Virtual interface</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pivoting">Pivoting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#automatic-startup-actions">Automatic Startup Actions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#port-forwarding">Port Forwarding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#xml-rpc-interface">XML RPC Interface</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_strategic.html">CANVAS Strategic</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">Immunity CANVAS</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>CANVAS Advanced Usage</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/canvas_advanced.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="canvas-advanced-usage">
+<h1>CANVAS Advanced Usage<a class="headerlink" href="#canvas-advanced-usage" title="Permalink to this headline">¶</a></h1>
+<p>This section will cover more advanced and less common CANVAS scenarios.</p>
+<div class="section" id="using-canvas-behind-nat">
+<h2>Using CANVAS Behind NAT<a class="headerlink" href="#using-canvas-behind-nat" title="Permalink to this headline">¶</a></h2>
+<p>Although it is recommended to avoid using CANVAS behind a NAT if you are performing tests against hosts over the internet, it is not always technically possible. For example you might be running CANVAS on a machine behind a home router, cable or DSL modem. In such scenarios it is not possible to receive callback connections from exploited targets, unless you setup CANVAS and your network properly. To use  CANVAS behind a NAT there are two steps you should follow.</p>
+<p>First, make sure you have proper port forwarding rules enabled on your gateway (modem, router, etc.) Second, create a virtual network interface in CANVAS to handle incoming traffic.</p>
+<div class="section" id="setting-port-forwarding">
+<h3>Setting Port Forwarding<a class="headerlink" href="#setting-port-forwarding" title="Permalink to this headline">¶</a></h3>
+<p>Almost all SOHO routers and modems provide the port forwarding feature, often through their web interface. This feature might be named differently depending on what vendor your device is from, but it is commonly referred to as <em>DMZ Host</em> or <em>Port Forwarding</em>. If your device provides both options, the Port Forwarding option often allows you to configure a single or range of ports to be forwarded, where as DMZ option will usually forward ALL traffic to the configured host except the individual ports that are already configured to be forwarded in Port Forwarding section.</p>
+<p>The following screenshot shows a sample interface from a Linksys wireless router, but the steps are very similar in other brands.</p>
+<img alt="_images/port_forwarding.png" src="_images/port_forwarding.png" />
+<p>Let&#8217;s assume our public IP address (assigned to the modem or router) is <em>1.2.3.4</em> and IP address of the host that is running CANVAS is <em>192.168.1.10</em>.
+Usually we use only a few ports for callback connections, and we want the router to forward any packets coming to those ports to our CANVAS host. Port TCP/53 is often left open in many networks for outbound connections so we will use it as an example. As you can see in the above screenshot, we have created a new port forwarding rule, setting the &#8220;External Port&#8221; to 53 and &#8220;Internal Port&#8221; to 5300. The protocol is set to TCP, and the &#8220;Device IP&#8221; (CANVAS host) is also set accordingly. Having that rule enabled will make the router to forward any packets coming to its public IP address (1.2.3.4) on port TCP/53 to the host 192.168.1.10 on port TCP/5300. Repeat the same process for as many ports as needed.</p>
+<p>Another approach to do the port forwarding is to use the &#8220;DMZ&#8221; feature, which will basically forward all ports to the specified internal host behind the NAT. This is not recommended though, as it will expose your internal machine to the Internet. While this is easier to setup, we highly recommend to use manually configured port forwarding. The following screenshot shows what the configuration of DMZ host looks like in a Linksys router:</p>
+<img alt="_images/port_forwarding_dmz.png" src="_images/port_forwarding_dmz.png" />
+<p>As you can see Linksys allows wider range of options for setting the DMZ host such as configuring source IP ranges, or using MAC address instead of IP address for the destination host. Your modem or router might not provide these options and only allow you to set a single destination IP address.</p>
+</div>
+<div class="section" id="creating-virtual-interface">
+<h3>Creating Virtual interface<a class="headerlink" href="#creating-virtual-interface" title="Permalink to this headline">¶</a></h3>
+<p>One of the lesser known but powerful features that CANVAS provides is the creation of virtual network interfaces. This feature allows you to define a new listening interface for incoming connections and assign desired IP address to it, even if the interface does not exists on the machine running CANVAS.
+This allows us to handle scenarios where we want to use CANVAS behind NAT or tunnels where the exploited machine initiating the callback connection cannot directly see the network of the CANVAS machine. In this case where we are behind NAT, if we try to configure a remote exploit against a target, CANVAS will automatically set the callback IP address to <em>192.168.1.10</em>, which is NOT what we want. The target machines will see our traffic coming from <em>1.2.3.4</em> (modem IP address) but our payload will be set to call back to 192.168.1.10. This will obviously fail. By creating a virtual interface in CANVAS we will basically tell CANVAS to set a custom IP address in exploit payloads. Since we have already configured our modem to forward ports properly, CANVAS will be able to successfully receive incoming traffic from exploited targets.</p>
+<p>To create a new virtual interface, in the CANVAS GUI and &#8220;Node Tree&#8221; tab right click on your node and under the &#8220;Interface&#8221; sub-menu select &#8220;New Interface&#8221;.</p>
+<img alt="_images/canvas_virtual_interface.png" src="_images/canvas_virtual_interface.png" />
+<p>As shown in the following screenshot, you will see a configuration window for the new virtual interface. In our sample scenario we want to set the IP address to <em>1.2.3.4</em> and Netmask Bits to 24. Since we are behind the NAT we will check the &#8220;NAT Interface&#8221; option, and set the required port range. You can leave the port range as default, but if you want CANVAS to handle only certain ports over this virtual interface you can assign them accordingly. Note that you can create multiple virtual interfaces in CANVAS for multiple IP addresses or even multiple ports on a single IP address.</p>
+<img alt="_images/canvas_virtualinterface_conf.png" src="_images/canvas_virtualinterface_conf.png" />
+<p>Once the interface is created, you should select and set it as your default interface, as shown in the following screenshot. You should then see the &#8220;Current Callback&#8221; in the GUI showing <em>1.2.3.4</em>.</p>
+<img alt="_images/canvas_virtualinterface_set.png" src="_images/canvas_virtualinterface_set.png" />
+<p>You are now ready to lunch exploits against targets over Internet. Note that since you are using specific ports configured on your router for forwarding, you should also use the same defined ports to create a new listener on the virtual interface. In our sample scenario we configured forwarding for port TCP/53 so we should now create a new MOSDEF listener (of whatever type you need) on port 53. Since we have already selected the virtual interface as our default, the MOSDEF listener will be automatically assigned to our virtual interface. To confirm that, as shown in the following screenshot you can right-click on the virtual interface and make sure the new MOSDEF listener is created:</p>
+<img alt="_images/canvas_virtualinterface_listener.png" src="_images/canvas_virtualinterface_listener.png" />
+</div>
+</div>
+<div class="section" id="pivoting">
+<h2>Pivoting<a class="headerlink" href="#pivoting" title="Permalink to this headline">¶</a></h2>
+<p>Pivoting in short, and in CANVAS terms, is using a compromised machine as a stepping stone to reach and exploit other machines that might not be otherwise accessible.</p>
+<p>In this example, we will go through the steps required to exploit a Windows machine using this feature.  The CANVAS machine has the IP address <em>192.168.1.10</em> and has network access to reach another system with the IP address <em>192.168.157.129</em>. Our final target is a Windows machine with the IP address 192.168.157.130, which is not directly network accessible to our CANVAS machine but <em>192.168.157.129</em> can  reach it, so we will need to pivot through this machine to reach and exploit our final target.</p>
+<p>We have used the <code class="docutils literal"><span class="pre">ms08_067</span></code> module to compromise the host <em>192.168.157.129</em> and have an active MOSDEF session from this host. To use it as a pivot, right-click on the node in the &#8220;Node Tree&#8221; tab in the CANVAS GUI to see the list of network interfaces on this machine:</p>
+<img alt="_images/canvas_pivot1.png" src="_images/canvas_pivot1.png" />
+<p>Then select this machine&#8217;s network interface as your default callback interface, as shown in the above screenshot. The next step is to add the IP address of your final target and make it your default target. To do so you can simply right-click on the node in the GUI use <em>Knowledge &gt; Add new host</em> menu to add 192.168.157.130 as a target.</p>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">Pivoting works only from MOSDEF node type. If the node is a more limited node type such as Powershell, PHP or Java node, it must be  converted or upgraded to MOSDEF.</p>
+</div>
+<img alt="_images/canvas_pivot2.png" src="_images/canvas_pivot2.png" />
+<p>From this point any module or exploit run in CANVAS  will be executed against the active node, which in our example is <em>192.168.157.129</em> and callback connections will also make their callbacks to this machine. We are now ready to exploit our final target <em>192.168.157.130</em>. In this example we use the <code class="docutils literal"><span class="pre">psexec</span></code> module (which is Immunity&#8217;s own implementation well known PSexec tool) to run a MOSDEF service on our final target. Once the module is completed, you will see your new MOSDEF Listener-shell window open and in the &#8220;Node Tree&#8221; tab of the GUI there will be a new node under our relay host:</p>
+<img alt="_images/canvas_pivot3.png" src="_images/canvas_pivot3.png" />
+<p>CANVAS does not limit you in the number of hosts you can pivot from. If you are in a complicated and restricted network, you can go through the same steps and use this third host as your pivot point to reach yet another machine three levels deep inside the network. The following screenshot shows an example of such case where two middle hosts are relaying your traffic.</p>
+<img alt="_images/canvas_pivot4.png" src="_images/canvas_pivot4.png" />
+<p>The pivoting feature in CANVAS is extremely useful in hardened network environments, and in scenarios such as reaching the internal network from a machine in a DMZ that is reachable over the Internet. Another typical usage of this feature is bypassing firewall rules and restrictions, for example when a server is reachable only from certain workstation in the network.</p>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">When pivoting, especially if there is more than one pivot point, execution of modules will take longer than usual. This is because CANVAS have to take care of a lot of complicated tasks in the background. Pivoting in CANVAS is not a simple forwarding of packets. Everything happens as if it has been generated, executed and sent from the middle host.</p>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">CANVAS has a module named <code class="docutils literal"><span class="pre">psexec</span></code> which, as the name implies, allows you to run commands on remote Windows machines over RPC. This is a completely independent implementation of the Microsoft SysInternals PSExec tool.  There are a number of advantages to using this module rather than the PSExec tool from Microsoft. The original PSExec and its behaviour is well known and detected by almost any Anti-virus making it difficult to use in real-world environments if the target is protected by an Anti-virus. Some Anti-virus softwares will still detect the PSExec even when the binary is modified by packing or encrypting it. The CANVAS implementation detection rate is much lower. Moreover, if you specify &#8220;mosdef&#8221; as your command, it automatically generates, uploads and executes a MOSDEF trojan to the remote machine making it a new CANVAS MOSDEF node.</p>
+</div>
+</div>
+<div class="section" id="automatic-startup-actions">
+<h2>Automatic Startup Actions<a class="headerlink" href="#automatic-startup-actions" title="Permalink to this headline">¶</a></h2>
+<p>Every time you successfully exploit a remote/local machine and manage to pop a MOSDEF node, you lprobably do some common post-exploitation steps on the host. In lab environments or in cases where you have limited number of nodes to deal with no time pressure, manual post exploitation workflows work great. There are scenarios and cases though, where there may be a large number of nodes. A good example is a successful client-side campaign or compromising many machines in a Windows domain. It is not practical or in some cases not possible, to hop over 50 nodes and manually run commands on each. You may also not be willing to risk your limited time available for manual exploration of the target machines. Plus, you never know how long your active MOSDEF node may last so it is a good idea to stabilize your access to that machine as soon as possible. In these situations, scripting CANVAS is the way to go.</p>
+<p>CANVAS is designed to be able to handle modules in the background. There is a universal startup module that is called and executed upon each successful exploitation. By default this module works more as a demo and not doing much, but it can be extended by users. This module is located in the CANVAS directory at the <code class="docutils literal"><span class="pre">.\exploits\command\universal\startup\startup.py</span></code> path.</p>
+<p>You may have noticed after exploiting a Windows machine there is a message in logs stating &#8220;Checks to see if we&#8217;re inside a VM&#8221;. This is from the automatic execution of <code class="docutils literal"><span class="pre">checkvm</span></code> module using this automatic startup mechanism. Looking at the Python source code of the module you will see that there a few more commented out options such as taking screenshots or listing directories.</p>
+<div class="highlight-Python"><div class="highlight"><pre><span class="ch">#! /usr/bin/env python</span>
+
+    <span class="c1">#Proprietary CANVAS source code - use only under the license agreement</span>
+    <span class="c1">#specified in LICENSE.txt in your CANVAS distribution</span>
+    <span class="c1">#Copyright Immunity, Inc, 2002-2008</span>
+    <span class="c1">#http://www.immunityinc.com/CANVAS/ for more information</span>
+
+    <span class="kn">import</span> <span class="nn">sys</span>
+    <span class="k">if</span> <span class="s2">&quot;.&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+
+    <span class="kn">import</span> <span class="nn">os</span><span class="o">,</span><span class="nn">getopt</span>
+    <span class="kn">import</span> <span class="nn">socket</span>
+    <span class="kn">from</span> <span class="nn">exploitutils</span> <span class="kn">import</span> <span class="o">*</span>
+
+    <span class="kn">from</span> <span class="nn">canvasexploit</span> <span class="kn">import</span> <span class="n">canvasexploit</span>
+    <span class="kn">from</span> <span class="nn">ExploitTypes.localcommand</span> <span class="kn">import</span> <span class="n">LocalCommand</span>
+    <span class="kn">import</span> <span class="nn">canvasengine</span>
+    <span class="kn">import</span> <span class="nn">time</span>
+
+    <span class="n">NAME</span>                <span class="o">=</span> <span class="s2">&quot;checkvm&quot;</span>
+    <span class="n">DESCRIPTION</span>         <span class="o">=</span> <span class="s2">&quot;Checks to see if we&#39;re inside a VM&quot;</span>
+    <span class="n">DOCUMENTATION</span>       <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">VERSION</span>             <span class="o">=</span> <span class="s2">&quot;1.0&quot;</span>
+    <span class="n">PROPERTY</span>            <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">PROPERTY</span><span class="p">[</span><span class="s1">&#39;TYPE&#39;</span><span class="p">]</span>    <span class="o">=</span> <span class="s2">&quot;Commands&quot;</span>
+    <span class="n">PROPERTY</span><span class="p">[</span><span class="s1">&#39;SITE&#39;</span><span class="p">]</span>    <span class="o">=</span> <span class="s2">&quot;Local&quot;</span>
+    <span class="n">PROPERTY</span><span class="p">[</span><span class="s1">&#39;ARCH&#39;</span><span class="p">]</span>    <span class="o">=</span> <span class="p">[</span> <span class="p">[</span><span class="s2">&quot;Unix&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;Windows&quot;</span><span class="p">]</span> <span class="p">]</span>
+
+
+    <span class="k">class</span> <span class="nc">theexploit</span><span class="p">(</span><span class="n">LocalCommand</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">LocalCommand</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">result</span>             <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">supportedNodeArgs</span>  <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;win32Node&quot;</span><span class="p">,</span> <span class="s2">&quot;bsdNode&quot;</span><span class="p">,</span> <span class="s2">&quot;linuxNode&quot;</span><span class="p">]]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">name</span>               <span class="o">=</span> <span class="n">NAME</span>
+
+        <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setInfo</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> (in progress)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">NAME</span><span class="p">))</span>
+
+            <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">argsDict</span><span class="p">[</span><span class="s2">&quot;passednodes&quot;</span><span class="p">]:</span>
+
+                <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">nodetype</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">supportedNodeArgs</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> node type not supported&quot;</span> <span class="o">%</span> <span class="n">node</span><span class="o">.</span><span class="n">nodetype</span><span class="p">)</span>
+                    <span class="k">continue</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">shell</span><span class="o">.</span><span class="n">checkvm</span><span class="p">()</span>
+                <span class="n">target</span>      <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">get_known_host</span><span class="p">(</span><span class="s2">&quot;127.0.0.1&quot;</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">setInfo</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> -&gt; Host is not likely to be a VirtualMachine&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">NAME</span><span class="p">))</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> -&gt; Host is not likely to be a VirtualMachine&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">NAME</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">setInfo</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> -&gt; Host is likely to be a VirtualMachine&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">NAME</span><span class="p">))</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> -&gt; Host is likely to be a VirtualMachine&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">NAME</span><span class="p">))</span>
+
+                <span class="n">target</span><span class="o">.</span><span class="n">add_knowledge</span><span class="p">(</span><span class="s2">&quot;VirtualMachine&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">setInfo</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> (finished)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">NAME</span><span class="p">))</span>
+            <span class="k">return</span> <span class="mi">1</span>
+</pre></div>
+</div>
+<p>You can script pretty much anything CANVAS is capable of here such as calling other modules, tools, commands or even exploits. Grabbing screenshots and dumping password hashes (if you have administrative privileges) are the most common uses. Note that you can also change CANVAS module code (as long as you are not changing module dependencies) while CANVAS is running. This allows you to change and update the startup module code if necessary during your operation. You will not loose your active nodes by doing so. The easiest way to make CANVAS use your updated code without restarting CANVAS is to use the reload option from <code class="docutils literal"><span class="pre">File</span> <span class="pre">&gt;</span> <span class="pre">Menu</span></code> in the GUI.</p>
+</div>
+<div class="section" id="port-forwarding">
+<h2>Port Forwarding<a class="headerlink" href="#port-forwarding" title="Permalink to this headline">¶</a></h2>
+<p>It often happens that you need to connect to some services or internal sites in your target network that are not exposed over Internet. Typically, the only way to access such resources is to proxy your traffic through an internal host that you have already compromised.  You can use the MOSDEF pivoting feature to exploit secondary hosts, but to forward TCP traffic outside of CANVAS you will need to use a separated module.</p>
+<p>The <code class="docutils literal"><span class="pre">wp_tcpforward</span></code> as the name implies, allows you to perform basic TCP port forwarding. Currently, this module is limited to Windows machines. If you are dealing with a Linux or Unix type of machine you should instead use SSH port forwarding,  which is has been made easy to use in the <code class="docutils literal"><span class="pre">ssh_reverse_tunnel</span></code> module in CANVAS. The ssh_reverse_tunnel module provides a similar functionality and is basically a python implementation of a SSH client, providing you the features you will get from a standard SSH client for (reverse) port forwarding using the <code class="docutils literal"><span class="pre">SSH</span> <span class="pre">-R</span></code> command.</p>
+<p>Port forwarding works uses a proxy tool (the wp_tcpforward module in this case) to open a listening port on your local machine. Any traffic received on this local port is forwarded to the remote agent (running on the middle proxy machine). The remote agent will then forward the traffic to whatever the destination host and port you have configured is and relay back received responses the same way. Using the <code class="docutils literal"><span class="pre">wp_tcpforward</span></code> you do not need to upload any binary or remote agent to the proxy host since everything is provided using CANVAS and MOSDEF node features. This means you can perform the port forwarding without touching the disk on the proxy host.</p>
+<img alt="_images/canvas_portforward.png" src="_images/canvas_portforward.png" />
+<p>Options to use this module are pretty straight forward. As shown in the above screenshot, CANVAS will listen on the local machine on all if its interfaces (because we used 0.0.0.0)
+on port TCP 8080. All the traffic going to this port will be forwarded through the proxy host to the destination &#8220;intranet.target.com&#8221; on port 80. So requests to “127.0.0.1:8080 from the CANVAS local machine and forwarded through the proxy to the internal web site running at &#8220;intranet.target.com&#8221;.   Hostnames are  resolved on the proxy node, so you can use internal names or any DNS name that the proxy machine can resolve. Since this connection is going thorough MOSDEF it means that you can also combine this forwarding with pivoting, to reach even deeper systems.</p>
+<p>The wp_tcpforward module can work in two modes.
+In the <strong>Local</strong> mode the given &#8220;listen Port&#8221; will open on the CANVAS machine and traffic will be forwarded to the &#8220;Connect Host&#8221;.</p>
+<p>In the <strong>Remote</strong> mode the given &#8220;Listen Port&#8221; will be opened on the proxy machine and traffic to that port will be forwarded to the machine running CANVAS. The Remote mode is especially useful
+when you want the remote machine to connect to a service on your system such as SSH.</p>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">If you are dealing with a non-windows target machine, the <code class="docutils literal"><span class="pre">ssh_reverse_tunnel</span></code> module should be your choice since the <code class="docutils literal"><span class="pre">wp_tcpforward</span></code> was initially developed for Windows targets. If you are concerned about the security of forwarded traffic, especially if you are routing traffic over Internet, you should consider using standard SSH or using the ssh_reverse_tunnel module to ensure the traffic is encrypted while in transit.</p>
+</div>
+</div>
+<div class="section" id="xml-rpc-interface">
+<h2>XML RPC Interface<a class="headerlink" href="#xml-rpc-interface" title="Permalink to this headline">¶</a></h2>
+<p>[To be added]</p>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="canvas_strategic.html" class="btn btn-neutral float-right" title="CANVAS Strategic" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="canvas_videos.html" class="btn btn-neutral" title="Canvas Video Tutorials" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Immunity Inc..
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

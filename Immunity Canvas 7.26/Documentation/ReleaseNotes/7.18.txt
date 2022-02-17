@@ -1,0 +1,75 @@
+########################################################################
+#                       *CANVAS Release 7.18*                          #
+########################################################################
+
+*Date*: 23 May 2018
+
+*Version*: 7.18
+
+*Download URL*: https://canvas.immunityinc.com/getcanvas
+
+*Release video*: https://vimeo.com/271127615
+
+*Release Notes*:
+
+In this CANVAS release we are bringing you 9 new modules and bugfixes.
+
+Our new modules include the SPECTRE exploit (able to leak any file from kernel
+memory) and a local privilege escalation for Windows (seimpersonatepriv_lpe).
+We are also including 2 web exploits targeting IIS (MachineKey ViewState
+Deserialization) and HPE iLO, 2 remote exploits targeting HP IMC and JAVA RMI
+Service, 2 companion modules for the iis_machinekey exploit (command modules,
+dump_certstore and get_machinekeys) and 1 recon module for enumerating JAVA RMI
+exposed objects.
+
+
+==Changes==
+
+o Version Checker fixes
+
+o New release notes and documentation menu entries (help)
+
+==New Modules==
+
+o spectre_file_leak (CVE-2017-5753)
+
+o iis_machinekey
+
+o get_machinekeys
+
+o dump_certstore
+
+o hp_imc_rce (CVE-2017-5816)
+
+o java_rmi_service
+
+o rmi_scanner
+
+o hpe_ilo4_addNewAdmin (CVE-2017-12542)
+
+o seimpersonatepriv_lpe
+
+
+*CANVAS Tips 'n' Tricks*:
+
+iis_machinekeys will often get you a new, shiny NT AUTHORITY\SYSTEM
+callback. This is done by auto-invoking seimpersonatepriv_lpe after
+spawning the initial MOSDEF instance.
+
+We are able to do this because, by default, an IIS AppPool user will
+have SeImpersonatePrivilege enabled. That means our IIS AppPool-owned
+callback can spawn processes with any token it has a handle and
+appropriate access to. Our seimpersonatepriv_lpe module uses an NTLM
+relay technique similar to that used in RottenPotato/NG
+to get an NT AUTHORITY\SYSTEM token. After that, we're just one
+CreateProcessWithToken call from getting a new SYSTEM callback!
+
+seimpersonatepriv_lpe can also be used in a myriad of other
+circumstances. If you load MOSDEF into a Microsoft SQL Server process,
+it will likely have SeImpersonatePrivilege enabled as well! Got a
+callback as an NT AUTHORITY\Network Service user? They usually have
+that privilege, too. You're just a few clicks away from a SYSTEM
+shell.
+
+########################################################################
+########################################################################

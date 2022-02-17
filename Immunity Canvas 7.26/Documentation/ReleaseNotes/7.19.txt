@@ -1,0 +1,57 @@
+########################################################################
+#                       *CANVAS Release 7.19*                          #
+########################################################################
+
+*Date*: 14 August 2018
+
+*Version*: 7.19
+
+*Download URL*: https://canvas.immunityinc.com/getcanvas
+
+*Release Notes*:
+
+In this CANVAS release we are bringing you 5 new modules and bugfixes.
+
+Our new modules include two remote exploits, one for ms17_010 and one targeting
+Dell EMC iDRAC (https://www.immunityinc.com/downloads/The-Unbearable-Lightness-of-BMC-wp.pdf),
+two local exploits targeting Linux (linux_waitid_write) and Windows
+(unmarshal_to_system), one command module for Windows that is able to retrieve
+detailed information about privileges (get_token_info).
+
+We are also releasing our new Windows Dependency Installer that will take care
+of installing all required dependencies on Windows. It can be found at:
+https://www.immunityinc.com/downloads/CANVAS_Dependency_Installer.exe
+
+
+==Changes==
+
+o New CANVAS dependency installer available for Windows
+ o Will install all of our required dependencies including Python 2.7 (if selected)
+ o Documentation available in CANVAS_ROOT/Documentation/Windows_Install_Guide.txt
+
+o converttomosdef fixes for high privileged executables
+
+o ETERNALBLUE Win 7 32bit support
+
+==New Modules==
+
+o ms17_010 (CVE-2017-0143)
+
+o linux_waitid_write (CVE-2017-5123)
+
+o idrac_appweb_rce (CVE-2018-1207)
+
+o unmarshal_to_system (CVE-2018-0824)
+
+o get_token_info
+
+
+*CANVAS Tips 'n' Tricks*:
+
+Be sure to check our new Windows Dependency Installer! With few clicks you can
+easily install all required dependencies for CANVAS (including Python if selected).
+You can check our new windows install guide if you have any issue, it also
+includes steps for installing optional windows dependencies!
+
+########################################################################
+########################################################################

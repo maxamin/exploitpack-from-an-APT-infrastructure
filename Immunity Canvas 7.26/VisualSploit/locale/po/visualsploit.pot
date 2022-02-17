@@ -1,0 +1,1352 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-02-20 11:48+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../maingui.glade:95 ../VisualSploit/maingui.glade:95
+msgid "Load sploit"
+msgstr ""
+
+#: ../ExploitToolbar/5Jump/dialog.glade2:8 ../maingui.glade:304
+#: ../VisualSploit/ExploitToolbar/5Jump/dialog.glade2:8
+#: ../VisualSploit/maingui.glade:304
+msgid "Jump"
+msgstr ""
+
+#: ../ExploitToolbar/5Jump/dialog.glade2:138
+#: ../ExploitToolbar/9BChunk/dialog.glade2:584
+#: ../ExploitToolbar/91FChunk/dialog.glade2:682
+#: ../ExploitToolbar/4Integer/dialog.glade2:236
+#: ../ExploitToolbar/3EIP/dialog.glade2:236
+#: ../ExploitToolbar/8Pad2Length/dialog.glade2:220
+#: ../ExploitToolbar/2Nopsled/dialog.glade2:419
+#: ../ExploitToolbar/7Assembly/dialog.glade2:189 ../maingui.glade:1891
+#: ../maingui.glade:2300 ../maingui.glade:2520 ../maingui.glade:2879
+#: ../ProtocolLogicToolbar/pl4Failed/dialog.glade2:178
+#: ../ProtocolLogicToolbar/pl2Else/dialog.glade2:146
+#: ../ProtocolLogicToolbar/pl5Sleep/dialog.glade2:209
+#: ../ProtocolLogicToolbar/pl3Print/dialog.glade2:178
+#: ../ProtocolLogicToolbar/pl1If/dialog.glade2:218
+#: ../VisualSploit/ExploitToolbar/5Jump/dialog.glade2:138
+#: ../VisualSploit/ExploitToolbar/9BChunk/dialog.glade2:584
+#: ../VisualSploit/ExploitToolbar/91FChunk/dialog.glade2:682
+#: ../VisualSploit/ExploitToolbar/4Integer/dialog.glade2:236
+#: ../VisualSploit/ExploitToolbar/3EIP/dialog.glade2:236
+#: ../VisualSploit/ExploitToolbar/8Pad2Length/dialog.glade2:220
+#: ../VisualSploit/ExploitToolbar/2Nopsled/dialog.glade2:419
+#: ../VisualSploit/ExploitToolbar/7Assembly/dialog.glade2:189
+#: ../VisualSploit/maingui.glade:1891 ../VisualSploit/maingui.glade:2300
+#: ../VisualSploit/maingui.glade:2520 ../VisualSploit/maingui.glade:2879
+#: ../VisualSploit/ProtocolLogicToolbar/pl4Failed/dialog.glade2:178
+#: ../VisualSploit/ProtocolLogicToolbar/pl2Else/dialog.glade2:146
+#: ../VisualSploit/ProtocolLogicToolbar/pl5Sleep/dialog.glade2:209
+#: ../VisualSploit/ProtocolLogicToolbar/pl3Print/dialog.glade2:178
+#: ../VisualSploit/ProtocolLogicToolbar/pl1If/dialog.glade2:218
+#: ../VisualSploit/ConnToolbar/2send/dialog.glade2:225
+#: ../VisualSploit/ConnToolbar/1connect/dialog.glade2:144
+#: ../VisualSploit/ConnToolbar/5write/dialog.glade2:224
+#: ../VisualSploit/ConnToolbar/4open/dialog.glade2:215
+#: ../VisualSploit/ConnToolbar/3recv/dialog.glade2:207
+#: ../VisualSploit/ConnToolbar/8DCEcall/dialog.glade2:225
+#: ../VisualSploit/ConnToolbar/6read/dialog.glade2:207
+#: ../VisualSploit/ConnToolbar/7DCEconnect/dialog.glade2:516
+#: ../ConnToolbar/2send/dialog.glade2:225
+#: ../ConnToolbar/1connect/dialog.glade2:144
+#: ../ConnToolbar/5write/dialog.glade2:224
+#: ../ConnToolbar/4open/dialog.glade2:215
+#: ../ConnToolbar/3recv/dialog.glade2:207
+#: ../ConnToolbar/8DCEcall/dialog.glade2:225
+#: ../ConnToolbar/6read/dialog.glade2:207
+#: ../ConnToolbar/7DCEconnect/dialog.glade2:516
+msgid "Help"
+msgstr ""
+
+#: ../ExploitToolbar/9BChunk/dialog.glade2:8 ../maingui.glade:336
+#: ../VisualSploit/ExploitToolbar/9BChunk/dialog.glade2:8
+#: ../VisualSploit/maingui.glade:336
+msgid "Busy Chunk"
+msgstr ""
+
+#: ../ExploitToolbar/9BChunk/dialog.glade2:88
+#: ../ExploitToolbar/91FChunk/dialog.glade2:88
+#: ../VisualSploit/ExploitToolbar/9BChunk/dialog.glade2:88
+#: ../VisualSploit/ExploitToolbar/91FChunk/dialog.glade2:88
+msgid "Size"
+msgstr ""
+
+#: ../ExploitToolbar/9BChunk/dialog.glade2:116
+#: ../ExploitToolbar/91FChunk/dialog.glade2:116
+#: ../VisualSploit/ExploitToolbar/9BChunk/dialog.glade2:116
+#: ../VisualSploit/ExploitToolbar/91FChunk/dialog.glade2:116
+msgid "PrevSize"
+msgstr ""
+
+#: ../ExploitToolbar/9BChunk/dialog.glade2:144
+#: ../ExploitToolbar/91FChunk/dialog.glade2:144
+#: ../VisualSploit/ExploitToolbar/9BChunk/dialog.glade2:144
+#: ../VisualSploit/ExploitToolbar/91FChunk/dialog.glade2:144
+msgid "Seg ndx"
+msgstr ""
+
+#: ../ExploitToolbar/9BChunk/dialog.glade2:172
+#: ../ExploitToolbar/91FChunk/dialog.glade2:172
+#: ../VisualSploit/ExploitToolbar/9BChunk/dialog.glade2:172
+#: ../VisualSploit/ExploitToolbar/91FChunk/dialog.glade2:172
+msgid "Flags"
+msgstr ""
+
+#: ../ExploitToolbar/9BChunk/dialog.glade2:204
+#: ../ExploitToolbar/9BChunk/dialog.glade2:225
+#: ../ExploitToolbar/9BChunk/dialog.glade2:246
+#: ../ExploitToolbar/9BChunk/dialog.glade2:267
+#: ../ExploitToolbar/9BChunk/dialog.glade2:288
+#: ../ExploitToolbar/91FChunk/dialog.glade2:204
+#: ../ExploitToolbar/91FChunk/dialog.glade2:225
+#: ../ExploitToolbar/91FChunk/dialog.glade2:246
+#: ../ExploitToolbar/91FChunk/dialog.glade2:267
+#: ../ExploitToolbar/91FChunk/dialog.glade2:288
+#: ../ExploitToolbar/91FChunk/dialog.glade2:589
+#: ../ExploitToolbar/91FChunk/dialog.glade2:610
+#: ../ExploitToolbar/3EIP/dialog.glade2:114
+#: ../VisualSploit/ExploitToolbar/9BChunk/dialog.glade2:204
+#: ../VisualSploit/ExploitToolbar/9BChunk/dialog.glade2:225
+#: ../VisualSploit/ExploitToolbar/9BChunk/dialog.glade2:246
+#: ../VisualSploit/ExploitToolbar/9BChunk/dialog.glade2:267
+#: ../VisualSploit/ExploitToolbar/9BChunk/dialog.glade2:288
+#: ../VisualSploit/ExploitToolbar/91FChunk/dialog.glade2:204
+#: ../VisualSploit/ExploitToolbar/91FChunk/dialog.glade2:225
+#: ../VisualSploit/ExploitToolbar/91FChunk/dialog.glade2:246
+#: ../VisualSploit/ExploitToolbar/91FChunk/dialog.glade2:267
+#: ../VisualSploit/ExploitToolbar/91FChunk/dialog.glade2:288
+#: ../VisualSploit/ExploitToolbar/91FChunk/dialog.glade2:589
+#: ../VisualSploit/ExploitToolbar/91FChunk/dialog.glade2:610
+#: ../VisualSploit/ExploitToolbar/3EIP/dialog.glade2:114
+msgid "0x"
+msgstr ""
+
+#: ../ExploitToolbar/9BChunk/dialog.glade2:305
+#: ../VisualSploit/ExploitToolbar/9BChunk/dialog.glade2:305
+msgid "Unused"
+msgstr ""
+
+#: ../ExploitToolbar/9BChunk/dialog.glade2:333
+#: ../VisualSploit/ExploitToolbar/9BChunk/dialog.glade2:333
+msgid "SmallTagNdx"
+msgstr ""
+
+#: ../ExploitToolbar/9BChunk/dialog.glade2:368
+#: ../ExploitToolbar/91FChunk/dialog.glade2:368
+#: ../VisualSploit/ExploitToolbar/9BChunk/dialog.glade2:368
+#: ../VisualSploit/ExploitToolbar/91FChunk/dialog.glade2:368
+msgid "BUSY (0x1)"
+msgstr ""
+
+#: ../ExploitToolbar/9BChunk/dialog.glade2:387
+#: ../ExploitToolbar/91FChunk/dialog.glade2:387
+#: ../VisualSploit/ExploitToolbar/9BChunk/dialog.glade2:387
+#: ../VisualSploit/ExploitToolbar/91FChunk/dialog.glade2:387
+msgid "EXTRA__PRESENT (0x2)"
+msgstr ""
+
+#: ../ExploitToolbar/9BChunk/dialog.glade2:406
+#: ../ExploitToolbar/91FChunk/dialog.glade2:406
+#: ../VisualSploit/ExploitToolbar/9BChunk/dialog.glade2:406
+#: ../VisualSploit/ExploitToolbar/91FChunk/dialog.glade2:406
+msgid "FILL (0x4)"
+msgstr ""
+
+#: ../ExploitToolbar/9BChunk/dialog.glade2:425
+#: ../ExploitToolbar/91FChunk/dialog.glade2:425
+#: ../VisualSploit/ExploitToolbar/9BChunk/dialog.glade2:425
+#: ../VisualSploit/ExploitToolbar/91FChunk/dialog.glade2:425
+msgid "VIRTUAL__ALLOC (0x8)"
+msgstr ""
+
+#: ../ExploitToolbar/9BChunk/dialog.glade2:444
+#: ../ExploitToolbar/91FChunk/dialog.glade2:444
+#: ../VisualSploit/ExploitToolbar/9BChunk/dialog.glade2:444
+#: ../VisualSploit/ExploitToolbar/91FChunk/dialog.glade2:444
+msgid "LAST__ENTRY (0x10)"
+msgstr ""
+
+#: ../ExploitToolbar/9BChunk/dialog.glade2:463
+#: ../ExploitToolbar/91FChunk/dialog.glade2:463
+#: ../VisualSploit/ExploitToolbar/9BChunk/dialog.glade2:463
+#: ../VisualSploit/ExploitToolbar/91FChunk/dialog.glade2:463
+msgid "FLAG1 (0x20)"
+msgstr ""
+
+#: ../ExploitToolbar/9BChunk/dialog.glade2:482
+#: ../ExploitToolbar/91FChunk/dialog.glade2:482
+#: ../VisualSploit/ExploitToolbar/9BChunk/dialog.glade2:482
+#: ../VisualSploit/ExploitToolbar/91FChunk/dialog.glade2:482
+msgid "FLAG2 (0x40)"
+msgstr ""
+
+#: ../ExploitToolbar/9BChunk/dialog.glade2:501
+#: ../ExploitToolbar/91FChunk/dialog.glade2:501
+#: ../VisualSploit/ExploitToolbar/9BChunk/dialog.glade2:501
+#: ../VisualSploit/ExploitToolbar/91FChunk/dialog.glade2:501
+msgid "FLAG3 (0x80)"
+msgstr ""
+
+#: ../ExploitToolbar/91FChunk/dialog.glade2:8 ../maingui.glade:344
+#: ../VisualSploit/ExploitToolbar/91FChunk/dialog.glade2:8
+#: ../VisualSploit/maingui.glade:344
+msgid "Free Chunk"
+msgstr ""
+
+#: ../ExploitToolbar/91FChunk/dialog.glade2:305
+#: ../VisualSploit/ExploitToolbar/91FChunk/dialog.glade2:305
+msgid "Index"
+msgstr ""
+
+#: ../ExploitToolbar/91FChunk/dialog.glade2:333
+#: ../VisualSploit/ExploitToolbar/91FChunk/dialog.glade2:333
+msgid "Mask"
+msgstr ""
+
+#: ../ExploitToolbar/91FChunk/dialog.glade2:529
+#: ../VisualSploit/ExploitToolbar/91FChunk/dialog.glade2:529
+msgid "BLink"
+msgstr ""
+
+#: ../ExploitToolbar/91FChunk/dialog.glade2:557
+#: ../VisualSploit/ExploitToolbar/91FChunk/dialog.glade2:557
+msgid "FLink"
+msgstr ""
+
+#: ../ExploitToolbar/4Integer/dialog.glade2:8 ../maingui.glade:296
+#: ../VisualSploit/ExploitToolbar/4Integer/dialog.glade2:8
+#: ../VisualSploit/maingui.glade:296
+msgid "Integer"
+msgstr ""
+
+#: ../ExploitToolbar/4Integer/dialog.glade2:85
+#: ../ExploitToolbar/3EIP/dialog.glade2:85
+#: ../VisualSploit/ExploitToolbar/4Integer/dialog.glade2:85
+#: ../VisualSploit/ExploitToolbar/3EIP/dialog.glade2:85
+msgid "Value: "
+msgstr ""
+
+#: ../ExploitToolbar/4Integer/dialog.glade2:143
+#: ../ExploitToolbar/3EIP/dialog.glade2:143
+#: ../VisualSploit/ExploitToolbar/4Integer/dialog.glade2:143
+#: ../VisualSploit/ExploitToolbar/3EIP/dialog.glade2:143
+msgid "Little Endian"
+msgstr ""
+
+#: ../ExploitToolbar/4Integer/dialog.glade2:162
+#: ../ExploitToolbar/3EIP/dialog.glade2:162
+#: ../VisualSploit/ExploitToolbar/4Integer/dialog.glade2:162
+#: ../VisualSploit/ExploitToolbar/3EIP/dialog.glade2:162
+msgid "Big Endian"
+msgstr ""
+
+#: ../ExploitToolbar/1String/dialog.glade2:8 ../maingui.glade:272
+#: ../VisualSploit/ExploitToolbar/1String/dialog.glade2:8
+#: ../VisualSploit/maingui.glade:272
+msgid "String"
+msgstr ""
+
+#: ../ExploitToolbar/1String/dialog.glade2:85
+#: ../ExploitToolbar/2Nopsled/dialog.glade2:264
+#: ../MiscToolbar/6mtaddzcPacket/dialog.glade2:218
+#: ../MiscToolbar/8mtsubmit2CANVAS/dialog.glade2:218
+#: ../MiscToolbar/4mtaddxPacket/dialog.glade2:218
+#: ../MiscToolbar/9mtclearpacket/dialog.glade2:218
+#: ../MiscToolbar/2mtRunExploit/dialog.glade2:218
+#: ../MiscToolbar/1mtcodeExploit/dialog.glade2:218
+#: ../MiscToolbar/10calculator/dialog.glade2:218
+#: ../VisualSploit/ExploitToolbar/1String/dialog.glade2:85
+#: ../VisualSploit/ExploitToolbar/2Nopsled/dialog.glade2:264
+#: ../VisualSploit/MiscToolbar/6mtaddzcPacket/dialog.glade2:218
+#: ../VisualSploit/MiscToolbar/8mtsubmit2CANVAS/dialog.glade2:218
+#: ../VisualSploit/MiscToolbar/4mtaddxPacket/dialog.glade2:218
+#: ../VisualSploit/MiscToolbar/9mtclearpacket/dialog.glade2:218
+#: ../VisualSploit/MiscToolbar/2mtRunExploit/dialog.glade2:218
+#: ../VisualSploit/MiscToolbar/1mtcodeExploit/dialog.glade2:218
+#: ../VisualSploit/MiscToolbar/10calculator/dialog.glade2:218
+msgid "String: "
+msgstr ""
+
+#: ../ExploitToolbar/1String/dialog.glade2:176
+#: ../VisualSploit/ExploitToolbar/1String/dialog.glade2:176
+msgid "Repeat string"
+msgstr ""
+
+#: ../ExploitToolbar/1String/dialog.glade2:206
+#: ../VisualSploit/ExploitToolbar/1String/dialog.glade2:206
+msgid "Repeat string "
+msgstr ""
+
+#: ../ExploitToolbar/1String/dialog.glade2:250
+#: ../VisualSploit/ExploitToolbar/1String/dialog.glade2:250
+msgid " times"
+msgstr ""
+
+#: ../ExploitToolbar/1String/dialog.glade2:281
+#: ../ExploitToolbar/2Nopsled/dialog.glade2:469
+#: ../VisualSploit/ExploitToolbar/1String/dialog.glade2:281
+#: ../VisualSploit/ExploitToolbar/2Nopsled/dialog.glade2:469
+msgid ""
+"Warning: Badchar detected\n"
+"Please remove it from the buffer"
+msgstr ""
+
+#: ../maingui.glade:288 ../VisualSploit/ExploitToolbar/3EIP/dialog.glade2:8
+#: ../VisualSploit/maingui.glade:288 ../ExploitToolbar/3EIP/dialog.glade2:8
+msgid "EIP"
+msgstr ""
+
+#: ../ExploitToolbar/6Shellcode/dialog.glade2:8 ../maingui.glade:312
+#: ../VisualSploit/ExploitToolbar/6Shellcode/dialog.glade2:8
+#: ../VisualSploit/maingui.glade:312
+msgid "Shellcode"
+msgstr ""
+
+#: ../ExploitToolbar/6Shellcode/dialog.glade2:156
+#: ../VisualSploit/ExploitToolbar/6Shellcode/dialog.glade2:156
+msgid "Socket: "
+msgstr ""
+
+#: ../ExploitToolbar/6Shellcode/dialog.glade2:213
+#: ../VisualSploit/ExploitToolbar/6Shellcode/dialog.glade2:213
+msgid "Connect: "
+msgstr ""
+
+#: ../ExploitToolbar/6Shellcode/dialog.glade2:270
+#: ../VisualSploit/ExploitToolbar/6Shellcode/dialog.glade2:270
+msgid "Receive: "
+msgstr ""
+
+#: ../ExploitToolbar/6Shellcode/dialog.glade2:337
+#: ../VisualSploit/ExploitToolbar/6Shellcode/dialog.glade2:337
+msgid "Length"
+msgstr ""
+
+#: ../ExploitToolbar/6Shellcode/dialog.glade2:402
+#: ../VisualSploit/ExploitToolbar/6Shellcode/dialog.glade2:402
+msgid "Start Character"
+msgstr ""
+
+#: ../ExploitToolbar/6Shellcode/dialog.glade2:430
+#: ../VisualSploit/ExploitToolbar/6Shellcode/dialog.glade2:430
+msgid "Finish Character"
+msgstr ""
+
+#: ../ExploitToolbar/8Pad2Length/dialog.glade2:8 ../maingui.glade:328
+#: ../VisualSploit/ExploitToolbar/8Pad2Length/dialog.glade2:8
+#: ../VisualSploit/maingui.glade:328
+msgid "Pad to Length"
+msgstr ""
+
+#: ../ExploitToolbar/8Pad2Length/dialog.glade2:96
+#: ../VisualSploit/ExploitToolbar/8Pad2Length/dialog.glade2:96
+msgid "Pad "
+msgstr ""
+
+#: ../ExploitToolbar/8Pad2Length/dialog.glade2:140
+#: ../VisualSploit/ExploitToolbar/8Pad2Length/dialog.glade2:140
+msgid " Bytes"
+msgstr ""
+
+#: ../ExploitToolbar/2Nopsled/dialog.glade2:8 ../maingui.glade:280
+#: ../MiscToolbar/6mtaddzcPacket/dialog.glade2:8
+#: ../MiscToolbar/8mtsubmit2CANVAS/dialog.glade2:8
+#: ../MiscToolbar/4mtaddxPacket/dialog.glade2:8
+#: ../MiscToolbar/9mtclearpacket/dialog.glade2:8
+#: ../MiscToolbar/2mtRunExploit/dialog.glade2:8
+#: ../MiscToolbar/1mtcodeExploit/dialog.glade2:8
+#: ../MiscToolbar/10calculator/dialog.glade2:8
+#: ../VisualSploit/ExploitToolbar/2Nopsled/dialog.glade2:8
+#: ../VisualSploit/maingui.glade:280
+#: ../VisualSploit/MiscToolbar/6mtaddzcPacket/dialog.glade2:8
+#: ../VisualSploit/MiscToolbar/8mtsubmit2CANVAS/dialog.glade2:8
+#: ../VisualSploit/MiscToolbar/4mtaddxPacket/dialog.glade2:8
+#: ../VisualSploit/MiscToolbar/9mtclearpacket/dialog.glade2:8
+#: ../VisualSploit/MiscToolbar/2mtRunExploit/dialog.glade2:8
+#: ../VisualSploit/MiscToolbar/1mtcodeExploit/dialog.glade2:8
+#: ../VisualSploit/MiscToolbar/10calculator/dialog.glade2:8
+msgid "Nopsled"
+msgstr ""
+
+#: ../ExploitToolbar/2Nopsled/dialog.glade2:85
+#: ../MiscToolbar/6mtaddzcPacket/dialog.glade2:84
+#: ../MiscToolbar/8mtsubmit2CANVAS/dialog.glade2:84
+#: ../MiscToolbar/4mtaddxPacket/dialog.glade2:84
+#: ../MiscToolbar/9mtclearpacket/dialog.glade2:84
+#: ../MiscToolbar/2mtRunExploit/dialog.glade2:84
+#: ../MiscToolbar/1mtcodeExploit/dialog.glade2:84
+#: ../MiscToolbar/10calculator/dialog.glade2:84
+#: ../VisualSploit/ExploitToolbar/2Nopsled/dialog.glade2:85
+#: ../VisualSploit/MiscToolbar/6mtaddzcPacket/dialog.glade2:84
+#: ../VisualSploit/MiscToolbar/8mtsubmit2CANVAS/dialog.glade2:84
+#: ../VisualSploit/MiscToolbar/4mtaddxPacket/dialog.glade2:84
+#: ../VisualSploit/MiscToolbar/9mtclearpacket/dialog.glade2:84
+#: ../VisualSploit/MiscToolbar/2mtRunExploit/dialog.glade2:84
+#: ../VisualSploit/MiscToolbar/1mtcodeExploit/dialog.glade2:84
+#: ../VisualSploit/MiscToolbar/10calculator/dialog.glade2:84
+msgid "Size of NOP: "
+msgstr ""
+
+#: ../ExploitToolbar/2Nopsled/dialog.glade2:129
+#: ../VisualSploit/ExploitToolbar/2Nopsled/dialog.glade2:129
+msgid " Occurences"
+msgstr ""
+
+#: ../ExploitToolbar/2Nopsled/dialog.glade2:167
+#: ../MiscToolbar/6mtaddzcPacket/dialog.glade2:141
+#: ../MiscToolbar/8mtsubmit2CANVAS/dialog.glade2:141
+#: ../MiscToolbar/4mtaddxPacket/dialog.glade2:141
+#: ../MiscToolbar/9mtclearpacket/dialog.glade2:141
+#: ../MiscToolbar/2mtRunExploit/dialog.glade2:141
+#: ../MiscToolbar/1mtcodeExploit/dialog.glade2:141
+#: ../MiscToolbar/10calculator/dialog.glade2:141
+#: ../VisualSploit/ExploitToolbar/2Nopsled/dialog.glade2:167
+#: ../VisualSploit/MiscToolbar/6mtaddzcPacket/dialog.glade2:141
+#: ../VisualSploit/MiscToolbar/8mtsubmit2CANVAS/dialog.glade2:141
+#: ../VisualSploit/MiscToolbar/4mtaddxPacket/dialog.glade2:141
+#: ../VisualSploit/MiscToolbar/9mtclearpacket/dialog.glade2:141
+#: ../VisualSploit/MiscToolbar/2mtRunExploit/dialog.glade2:141
+#: ../VisualSploit/MiscToolbar/1mtcodeExploit/dialog.glade2:141
+#: ../VisualSploit/MiscToolbar/10calculator/dialog.glade2:141
+msgid "Type of NOP: "
+msgstr ""
+
+#: ../ExploitToolbar/2Nopsled/dialog.glade2:193
+#: ../MiscToolbar/6mtaddzcPacket/dialog.glade2:186
+#: ../MiscToolbar/8mtsubmit2CANVAS/dialog.glade2:186
+#: ../MiscToolbar/4mtaddxPacket/dialog.glade2:186
+#: ../MiscToolbar/9mtclearpacket/dialog.glade2:186
+#: ../MiscToolbar/2mtRunExploit/dialog.glade2:186
+#: ../MiscToolbar/1mtcodeExploit/dialog.glade2:186
+#: ../MiscToolbar/10calculator/dialog.glade2:186
+#: ../VisualSploit/ExploitToolbar/2Nopsled/dialog.glade2:193
+#: ../VisualSploit/MiscToolbar/6mtaddzcPacket/dialog.glade2:186
+#: ../VisualSploit/MiscToolbar/8mtsubmit2CANVAS/dialog.glade2:186
+#: ../VisualSploit/MiscToolbar/4mtaddxPacket/dialog.glade2:186
+#: ../VisualSploit/MiscToolbar/9mtclearpacket/dialog.glade2:186
+#: ../VisualSploit/MiscToolbar/2mtRunExploit/dialog.glade2:186
+#: ../VisualSploit/MiscToolbar/1mtcodeExploit/dialog.glade2:186
+#: ../VisualSploit/MiscToolbar/10calculator/dialog.glade2:186
+msgid "Given"
+msgstr ""
+
+#: ../ExploitToolbar/2Nopsled/dialog.glade2:212
+#: ../MiscToolbar/6mtaddzcPacket/dialog.glade2:167
+#: ../MiscToolbar/8mtsubmit2CANVAS/dialog.glade2:167
+#: ../MiscToolbar/4mtaddxPacket/dialog.glade2:167
+#: ../MiscToolbar/9mtclearpacket/dialog.glade2:167
+#: ../MiscToolbar/2mtRunExploit/dialog.glade2:167
+#: ../MiscToolbar/1mtcodeExploit/dialog.glade2:167
+#: ../MiscToolbar/10calculator/dialog.glade2:167
+#: ../VisualSploit/ExploitToolbar/2Nopsled/dialog.glade2:212
+#: ../VisualSploit/MiscToolbar/6mtaddzcPacket/dialog.glade2:167
+#: ../VisualSploit/MiscToolbar/8mtsubmit2CANVAS/dialog.glade2:167
+#: ../VisualSploit/MiscToolbar/4mtaddxPacket/dialog.glade2:167
+#: ../VisualSploit/MiscToolbar/9mtclearpacket/dialog.glade2:167
+#: ../VisualSploit/MiscToolbar/2mtRunExploit/dialog.glade2:167
+#: ../VisualSploit/MiscToolbar/1mtcodeExploit/dialog.glade2:167
+#: ../VisualSploit/MiscToolbar/10calculator/dialog.glade2:167
+msgid "Random "
+msgstr ""
+
+#: ../ExploitToolbar/2Nopsled/dialog.glade2:232
+#: ../VisualSploit/ExploitToolbar/2Nopsled/dialog.glade2:232
+msgid "Debug (\\xcc)"
+msgstr ""
+
+#: ../ExploitToolbar/2Nopsled/dialog.glade2:321
+#: ../MiscToolbar/6mtaddzcPacket/dialog.glade2:275
+#: ../MiscToolbar/8mtsubmit2CANVAS/dialog.glade2:275
+#: ../MiscToolbar/4mtaddxPacket/dialog.glade2:275
+#: ../MiscToolbar/9mtclearpacket/dialog.glade2:275
+#: ../MiscToolbar/2mtRunExploit/dialog.glade2:275
+#: ../MiscToolbar/1mtcodeExploit/dialog.glade2:275
+#: ../MiscToolbar/10calculator/dialog.glade2:275
+#: ../VisualSploit/ExploitToolbar/2Nopsled/dialog.glade2:321
+#: ../VisualSploit/MiscToolbar/6mtaddzcPacket/dialog.glade2:275
+#: ../VisualSploit/MiscToolbar/8mtsubmit2CANVAS/dialog.glade2:275
+#: ../VisualSploit/MiscToolbar/4mtaddxPacket/dialog.glade2:275
+#: ../VisualSploit/MiscToolbar/9mtclearpacket/dialog.glade2:275
+#: ../VisualSploit/MiscToolbar/2mtRunExploit/dialog.glade2:275
+#: ../VisualSploit/MiscToolbar/1mtcodeExploit/dialog.glade2:275
+#: ../VisualSploit/MiscToolbar/10calculator/dialog.glade2:275
+msgid "Code:  "
+msgstr ""
+
+#: ../ExploitToolbar/7Assembly/dialog.glade2:8
+#: ../VisualSploit/ExploitToolbar/7Assembly/dialog.glade2:8
+msgid "Assembly code"
+msgstr ""
+
+#: ../maingui.glade:7 ../maingui.glade:162 ../VisualSploit/maingui.glade:7
+#: ../VisualSploit/maingui.glade:162
+msgid "Immunity VisualSploit"
+msgstr ""
+
+#: ../maingui.glade:22 ../maingui.glade:190 ../VisualSploit/maingui.glade:22
+#: ../VisualSploit/maingui.glade:190
+msgid "_File"
+msgstr ""
+
+#: ../maingui.glade:65 ../maingui.glade:257 ../VisualSploit/maingui.glade:65
+#: ../VisualSploit/maingui.glade:257
+msgid "_Help"
+msgstr ""
+
+#: ../maingui.glade:72 ../VisualSploit/maingui.glade:72
+msgid "_About"
+msgstr ""
+
+#: ../maingui.glade:94 ../VisualSploit/maingui.glade:94
+msgid "Load an existing project"
+msgstr ""
+
+#: ../maingui.glade:116 ../maingui.glade:117 ../VisualSploit/maingui.glade:116
+#: ../VisualSploit/maingui.glade:117
+msgid "New sploit"
+msgstr ""
+
+#: ../maingui.glade:129 ../VisualSploit/maingui.glade:129
+msgid "Create a sploit wizard"
+msgstr ""
+
+#: ../maingui.glade:130 ../VisualSploit/maingui.glade:130
+msgid "Wizard"
+msgstr ""
+
+#: ../maingui.glade:215 ../VisualSploit/maingui.glade:215
+msgid "Load as xpackets"
+msgstr ""
+
+#: ../maingui.glade:264 ../VisualSploit/maingui.glade:264
+msgid "Exploit Objects"
+msgstr ""
+
+#: ../maingui.glade:320 ../VisualSploit/maingui.glade:320
+msgid "Assembly"
+msgstr ""
+
+#: ../maingui.glade:356 ../VisualSploit/maingui.glade:356
+msgid "Connection Objects"
+msgstr ""
+
+#: ../VisualSploit/maingui.glade:364
+#: ../VisualSploit/ConnToolbar/1connect/dialog.glade2:7
+#: ../ConnToolbar/1connect/dialog.glade2:7 ../maingui.glade:364
+msgid "Connect"
+msgstr ""
+
+#: ../VisualSploit/maingui.glade:372
+#: ../VisualSploit/ConnToolbar/2send/dialog.glade2:8
+#: ../ConnToolbar/2send/dialog.glade2:8 ../maingui.glade:372
+msgid "Send Data"
+msgstr ""
+
+#: ../VisualSploit/maingui.glade:380
+#: ../VisualSploit/ConnToolbar/3recv/dialog.glade2:8
+#: ../ConnToolbar/3recv/dialog.glade2:8 ../maingui.glade:380
+msgid "Receive Data"
+msgstr ""
+
+#: ../maingui.glade:388 ../VisualSploit/maingui.glade:388
+msgid "Open"
+msgstr ""
+
+#: ../maingui.glade:396 ../VisualSploit/maingui.glade:396
+msgid "Write Data"
+msgstr ""
+
+#: ../maingui.glade:404 ../VisualSploit/maingui.glade:404
+msgid "Read Data"
+msgstr ""
+
+#: ../VisualSploit/maingui.glade:412
+#: ../VisualSploit/ConnToolbar/7DCEconnect/dialog.glade2:8
+#: ../ConnToolbar/7DCEconnect/dialog.glade2:8 ../maingui.glade:412
+msgid "DCE Connect"
+msgstr ""
+
+#: ../maingui.glade:420 ../VisualSploit/maingui.glade:420
+msgid "DCE Call"
+msgstr ""
+
+#: ../maingui.glade:432 ../VisualSploit/maingui.glade:432
+msgid "Logic Objects"
+msgstr ""
+
+#: ../maingui.glade:440 ../VisualSploit/maingui.glade:440
+msgid "IF"
+msgstr ""
+
+#: ../maingui.glade:448 ../VisualSploit/maingui.glade:448
+msgid "ELSE"
+msgstr ""
+
+#: ../maingui.glade:456 ../VisualSploit/maingui.glade:456
+msgid "Print"
+msgstr ""
+
+#: ../maingui.glade:464 ../VisualSploit/maingui.glade:464
+msgid "Failed"
+msgstr ""
+
+#: ../maingui.glade:472 ../ProtocolLogicToolbar/pl5Sleep/dialog.glade2:8
+#: ../VisualSploit/maingui.glade:472
+#: ../VisualSploit/ProtocolLogicToolbar/pl5Sleep/dialog.glade2:8
+msgid "Sleep"
+msgstr ""
+
+#: ../maingui.glade:484 ../VisualSploit/maingui.glade:484
+msgid "Misc Objects"
+msgstr ""
+
+#: ../maingui.glade:492 ../VisualSploit/maingui.glade:492
+msgid "Make Exploit"
+msgstr ""
+
+#: ../maingui.glade:500 ../VisualSploit/maingui.glade:500
+msgid "Run Exploit"
+msgstr ""
+
+#: ../maingui.glade:508 ../VisualSploit/maingui.glade:508
+msgid "Set Documentation"
+msgstr ""
+
+#: ../maingui.glade:516 ../VisualSploit/maingui.glade:516
+msgid "Add Buffer Packet"
+msgstr ""
+
+#: ../maingui.glade:524 ../VisualSploit/maingui.glade:524
+msgid "vsPDB"
+msgstr ""
+
+#: ../maingui.glade:532 ../VisualSploit/maingui.glade:532
+msgid "Add Program Flow Packet"
+msgstr ""
+
+#: ../maingui.glade:540 ../VisualSploit/maingui.glade:540
+msgid "Set Test()"
+msgstr ""
+
+#: ../maingui.glade:548 ../VisualSploit/maingui.glade:548
+msgid "Submit to CANVAS World"
+msgstr ""
+
+#: ../maingui.glade:556 ../VisualSploit/maingui.glade:556
+msgid "Clear Packet"
+msgstr ""
+
+#: ../maingui.glade:568 ../VisualSploit/maingui.glade:568
+msgid "About"
+msgstr ""
+
+#: ../maingui.glade:614 ../VisualSploit/maingui.glade:614
+msgid "Drop buffer to delete it from xpacket"
+msgstr ""
+
+#: ../maingui.glade:860 ../VisualSploit/maingui.glade:860
+msgid "Results"
+msgstr ""
+
+#: ../maingui.glade:889 ../VisualSploit/maingui.glade:889
+msgid "exploit log"
+msgstr ""
+
+#: ../maingui.glade:919 ../VisualSploit/maingui.glade:919
+msgid "connection log"
+msgstr ""
+
+#: ../maingui.glade:942 ../VisualSploit/maingui.glade:942
+msgid "Delete buffer"
+msgstr ""
+
+#: ../maingui.glade:950 ../VisualSploit/maingui.glade:950
+msgid "Edit buffer"
+msgstr ""
+
+#: ../maingui.glade:958 ../maingui.glade:2999
+#: ../VisualSploit/maingui.glade:958 ../VisualSploit/maingui.glade:2999
+msgid "Object Comments"
+msgstr ""
+
+#: ../maingui.glade:971 ../maingui.glade:2771
+#: ../VisualSploit/maingui.glade:971 ../VisualSploit/maingui.glade:2771
+msgid "Manage Targets"
+msgstr ""
+
+#: ../maingui.glade:979 ../VisualSploit/maingui.glade:979
+msgid "New Project"
+msgstr ""
+
+#: ../maingui.glade:992 ../VisualSploit/maingui.glade:992
+msgid "Project name:"
+msgstr ""
+
+#: ../maingui.glade:1004 ../maingui.glade:1738
+#: ../VisualSploit/maingui.glade:1004 ../VisualSploit/maingui.glade:1738
+msgid "vsploit_exploit"
+msgstr ""
+
+#: ../maingui.glade:1026 ../VisualSploit/maingui.glade:1026
+msgid "Select Target Platform: "
+msgstr ""
+
+#: ../maingui.glade:1039 ../maingui.glade:1774
+#: ../VisualSploit/maingui.glade:1039 ../VisualSploit/maingui.glade:1774
+msgid "Win32"
+msgstr ""
+
+#: ../maingui.glade:1055 ../maingui.glade:1789
+#: ../VisualSploit/maingui.glade:1055 ../VisualSploit/maingui.glade:1789
+msgid "Linux"
+msgstr ""
+
+#: ../maingui.glade:1072 ../maingui.glade:1805
+#: ../VisualSploit/maingui.glade:1072 ../VisualSploit/maingui.glade:1805
+msgid "Solaris"
+msgstr ""
+
+#: ../maingui.glade:1089 ../maingui.glade:1821
+#: ../VisualSploit/maingui.glade:1089 ../VisualSploit/maingui.glade:1821
+msgid "OSX"
+msgstr ""
+
+#: ../maingui.glade:1125 ../maingui.glade:1467
+#: ../VisualSploit/maingui.glade:1125 ../VisualSploit/maingui.glade:1467
+msgid "Callback IP: "
+msgstr ""
+
+#: ../maingui.glade:1137 ../maingui.glade:2429
+#: ../MiscToolbar/5mtvsPDB/dialog.glade2:113
+#: ../VisualSploit/maingui.glade:1137 ../VisualSploit/maingui.glade:2429
+#: ../VisualSploit/MiscToolbar/5mtvsPDB/dialog.glade2:113
+msgid "127.0.0.1"
+msgstr ""
+
+#: ../maingui.glade:1150 ../maingui.glade:1492
+#: ../VisualSploit/maingui.glade:1150 ../VisualSploit/maingui.glade:1492
+msgid "Callback Port: "
+msgstr ""
+
+#: ../maingui.glade:1189 ../VisualSploit/maingui.glade:1189
+msgid "Select Exploit Type:"
+msgstr ""
+
+#: ../maingui.glade:1200 ../VisualSploit/maingui.glade:1200
+msgid "Remote"
+msgstr ""
+
+#: ../maingui.glade:1216 ../VisualSploit/maingui.glade:1216
+msgid "Client Side"
+msgstr ""
+
+#: ../maingui.glade:1232 ../VisualSploit/maingui.glade:1232
+msgid "MSRPC"
+msgstr ""
+
+#: ../maingui.glade:1299 ../VisualSploit/maingui.glade:1299
+msgid "Copyright © 2002-2006  - All Rights Reserved."
+msgstr ""
+
+#: ../maingui.glade:1300 ../VisualSploit/maingui.glade:1300
+msgid "Immunity Inc."
+msgstr ""
+
+#: ../maingui.glade:1302 ../VisualSploit/maingui.glade:1302
+msgid "Immunity"
+msgstr ""
+
+#: ../maingui.glade:1333 ../VisualSploit/maingui.glade:1333
+msgid "Select file"
+msgstr ""
+
+#: ../maingui.glade:1379 ../VisualSploit/maingui.glade:1379
+msgid "Run Exploit Dialog"
+msgstr ""
+
+#: ../maingui.glade:1397 ../VisualSploit/maingui.glade:1397
+msgid "Host: "
+msgstr ""
+
+#: ../maingui.glade:1422 ../MiscToolbar/5mtvsPDB/dialog.glade2:141
+#: ../VisualSploit/maingui.glade:1422
+#: ../VisualSploit/MiscToolbar/5mtvsPDB/dialog.glade2:141
+msgid "Port: "
+msgstr ""
+
+#: ../maingui.glade:1522 ../VisualSploit/maingui.glade:1522
+msgid "Select Target:"
+msgstr ""
+
+#: ../maingui.glade:1585 ../VisualSploit/maingui.glade:1585
+msgid "VisualSploit Message"
+msgstr ""
+
+#: ../maingui.glade:1596 ../VisualSploit/maingui.glade:1596
+msgid "Info"
+msgstr ""
+
+#: ../maingui.glade:1631 ../VisualSploit/maingui.glade:1631
+msgid "VisualSploit Wizard"
+msgstr ""
+
+#: ../maingui.glade:1645 ../VisualSploit/maingui.glade:1645
+msgid ""
+"Welcome to the VisualSploit Wizard.\n"
+"Please answer the questions in the following steps so you can\n"
+"start working on your sploit as soon as possible\n"
+msgstr ""
+
+#: ../maingui.glade:1708 ../VisualSploit/maingui.glade:1708
+msgid "Name and Architecture"
+msgstr ""
+
+#: ../maingui.glade:1726 ../VisualSploit/maingui.glade:1726
+msgid "New Project name:"
+msgstr ""
+
+#: ../maingui.glade:1761 ../VisualSploit/maingui.glade:1761
+msgid "Select Target Architecture"
+msgstr ""
+
+#: ../maingui.glade:1912 ../VisualSploit/maingui.glade:1912
+msgid "Exploit Documentation"
+msgstr ""
+
+#: ../maingui.glade:1935 ../MiscToolbar/3mtsetComments/dialog.glade2:102
+#: ../VisualSploit/maingui.glade:1935
+#: ../VisualSploit/MiscToolbar/3mtsetComments/dialog.glade2:102
+msgid "Insert your header comments here"
+msgstr ""
+
+#: ../maingui.glade:1954 ../MiscToolbar/3mtsetComments/dialog.glade2:128
+#: ../VisualSploit/maingui.glade:1954
+#: ../VisualSploit/MiscToolbar/3mtsetComments/dialog.glade2:128
+msgid "DOCUMENTATION"
+msgstr ""
+
+#: ../maingui.glade:1967 ../MiscToolbar/3mtsetComments/dialog.glade2:159
+#: ../VisualSploit/maingui.glade:1967
+#: ../VisualSploit/MiscToolbar/3mtsetComments/dialog.glade2:159
+msgid "Name: "
+msgstr ""
+
+#: ../maingui.glade:1996 ../MiscToolbar/3mtsetComments/dialog.glade2:216
+#: ../VisualSploit/maingui.glade:1996
+#: ../VisualSploit/MiscToolbar/3mtsetComments/dialog.glade2:216
+msgid "Description: "
+msgstr ""
+
+#: ../maingui.glade:2025 ../maingui.glade:2219
+#: ../MiscToolbar/3mtsetComments/dialog.glade2:273
+#: ../MiscToolbar/3mtsetComments/dialog.glade2:651
+#: ../VisualSploit/maingui.glade:2025 ../VisualSploit/maingui.glade:2219
+#: ../VisualSploit/MiscToolbar/3mtsetComments/dialog.glade2:273
+#: ../VisualSploit/MiscToolbar/3mtsetComments/dialog.glade2:651
+msgid "Version: "
+msgstr ""
+
+#: ../maingui.glade:2054 ../MiscToolbar/3mtsetComments/dialog.glade2:330
+#: ../VisualSploit/maingui.glade:2054
+#: ../VisualSploit/MiscToolbar/3mtsetComments/dialog.glade2:330
+msgid "Date Public: "
+msgstr ""
+
+#: ../maingui.glade:2083 ../MiscToolbar/3mtsetComments/dialog.glade2:387
+#: ../VisualSploit/maingui.glade:2083
+#: ../VisualSploit/MiscToolbar/3mtsetComments/dialog.glade2:387
+msgid "References: "
+msgstr ""
+
+#: ../maingui.glade:2112 ../MiscToolbar/3mtsetComments/dialog.glade2:444
+#: ../VisualSploit/maingui.glade:2112
+#: ../VisualSploit/MiscToolbar/3mtsetComments/dialog.glade2:444
+msgid "Repeatability: "
+msgstr ""
+
+#: ../maingui.glade:2147 ../MiscToolbar/3mtsetComments/dialog.glade2:506
+#: ../VisualSploit/maingui.glade:2147
+#: ../VisualSploit/MiscToolbar/3mtsetComments/dialog.glade2:506
+msgid "PROPERTIES"
+msgstr ""
+
+#: ../maingui.glade:2161 ../MiscToolbar/3mtsetComments/dialog.glade2:537
+#: ../VisualSploit/maingui.glade:2161
+#: ../VisualSploit/MiscToolbar/3mtsetComments/dialog.glade2:537
+msgid "Type: "
+msgstr ""
+
+#: ../maingui.glade:2190 ../MiscToolbar/3mtsetComments/dialog.glade2:594
+#: ../VisualSploit/maingui.glade:2190
+#: ../VisualSploit/MiscToolbar/3mtsetComments/dialog.glade2:594
+msgid "Site: "
+msgstr ""
+
+#: ../maingui.glade:2321 ../VisualSploit/maingui.glade:2321
+msgid "Start working on your exploit!"
+msgstr ""
+
+#: ../maingui.glade:2337 ../VisualSploit/maingui.glade:2337
+msgid ""
+"Congratulations! Thats all with this wizard, now click Finish and\n"
+"start working with your exploit!."
+msgstr ""
+
+#: ../maingui.glade:2377 ../VisualSploit/maingui.glade:2377
+msgid "Finish"
+msgstr ""
+
+#: ../maingui.glade:2398 ../VisualSploit/maingui.glade:2398
+msgid "Callbacks"
+msgstr ""
+
+#: ../maingui.glade:2416 ../VisualSploit/maingui.glade:2416
+msgid "Callback IP"
+msgstr ""
+
+#: ../maingui.glade:2442 ../VisualSploit/maingui.glade:2442
+msgid "Callback Port"
+msgstr ""
+
+#: ../maingui.glade:2541 ../VisualSploit/maingui.glade:2541
+msgid "Listener Shell"
+msgstr ""
+
+#: ../maingui.glade:2586 ../VisualSploit/maingui.glade:2586
+msgid "execute"
+msgstr ""
+
+#: ../maingui.glade:2633 ../maingui.glade:2675
+#: ../MiscToolbar/7mtsetTest/dialog.glade2:8
+#: ../VisualSploit/maingui.glade:2633 ../VisualSploit/maingui.glade:2675
+#: ../VisualSploit/MiscToolbar/7mtsetTest/dialog.glade2:8
+msgid "Test String"
+msgstr ""
+
+#: ../maingui.glade:2650 ../VisualSploit/maingui.glade:2650
+msgid ""
+"The Test String will be\n"
+"used by the exploit\n"
+"test() function, "
+msgstr ""
+
+#: ../maingui.glade:2699 ../VisualSploit/maingui.glade:2699
+msgid "def test() in exploit"
+msgstr ""
+
+#: ../maingui.glade:2784 ../VisualSploit/maingui.glade:2784
+msgid "Target: "
+msgstr ""
+
+#: ../maingui.glade:2814 ../VisualSploit/maingui.glade:2814
+msgid "Address: "
+msgstr ""
+
+#: ../maingui.glade:2942 ../VisualSploit/maingui.glade:2942
+msgid "Save Project"
+msgstr ""
+
+#: ../maingui.glade:2952 ../VisualSploit/maingui.glade:2952
+msgid "Do you want to save changes?"
+msgstr ""
+
+#: ../maingui.glade:3063 ../VisualSploit/maingui.glade:3063
+msgid "Delete target"
+msgstr ""
+
+#: ../maingui.glade:3071 ../VisualSploit/maingui.glade:3071
+#: ../MiscToolbar/10calculator/10calculator.py:21
+msgid "Calculator"
+msgstr ""
+
+#: ../maingui.glade:3079 ../VisualSploit/maingui.glade:3079
+msgid "Enter an expression below, or a register value (for offset finding)"
+msgstr ""
+
+#: ../maingui.glade:3099 ../VisualSploit/maingui.glade:3099
+msgid "="
+msgstr ""
+
+#: ../maingui.glade:3129 ../VisualSploit/maingui.glade:3129
+msgid "Enter your Bad Bytes here"
+msgstr ""
+
+#: ../ProtocolLogicToolbar/pl4Failed/dialog.glade2:8
+#: ../VisualSploit/ProtocolLogicToolbar/pl4Failed/dialog.glade2:8
+msgid "Failed Message"
+msgstr ""
+
+#: ../ProtocolLogicToolbar/pl4Failed/dialog.glade2:79
+#: ../ProtocolLogicToolbar/pl3Print/dialog.glade2:79
+#: ../VisualSploit/ProtocolLogicToolbar/pl4Failed/dialog.glade2:79
+#: ../VisualSploit/ProtocolLogicToolbar/pl3Print/dialog.glade2:79
+msgid "Message: "
+msgstr ""
+
+#: ../ProtocolLogicToolbar/pl2Else/dialog.glade2:8
+#: ../VisualSploit/ProtocolLogicToolbar/pl2Else/dialog.glade2:8
+msgid "Else Logic"
+msgstr ""
+
+#: ../ProtocolLogicToolbar/pl2Else/dialog.glade2:73
+#: ../VisualSploit/ProtocolLogicToolbar/pl2Else/dialog.glade2:73
+msgid "Place Else?"
+msgstr ""
+
+#: ../ProtocolLogicToolbar/pl5Sleep/dialog.glade2:85
+#: ../VisualSploit/ProtocolLogicToolbar/pl5Sleep/dialog.glade2:85
+msgid "Sleep "
+msgstr ""
+
+#: ../ProtocolLogicToolbar/pl5Sleep/dialog.glade2:129
+#: ../VisualSploit/ProtocolLogicToolbar/pl5Sleep/dialog.glade2:129
+msgid " seconds"
+msgstr ""
+
+#: ../ProtocolLogicToolbar/pl3Print/dialog.glade2:8
+#: ../VisualSploit/ProtocolLogicToolbar/pl3Print/dialog.glade2:8
+msgid "Print Message"
+msgstr ""
+
+#: ../ProtocolLogicToolbar/pl1If/dialog.glade2:8
+#: ../VisualSploit/ProtocolLogicToolbar/pl1If/dialog.glade2:8
+msgid "IF Logic"
+msgstr ""
+
+#: ../ProtocolLogicToolbar/pl1If/dialog.glade2:85
+#: ../VisualSploit/ProtocolLogicToolbar/pl1If/dialog.glade2:85
+msgid "IF  "
+msgstr ""
+
+#: ../MiscToolbar/7mtsetTest/dialog.glade2:84
+#: ../VisualSploit/MiscToolbar/7mtsetTest/dialog.glade2:84
+msgid "Test String:  "
+msgstr ""
+
+#: ../MiscToolbar/7mtsetTest/dialog.glade2:113
+#: ../VisualSploit/MiscToolbar/7mtsetTest/dialog.glade2:113
+msgid "test string"
+msgstr ""
+
+#: ../MiscToolbar/7mtsetTest/dialog.glade2:136
+#: ../VisualSploit/MiscToolbar/7mtsetTest/dialog.glade2:136
+msgid "def test() into exploit"
+msgstr ""
+
+#: ../MiscToolbar/5mtvsPDB/dialog.glade2:8
+#: ../VisualSploit/MiscToolbar/5mtvsPDB/dialog.glade2:8
+msgid "PDB Settings"
+msgstr ""
+
+#: ../MiscToolbar/5mtvsPDB/dialog.glade2:84
+#: ../VisualSploit/MiscToolbar/5mtvsPDB/dialog.glade2:84
+msgid "Hostname: "
+msgstr ""
+
+#: ../MiscToolbar/5mtvsPDB/dialog.glade2:170
+#: ../VisualSploit/MiscToolbar/5mtvsPDB/dialog.glade2:170
+msgid "1234"
+msgstr ""
+
+#: ../MiscToolbar/5mtvsPDB/dialog.glade2:203
+#: ../VisualSploit/MiscToolbar/5mtvsPDB/dialog.glade2:203
+msgid "vsPDB Process List"
+msgstr ""
+
+#: ../MiscToolbar/5mtvsPDB/dialog.glade2:248
+#: ../VisualSploit/MiscToolbar/5mtvsPDB/dialog.glade2:248
+msgid "Attach PS"
+msgstr ""
+
+#: ../MiscToolbar/3mtsetComments/dialog.glade2:8
+#: ../VisualSploit/MiscToolbar/3mtsetComments/dialog.glade2:8
+msgid "Set exploit comments"
+msgstr ""
+
+#: ../VisualSploit/ConnToolbar/2send/dialog.glade2:102
+#: ../ConnToolbar/2send/dialog.glade2:102
+msgid "Send String: "
+msgstr ""
+
+#: ../VisualSploit/ConnToolbar/1connect/dialog.glade2:22
+#: ../VisualSploit/ConnToolbar/7DCEconnect/dialog.glade2:85
+#: ../ConnToolbar/1connect/dialog.glade2:22
+#: ../ConnToolbar/7DCEconnect/dialog.glade2:85
+msgid "Target hostname: "
+msgstr ""
+
+#: ../VisualSploit/ConnToolbar/1connect/dialog.glade2:50
+#: ../VisualSploit/ConnToolbar/1connect/dialog.glade2:99
+#: ../VisualSploit/ConnToolbar/4open/dialog.glade2:142
+#: ../ConnToolbar/1connect/dialog.glade2:50
+#: ../ConnToolbar/1connect/dialog.glade2:99
+#: ../ConnToolbar/4open/dialog.glade2:142
+msgid "Given Arg"
+msgstr ""
+
+#: ../VisualSploit/ConnToolbar/1connect/dialog.glade2:70
+#: ../VisualSploit/ConnToolbar/7DCEconnect/dialog.glade2:142
+#: ../ConnToolbar/1connect/dialog.glade2:70
+#: ../ConnToolbar/7DCEconnect/dialog.glade2:142
+msgid "Target port: "
+msgstr ""
+
+#: ../VisualSploit/ConnToolbar/1connect/dialog.glade2:175
+#: ../ConnToolbar/1connect/dialog.glade2:175
+msgid "Protocol"
+msgstr ""
+
+#: ../VisualSploit/ConnToolbar/1connect/dialog.glade2:181
+#: ../ConnToolbar/1connect/dialog.glade2:181
+msgid ""
+"TCP\n"
+"UDP"
+msgstr ""
+
+#: ../VisualSploit/ConnToolbar/5write/dialog.glade2:8
+#: ../ConnToolbar/5write/dialog.glade2:8
+msgid "write"
+msgstr ""
+
+#: ../VisualSploit/ConnToolbar/5write/dialog.glade2:102
+#: ../ConnToolbar/5write/dialog.glade2:102
+msgid "Write String: "
+msgstr ""
+
+#: ../VisualSploit/ConnToolbar/4open/dialog.glade2:8
+#: ../ConnToolbar/4open/dialog.glade2:8
+msgid "Create File"
+msgstr ""
+
+#: ../VisualSploit/ConnToolbar/4open/dialog.glade2:85
+#: ../ConnToolbar/4open/dialog.glade2:85
+msgid "Filename: "
+msgstr ""
+
+#: ../VisualSploit/ConnToolbar/3recv/dialog.glade2:84
+#: ../ConnToolbar/3recv/dialog.glade2:84
+msgid "recv Size: "
+msgstr ""
+
+#: ../VisualSploit/ConnToolbar/8DCEcall/dialog.glade2:8
+#: ../ConnToolbar/8DCEcall/dialog.glade2:8
+msgid "DCEcall"
+msgstr ""
+
+#: ../VisualSploit/ConnToolbar/8DCEcall/dialog.glade2:119
+#: ../ConnToolbar/8DCEcall/dialog.glade2:119
+msgid "Function Number: "
+msgstr ""
+
+#: ../VisualSploit/ConnToolbar/6read/dialog.glade2:8
+#: ../ConnToolbar/6read/dialog.glade2:8
+msgid "read"
+msgstr ""
+
+#: ../VisualSploit/ConnToolbar/6read/dialog.glade2:85
+#: ../ConnToolbar/6read/dialog.glade2:85
+msgid "read Size: "
+msgstr ""
+
+#: ../VisualSploit/ConnToolbar/7DCEconnect/dialog.glade2:199
+#: ../ConnToolbar/7DCEconnect/dialog.glade2:199
+msgid "Named Pipe: "
+msgstr ""
+
+#: ../VisualSploit/ConnToolbar/7DCEconnect/dialog.glade2:256
+#: ../ConnToolbar/7DCEconnect/dialog.glade2:256
+msgid "UUID: "
+msgstr ""
+
+#: ../VisualSploit/ConnToolbar/7DCEconnect/dialog.glade2:313
+#: ../ConnToolbar/7DCEconnect/dialog.glade2:313
+msgid "UUID Version: "
+msgstr ""
+
+#: ../VisualSploit/ConnToolbar/7DCEconnect/dialog.glade2:371
+#: ../ConnToolbar/7DCEconnect/dialog.glade2:371
+msgid "Username:"
+msgstr ""
+
+#: ../VisualSploit/ConnToolbar/7DCEconnect/dialog.glade2:423
+#: ../ConnToolbar/7DCEconnect/dialog.glade2:423
+msgid "Password:"
+msgstr ""
+
+#: ../main.py:974
+msgid "Program Flow  "
+msgstr ""
+
+#: ../main.py:976
+#, python-format
+msgid "Program Flow %s"
+msgstr ""
+
+#: ../main.py:932
+msgid " Buffer "
+msgstr ""
+
+#: ../main.py:1358
+#, python-format
+msgid " Buffer %s - Size %s bytes"
+msgstr ""
+
+#: ../MiscToolbar/6mtaddzcPacket/6mtaddzcPacket.py:23
+msgid "Add a cPacket"
+msgstr ""
+
+#: ../MiscToolbar/4mtaddxPacket/4mtaddxPacket.py:22
+msgid "Add Buffer"
+msgstr ""
+
+#: ../MiscToolbar/4mtaddxPacket/4mtaddxPacket.py:23
+msgid "Add a Buffer"
+msgstr ""
+
+#: ../MiscToolbar/4mtaddxPacket/4mtaddxPacket.py:39
+msgid "Add a exploit buffer to your data."
+msgstr ""
+
+#: ../MiscToolbar/2mtRunExploit/2mtRunExploit.py:20
+msgid "RunExploit"
+msgstr ""
+
+#: ../MiscToolbar/2mtRunExploit/2mtRunExploit.py:21
+msgid "Run this exploit"
+msgstr ""
+
+#: ../MiscToolbar/2mtRunExploit/2mtRunExploit.py:37
+msgid ""
+"Run Exploit: Executes your exploit. Requires you to set the hostname and\n"
+"port number of the target, and fill in the callback information for the "
+"payload."
+msgstr ""
+
+#: ../MiscToolbar/10calculator/10calculator.py:22
+msgid "Show a useful calculator"
+msgstr ""
+
+#: ../MiscToolbar/10calculator/10calculator.py:38
+msgid "Shows a useful calculator"
+msgstr ""
+
+#: ../MiscToolbar/9mtclearpacket/9mtclearpacket.py:22
+#: ../MiscToolbar/9mtclearpacket/9mtclearpacket.py:23
+msgid "Clear the exploit packet"
+msgstr ""
+
+#: ../MiscToolbar/9mtclearpacket/9mtclearpacket.py:39
+msgid "Removes all buffers from the exploit packet"
+msgstr ""
+
+#: ../MiscToolbar/3mtsetComments/3mtsetComments.py:21
+msgid "Set Comments"
+msgstr ""
+
+#: ../MiscToolbar/3mtsetComments/3mtsetComments.py:22
+msgid "Set exploit documentation"
+msgstr ""
+
+#: ../MiscToolbar/3mtsetComments/3mtsetComments.py:43
+msgid ""
+"Set Comments: this fills in the exploit documentation header and CANVAS\n"
+"exploit properties which are required to run your exploit from CANVAS."
+msgstr ""
+
+#: ../main.py:312
+msgid ""
+"Badchars: Badchars are so-called 'bad characters'.\n"
+"These are characters that are filtered out by the protocol and as such are "
+"not allowed in\n"
+"your exploit data (payload or otherwise). Common badchars are newlines and "
+"nul bytes."
+msgstr ""
+
+#: ../ConnToolbar/1connect/1connect.py:23
+msgid "Add connect() to Program Flow"
+msgstr ""
+
+#: ../ConnToolbar/1connect/1connect.py:74
+msgid ""
+"The connect object allows you to connect to a remote host on a given\n"
+"port. It returns a socket which you can use to send and receive data on.\n"
+"\n"
+"e.g. to connect to a SMTPD on localhost:25 you would set Hostname to \n"
+"'localhost' and Port Number to 25."
+msgstr ""
+
+#: ../ConnToolbar/2send/2send.py:17
+msgid "Just send a string"
+msgstr ""
+
+#: ../ConnToolbar/2send/2send.py:24
+msgid "Add send() to connection packet"
+msgstr ""
+
+#: ../ConnToolbar/2send/2send.py:98 ../ConnToolbar/2send/2send.py:147
+msgid "No Buffer to send yet"
+msgstr ""
+
+#: ../ConnToolbar/2send/2send.py:100 ../ConnToolbar/2send/2send.py:149
+msgid "Select Buffer to send"
+msgstr ""
+
+#: ../ConnToolbar/2send/2send.py:106
+msgid "No FD to use yet"
+msgstr ""
+
+#: ../ConnToolbar/2send/2send.py:108
+msgid "Select FD to use"
+msgstr ""
+
+#: ../ConnToolbar/2send/2send.py:60
+msgid "send(Nothing to send)"
+msgstr ""
+
+#: ../ConnToolbar/2send/2send.py:62
+#, python-format
+msgid "send(Buffer %s)"
+msgstr ""
+
+#: ../ConnToolbar/2send/2send.py:64
+#, python-format
+msgid "send(%s)"
+msgstr ""
+
+#: ../ConnToolbar/2send/2send.py:23
+msgid "Add send()"
+msgstr ""
+
+#: ../ExploitToolbar/8Pad2Length/8Pad2Length.py:65
+#: ../ExploitToolbar/8Pad2Length/8Pad2Length.py:67
+msgid "Select buffer to pad"
+msgstr ""
+
+#: ../ExploitToolbar/8Pad2Length/8Pad2Length.py:100
+#: ../ExploitToolbar/8Pad2Length/8Pad2Length.py:130
+msgid "Buffer to pad?"
+msgstr ""
+
+#: ../ExploitToolbar/8Pad2Length/8Pad2Length.py:106
+#: ../ExploitToolbar/8Pad2Length/8Pad2Length.py:107
+#: ../ExploitToolbar/8Pad2Length/8Pad2Length.py:137
+#: ../ExploitToolbar/8Pad2Length/8Pad2Length.py:138
+#, python-format
+msgid "Buffer %s"
+msgstr ""

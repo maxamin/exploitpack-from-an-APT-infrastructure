@@ -1,0 +1,51 @@
+########################################################################
+#                       *CANVAS Release 6.94*                          #
+########################################################################
+
+*Date*: 19 June 2014
+
+*Version*: 6.94
+
+*Download URL*: https://canvas.immunityinc.com/cgi-bin/getcanvas.py
+
+*Release Notes*:
+
+For this release we bring you two 64bit linux local privilege escalations.
+We updated our MOSDEF engine to work on Linux 64bit and our BuildCallbackTrojan
+module is now able to generate ELF64 callback binaries.
+
+==Changes==
+
+o MOSDEF Linux 64bit
+
+o BuildCallbackTrojan now builds ELF64 callback binaries
+
+o MOSDEF PHP updated for reliability and IDS evasion
+
+o perf_swevent_init updated to work on 64bit
+
+o wp_finger has been updated to work with 3.8.x and 3.9.x
+
+
+==New Modules==
+      
+o recvmmsg (linux 64bit local privilege escalation <= 3.13.2)
+
+o linux_ptrace_setregs (linux 64bit local privilege escalation <= 3.5)
+
+
+*CANVAS Tips 'n' Tricks*:
+
+MOSDEF Linux 64bit is the big change in this release. We are now loading
+our exploit list with 64bit exploits and you can make full use of CANVAS
+on 64bit nodes without requiring the 32bit compat libraries.
+
+*Links*:
+
+Support email       : support@immunityinc.com
+Sales support       : sales@immunityinc.com
+Support/Sales phone : +1 786-220-0600
+
+
+########################################################################
+########################################################################

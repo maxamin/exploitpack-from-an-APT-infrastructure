@@ -1,0 +1,24 @@
+
+h	{
+	font-family:arial;
+	font-size:30px;
+	color:black;
+	font-weight:normal;
+	margin-top:20px;
+	margin-bottom:10px;
+	display:block;
+	}
+	
+	
+	
+b	{
+	font-family:arial;
+	font-size:20px;
+	color:black;
+	margin-top:0px;
+	margin-bottom:10px;
+	}
+	
+br       {
+display:block;
+}

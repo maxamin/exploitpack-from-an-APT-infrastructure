@@ -1,0 +1,28 @@
+'
+' Proprietary D2 Exploitation Pack source code - use only under the license
+' agreement specified in LICENSE.txt in your D2 Exploitation Pack
+'
+' Copyright DSquare Security, LLC, 2007-2009
+'
+
+strComputer = "."
+Set objWMIService = GetObject("winmgmts:" _
+     & "{impersonationLevel=impersonate}!\\" & strComputer & "\root\cimv2" )
+
+Set colDep = objWMIService.ExecQuery("Select * from Win32_OperatingSystem")
+
+For each objDep in colDep
+	WScript.Echo "DEP Available:" & vbTab & vbTab & vbTab & objDep.DataExecutionPrevention_Available
+	WScript.Echo "DEP for 32 Bit Applications:" & vbTab & objDep.DataExecutionPrevention_32BitApplications
+	WScript.Echo "DEP for Drivers:" & vbTab & vbTab & objDep.DataExecutionPrevention_Drivers
+	Select Case objDep.DataExecutionPrevention_SupportPolicy
+		Case 0
+			WScript.Echo "DEP Policy (0): " & vbTab & vbTab & "DEP is turned off for all 32-bit applications on the computer with no exceptions."
+		Case 1
+			WScript.Echo "DEP Policy (1): " & vbTab & vbTab & "DEP is enabled for all 32-bit applications on the computer."
+		Case 2
+			WScript.Echo "DEP Policy (2): " & vbTab & vbTab & "DEP is enabled for a limited number of binaries, the kernel, and all Windows-based services."
+		Case 3
+			WScript.Echo "DEP Policy (3): " & vbTab & vbTab & "DEP is enabled by default for all 32-bit applications."
+	End Select
+Next

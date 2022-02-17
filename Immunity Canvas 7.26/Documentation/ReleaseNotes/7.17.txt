@@ -1,0 +1,60 @@
+########################################################################
+#                       *CANVAS Release 7.17*                          #
+########################################################################
+
+*Date*: 28 February 2018
+
+*Version*: 7.17
+
+*Download URL*: https://canvas.immunityinc.com/getcanvas
+
+*Release Notes*:
+
+In this CANVAS release we are bringing you 7 new modules and bugfixes.
+
+Our new modules include one client-side exploit targeting CVE-2017-11906/CVE-2017-11907,
+a remote exploit for ETERNALBLUE (MS17-010), 3 web modules targeting CouchDB,
+Oracle Forms and WordPress UserPRO plugin, 2 remote modules targeting
+GoAhead and Apache Struts 2.x.
+
+
+==Changes==
+
+o Windows payloads64 fixes
+
+o ARM ShellServer fixes
+
+o UI fixes (modules categorized incorrectly)
+
+o debian_ssh_key fixes (missing download now available)
+
+o JAVA MOSDEF fixes
+
+==New Modules==
+
+o wpad_jscript (CVE-2017-11906 / CVE-2017-11907)
+
+o ETERNALBLUE (MS17-010)
+
+o couchdb_roles (CVE-2017-12635)
+
+o oracle_forms_rce (CVE-2014-4278)
+
+o wpuserpro_rce (CVE-2017-16562)
+
+o goahead_env_rce (CVE-2017-17562)
+
+o struts2_dmi_rce (CVE-2016-3081)
+
+
+*CANVAS Tips 'n' Tricks*:
+
+Our couchdb_roles module can get you access to more than just one CouchDB node.
+If you compromise one system with couchdb_roles in its default
+configuration, pay attention to the system names logged after the line
+"set to one of these names to root more systems". Run the module again
+with the "Node name/address" dialog property set to one of the names to
+get a shell on that member of the CouchDB cluster!
+
+########################################################################
+########################################################################

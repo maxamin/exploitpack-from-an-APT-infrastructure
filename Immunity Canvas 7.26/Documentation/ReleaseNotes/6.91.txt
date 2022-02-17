@@ -1,0 +1,47 @@
+########################################################################
+#                       *CANVAS Release 6.91*                          #
+########################################################################
+
+*Date*: 03 December 2013
+
+*Version*: 6.91
+
+*Download URL*: https://canvas.immunityinc.com/cgi-bin/getcanvas.py
+
+*Release Notes*:
+
+For this release we bring you the latest Windows 7 local privilege
+escalation (CVE_2013_3881), an IE clientside and two utility
+modules for backdoor creation/management on Windows WordPress
+installations.
+
+==Changes==
+
+o sudo_timestamp improved on Linux
+
+==New Modules==
+
+o ie_cdisplaypointer (IE CDisplayPointer Use-After-Free ClientSide)
+
+o CVE_2013_3881 (Win32k NULL Page Privilege Escalation)
+
+o wordpress_backdoor
+
+o wordpress_backdoor_connect
+
+*CANVAS Tips 'n' Tricks*:
+
+Our latest Windows privilege escalation (CVE_2013_3881) will 
+automatically update the privileges on the active MOSDEF node
+to SYSTEM and migrate into lsass. This is an excellent module 
+to use in combination with `windows_sniffer'.
+
+*Links*:
+
+Support email       : support@immunityinc.com
+Sales support       : sales@immunityinc.com
+Support/Sales phone : +1 786-220-0600
+
+
+########################################################################
+########################################################################

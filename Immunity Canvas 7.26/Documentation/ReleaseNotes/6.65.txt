@@ -1,0 +1,49 @@
+########################################################################
+#                       *CANVAS Release 6.65*                          #
+########################################################################
+
+*Date*: 21 December 2010 
+
+*Version*: 6.65 ("XMAS")
+
+*Download URL*: https://canvas.immunityinc.com/cgi-bin/getcanvas.py
+
+*Release Notes*:
+
+Christmas came early this year with our powerful new exploit for 
+android devices (the first of more to come), an exploit for Exim4
+and Opera and, finally, our own module for the Microsoft EnableEUDC 
+privilege escalation  vulnerability.
+
+
+==Changes==
+
+o Updated adobe_flash_button (Windows fix/update)
+
+o Updated adobe_shockwave_rcslchunk (Windows fix/update)
+
+
+==New Modules==
+
+CVE_2010_1807
+CVE_2010_4344
+ms_enableeudc
+opera_css
+
+*Forum*
+Still at https://forum.immunityinc.com/ . Useful for all your many questions!
+
+*CANVAS Tips 'n' Tricks*:
+
+The ms_enableeudc module is still unpatched, and will work nicely against your
+x64 boxes.
+
+*Links*:
+
+Support email      : support@immunityinc.com
+Sales support      : sales@immunityinc.com
+Support/Sales phone: +1 786-220-0600
+
+
+########################################################################
+########################################################################

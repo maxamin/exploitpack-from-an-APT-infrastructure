@@ -1,0 +1,5 @@
+#Fuzzer for fuzzing tftp
+
+#0x04 is Ack: could be a variable here to fuzz other opcodes
+spk.s_int(0x04, "BIGENDIANHALFWORD") #ack
+spk.s_int_variable(0x04, "BIGENDIANHALFWORD") #block number

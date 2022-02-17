@@ -1,0 +1,188 @@
+########################################################################
+#                       *CANVAS Release 6.45*                          #
+########################################################################
+
+*Date*: 07 April 2009
+
+*Version*: 6.45 (CherryChapstick)
+
+*Release Notes*:
+
+The April release of CANVAS has finally arrived and it is another mamoth release. This month much focus has been placed on 
+how users interact with CANVAS and we hope you like the considerable improvements we feel we have made.
+
+A quick summary of this months new features are:
+
+* New CANVAS commandline shell, in the GUI and from the CLI
+* New node management GUI window with improve selection & menuing
+* Session save and restore to save the state of LocalNode
+* New HTTP Proxy tunneling module & HTTP(S) MOSDEF rebuild
+* MOSDEF ActiveX module to return a Win32Node from browsed object
+* Javascript obfuscation on modules using javascript code
+* New PDF exploits & improvements on old one to add exploit to supplied PDF
+* A variety of other tweaks and bug fixes
+
+CANVAS now has a fully integrated commandline shell that allows for session support and remote interaction with the CANVAS 
+engine. You are able to attach and detach from sessions, juggle multiple callbacks, and
+shellshock nodes from the GUI. The commandline communicates to the
+CANVAS engine over XMLRPC, which means you can now attach a commandline
+CANVAS client to a remote GUI engine (e.g. over SSH) and interact with the active nodes in this engine. The CANVAS 
+commandline is now driven by a real interpreter, and allows you to script in Python right from the CANVAS shell!
+
+You can see the new commandline integration in action at:
+
+http://www.immunityinc.com/documentation/cmdlinetab.html
+
+Expect to see more features being added to this over the coming months.
+
+The Node management in the GUI has been completely rewritten to try and provide a more user friendly, intuitive and 
+streamlined experience. Nodes are now selected via left clicks, have a single right click menu to display their knowledge 
+and associated listenrs etc and can be dragged around to group them as users require. There is going to be a tutorial in 
+the forums soon showing all the new features of the node manager, but a quick summary is as follows:
+
+* Left click - select node
+* Ctrl+Left click - multi node select
+* Left click + mouse move - drag node
+* Right click - display nodes knowledge & target options
+* 'Enter' or 'l' - Open a listener window on the node
+* 'Space' or 'b' - Open a file browser window on the node
+* 'Delete' - Close a node (and it's children)
+* '+'/'-'  - Zoom in and out
+
+The winner of the competition to request a feature was announced last month and we're pleased to include that feature this 
+month. Save/Restore on your CANVAS session is now available from the session menu in the GUI and will save the state of the 
+LocalNode including all it's known hosts, their knowledge bases, currently targeted host, interfaces, current callback 
+interface and their associated listeners for each interface. This is an area we expect to continue to add more features to 
+in the coming months.
+
+DNS names are now automatically resolved and placed onto the World Map when hosts are added or discovered.
+
+Finally a small tweak has been added to the search facility allowing you to search over ALL of the modules metadata for a 
+search term rather than confining the search to a particular atrribute (though you still can if you want). Search over ALL 
+is now the deafult search type from the drop down box.
+
+Let us know if you like these new ways to interface with CANVAS or start a discussion thread on the forum at 
+(http://forum.immunityinc.com).
+
+Along with all the UI improvements this month we also have a set of new CANVAS modules for your exploitation needs.
+
+First up is a completely revamped HTTP MOSDEF tunneling solution. CANVAS can now transparently tunnel MOSDEF connections 
+over HTTP/HTTPS using the new http_proxy module. The new implementation reuses existing proxy settings on the target and 
+will function through a wide array of popular web proxy solutions, including SPIKE Proxy. The new HTTP MOSDEF 
+implementation is backwards compatible with existing HTTP MOSDEF clientside exploits and by popular demand you can now 
+shellshock a HTTP MOSDEF connection. Pretty freaking cool.
+
+The Mosdef ActiveX module gives you a fully code signed, sealed, delivered ActiveX control that will install into the 
+remote hosts computer. You deliver it via the httpserver module and it will automatically set the listener up for you.
+As soon as someone visits the HTML page it calls the CheckVersion()
+method of the ActiveX control and gives you a Win32 MOSDEF shell.
+
+If you use the module standalone, you define the listener and HTTP host
+parameters so that you can host the ActiveX on an IIS or Apache server
+of your choice, just make sure the CANVAS_AX.cab file is also on your
+web server. You need to start the associated listener for this to work
+correctly.
+
+To remove the control on the target's machine simply browse to the file
+in file explorer "C:\WINDOWS\Downloaded Program Files\CANVAS_AX.ocx" and
+right-click. Select "Remove" from the drop down menu, and the ActiveX
+will no longer be installed.
+
+PDF exploits have received a fair amount of attention from us this month with the inclusion of three new exploit modules 
+and improvements to previous PDF exploit modules. New modules come in the shape of FoxitLaunchit (CVE-2009-0836), 
+foxit_Action (CVE-2009-0837), adobe_js4 (CVE-2009-0927), adobe_jbig (CVE-2009-0658). All PDF exploits are now able to add 
+their exploits to a user chosen PDF file, or to the blank.pdf supplied with CANVAS as was the previous behavior. 
+Additionally Javascript obfuscation has been added to the CANVAS modules that use javascript to aid in AV evasion.
+
+A new Linux clientside is also included this month for the NetworkManager DBUS permission error (CVE-2009-0365). As far as 
+we are aware, this is the only exploit publicly available for this bug.
+
+The DNSFind module if now threaded and so performs significantly better than previous versions.
+
+So that about wraps it up for this month, we hope you like the new feature we have added - but as always we'd love to hear 
+from you if you have any specific comments for us.
+
+Cheers, 
+Rich.
+
+
+*Changelog*:
+
+* Foxit Reader 3.0 Action overflow (CVE-2009-0837)
+* Stack overflow for Adobe Acrobat <= v8.1.2 and v9.0 (CVE-2009-0927)
+* FoxitLaunchit - Foxit PDF reader permission bypass - arbitrary command execution (CVE-2009-0836)
+* Exploit for the NetworkManager secrets disclosure vulnerability (CVE-2009-0365) on Linux
+* Acrobat JBIG exploit version 2 - now with Acrobat Reader 8.1.3 support.
+* Acrobat Reader JBIG exploit (Acrobat Reader 9.0 with JavaScript Off on XP SP2/3)
+* mosdef_activex module
+* New HTTP(S) MOSDEF and HTTP Proxy support
+* Javascript obfuscation on modules using javascript
+* PDF exploits can now add exploit to user defined PDF file
+* DNSFind now threaded for improved performance
+
+* New commandline shell
+* New node manager GUI tab
+* State save and restore on LocalNode
+
+*Postscript*:
+
+CANVAS Dependencies page:
+http://www.immunityinc.com/canvas-dependencies.shtml
+
+Tutorial: Cookies, Callbacks and Process Murder:
+http://forum.immunityinc.com/index.php?topic=346.0
+
+
+*Upcoming training*:
+
+USA TRAINING
+Location: 1247 Alton Road, Miami Beach, Florida
+
+April 13-17, 2009: Unethical Hacking
+Duration: 5 days
+Cost: $5000 per person
+
+May 11-14, 2009: Heap Overflows
+Duration: 4 days
+Cost: $4000 per person
+
+LONDON, UK TRAINING
+Location: 70 St Mary Axe, London EC3A 8BE
+
+May 11-12, 2009: CANVAS Training
+Duration: Two 8-hour class days
+Trainer: Rich Smith
+Cost: $2000USD per student
+
+
+AUSTRALIA TRAINING
+Location: Canberra, Australia
+
+June 22-26, 2009: Unethical Hacking
+Duration: Five 8-hour class days
+Trainer: David Aitel -- Immunity's Founder, CTO and President
+For more details about the class, please click here.
+
+For more information contact admin@immunityinc.com
+
+
+*CANVAS Tips 'n' Tricks*:
+
+Multiple hosts at the same location appear as a green dot onthe WorldMap right click this dot for a drop down menu of al 
+the hosts at this location. Left click to target a host which will turn the dot red.
+
+
+*Links*:
+
+CANVAS forums      : http://forum.immunityinc.com
+Support email      : support@immunityinc.com
+Sales support      : sales@immunityinc.com
+Support/Sales phone: +1 786-220-0600
+
+CANVAS Release RSS :
+http://forum.immunityinc.com/index.php?type=rss;action=.xml;board=2.0
+
+
+########################################################################
+########################################################################
+

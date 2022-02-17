@@ -1,0 +1,146 @@
+CANVAS Windows Installation guide
+==============================================
+Last updated: July 12 2018
+
+Immunity recommends running CANVAS on a Linux VM (such as Ubuntu or Kali), however
+it is possible to run CANVAS (with some limited functionality) on a Windows system.
+
+CANVAS would be limited by the Windows networking stack and services, and as such
+modules that rely on raw sockets, local termination manipulation, and attacks that impersonate
+an SMB server will not function in a Windows environment. Additionally, the local network
+sniffer will also not be available.
+
+Configuration steps are detailed below and include disabling the built-in firewall
+and antivirus systems along with installing a variety of packages that CANVAS
+depends on in order to function.
+
+These packages are not able to be distributed or integrated with CANVAS for licensing
+reasons so you need to install them seperately prior to being able to run CANVAS for
+the first time. 
+
+Installation of the packages is fairly straight forward and should only take a few
+minutes. Immunity assembled an auto-installer that will perform all the below
+steps automatically and is available at:
+
+https://www.immunityinc.com/downloads/CANVAS_Dependency_Installer.exe
+
+
+Installation steps
+==================
+*!* NOTE: While performing these steps, you may be prompted with "User Account Control" 
+verification screens. Select "Yes" on these dialog boxes. *!*
+*!* NOTE: Do not decompress the CANVAS distribution until Antivirus and Firewall softwares
+are disabled. *!*
+
+1. Disable /ALL/ Antivirus and Firewall software on the system, including 
+   Windows Defender (Virus & threat protection, Firewall & network protection).
+   - On Windows 10, version 1804:
+           1. Navigate to the Windows System Settings App, select "Update & Security" option
+           2. Select "Windows Security"  option on left side of window.
+           3. Select "Open Windows Defender Security Center"
+           4. Select "Virus & threat protection" on left side of window, followed 
+              by "Virus & threat protection settings"
+           5. Disable the following items, by clicking the selector says "On" for each item  
+              - Real-time protection
+              - Cloud-delivered protection
+              - Automatic sample submission
+           6. Select the "Firewall & network protection" option on left side of Window, then select "Domain Network"
+           6. Disable the firewall by clicking the selector says "On" so that it says "Off"
+           7. Select the "Firewall & network protection" option on left side of Window, then select "Private network"
+           8. Disable the firewall by clicking the selector says "On" so that it says "Off"
+           9. Select the "Firewall & network protection" option on left side of Window, then select "Public network"
+           10. Disable the firewall by clicking the selector says "On" so that it says "Off"
+           11. Windows may turn the firewall back on when changes on network interfaces occur, you can disable it via:
+               - Run the command "control firewall.cpl" to display the Windows Defender Firewall settings
+               - Select the "Turn Windows Defender Firewall on or off" option on the left side of window
+               - Verify that the "Turn off Windows Defender Firewall (not recommended)" radio button is selected.
+
+Package Installation Steps
+==========================
+--NOTE--
+Immunity recommends using the CANVAS Dependency Installer to perform steps 2 through 5 below.
+You can skip to step 6 if you are using our dependency installer.
+--NOTE--
+
+2. Install the Python package by double clicking python-2.7.15.msi
+   	 - Available at:
+	   https://www.python.org/ftp/python/2.7.15/python-2.7.15.msi
+	   
+	 - Python is the language CANVAS is written in and the Python runtime and
+           standard libraries need to be installed for CANVAS to run at all.
+
+         - The installation location should be the default (C:\Python27)
+
+3. Install the GTK+ package by double clicking pygtk-all-in-one-2.24.2.win32-py2.7.msi
+   	 - Available at:
+	   https://ftp.gnome.org/pub/GNOME/binaries/win32/pygtk/2.24/pygtk-all-in-one-2.24.2.win32-py2.6.msi
+	   
+	 - GTK+ is the cross platform library CANVAS uses to create its graphical
+           user interface (GUI). This installer package also contains other required
+           GUI dependencies GObject and Cairo.
+
+         - The location of your Python 2.7 install should be autodetected
+ 
+         - Use the default installation options
+
+4. Install the "Microsoft Visual C++ Compiler for Python 2.7" package
+   	 - Available at:
+	   https://www.microsoft.com/en-us/download/details.aspx?id=44266
+	   (you will need to select "Download")
+
+	   - The MSVC++ Compiler for Python 2.7 is required to compile certain
+	   Python packages that CANVAS relies on.
+
+          - Use the default installation options
+	   
+5. Install various required modules:
+         - Open a cmd.exe console and set the current directory to "c:\Python27" by
+           typing command "cd C:\Python27" and hitting enter
+         - Type the following commands, without the double quotes hitting enter
+           "python -m pip install --upgrade pip"
+           "python -m pip install pyopenssl pyzmq pyasn1 pyyaml pycrypto bcrypt pynacl"
+
+6. Decompress the CANVAS installation archive.
+
+7. If you would like to use the World Map IP address to geographical location mapping 
+   feature of the CANVAS GUI then there are some further packages which need to installed.
+
+   7.1 Install the GeoIP com object.
+          - The source code can be downloaded from:
+            https://github.com/maxmind/geoip-api-mscom/tree/master/GeoIpComEx 
+          - Compile the source code 
+
+   7.2 Once downloaded unzip the GeoIP com object and install it by
+       copying GeoIpComEx.dll to the SYSTEM32 folder. After this open 
+       cmd.exe as Administrator, cd into the SYSTEM32 directory and run:
+       'regsvr32 GeoIpComEx.dll'
+
+   7.3 The GeoIP mapping database also needs to be downloaded, this can be found at:
+       http://www.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz
+
+   7.4 Uncompress the downloaded file. If your system does not recognise the .gz extension
+       try using a different decompression program such as 7zip(http://www.7-zip.org/) or 
+       winrar(http://www.rarlab.com/) which understands this filetype.
+
+   7.5 You want to name the decompressed database file 'GeoIPCity.dat' and place it in the
+       CANVAS-<your username here>\gui\WorldMap\ directory.
+
+   7.6 Correct installation of World Map dependencies can be be veried by the absence of a
+       red message box in the top left corner of the World Map tab in the CANVAS GUI.
+
+8. You should have now successfully completed the CANVAS dependencies installation. CANVAS 
+   can now be started via the canvas.bat script in the CANVAS directory.
+
+8. Further information regarding using CANVAS can be found in the Documentation subdirectory
+   or by going to the Immunity forums and looking at the CANVAS Tutorial section located
+   at: https://www.immunityinc.com/products/canvas/tutorials.html
+   
+
+Problems
+=============
+If you have any problems in running CANVAS after following the above steps please email
+support@immunityinc.com with a detailed description of the problems you are seeing and
+attach the CRASH.log file if it is present in the CANVAS directory.
+
+
+Thank you for choosing Immunity CANVAS

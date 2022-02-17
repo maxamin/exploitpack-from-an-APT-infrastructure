@@ -1,0 +1,43 @@
+D2 Exploitation Pack
+=====================
+
+Copyright (c) 2007-2012 DSquare Security, LLC
+
+License information
+--------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Local Tool
+-----------
+
+1. d2sec_ttymitm
+
+d2sec_ttymitm is a generic backdoor that will steal passwords from any program
+asking for them interactively on a terminal. This includes for example su,
+sudo, ssh. It does'nt require root privileges.
+
+To invoke d2sec_ttymitm:
+
+- Place executable in known location; e.g. /var/tmp/d2sec_ttymitm
+
+- Insert alias sudo='/var/tmp/d2sec_ttymitm sudo' at the end of the .bashrc
+  file. d2sec_ttymitm will then invoke his first argument with the next
+  parameters.
+
+- Anything you type (your password for example) will be saved in the log file
+  /var/tmp/.zman2AJ7Az. This file is not encrypted.
+
+
+2. d2sec_ttyhijack
+
+d2sec_ttyhijack is a program that can steal a tty from any process. It require
+root privileges. To invoke d2sec_ttyhijack :
+
+$ sudo ./d2sec_ttyhijack <pid to hijack>
+
+It's a PoC and does'nt display command stdout but you use peekfd :
+
+$ sudo peekfd -8ncd <pid to hijack>

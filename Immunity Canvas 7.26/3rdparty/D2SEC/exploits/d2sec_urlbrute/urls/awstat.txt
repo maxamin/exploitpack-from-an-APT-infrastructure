@@ -1,0 +1,12 @@
+/awstats/awstats.pl
+/awstats.pl
+/cgi/awstats/awstats.pl
+/cgi-bin/awstats/awstats.pl
+/cgi-bin/awstats.pl
+/cgi-bin/stats/awstats.pl
+/scgi/awstats/awstats.pl
+/scgi-bin/awstats/awstats.pl
+/scgi-bin/awstats.pl
+/scgi-bin/stats/awstats.pl
+/scripts/awstats.pl
+/stats/awstats.pl

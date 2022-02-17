@@ -1,0 +1,52 @@
+########################################################################
+#                       *CANVAS Release 6.88*                          #
+########################################################################
+
+*Date*: 10 July 2013
+
+*Version*: 6.88 ("Drei")
+
+*Download URL*: https://canvas.immunityinc.com/cgi-bin/getcanvas.py
+
+*Release Notes*:
+
+For this release we bring you the latest Adobe Acrobat clientside 
+(acrobat_xfa), a local Linux privilege escalation module (fs_pipe_race_to_null), 
+and a remote command execution module for MoinMoin.
+
+We also include updates for ClientD and nginx_chunk, and a reworked
+ip_to_vhosts module with greater functionality.
+
+==Changes==
+
+o ip_to_vhosts reworked for better result coverage.
+
+o ClientD spammer fixes.
+
+o nginx_chunk updated for improved reliability.
+
+==New Modules==
+
+o acrobat_xfa (Acrobat reader <= 10.x clientside exploit)
+
+o fs_pipe_race_to_null (Linux <= 2.6.31 local privilege escalation)
+
+o moinmoin_rce (MoinMoin TWikidraw/AnyWikiDraw Remote Command Execution)
+
+
+*CANVAS Tips 'n' Tricks*:
+
+Remember, you can use HTTP/HTTPS MOSDEF support in ClientD
+to transparently make use of corporate proxies and get MOSDEF working in
+restrictive environments. We make sure that all our clientside modules support
+this, and acrobat_xfa is no exception!
+
+*Links*:
+
+Support email      : support@immunityinc.com
+Sales support      : sales@immunityinc.com
+Support/Sales phone: +1 786-220-0600
+
+
+########################################################################
+########################################################################

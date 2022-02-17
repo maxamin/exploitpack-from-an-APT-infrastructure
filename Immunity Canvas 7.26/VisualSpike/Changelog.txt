@@ -1,0 +1,114 @@
+1.8 July 2, 2008
+
+New Features:
+
+# Better output messages on packet sends
+
+Bug fixes:
+
+# Bug fixes for new projects
+# EIP object bug fixes
+
+1.7 February 1, 2008
+
+# Shellcode engine improvements
+
+1.6 January 4, 2008
+
+New Features:
+
+o FindOffset shellcode and calculator to help you find yourself
+
+Bug Fixes:
+
+o Lots. More than you want to know about, trust us. 
+o Jumps work, uh, better
+o Works with modern CANVAS
+
+1.5 July 2, 2007
+
+New Shellcode:
+
+Bug Fixes:
+
+o EIP object default targets
+o Jump Object (offset wrong when jumping back"
+o Fixed MessageBox shellcode
+
+
+1.4 May 1, 2007
+
+New Shellcode:
+o MessageBox/MessageBeep - for demonstration purposes (and also quite small)
+
+Fixes to work with the new CANVAS engine
+
+
+1.3 February 1, 2007
+
+New Features:
+
+o Connect object can choose between TCP or UDP protocols
+o Generated exploit code is cleaner
+
+Bug Fixes:
+
+o EIP/Integer objects now check integer validity
+o Pad2len now correctly updates the pad size in the container exploit packet
+o Default exploit properties are set if none are in place
+o smallwin32shellcode now correctly handles badchars
+
+1.2 August 2, 2006
+
+New Features:
+
+o Heap Overflow class added:
+  o MSRPC exploit template for CANVAS
+  o Busy Chunk Object
+  o Free Chunk Object
+  o Full DCE lib support for msrpc exploits
+    o DCEconnect object
+    o DCEcall object
+    
+GUI Improvement:
+
+o Buffer packets now are floating inside a scrolled viewport
+
+
+Bug Fixes:
+
+o Connect Object do correctly refresh after changing its value.
+o Fixed Multiple Frameworks bug when creating new projects after one already existed.
+o Generated exploit code is cleaner now, removed extra \t and \n.
+o Target list is correctly generated when exploit is loaded as an additional buffer
+
+
+    
+
+1.1 July 1, 2006
+
+New Features:
+
+o Pad2Len Object added: this object takes in another buffer and
+pads it to a certain length and includes it in another buffer. This
+is essential because our shellcode will be a different size potentially
+every time it is created.
+
+o Objects can be commented now (right click into object -> object comments)
+
+o Clear Packet added: Removes all buffers from exploit packets
+
+o Object Link State added: Objects that are directly linked to another object
+[like jumps or pad2lengths] are automatically refreshed as they or they linking
+object changes [position inside exploit buffer, or values/sizes]
+
+o Multiple targets managing (Right click into an EIP object to access multiple
+targets managing)
+
+
+1.0 May 22, 2006
+
+o Released as product
+o Includes:
+    o Win32 exploit devel support
+    o CANVAS module building

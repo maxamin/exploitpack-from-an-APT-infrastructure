@@ -1,0 +1,32 @@
+reporter
+========
+
+.. automodule:: libs.reports.reporter
+
+.. autoclass:: Event
+    :members:
+
+    .. attribute:: name
+        
+        The name of the event.
+
+    .. attribute:: data
+        
+        All the data related to the event. Can be of any pickleable type.
+
+    .. attribute:: module
+        
+        The name of the object that added the event. Defaults to "canvas".
+
+    .. attribute:: time
+        
+        The time the event was created (in seconds).
+
+    .. attribute:: session_id
+        
+        A unique value for the CANVAS process that created the event.
+
+.. autoclass:: Reporter(session_name=None, data_path=None)
+    :members:
+
+.. autoclass:: VersionError

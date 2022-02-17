@@ -1,0 +1,77 @@
+########################################################################
+#                       *CANVAS Release 7.06*                          #
+########################################################################
+
+*Date*: 29 October 2015
+
+*Version*: 7.06
+
+*Download URL*: https://canvas.immunityinc.com/getcanvas
+
+*Release Notes*:
+
+In this CANVAS release we are bringing you 5 new modules, improvements and bugfixes.
+
+Our new modules include two local privilege escalations targeting MacOS X 10.9/10.10
+(up to 10.10.5) and Windows (MS14-025), an exploit for MS15-102 (arbitrary file deletion),
+a command module for remotely dumping a Windows Registry and a dcsync attack module.
+
+We are also including various bugfixes and improvements to our internal API, in
+addition to supporting MacOS X El Capitan.
+
+
+==Changes==
+
+o MacOS X El Capitan support
+
+o Reimplement sessions functionality through our new logging mechanism
+
+o Fix for module-specific logging information not reported in log window
+
+o Fix sniffer-related modules
+
+o Fix for PowerShell callback not terminating when connection is lost
+
+o Bugfixes in libdcerpc/getremotelanguage
+
+o New drsuapi RPC library
+
+o New winreg RPC library
+
+o Improvements and bugfixes in userenum
+
+o Improvements in cleanup phase
+
+o Exploit modules can now provide a summary over their overall results
+
+
+==New Modules==
+
+o ms15_102
+
+o ms14_025
+
+o osx_rsh_libmalloc
+
+o reg_dump
+
+o dcsync
+
+
+*CANVAS Tips 'n' Tricks*:
+
+You can check any operation done by a specific module by double-clicking on it
+from within the Current Status tab. The log window will now also report
+information from any sub-module that needed to be run as part of the original
+module.
+
+
+*Links*:
+
+Support email       : support@immunityinc.com
+Sales support       : sales@immunityinc.com
+Support/Sales phone : +1 786-220-0600
+
+
+########################################################################
+########################################################################

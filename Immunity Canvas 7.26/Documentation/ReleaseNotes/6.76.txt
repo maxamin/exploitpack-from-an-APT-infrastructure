@@ -1,0 +1,62 @@
+########################################################################
+#                       *CANVAS Release 6.76*                          #
+########################################################################
+
+*Date*: 31 January 2012
+
+*Version*: 6.76 ("Trace")
+
+*Download URL*: https://canvas.immunityinc.com/cgi-bin/getcanvas.py
+
+*Release Notes*:
+
+This release comes with 3 new exploits. MS12-005 will exploit the silently fixed
+MS Office 2007-2010 embedded file execution vulnerability. dotnetnuke_formbypass
+will upload a MOSDEF callback trojan and trigger its execution in vulnerable 
+dot net nuke installations. Finally, firefox_array_reduceright will exploit
+Firefox versions 3.6.17 and below on Windows.
+
+Moreover, we include updates to BuildMOSDEFDLL (more options for the crafted DLLs) and
+2008, Vista and Win7 support for getpasswordhashes, getloggedinhashes and mosdefmigrate
+for both 32 and 64bit systems.
+
+==Changes==
+
+o Improvements to BuildMOSDEFDLL
+
+o Improvements to getpasswordhashes, getloggedinhashes, mosdefmigrate
+  (They now work on Windows 2008, Vista and 7, 32 and 64bit)
+
+o Improvements to 64bit Windows MOSDEF
+
+o Improvements to dnsfind
+
+
+==New Modules==
+
+o ms12_005 (MS Office 2007-2010 Shell Object Packager file extension bypass)
+
+o dotnetnuke_formbypass (ASP.Net Forms Authentication Bypass Vulnerability for DotNetNuke)
+
+o firefox_array_reduceright (Client-Side vulnerability in Mozilla Firefox < 3.6.18)
+
+
+*Forum*
+
+Still at https://forum.immunityinc.com/ . Useful for all your many questions!
+
+*CANVAS Tips 'n' Tricks*:
+
+You can try out our improved mosdefmigrate by running getpasswordhashes/getloggedinhashes
+on your Windows 7 box but you can also use it to migrate MOSDEF into any process that you
+like!
+
+*Links*:
+
+Support email      : support@immunityinc.com
+Sales support      : sales@immunityinc.com
+Support/Sales phone: +1 786-220-0600
+
+
+########################################################################
+########################################################################

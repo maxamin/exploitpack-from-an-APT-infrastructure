@@ -1,0 +1,5 @@
+/m/
+/mobile/
+/wap/
+/pda/
+/ipaq/

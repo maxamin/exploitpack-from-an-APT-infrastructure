@@ -1,0 +1,68 @@
+########################################################################
+#                       *CANVAS Release 6.69*                          #
+########################################################################
+
+*Date*: 16 May 2011
+
+*Version*: 6.69 ("Mirror")
+
+*Download URL*: https://canvas.immunityinc.com/cgi-bin/getcanvas.py
+
+*Release Notes*:
+
+New for this release, CVE_2011_1485 will elevate privileges
+to root by exploiting the polkitd/pkexec vulnerability on Linux.
+
+Moreover, with the CVE_2010_4452 clientside one can exploit Windows
+and Ubuntu Linux hosts that run a vulnerable Java version, exported
+via the Java plugin through a browser.
+
+Finally, we include pcap_sniffer, a remote in-memory packet sniffer
+for Linux and OSX that demonstrates what is possible via our new
+remote resolvers for Unix.
+
+==Changes==
+
+o Remote resolver/library loader for OSX64
+
+o Improvements to remote linux/osx resolvers
+
+o Improvements to WIN64 MOSDEF
+
+o Improvements to AMD64 compiler
+
+o Screengrab now works on OSX
+
+o OSX trojans/MOSDEF callbacks reliability fixes
+
+==New Modules==
+
+o CVE_2011_1485 (Linux pkexec privilege escalation)
+
+o CVE_2010_4452 (JVM sandbox escape clientside)
+
+o pcap_sniffer (Remote in-memory sniffer for Linux/OSX)
+
+*Forum*
+Still at https://forum.immunityinc.com/ . Useful for all your many questions!
+
+*CANVAS Tips 'n' Tricks*:
+
+After gaining root with CVE_2011_1485, one can use pcap_sniffer 
+for remote packet capturing fun! By default, pcap_sniffer will simply capture
+packets from a remote node and save them to a dumpfile in your local
+machine. 
+
+If one enables realtime mode (click wireshark in gui options dialog, 
+-O wireshark:1 in command line) then the packets will be visible in 
+realtime through wireshark.
+
+*Links*:
+
+Support email      : support@immunityinc.com
+Sales support      : sales@immunityinc.com
+Support/Sales phone: +1 786-220-0600
+
+
+########################################################################
+########################################################################

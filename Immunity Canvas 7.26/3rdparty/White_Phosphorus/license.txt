@@ -1,0 +1,3 @@
+White Phosphorus is now part of CANVAS and therefore covered by the CANVAS license.
+
+See LICENSE.txt in the CANVAS root directory.

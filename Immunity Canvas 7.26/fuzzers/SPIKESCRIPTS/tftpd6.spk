@@ -1,0 +1,13 @@
+#Fuzzer for fuzzing tftp
+
+#0x01 is Read Request: could be a variable here to fuzz other opcodes
+spk.s_int(0x01, "BIGENDIANHALFWORD")
+spk.s_string_variable("Hello.txt") #filename
+spk.s_binary("00")
+spk.s_string_variable("octet") #mode (netascii/octet/etc)
+spk.s_binary("00")
+spk.s_string_variable("blocksize")
+spk.s_binary("00")
+spk.s_string_variable("512")
+spk.s_binary("00")
+

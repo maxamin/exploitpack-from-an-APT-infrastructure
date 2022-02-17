@@ -1,0 +1,14 @@
+#imap fuzzer - first used on Mercur Imap SP4 
+#fuzzers/spike.py -s imap_ntlm.spk -t 192.168.24.128 -p 143 -L
+
+spk.s_string("0 AUTHENTICATE NTLM\r\n")
+#request
+spk.s_string(base64.b64encode("NTLMSSP"+"A"*100)+"\r\n")
+spk2=spike()
+spk2.link(spk)
+parse_spk(spk2, "NTLMSSP.spk")
+#respond to challenge here
+spk.s_string(spk2.get("base64"))
+spk.s_string("\r\n")
+
+

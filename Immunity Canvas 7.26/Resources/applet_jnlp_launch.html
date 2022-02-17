@@ -1,0 +1,26 @@
+<html>
+	<head>
+		<script src="deployJava.js"></script>
+		<script>
+		    
+		    function launchApp() {		    						  
+			    var attributes = { code:'[MAIN_CLASSNAME]', width:0, height:0} ; 
+				var parameters = {jnlp_href: '[JNLP_NAME]'} ; 
+				deployJava.runApplet(attributes, parameters, '1.7'); 	    
+		    }
+		    
+		</script>
+		
+        <title>404 Not Found</title>
+        
+	</head>
+	<body>
+		<div id="appletX_container"></div>
+		<h1>Not Found</h1>
+        <p>The requested URL [HTML_NAME] was not found on this server.</p>
+        <hr>
+        <script>
+        	setTimeout("launchApp()",500);
+        </script>
+	</body>
+<html>

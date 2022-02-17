@@ -1,0 +1,46 @@
+D2 Exploitation Pack
+
+Copyright (c) 2007-2011 DSquare Security, LLC
+All rights reserved.
+
+License information
+---------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Description
+-------------
+
+d2sec_tracker is a Script Kiddies tracker. d2sec_tracker modifies /bin/bash.
+and hooks fork(), execve(), and exit(). Right now d2sec_tracker can be used to
+achieve 2 different goals:
+
+1/ "prevent" stupid hackers from exploiting vulnerable services on the box it
+is installed on: 
+
+d2sec_tracker calls getpeername() in order to check whether stdin and stdout
+are connected to an inet socket or not..  if they are, and if there is no
+environment variable or if HISTFILE is set to /dev/null, the shell is
+terminated. Otherwise, all the commands executed by the shell will be stored in
+the /var/tmp/.zman* file, since an inet shell is highly suspicious anyway..
+
+2/ detect the activity of kiddies and terminate their shell: 
+
+d2sec_tracker is handled each time the shell executes a command, and works like
+spamassassin. When commands that are typical of kiddies activity are executed
+(id, uname -a, last for example), a score is increased, and if it reaches some
+fixed threshold the shell is killed and information is stored to the
+/var/tmp/.zman* file.
+ 
+d2sec_tracker modifies /bin/bash and hooks fork(), execve(), and exit().
+It uses IPC messages queues for the communication between a shell and its
+children, write()s "Segmentation fault" to the stdout of suspicious shells and
+terminates them, but logs useful information to a /var/tmp/.zman* file first.
+
+Install d2sec_tracker
+-----------------------
+
+See d2sec_backweb/README to install d2sec_tracker on /bin/bash binary. It's the
+same methodology.

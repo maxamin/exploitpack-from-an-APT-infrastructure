@@ -1,0 +1,25 @@
+#This is just a dummy script, ##modname and ##backname get replaced
+#! /bin/sh
+### BEGIN INIT INFO
+### END INIT INFO
+
+PATH=/usr/sbin:/usr/bin:/sbin:/bin
+
+. /lib/lsb/init-functions
+
+case "$1" in
+    start)
+	/sbin/insmod -f "/lib/modules/##modname" >/dev/null 2>&1
+	/bin/##backname &	
+	;;
+    restart|reload|force-reload)
+	echo "Error: argument '$1' not supported" >&2
+	exit 3
+	;;
+    stop)
+	;;
+    *)
+	echo "Usage: $0 start|stop" >&2
+	exit 3
+	;;
+esac

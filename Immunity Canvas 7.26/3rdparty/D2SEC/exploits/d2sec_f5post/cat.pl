@@ -1,0 +1,12 @@
+#!/usr/bin/perl
+
+open(DAT, $ARGV[0]) || die("Could not open file", $ARGV[0], "\n");
+@raw_data=<DAT>;
+close(DAT);
+
+foreach $line (@raw_data)
+{
+ print $line;
+}
+
+print;

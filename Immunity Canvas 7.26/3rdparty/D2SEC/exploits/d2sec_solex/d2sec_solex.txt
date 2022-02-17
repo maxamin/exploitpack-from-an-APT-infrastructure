@@ -1,0 +1,9 @@
+108528:00:17:5.8:sparc:Solaris priocntl() System Call Local Root Vulnerability:d2sec:d2sec_priocntl:1
+112233:00:03:5.9:sparc:Solaris priocntl() System Call Local Root Vulnerability:d2sec:d2sec_priocntl:0
+106950:14:22:5.7:sparc:Solaris LD_PRELOAD debug edition:canvas:solaris_LD_PRELOAD:1
+109147:07:24:5.8:sparc:Solaris LD_PRELOAD debug edition:canvas:solaris_LD_PRELOAD:1
+112963:00:09:5.9:sparc:Solaris LD_PRELOAD debug edition:canvas:solaris_LD_PRELOAD:1
+112963:00:21:5.9:sparc:Solaris Runtime Linker LD_AUDIT Privilege Escalation Vulnerability:d2sec:d2sec_ldaudit:1
+117461:00:03:5.10:sparc:Solaris Runtime Linker LD_AUDIT Privilege Escalation Vulnerability:d2sec:d2sec_ldaudit:0
+107115:00:00:5.7:sparc:Solaris netpr Buffer Overflow Vulnerability:d2sec:d2sec_netpr:0
+109320:00:00:5.8:sparc:Solaris netpr Buffer Overflow Vulnerability:d2sec:d2sec_netpr:1

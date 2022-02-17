@@ -1,0 +1,318 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Immunity CANVAS Users Manual &mdash; Immunity CANVAS 1 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="Immunity CANVAS 1 documentation" href="#"/>
+        <link rel="next" title="CANVAS EULA" href="license.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="#" class="icon icon-home"> Immunity CANVAS
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="license.html">CANVAS EULA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installing CANVAS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="terminology.html">Terminology</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_intro.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_basics.html">CANVAS Basic Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basics_win_remote.html">Exploiting Windows Remotely</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basics_win_local.html">Exploiting Windows Locally (Privilege Escalation)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basics_clientside.html">Exploiting Client-Side Vulnerablities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="post_exploitation.html">Post-Exploitation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_tips.html">Canvas Tips and Tricks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_videos.html">Canvas Video Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_advanced.html">CANVAS Advanced Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_strategic.html">CANVAS Strategic</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="#">Immunity CANVAS</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="#">Docs</a> &raquo;</li>
+      
+    <li>Immunity CANVAS Users Manual</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/index.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="immunity-canvas-users-manual">
+<h1>Immunity CANVAS Users Manual<a class="headerlink" href="#immunity-canvas-users-manual" title="Permalink to this headline">¶</a></h1>
+<p>Welcome to the Immunity CANVAS users manual. This document will walk you through the steps
+of installing and using the product, covering both basic and advanced usages of the product.</p>
+<div class="section" id="obtaining-canvas">
+<h2>Obtaining CANVAS<a class="headerlink" href="#obtaining-canvas" title="Permalink to this headline">¶</a></h2>
+<p>If you have purchased a license for Immunity CANVAS and have a valid subscription, you should have
+received an email from us that contains your credentials to the clients login page, where you will be ownloading your copy of CANVAS. By visiting <a class="reference external" href="https://canvas.immunityinc.com/getcanvas">https://canvas.immunityinc.com/getcanvas</a> you will see the license agreement page, which beyou should
+accept before being allowed to download the product. Having your username and password entered, you can also select from the three options for downloading CANVAS based on the platform you are using. One of the options is to download CANVAS as a password protected zip file. This is specially useful if you are downloading the product
+from a corporate network which might control internet traffic for malwares and virus files. Dowloading  CANVAS in the password protected zip form will ensure that your download will not be interrupted by an anti-virus product over the network. If you receive an error message after login about your subscription being expired, please contact <a class="reference external" href="mailto:sales&#37;&#52;&#48;immunityinc&#46;com">sales<span>&#64;</span>immunityinc<span>&#46;</span>com</a> .</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">CANVAS is not an anti-virus friendly product! Most of anti-virus products detect some components of CANVAS as malware. Thus please ensure you have your anti-virus disabled, or excluding the CANVAS installation directory from scanning.</p>
+</div>
+</div>
+</div>
+<div class="section" id="table-of-contents">
+<h1>Table of contents<a class="headerlink" href="#table-of-contents" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="license.html">CANVAS EULA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installing CANVAS</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="install.html#supported-platforms">Supported Platforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#hardware-requirements">Hardware Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#canvas-dependencies">CANVAS dependencies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="install.html#linux">Linux:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="install.html#windows">Windows:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="install.html#osx">OSX:</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="terminology.html">Terminology</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_intro.html">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="canvas_intro.html#canvas-gui">CANVAS GUI</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="canvas_intro.html#selecting-interface-target">Selecting Interface &amp; Target</a></li>
+<li class="toctree-l3"><a class="reference internal" href="canvas_intro.html#change-network-interface">Change Network Interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="canvas_intro.html#add-targets">Add Targets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="canvas_intro.html#activities-and-logs">Activities and Logs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="canvas_intro.html#canvas-modules">CANVAS Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="canvas_intro.html#canvas-command-line">CANVAS Command-line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="canvas_intro.html#canvas-listener">CANVAS Listener</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_basics.html">CANVAS Basic Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basics_win_remote.html">Exploiting Windows Remotely</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="basics_win_remote.html#select-the-target-host">Select The Target Host</a></li>
+<li class="toctree-l2"><a class="reference internal" href="basics_win_remote.html#scan-the-target-host">Scan The Target Host</a></li>
+<li class="toctree-l2"><a class="reference internal" href="basics_win_remote.html#exploit-the-target-host">Exploit The Target Host</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="basics_win_local.html">Exploiting Windows Locally (Privilege Escalation)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basics_clientside.html">Exploiting Client-Side Vulnerablities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="basics_clientside.html#clientd-commandline-mode">ClientD Commandline Mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="basics_clientside.html#autospam-mode">AutoSpam mode:</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="post_exploitation.html">Post-Exploitation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="post_exploitation.html#take-screen-shots">Take Screen shots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="post_exploitation.html#dumping-password-hashes">Dumping Password hashes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="post_exploitation.html#persistent-access">Persistent Access</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="post_exploitation.html#installing-mosdef-service">Installing MOSDEF Service</a></li>
+<li class="toctree-l3"><a class="reference internal" href="post_exploitation.html#installing-mosdef-service-remotely">Installing MOSDEF Service Remotely</a></li>
+<li class="toctree-l3"><a class="reference internal" href="post_exploitation.html#connecting-to-mosdef-service">Connecting to MOSDEF Service</a></li>
+<li class="toctree-l3"><a class="reference internal" href="post_exploitation.html#wmi-persistence">WMI Persistence</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="post_exploitation.html#mosdef-trojans">MOSDEF Trojans</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="post_exploitation.html#creating-mosdef-trojan">Creating MOSDEF Trojan</a></li>
+<li class="toctree-l3"><a class="reference internal" href="post_exploitation.html#dns-callback-trojan">DNS Callback Trojan</a></li>
+<li class="toctree-l3"><a class="reference internal" href="post_exploitation.html#http-downloader-trojan">HTTP Downloader Trojan</a></li>
+<li class="toctree-l3"><a class="reference internal" href="post_exploitation.html#mosdef-dll-trojan">MOSDEF DLL Trojan</a></li>
+<li class="toctree-l3"><a class="reference internal" href="post_exploitation.html#mosdef-powershell-trojan">MOSDEF PowerShell Trojan</a></li>
+<li class="toctree-l3"><a class="reference internal" href="post_exploitation.html#mosdef-war-jsp-trojan">MOSDEF WAR (JSP) Trojan</a></li>
+<li class="toctree-l3"><a class="reference internal" href="post_exploitation.html#compiled-binary-trojans">Compiled Binary Trojans</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_tips.html">Canvas Tips and Tricks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_videos.html">Canvas Video Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_advanced.html">CANVAS Advanced Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="canvas_advanced.html#using-canvas-behind-nat">Using CANVAS Behind NAT</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="canvas_advanced.html#setting-port-forwarding">Setting Port Forwarding</a></li>
+<li class="toctree-l3"><a class="reference internal" href="canvas_advanced.html#creating-virtual-interface">Creating Virtual interface</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="canvas_advanced.html#pivoting">Pivoting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="canvas_advanced.html#automatic-startup-actions">Automatic Startup Actions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="canvas_advanced.html#port-forwarding">Port Forwarding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="canvas_advanced.html#xml-rpc-interface">XML RPC Interface</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_strategic.html">CANVAS Strategic</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="canvas_strategic.html#starting-canvas-strategic">Starting Canvas Strategic</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><span>Index</span></a></li>
+<li><a class="reference internal" href="py-modindex.html"><span>Module Index</span></a></li>
+<li><a class="reference internal" href="search.html"><span>Search Page</span></a></li>
+</ul>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="license.html" class="btn btn-neutral float-right" title="CANVAS EULA" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Immunity Inc..
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

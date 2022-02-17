@@ -1,0 +1,288 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2010
+#
+
+import sys, os, string, re
+import datetime
+
+sys.path.append(".")
+sys.path.append(os.path.join(os.getcwd(), '3rdparty/D2SEC/libs'))
+sys.path.append(os.path.join(os.getcwd(), '3rdparty/D2SEC/libs/ext'))
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+import dns.query
+import dns.resolver
+import dns.zone
+import dns.exception
+from socket import *
+
+import httplib
+import threading, Queue
+
+import discovery.dns2.baidu 
+import discovery.dns2.google
+import discovery.dns2.exalead
+import discovery.dns2.yahoo
+import discovery.dns2.altavista
+import discovery.dns2.netcraft
+import discovery.dns2.bing
+
+# GUI info
+NAME = "d2sec_dnsdiscovery"
+DESCRIPTION = "Passive information gathering about DNS" 
+VERSION="1.1"
+
+DOCUMENTATION = {}
+DOCUMENTATION['VENDOR'] = ''
+DOCUMENTATION["Repeatability"] = 'Infinite'
+DOCUMENTATION['Date public'] = ''
+DOCUMENTATION['References'] = ''
+DOCUMENTATION['Versions Affected'] = ''
+DOCUMENTATION["CERT Advisory"] = ''
+DOCUMENTATION["CVE Name"] = ''
+DOCUMENTATION["CVE Url"] = ''
+
+DOCUMENTATION["Notes"] = """
+This module obtains informations about a domain name:
+
+- obtains informations about a domain name: dns servers and mail servers ip, etc.
+
+- check axfr on dns server
+
+- reads in a list (from a dictionary) and attempts to fetch the A records for
+the host+domain combo.  See Resources/dns.txt or Resources/dns-short.txt for
+dictionary.  Iterate appends 1-20, a-z to host names included in the dictionary
+(this will be slower, but possibly more complete.)
+
+- search A records from search engines (yahoo, google, exalead, baidu, etc.)
+
+You can submit your dictionary and a dns server ip to scan.
+"""
+
+PROPERTY = {}
+PROPERTY["TYPE"]= "Recon"
+PROPERTY["SITE"]=  "Remote"
+PROPERTY["ARCH"]= [ ["All"] ]
+
+CHARS_LIST = "etaonrishdlfcmugypwbvkxjqz-0123456789"
+
+class theexploit(tcpexploit):
+
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.name = NAME
+    self.domain = ''
+    self.dnsip = dns.resolver.get_default_resolver().nameservers #nameserver list
+    self.dicfile = os.path.join(os.getcwd(), 'Resources/dns-short.txt')     # dns name dictionnary
+    self.nbthread = 200
+    self.ns = list()
+    self.engines = {
+      "Yahoo" : discovery.dns2.yahoo.yahoo(),
+      "Altavista" : discovery.dns2.altavista.altavista(),
+      "Google" : discovery.dns2.google.google(),
+      "Exalead" : discovery.dns2.exalead.exalead(),
+      "Baidu" : discovery.dns2.baidu.baidu(),
+      "Netcraft" : discovery.dns2.netcraft.netcraft(),
+      "Bing" : discovery.dns2.bing.bing(),
+    }
+
+  def domaininfo(self):
+    self.log('[D2 LOG] [#] %s domain info' % self.domain)
+    self.log(' [+] IPv4 entries:')
+    try:
+      ips_main = dns.resolver.query(self.domain, "A")
+    except: ips_main = [];
+    try:
+      ips_www = dns.resolver.query('www.%s' % self.domain, 'A')
+    except: ips_www = [];
+    if (len(ips_main)):
+      for ip in ips_main:
+        self.log('  %-16s .%s' % (str(ip), self.domain))
+    if (len(ips_www)) and ips_www != ips_main:
+      for ip in ips_www:
+        self.log('  %-16s www.%s' % (str(ip), self.domain))
+    self.log(' [+] DNS servers:')
+    try:
+        answers = dns.resolver.query(self.domain, 'NS')
+        for rdata in answers:
+            for ip in dns.resolver.query(str(rdata), 'A'):
+                self.ns.append(str(ip))
+                self.log('  %-16s %s' % (str(ip), str(rdata)))
+    except:
+        self.log(' [-]  no NS records')
+    #if (len(self.ns) and dnsip != dns.resolver.get_default_resolver().nameservers):
+    #    dns.resolver.get_default_resolver().nameservers = self.ns
+    self.log(' [+] Mail servers:')
+    try:
+        answers = dns.resolver.query(self.domain, 'MX')
+        for rdata in answers:
+            for ip in dns.resolver.query(rdata.exchange, 'A'):
+                self.log('  %-16s %s' % (str(ip), str(rdata.exchange)))
+    except:
+      self.log(' [-]  no MX records')
+
+    for ip in self.ns:
+        self.log(' [+] Trying AXFR on %s' % ip)
+        try:
+            if (not self.checkaxfr(ip)):
+                self.log('  [+] AXFR succeeded on %s, bruteforce aborted' % ip)
+            else:
+              self.log('  AXFR failed')
+        except dns.exception.Timeout:
+            self.log("  [-] NS %s doesn't respond, timeout" % ip)
+        except:
+            self.log("  [-] NS %s doesn't respond, unreachable" % ip)
+
+  def checkaxfr(self, ip):
+    ret = list()
+    try:
+      w = dns.query.xfr(ip, self.domain, timeout=5)
+      z = dns.zone.from_xfr(w)
+      names = z.nodes.keys()
+      names.sort()
+      for name in names:
+        self.log('  %s' % z[name].to_text(name))
+    except dns.exception.FormError:
+      return 1
+    return 0
+
+  def _lookup(self, name, data, dnsip, wildcard, _lookup_pool):
+    _data_lock = threading.Lock()
+    res = list()
+    try: res.append((dns.resolver.query("%s.%s" % name, "A"), "%s.%s" % name))
+    except: pass;
+    try:
+        res.append((dns.resolver.query("%s-1.%s" % name, "A"), "%s-1.%s" % name))
+        for i in range(2, 20):
+            try: res.append((dns.resolver.query("%s-%d.%s" % (name[0], i, name[1]), "A"),
+                             "%s-%d.%s" % (name[0], i, name[1])))
+            except: pass;
+    except: pass;
+    try:
+        res.append((dns.resolver.query("%s1.%s" % name, "A"), "%s1.%s" % name))
+        for i in range(2, 20):
+            try: res.append((dns.resolver.query("%s%d.%s" % (name[0], i, name[1]), "A"), "%s%d.%s" % (name[0], i, name[1])))
+            except: pass;
+    except: pass;
+    _lookup_pool.release()
+    _data_lock.acquire()
+    try:
+        for ipr in res:
+            for ip in ipr[0]:
+                if (not wildcard or ip != wildcard):
+                    data.append((ip, ipr[1]))
+    finally:
+        _data_lock.release()
+
+  def start_thread(self, threads, name, data, wildcard, _lookup_pool):
+    t = threading.Thread(target=self._lookup,
+                         args=((name, self.domain), data, self.dnsip, wildcard, _lookup_pool))
+    _lookup_pool.acquire()
+    t.start()
+    threads.append(t)
+
+  def bruteforce(self):
+    data = list()
+    threads = list()
+    wildcard = 0
+
+    self.log('[D2 LOG] [#] %s bruteforce dns' % self.domain)
+    try:
+        res = dns.resolver.query("blaatblaatblaat.%s" % self.domain, "A")
+        wildcard = res[0]
+        self.log(" [+] wildcard detected with value '%s'" % wildcard)
+        self.log(" %s *.%s\n" % (wildcard, self.domain))
+    except: pass;
+
+    _lookup_pool = threading.BoundedSemaphore(value=self.nbthread)
+
+    for name in file(self.dicfile):
+        if (not name or name == "" or name[0] == "#"):
+            continue ;
+        name = name.strip()
+        if name:
+          self.start_thread(threads, name, data, wildcard, _lookup_pool)
+        for i in range(0, 9):
+          name = '%s%d' % (name, i)
+          self.start_thread(threads, name, data, wildcard, _lookup_pool)
+
+    for i in range(0, len(CHARS_LIST)):
+        name = "%c" % (CHARS_LIST[i])
+        self.start_thread(threads, name, data, wildcard, _lookup_pool)
+        for j in range(0, len(CHARS_LIST)):
+            name2 = "%s%c" % (name, CHARS_LIST[j])
+            self.start_thread(threads, name2, data, wildcard, _lookup_pool)
+
+    for t in threads:
+        t.join()
+    data.sort(lambda x, y: x[1] > y[1])
+    for info in data:
+        self.log("  %-16s %s" % info)
+
+  def _blaat(self, site, food):
+    while True:
+      data = food.get()
+      if (not type(data) == dict) and data == "d2sec":
+          food.task_done()
+          break ;
+      self.log(" %s - %s" % (data["spider"], data["url"]))
+      food.task_done()
+    return ;
+
+  def worker(self, job, food, spider):
+    job.fetch_site(self.domain)
+    for url in job.get_urls():
+      food.put({"site" : self.domain,
+                "url" : url,
+                "spider" : spider,
+      })
+    return ;
+
+  def searchengine(self):
+    self.log('[D2 LOG] [#] %s spider on search engines' % self.domain)
+    food = Queue.Queue(0)
+    threads = list()
+    newthread = threading.Thread(target=self._blaat, args=(self.domain, food))
+    newthread.start()
+    for spidns in self.engines.keys():
+      t = threading.Thread(target = self.worker,
+                  args=(self.engines[spidns], food, spidns)
+                )
+      threads.append(t)
+
+    for t in threads:
+      t.start()
+    for t in threads:
+      t.join()
+    food.put("d2sec")
+    if newthread.isAlive():
+      newthread.join()
+
+  def run(self):
+    self.domain = self.argsDict.get('domain', self.domain)
+    self.dnsip = self.argsDict.get('dnsip', self.dnsip)
+    self.dicfile = self.argsDict.get('dicfile', self.dicfile)
+    self.nbthread = int(self.argsDict.get('nbthread', self.nbthread))
+    self.setInfo('[D2 LOG] %s attacking %s - running'%(NAME,self.host))
+    self.domaininfo()
+    self.bruteforce()
+    self.searchengine()
+    self.setInfo('[D2 LOG] %s attacking %s - done' % (NAME,self.host))
+    return 1
+
+  def usage(self):
+  	print 'Usage: %s -O domain:<domain name> -O dnsip:<nameserver ip> -O dnsdic:<file dictionnary> -O nbthread:<value>' % (sys.argv[0])
+  	return
+
+if __name__ == '__main__':
+  print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

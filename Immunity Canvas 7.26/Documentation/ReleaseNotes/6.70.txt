@@ -1,0 +1,77 @@
+########################################################################
+#                       *CANVAS Release 6.70*                          #
+########################################################################
+
+*Date*: 30 June 2011
+
+*Version*: 6.70 ("Kingdom")
+
+*Download URL*: https://canvas.immunityinc.com/cgi-bin/getcanvas.py
+
+*Release Notes*:
+
+This release includes the DNS MOSDEF listener backend that will
+allow clientsides to communicate with CANVAS over DNS traffic,
+making them harder to detect and also better able of escaping
+corporate firewalls. The ms11_003 IE7 exploit has been modified
+to work with the new DNS payload.
+
+Moreover, we include new exploits for the DHClient command injection
+and Wireshark DECT dissector vulnerabilities, an exploit for the
+tinyeditor component of vulnerable Joomla installations, qualysguard
+which replaces our qgimport and qgverify modules and, last but not
+least, a backdoor for Mozilla Thunderbird.
+
+==Changes==
+
+o DNS MOSDEF
+
+o ms11_003 updated to work with DNS payload
+
+o Improvements to padding_oracle and aspnet_download
+
+o Improvements to CF_directory_traversal
+
+o Improvements to veritas_decrypt
+
+o Improvements to ms11_032
+
+
+==New Modules==
+
+o CVE_2011_0997
+
+o qualysguard
+
+o thunderbird_backdoor_deployer
+
+o thunderbird_backdoor_manager
+
+o tinymce_joomla
+
+o wireshark_dect
+
+*Forum*
+Still at https://forum.immunityinc.com/ . Useful for all your many questions!
+
+*CANVAS Tips 'n' Tricks*:
+
+After compromising a target, one can run thunderbird_backdoor_deployer which
+will scan all user directories for the presence of Thunderbird profiles
+and install a backdoor. The whole process is automatic and completely 
+effortless!
+
+Once a backdoor has been installed, one can control it remotely via email
+using our thunderbird_backdoor_manager module. Commands and responses
+are steganographically encoded inside PNG attachments, and the emails
+used for transfer automatically marked as SPAM.
+
+*Links*:
+
+Support email      : support@immunityinc.com
+Sales support      : sales@immunityinc.com
+Support/Sales phone: +1 786-220-0600
+
+
+########################################################################
+########################################################################

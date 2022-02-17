@@ -1,0 +1,70 @@
+########################################################################
+#                       *CANVAS Release 6.73*                          #
+########################################################################
+
+*Date*: 26 October 2011
+
+*Version*: 6.73 ("Halloween")
+
+*Download URL*: https://canvas.immunityinc.com/cgi-bin/getcanvas.py
+
+*Release Notes*:
+
+This release comes with a new module (revproxybypass) that detects 
+reverse proxy configuration errors which allow the attacker to access
+internal systems. Moreover, we include an in-memory MOSDEF sniffer
+for Windows that is similar in operation to our pcap_sniffer module and
+a MOSDEF callback deployer that takes advantage of exposed management
+console in JBoss7.
+
+Finally, this release includes the PyELF library and userland execution
+framework .You can download a movie about its operation at:
+http://www.immunitysec.com/webex.shtml
+
+
+==Changes==
+
+o New library + userland exec framework: PyELF
+
+o Improvements and fixes to hcn_beaconlistener
+
+o Improvements and fixes to MassAttack/VulnAssess reports
+
+o Improvements and fixes to timeline reporting
+
+o Fixes to Linux/SMB node listeners
+
+
+==New Modules==
+
+o revproxybypass (Apache mod_rewrite misconfiguration detector)
+
+o win32_sniffer (Windows MOSDEF sniffer)
+
+o jboss7_management_deployer (JBoss7 MOSDEF callback deployer)
+
+
+*Forum*
+
+Still at https://forum.immunityinc.com/ . Useful for all your many questions!
+
+*CANVAS Tips 'n' Tricks*:
+
+After getting SYSTEM on a Windows target (e.g. with ms08_067), one 
+can use win32_sniffer for remote packet capturing fun! 
+By default, win32_sniffer will simply capture packets from 
+the remote node and save them to a dumpfile in your local
+machine. 
+
+If one enables realtime mode then the packets will be visible 
+in realtime through Wireshark.
+
+*Links*:
+
+Support email      : support@immunityinc.com
+Sales support      : sales@immunityinc.com
+Support/Sales phone: +1 786-220-0600
+
+
+########################################################################
+########################################################################

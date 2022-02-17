@@ -1,0 +1,2457 @@
+CHANGELOG FILE FOR D2 EXPLOITATION PACK
+
+version 2.51 August 1, 2020
+------------------------------
+
+canvas_modules - Added:
+- d2sec_vigor: DrayTek Vigor 2960 Remote Command Execution Vulnerability
+- d2sec_pwnrouter:
+  d2sec_dlink_34: D-Link DIR-816L Credentials Disclosure Vulnerability
+  d2sec_edimax_1: Edimax EW-7438RPn-v3 Mini Credentials Disclosure Vulnerability
+
+
+version 2.50 July 1, 2020
+------------------------------
+
+canvas_modules - Added:
+- d2sec_unraid: Unraid 6.8.0 Remote Command Execution Vulnerability
+- d2sec_pwnrouter:
+  d2sec_netgear_10: Netgear Authentication Bypass Vulnerability
+  d2sec_kyocera_1: Kyocera Printer Path Traversal Vulnerability
+
+
+version 2.49 June 1, 2020
+------------------------------
+
+canvas_modules - Added:
+- d2sec_pwnrouter:
+  d2sec_secustation_1: SecuSTATION SC-831 Credentials Disclosure Vulnerability
+  d2sec_qnap_1: QNAP NAS Local File Disclosure Vulnerability
+  d2sec_belkin_4: Belkin N600DB Credentials Disclosure Vulnerability
+
+
+version 2.48 May 1, 2020
+------------------------------
+
+canvas_modules - Added:
+- d2sec_pwnrouter:
+  d2sec_tplink_4: TP-LINK TL-WR849N Authentication Bypass Vulnerability
+  d2sec_onkyo_1: Onkyo TX-NR585 Path Traversal Vulnerability
+  d2sec_huawei_3: Huawei HG630 V2 Authentication Bypass Vulnerability
+
+
+version 2.47 April 1, 2020
+------------------------------
+
+canvas_modules - Added:
+- d2sec_trx_addons: WordPress Plugin ThemeRex Addons User Credentials Disclosure Vulnerability
+- d2sec_pwnrouter:
+  d2sec_lilin_1: Lilin DHD516A/DHD508A/DHD504A/DHD316A/DHD308A/DHD304A/DHD204/DHD204A/DHD208/DHD208A/DHD216/DHD216A Path Traversal Vulnerability
+  d2sec_lilin_2: Lilin DHD516A/DHD508A/DHD504A/DHD316A/DHD308A/DHD304A/DHD204/DHD204A/DHD208/DHD208A/DHD216/DHD216A Credentials Disclosure Vulnerability
+
+
+version 2.46 March 2, 2020
+------------------------------
+
+canvas_modules - Added:
+- d2sec_barco: Barco wePresent Remote Command Execution Vulnerability
+- d2sec_mongoexpress: Mongo Express Remote Code Execution Vulnerability
+- d2sec_pwnrouter:
+  d2sec_symmetricom_1: Symmetricom S100/S200/S250/S300/S350 Path Traversal Vulnerability
+
+
+version 2.45 February 3, 2020
+------------------------------
+
+canvas_modules - Added:
+- d2sec_citrix_gateway: Citrix Gateway Remote Command Execution Vulnerability
+- d2sec_pwnrouter:
+  d2sec_wems_1: WEMS BEMS Backdoor Account Vulnerability
+  d2sec_dlink_33: D-Link DIR-818L/DIR-822/DIR-823/DIR-859/DIR-865L/DIR-868L/DIR-869/DIR-880L/DIR-890L/DIR-885L/DIR-895L Credentials Disclosure Vulnerability
+  d2sec_netgear_9: Netgear MBR1515/MBR1516/DGN2200/DGN2200M/DGND3700/WNR2000v2/WNDR3300/WNDR3400/WNR3500/WNR834Bv2 Authentication Bypass Vulnerability  
+
+
+version 2.44 January 2, 2020
+------------------------------
+
+canvas_modules - Added:
+- d2sec_capam: Broadcom CA Privileged Access Manager Remote Command Execution Vulnerability
+- d2sec_pwnrouter:
+  d2sec_tvt_1: TVT NVMS-1000 Path Traversal Vulnerability
+  d2sec_dlink_32: D-Link DAP-1320 Credentials Disclosure Vulnerability
+  d2sec_optergy_1: Optergy BMS Information Disclosure Vulnerability    
+
+
+version 2.43 December 2, 2019
+------------------------------
+
+canvas_modules - Added:
+- d2sec_pwnrouter:
+  d2sec_gpon_1: GPON OLT ZTE Access Bypass Vulnerability
+  d2sec_dlink_31: D-Link DIR-600M Access Bypass Vulnerability
+  d2sec_skyworth_1: Skyworth CM5100/CM5100-440/CM5100-511/CM5100-GHD00/CM5100.g2 Credentials Disclosure Vulnerability
+  d2sec_netsys_1: NET&SYS MNG2120J/MNG6300 Credentials Disclosure Vulnerability    
+
+
+version 2.42 November 1, 2019
+------------------------------
+
+canvas_modules - Added:
+- d2sec_pwnrouter:
+  d2sec_zte_3: ZTE ZXHN H108N Credentials Disclosure Vulnerability
+  d2sec_comba_1: Comba AC2400 Credentials Disclosure Vulnerability
+  d2sec_mplus_1: MPlus CBC383Z Credentials Disclosure Vulnerability  
+  d2sec_motorola_1: Motorola SBG901/SBG941/SVG1202 Credentials Disclosure Vulnerability
+
+
+version 2.41 October 1, 2019
+------------------------------
+
+canvas_modules - Added:
+- d2sec_vbulletin2: vBulletin 5.x Remote Code Execution Vulnerability
+- d2sec_pwnrouter:
+  d2sec_mitsubishi_1: Mitsubishi smartRTU/INEA ME-RTU Configuration Export Vulnerability
+  d2sec_dlink_29: D-Link DSL-2875AL Credentials Disclosure Vulnerability
+  d2sec_dlink_30: D-Link DSL-2877AL Credentials Disclosure Vulnerability  
+
+
+version 2.40 September 2, 2019
+------------------------------
+
+canvas_modules - Added:
+- d2sec_netscaler3: Citrix SD-WAN Center StorageMgmtController Remote Code Execution Vulnerability 
+- d2sec_pwnrouter:
+  d2sec_amcrest_1: Amcrest IPM-721S Credentials Disclosure Vulnerability
+  d2sec_zoom_4: Zoom 5352 Credentials Disclosure Vulnerability
+  d2sec_netwave_2: Netwave MNG6200 Credentials Disclosure Vulnerability
+
+
+version 2.39 August 1, 2019
+------------------------------
+
+canvas_modules - Added:
+- d2sec_jira: Atlassian Jira Template injection Remote Code Execution Vulnerability 
+- d2sec_pwnrouter:
+  d2sec_teracue_1: Teracue ENC-400 Configuration Disclosure Vulnerability
+  d2sec_ambit_1: Ambit DDW2600/DDW2602/T60C926/U10C019 Credentials Disclosure Vulnerability
+  d2sec_jiuzhou_1: Jiuzhou BCM93383WRG Credentials Disclosure Vulnerability
+
+
+version 2.38 July 1, 2019
+------------------------------
+
+canvas_modules - Added: 
+- d2sec_pwnrouter:
+  d2sec_arris_1: Arris DG950A/DG950S Credentials Disclosure Vulnerability
+  d2sec_teknotel_1: Teknotel CBW700N Credentials Disclosure Vulnerability
+  d2sec_kaonmedia_1: Kaonmedia CG2001-AN22A/CG2001-UDBNA/CG2001-UN2NA Credentials Disclosure Vulnerability
+  d2sec_bnmux_1: Bnmux BCW700J/BCW710J/BCW710J2 Credentials Disclosure Vulnerability
+  d2sec_comtrend_2: Comtrend CM-6200un/CM-6300n Credentials Disclosure Vulnerability
+  d2sec_inovo_1: iNovo IB-8120-W21/B-8120-W21E1 Credentials Disclosure Vulnerability
+  d2sec_castlenet_1: CastleNet CBV38Z4EC/CBV38Z4ECNIT/CBW383G4J/CBW38G4J Credentials Disclosure Vulnerability
+  d2sec_jovision_1: Jovision Camera Credentials Disclosure Vulnerability  
+
+
+version 2.37 June 3, 2019
+------------------------------
+
+canvas_modules - Added: 
+- d2sec_netscaler2: Citrix SD-WAN Center Remote Code Execution Vulnerability
+- d2sec_teltonika: Teltonika Router RUT9XX Remote Command Execution Vulnerability
+- d2sec_teltonika2: Teltonika Router RUT9XX hotspotlogin.cgi Remote Command Execution Vulnerability
+- d2sec_pwnrouter:
+  d2sec_netgear_8: Netgear DGN2200/DGND3700 Credentials Disclosure Vulnerability
+  
+
+version 2.36 May 1, 2019
+------------------------------
+
+canvas_modules - Added: 
+- d2sec_drupalrest: Drupal 8 RESTful Web Services Remote Code Execution Vulnerability
+- d2sec_pwnrouter:
+  d2sec_cisco_5: Cisco RV320 Configuration Export Vulnerability
+  d2sec_dlink_27: D-Link DIR-817LW / DIR-850L / DIR-816L / DIR-868L Information Disclosure Vulnerability
+  d2sec_dlink_28: D-Link DIR-816 A2 Authentication Bypass Vulnerability 
+
+
+version 2.35 April 1, 2019
+------------------------------
+
+canvas_modules - Added: 
+- d2sec_openmrs2: OpenMRS Remote Code Execution Vulnerability
+- d2sec_elfinder: elFinder Remote Code Execution Vulnerability
+- d2sec_pwnrouter:
+  d2sec_technicolor_2: Technicolor Credentials Disclosure Vulnerability
+  d2sec_dlink_26: D-Link DCM-604 Credentials Disclosure Vulnerability    
+
+
+version 2.34 March 1, 2019
+------------------------------
+
+canvas_modules - Added: 
+- d2sec_crestron: Crestron AM-100 Remote Command Execution Vulnerability
+- d2sec_xdebug: Xdebug Remote Code Execution Vulnerability 
+- d2sec_pwnrouter:
+  d2sec_crestron_1: Crestron AM-100 Path Traversal Vulnerability
+  d2sec_cisco_5: Cisco ASA Configuration Export Vulnerability    
+
+
+version 2.33 February 1, 2019
+------------------------------
+
+canvas_modules - Added: 
+- d2sec_thinkphp2: ThinkPHP 5.0.23 Remote Code Execution Vulnerability
+- d2sec_terramaster2: TerraMaster Operating System 3.1.03 Remote Command Execution Vulnerability
+- d2sec_ecshop: ECShop 3.x Remote Command Execution Vulnerability 
+- d2sec_pwnrouter:
+  d2sec_dlink_25: D-Link CLR-M20 Information Disclosure Vulnerability    
+
+
+version 2.32 January 2, 2019
+------------------------------
+
+canvas_modules - Added: 
+- d2sec_thinkphp: ThinkPHP 5.x Remote Code Execution Vulnerability
+- d2sec_pwnrouter:
+  d2sec_zte_2: ZTE ZXHN H168N Credentials Disclosure Vulnerability
+  d2sec_dlink_23: D-Link DCS-825L Sensitive Information Disclosure Vulnerability
+  d2sec_dlink_24: D-Link DSL-2770L Credetendials Disclosure Vulnerability    
+
+
+version 2.31 December 3, 2018
+------------------------------
+
+canvas_modules - Added: 
+- d2sec_jqueryupload: JQuery Upload File 4.0.2 Remote Code Execution Vulnerability
+- d2sec_navigatecms: Navigate CMS 2.8 Remote Code Execution Vulnerability
+- d2sec_asustor: ASUSTOR ADM Remote Code Execution Vulnerability
+- d2sec_pwnrouter:
+  d2sec_zyxel_4: Zyxel VMG1312-B10D Path Traversal Vulnerability   
+
+
+version 2.30 November 1, 2018
+------------------------------
+
+canvas_modules - Added: 
+- d2sec_flir: FLIR AX8 Remote Code Execution Vulnerability
+- d2sec_pluto: Apache Portals Pluto 3.0.0 Remote Code Execution Vulnerability
+- d2sec_pwnrouter:
+  d2sec_flir_1: FLIR AX8 Arbitrary File Disclosure Vulnerability
+  d2sec_axis_1: Axis IP Camera Authorization Bypass Vulnerability 
+
+
+version 2.29 October 1, 2018
+------------------------------
+
+canvas_modules - Added: 
+- d2sec_nuuo2: NUUO NVR Remote Code Execution Vulnerability
+- d2sec_planex: PLANEX CS-QR10 Remote Code Execution Vulnerability
+- d2sec_pwnrouter:
+  d2sec_asustor_1: Asustor NAS Authentication Bypass Vulnerability
+  d2sec_aver_1: AVer NVR PCViewer Path Traversal Vulnerability 
+  
+  
+version 2.28 September 3, 2018
+------------------------------
+
+canvas_modules - Added: 
+- d2sec_openemr: OpenEMR Remote Code Execution Vulnerability
+- d2sec_nuuo: NUUO NVRmini2 / NVRsolo Remote Code Execution Vulnerability
+- d2sec_pwnrouter:
+  d2sec_link_22: D-Link DIR-601 Credentials Disclosure Vulnerability
+  d2sec_lacie_1: LaCie 5Big Network 2 Path Traversal Vulnerability  
+
+
+version 2.27 August 1, 2018
+------------------------------
+
+canvas_modules - Added: 
+- d2sec_wlswsat: Oracle WebLogic WSAT Remote Code Execution Vulnerability
+- d2sec_exchangerp: ManageEngine Exchange Reporter Plus Remote Code Execution Vulnerability
+- d2sec_pwnrouter:
+  d2sec_dahua_1: Dahua DVR Credentials Disclosure Vulnerability
+  d2sec_mikrotik_1: Mikrotik RouterOS Credentials Disclosure Vulnerability  
+
+
+version 2.26 July 2, 2018
+------------------------------
+
+canvas_modules - Added: 
+- d2sec_tmeac: Trend Micro Endpoint Application Control Remote Code Execution Vulnerability
+- d2sec_pwnrouter:
+  d2sec_cisco_3: Cisco SA520W Path Traversal Vulnerability
+  d2sec_cisco_4: Cisco ASA Path Traversal Vulnerability
+  d2sec_teradek_1: Teradek VidiU Information Disclosure  
+
+
+version 2.25 June 1, 2018
+------------------------------
+
+canvas_modules - Added: 
+- d2sec_gpon: GPON Routers HTTP Server Remote Command Execution Vulnerability
+- d2sec_terramaster: TerraMaster Operating System Remote Command Execution Vulnerability
+- d2sec_pwnrouter:
+  d2sec_xiongmai_1: XiongMai uc-httpd Directory Traversal Vulnerability
+  d2sec_tbk_1: TBK DVR Credentials Disclosure Vulnerability
+
+
+version 2.24 May 1, 2018
+------------------------------
+
+canvas_modules - Added: 
+- d2sec_sharecenter: D-Link DNS-320L ShareCenter Remote Command Execution Vulnerability
+- d2sec_drupal7: Drupal 7 Remote Code Execution Vulnerability
+- d2sec_drupal8: Drupal 8 Remote Code Execution Vulnerability
+- d2sec_pwnrouter:
+  d2sec_homematic_1: HomeMatic CCU2 Remote Command Execution Vulnerability
+
+
+version 2.23 April 2, 2018
+------------------------------
+
+canvas_modules - Added: 
+- d2sec_hpimc5: HPE Intelligent Management Center dbman Remote Code Execution Vulnerability
+- d2sec_pwnrouter:
+  d2sec_samsung_1: Samsung DVR Credentials Disclosure Vulnerability
+  d2sec_trendnet_1: TRENDnet TEW-751DR Credentials Disclosure Vulnerability
+  d2sec_starcam_1: StarCam IP Camera Credentials Disclosure Vulnerability 
+
+
+version 2.22 March 1, 2018
+------------------------------
+
+canvas_modules - Added: 
+- d2sec_hpimc3: HPE Intelligent Management Center ictExpertDownload Remote Code Execution Vulnerability
+- d2sec_hpimc4: HPE Intelligent Management Center flexFileUpload Remote Code Execution Vulnerability
+- d2sec_pwnrouter:
+  d2sec_terastation_1: Buffalo Terastation Credentials Disclosure Vulnerability
+  d2sec_cisco_2: Cisco RV132W Credentials Disclosure Vulnerability
+
+
+version 2.21 February 1, 2018
+------------------------------
+
+canvas_modules - Added: 
+- d2sec_webclientprint: WebClientPrint Processor Print Jobs Remote Code Execution Vulnerability
+- d2sec_webclientprint2: WebClientPrint Processor Updates Remote Code Execution Vulnerability
+- d2sec_hpimc2: HPE Intelligent Management Center PLAT Deserialization Remote Code Execution Vulnerability
+- d2sec_pwnrouter:
+  d2sec_vacron_1: Vacron NVR Remote Command Execution
+
+canvas_modules - Updated:
+- d2sec_clientinsider updated with new exploit
+
+
+version 2.20 January 2, 2018
+------------------------------
+
+canvas_modules - Added: 
+- d2sec_alienvault2: AlienVault OSSIM customfmt Remote Code Execution Vulnerability
+- d2sec_netscaler: Citrix NetScaler SD-WAN Remote Code Execution Vulnerability
+- d2sec_cloudbridge: Citrix CloudBridge Remote Code Execution Vulnerability
+- d2sec_pwnrouter:
+  d2sec_dlink_21: D-Link DIR-600/DIR-645/DIR-300 Credentials Disclosure Vulnerability
+
+
+version 2.19 December 1, 2017
+------------------------------
+
+canvas_modules - Added: 
+- d2sec_mobilesecurity: Trend Micro Mobile Security for Enterprise Remote Code Execution Vulnerability
+- d2sec_pwnrouter:
+  d2sec_hikvision_1: Hikvision IP Camera Access Bypass Vulnerability
+  d2sec_geneko_1: Geneko GWG Unauthenticated Path Traversal Vulnerability
+  d2sec_geneko_2: Geneko GWG Information Disclosure Vulnerability
+  
+
+version 2.18 November 1, 2017
+------------------------------
+
+canvas_modules - Added: 
+- d2sec_ddeauto: Microsoft Word DDEAUTO Code Execution Vulnerability
+- d2sec_tmdlp: Trend Micro Data Loss Prevention dlpCrawlerServerInvoker Deserialization Remote Code Execution Vulnerability
+- d2sec_pwnrouter:
+  d2sec_videoiq_1: VideoIQ Camera Local File Disclosure Vulnerability
+  d2sec_vanderbilt_1: Vanderbilt IP-Camera Local File Disclosure Vulnerability
+
+canvas_modules - Updated:
+- d2sec_avds: bug fix 
+
+
+version 2.17 October 2, 2017
+------------------------------
+
+canvas_modules - Added: 
+- d2sec_smg: Symantec Messaging Gateway RestoreAction.performRestore() Remote Code Execution Vulnerability
+- d2sec_officescansrv: Trend Micro OfficeScan Proxy Remote Code Execution Vulnerability
+- d2sec_pwnrouter:
+  d2sec_dlink_20: D-Link DIR-600 Authentication Bypass Vulnerability
+  d2sec_siemens_1: Siemens IP-Camera Credentials Disclosure Vulnerability
+
+canvas_modules - Updated:
+- d2sec_pwnrouter: 
+  -> add exploit reference and default port
+  -> add port selection in GUI 
+
+
+version 2.16 September 1, 2017
+------------------------------
+
+canvas_modules - Added: 
+- d2sec_sra: Dell SonicWALL Secure Remote Access gencsr Remote Code Execution Vulnerability
+- d2sec_sra2: Dell SonicWALL Secure Remote Access viewcert Remote Code Execution Vulnerability
+- d2sec_sra3: Dell SonicWALL Secure Remote Access diagnostics Remote Code Execution Vulnerability
+- d2sec_pwnrouter:
+  d2sec_netwave_1: Netwave IP Camera Information Disclosure Vulnerability 
+  d2sec_brickcom_1: Brickcom IP Camera Information Disclosure Vulnerability
+
+
+version 2.15 August 7, 2017
+------------------------------
+
+canvas_modules - Added: 
+- d2sec_swa4: Sophos Web Appliance Reports Remote Code Execution Vulnerability
+- d2sec_swa5: Sophos Web Appliance IP Blocking Remote Code Execution Vulnerability
+- d2sec_desktopcentral4: ManageEngine Desktop Central 10 FileUploadServlet Remote Code Execution Vulnerability
+- d2sec_pwnrouter:
+  d2sec_datataker_1: DataTaker DT80 Information Disclosure Vulnerability 
+  
+  
+version 2.14 July 5, 2017
+------------------------------
+
+canvas_modules - Added: 
+- d2sec_opmanager2: ManageEngine OpManager Remote Code Execution Vulnerability
+- d2sec_tmiwsva3: Trend Micro InterScan Web Security Virtual Appliance SSHConfig Remote Root Code Execution Vulnerability     
+- d2sec_pwnrouter:
+  d2sec_humax_1: Backup File Download Vulnerability
+  d2sec_cerio_1: Information Disclosure Vulnerability
+
+
+version 2.13 June 5, 2017
+------------------------------
+
+canvas_modules - Added: 
+- d2sec_tmiwsva: Trend Micro InterScan Web Security Virtual Appliance LogSettingHandler Remote Code Execution Vulnerability
+- d2sec_tmiwsva2: Trend Micro InterScan Web Security Virtual Appliance ConfigBackup Remote Code Execution Vulnerability
+- d2sec_pwnrouter:
+  d2sec_thomson_1: Information Disclosure Vulnerability
+  d2sec_thomson_2: Password Disclosure Vulnerability
+
+
+version 2.12 May 3, 2017
+------------------------------
+
+canvas_modules - Added: 
+- d2sec_mapviewer: Oracle Fusion Middleware MapViewer Remote Code Execution Vulnerability
+- d2sec_tmsps: Trend Micro Smart Protection Server get_replacement Remote Code Execution Vulnerability
+- d2sec_pwnrouter:
+  d2sec_huawei_2: Default Credentials Vulnerability
+  d2sec_zte_1: Default Password root Vulnerability
+  d2sec_fortinet_1: OS Backdoor Vulnerability
+
+canvas_modules - Updated:
+- d2sec_httpfingerprint: bug fix
+
+
+version 2.11 April 3, 2017
+------------------------------
+
+canvas_modules - Added: 
+- d2sec_tmsafesync: Trend Micro SafeSync for Enterprise 3.2 check_nfs_server_status Remote Code Execution Vulnerability
+- d2sec_tmsafesync2: Trend Micro SafeSync for Enterprise 3.2 get_replacement Remote Code Execution Vulnerability
+- d2sec_pwnrouter:
+  - d2sec_zyxel_3: Remote Code Execution Vulnerability
+  - d2sec_bhu_1.py: Remote Code Execution Vulnerability
+
+
+version 2.10 March 5, 2017
+------------------------------
+
+canvas_modules - Added: 
+- d2sec_tmcm: Trend Micro Control Manager importFile File Upload Vulnerability
+- d2sec_tmcm2: Trend Micro Control Manager download File Disclosure Vulnerability
+- d2sec_pwnrouter:
+  - d2sec_dlink_19: Remote Code Execution Vulnerability
+  - d2sec_mvpower_1: Remote Code Execution Vulnerability
+
+
+version 2.09 February 5, 2017
+------------------------------
+
+canvas_modules - Added: 
+- d2sec_exponent3: Exponent CMS 2.3.9 Local File Include Vulnerability
+- d2sec_wpvault: WordPress WP Vault Local File Include Vulnerability
+- d2sec_pwnrouter:
+  - d2sec_3com_4: 3Com OfficeConnect Information Disclosure Vulnerability
+  - d2sec_asmax_2: Asmax Remote Code Execution Vulnerability
+
+
+version 2.08 January 2, 2017
+------------------------------
+
+canvas_modules - Added: 
+- d2sec_gms: SonicWALL Global Management System set_time_config Method Remote Code Execution Vulnerability
+- d2sec_symwebgw2: Symantec Web Gateway 5.2.2 Remote Code Execution Vulnerability
+- d2sec_execwrapper:
+  -> Apache CouchDB Service Path Insecure File Permissions Local Privilege Escalation Exploit
+- d2sec_pwnrouter:
+  - d2sec_netgear_7: Command Injection Vulnerability
+  - d2sec_cisco_1: Information Disclosure Vulnerability
+
+
+version 2.07 December 5, 2016
+------------------------------
+
+canvas_modules - Added: 
+- d2sec_swa3: Sophos Web Appliance 4.2.1.3 Remote Code Execution Vulnerability (Web Exploit)
+- d2sec_wpreflexgallery: WordPress ReFlex File Upload Vulnerability (Web Exploit)
+- d2sec_synology_brute: Authentication Synology NAS brute forcer (Tools)
+- d2sec_pwnrouter:
+  - d2sec_dlink_18: Remote File Disclosure Vulnerability Exploit
+  - d2sec_planet_1: Remote File Disclosure Vulnerability Exploit
+  - d2sec_movistar_1: Remote File Disclosure Vulnerability Exploit
+
+
+version 2.06 November 2, 2016
+------------------------------
+
+canvas_modules - Added: 
+- d2sec_avetech: Avetech Remote Command Injection Vulnerability (Web Exploit)
+- d2sec_wptevolution: WordPress Tevolution File Upload Vulnerability (Web Exploit)
+- d2sec_upnp_location: Tool to parse a UPnP location XML (Tool)
+- d2sec_pwnrouter:
+  - d2sec_billion_1: Hardcoded credentials vulnerability Exploit
+
+canvas_modules - Updated:
+- d2sec_upnp_discovery: improvments
+
+
+version 2.05 Oct 4, 2016
+------------------------------
+
+canvas_modules - Added: 
+- d2sec_drupalcoder: Drupal Coder Remote Code Execution Vulnerability (Web Exploit)
+- d2sec_sugarcrm: SugarCRM Remote Code Execution Vulnerability (Web Exploit)
+- d2sec_elasticsearch_getversion: Elasticsearch Version Tool (Recon) 
+
+d2sec_modules - Added:
+- d2sec_git_toolbox:
+  - d2sec_git_exposed: Tool to have the source of a website
+  - d2sec_gitlist_rce: Gitlist <= 0.4.0 RCE Vulnerability
+
+d2sec_modules - Updated:
+- d2sec_git is moved to d2sec_git_toolbox
+
+
+version 2.04 Sept 5, 2016
+------------------------------
+
+canvas_modules - Added: 
+- d2sec_axeditgrid: Schneider Electric SoMachine HVAC AxEditGrid Remote Code Execution Vulnerability (Exploit Windows)
+- d2sec_twiki2: Tiki Wiki CMS Groupware Remote Code Execution Vulnerability (Web Exploit)
+- d2sec_pwnrouter:
+  - d2sec_3com_3: Password disclosure vulnerability Exploit
+- d2sec_execwrapper:
+  -> ArcServe UDP Unquoted Service Path Privilege Escalation Exploit
+
+canvas_modules - Updated:
+- d2sec_clientinsider updated with new exploit
+- d2sec_pwnrouter: 
+    - d2sec_comtrend_1: Comtrend Information Disclosure Vulnerability Improvements
+
+d2sec_modules - Updated:
+- d2sec_gist: improvments and bug fixes
+
+
+version 2.03 August 5, 2016
+------------------------------
+
+canvas_modules - Added: 
+- d2sec_drupalrestws: Drupal RESTful Web Services Remote Code Execution Vulnerability (Web Exploit)
+- d2sec_ips: IPS Community Suite Remote Code Execution Vulnerability (Web Exploit)
+- d2sec_pwnrouter:
+  - d2sec_3com_1: Information disclosure vulnerability Exploit
+  - d2sec_3com_2: Path traversal vulnerability Exploit
+
+
+
+version 2.02 July 4, 2016
+------------------------------
+
+canvas_modules - Added: 
+- d2sec_continuum: Apache Continuum 1.4.2 Remote Command Injection Vulnerability (Web Exploit)
+- d2sec_wpcontactform: WordPress Creative Contact Form File Upload Vulnerability (Web Exploit)
+- d2sec_pwnrouter:
+  - d2sec_2wire_1: Path traversal vulnerability Exploit
+  - d2sec_2wire_2: Gateway authentication bypass vulnerability Exploit
+
+
+version 2.01 June 2, 2016
+---------------------------
+
+canvas_modules - Added: 
+- d2sec_openletters: Open-Letters Remote PHP Code Injection Vulnerability (Web Exploit)
+- d2sec_wpmailchimp: WordPress MailChimp Subscribe Forms Local Remote Code Execution Vulnerability (Web Exploit)
+- d2sec_zimbra: Zimbra iCollaboration Server LFI Vulnerability (Web Exploit)
+- d2sec_pwnrouter:
+  - d2sec_netcommwireless: NetCommWireless Command injection vulnerability Exploit
+- d2sec_spip_enumser: SPIP User enumeration (Tools)
+
+d2sec_modules - Updated:
+- d2sec_psp: minor update
+
+
+version 2.00 May 2, 2016
+---------------------------
+
+canvas_modules - Added: 
+- d2sec_oracleats: Oracle Application Testing Suite Remote Code Execution Vulnerability (Web Exploit)
+- d2sec_wpbrandfolder: WordPress Brandfolder Local File Include Vulnerability (Web Exploit)
+- d2sec_radia: Persistent Systems Radia Client Automation RCE Vulnerability (Windows Exploit)
+- d2sec_execwrapper:
+  -> Panda Endpoint Administration Agent Insecure File Permissions Local Privilege Escalation Exploit
+  -> minor updates
+
+
+
+version 1.99 Apr 4, 2016
+---------------------------
+
+canvas_modules - Added: 
+- d2sec_iocomp: Iocomp Software isAnalogLibrary.ocx ActiveX Control Remote Code Execution Vulnerability (Exploit Windows)
+- d2sec_iocomp2: Iocomp Software iStripChartXControl.ocx ActiveX Control Remote Code Execution Vulnerability (Exploit Windows)
+- d2sec_activemq2: ActiveMQ Remote Code Execution Vulnerability (Web Exploit)
+- d2sec_javatojsp: Convert javaNode.java to a .jsp file (Tools)
+- d2sec_pwnrouter:
+  - d2sec_mediaaccess: MediaAccess TG788vn Path Traversal Vulnerability 
+
+canvas_modules - Updated:
+- d2sec_clientinsider updated with new exploits
+- d2sec_mysqlmosdef: bug fixes
+
+
+version 1.98 March 3, 2016
+---------------------------
+
+canvas_modules - Added: 
+- d2sec_exponent2: Exponent CMS 2.3.7 Remote Code Execution Vulnerability (Web Exploit)
+- d2sec_fluke: Fluke Biomedical Ansur ActiveX Control Code Execution Vulnerability (Exploit Windows)
+- d2sec_glassfish: Glassfish Remote Code Exec with Path Traversal Vulnerability (Web Exploit)
+
+canvas_modules - Updated:
+- d2sec_clientinsider updated with new exploit
+
+d2sec_modules - Added:
+- d2sec_psp: Tool to run Powershell scripts without powershell.exe (Tool Windows)
+- d2sec_phpshell:
+  - d2sec_proc_open.php: proc_open() php webshell
+
+version 1.97 February 4, 2016
+------------------------------
+
+canvas_modules - Added:
+- d2sec_openmrs: OpenMRS Reporting Module 0.9.7 Remote Code Execution Vulnerability (Web Exploit)
+- d2sec_mybb: MyBB 1.8.2 Remote Code Execution Vulnerability (Web Exploit)
+- d2sec_delldrac: DellDRAC Default Credentials Check (Tools)
+- d2sec_dellchassis: Dell Chassis Default Credentials Check (Tools)
+- d2sec_pwnrouter:
+  - d2sec_dlink_17: D-Link DVGN5402SP Path Traversal Vulnerability 
+
+
+version 1.96 January 5, 2016
+------------------------------
+
+canvas_modules - Added:
+- d2sec_desktopcentral3: ManageEngine Desktop Central 9.0.0 FileUploadServlet File Upload Remote Code Execution Vulnerability (Web Exploit)
+- d2sec_f1book: Schneider Electric ProClima F1BookView ActiveX Remote Code Execution Vulnerability (Exploit Windows)
+- d2sec_extracturl: Tool to extract and to test urls from a index webpage (Tools)
+
+canvas_modules - Updated:
+- d2sec_clientinsider updated with new exploit
+
+d2sec_modules - Added:
+- d2sec_mongodb_scraper: Tool to list and to export databases from MongoDB servers (Tools)
+
+
+
+version 1.95 December 3, 2015
+------------------------------
+
+canvas_modules - Added:
+- d2sec_vbulletin: vBulletin 5.1 Remote Code Execution Vulnerability (Web Exploit)
+- d2sec_zencart: Zen Cart 1.5.4 Local File Include Vulnerability (Web Exploit)
+- d2sec_pwnrouter:
+  - d2sec_sagemcom_1: Sagemcom F@st 3864 V2 Information Disclosure Vulnerability 
+
+d2sec_modules - Added:
+- d2sec_malicious_splunk: Tool to add a malicious payload in an installed Splunk application (Tools)
+
+
+version 1.94 November 4, 2015
+------------------------------
+
+canvas_modules - Added:
+- d2sec_solarwindssm: Solarwinds Storage Manager ProcessFileUpload.jsp File Upload Remote Code Execution Vulnerability (Web Exploit) 
+- d2sec_vbseo_2: vBulletin vBSEO 3.6.0 functions_vbseo_hook.php Referer Remote Code Execution Vulnerability (Web Exploit)
+- d2sec_wp_xmlrpcbf: Wordpress XML-RPC Brute Force Amplification Vulnerability (Web Exploit)
+- d2sec_pwnrouter:
+  - d2sec_belkin_3: Belkin N150 Wireles Router Path Traversal Vulnerability 
+
+
+version 1.93 October 3, 2015
+------------------------------
+
+canvas_modules - Added: 
+- d2sec_twiki: TWiki debugenableplugins Remote Code Execution Vulnerability (Web Exploit) 
+- d2sec_vport: Moxa VPort ActiveX SDK PLUS Remote Code Execution Vulnerability (Exploit Windows)
+- d2sec_elasticsearch3: ElasticSearch Path Traversal Vulnerability (Web Exploit)
+- d2sec_kernvuln:
+  - d2sec_ofs: Linux Kernel Overlayfs Local Privilege Escalation Vulnerability
+
+canvas_modules - Updated:
+- d2sec_clientinsider updated with new exploit
+
+
+version 1.92 September 4, 2015
+------------------------------
+
+canvas_modules - Added: 
+- d2sec_mdraw: Schneider Electric ProClima MetaDraw ActiveX Remote Code Execution Vulnerability (Exploit Windows) 
+- d2sec_hpca: HP Persistent Systems Client Automation Remote Command Execution Vulnerability (Exploit Windows)
+
+canvas_modules - Updated:
+- d2sec_clientinsider updated with new exploit
+
+d2sec_modules - Added:
+- d2sec_polycom_bypass: Polycom HDX PSH telnetd service Vulnerability (Exploit)
+- d2sec_tomcat_mgr: Tools to manage a tomcat server (Tools) 
+
+
+version 1.91 August 2, 2015
+------------------------------
+
+canvas_modules - Added:
+- d2sec_avds: D2 AVDS Report Analyzer (Tools) 
+- d2sec_tango: Tango DropBox 3.1.5 ActiveX Buffer Overflow Vulnerability (Exploit Windows)
+- d2sec_sshmaxauthtries_bypass: OpenSSH keyboard-interactive authentication brute force Vulnerability (Exploit)
+- d2sec_pwnrouter:
+  - d2sec_craddlepoint_1: Craddlpoint MBR Local File Inclusion
+
+
+canvas_modules - Updated:
+- d2sec_clientinsider updated with new exploit
+
+
+version 1.90 July 1, 2015
+------------------------------
+
+canvas_modules - Added:
+- d2sec_1clickac: 1 Click Audio Converter ActiveX Buffer Overflow Vulnerability (Exploit Windows)
+- d2sec_wprevslider: WordPress RevSlider File Upload Vulnerability (Web Exploit)
+- d2sec_elasticsearch2: ElasticSearch Path Traversal Vulnerability (Web Exploit)
+- d2sec_pwnrouter:
+  - d2sec_dlink_15: D-Link Remote Code Execution
+  - d2sec_dlink_16: D-Link Information Disclosure
+
+canvas_modules - Updated:
+- d2sec_clientinsider updated with new exploit
+
+version 1.89 June 5, 2015
+------------------------------
+
+canvas_modules - Added: 
+- d2sec_zcm3: Novell ZENworks Configuration Management Arbitrary File Upload Vulnerability (Web Exploit) 
+- d2sec_netcharts2: Visual Mining NetCharts Server Remote Code Execution Vulnerability (Web Exploit)
+- d2sec_pwnrouter:
+  - Model and version Fingerprint 
+  - Misfortune Cookie Vulnerability Scanner
+
+canvas_modules - Updated:
+- d2sec_elasticsearch: minor bugfix
+
+
+version 1.88 May 5, 2015
+------------------------------
+
+canvas_modules - Added:
+- d2sec_nessus6: D2 Nessus 6 Report Analyzer (Tools)
+- d2sec_opos: Motorola Scanner SDK OPOSScanner.ocx ActiveX Buffer Overflow Vulnerability (Exploit Windows)
+- d2sec_pwnrouter:
+  - d2sec_asus_1: Asus Information Disclosure
+  - d2sec_asus_2: Asus AiCloud Unauthenticated File Disclosure
+
+canvas_modules - Updated:
+- d2sec_clientinsider updated with new exploit
+
+d2sec_modules - Added:
+- d2sec_asuscomm: Script to map the IP address for every single router using AiCloud (Tool)
+
+version 1.87 Apr 07, 2015
+------------------------------
+
+canvas_modules - Added: 
+- d2sec_wespsdk: WebGate eDVR Manager WESPMonitor.dll ActiveX Buffer Overflow Vulnerability (Exploit Windows)
+- d2sec_wespsdk2: WebGate Control Center WESPDiscovery.dll ActiveX Buffer Overflow Vulnerability (Exploit Windows)
+- d2sec_elasticsearch: Elasticsearch Remote Code Execution Vulnerability (Web Exploit)
+- d2sec_pwnrouter:
+  - d2sec_sagem_1: Sagem Directory Traversal
+
+canvas_modules - Updated:
+- d2sec_clientinsider updated with new exploits
+
+
+version 1.86 Mar 03, 2015
+------------------------------
+
+canvas_modules - Added: 
+- d2sec_markvision: Lexmark MarkVision Enterprise 2.0 Remote Code Execution Vulnerability (Web Exploit)
+- d2sec_smartviewer: Samsung SmartViewer CNC_Ctrl_STW.dll ActiveX Buffer Overflow Vulnerability (Exploit Windows)
+- d2sec_pwnrouter:
+  - Netgear WNDR Authentication Bypass / Remote Information Disclosure
+
+canvas_modules - Updated:
+- d2sec_clientinsider updated with new exploit
+- d2sec_pwnrouter:
+  - d2sec_netgear_1: Netgear Information Disclosure Improvments
+
+d2sec_modules - Added: 
+- d2sec_gist: Tool to automate the search by keyword on gist.github.com (Tool)
+
+version 1.85 Feb 04, 2015
+------------------------------
+
+canvas_modules - Added: 
+- d2sec_skincrafter: SkinCrafter3 SkinCrafter3_vs2005.dll ActiveX Buffer Overflow Vulnerability (Exploit Windows)
+- d2sec_skincrafter2: SkinCrafter3 SkinCrafter3_vs2008.dll ActiveX Buffer Overflow Vulnerability (Exploit Windows)
+- d2sec_skincrafter3: SkinCrafter3 SkinCrafter3_vs2010.dll ActiveX Buffer Overflow Vulnerability (Exploit Windows)
+- d2sec_pwnrouter:
+  - Pirelli ADSL2/2+ Wireless Router P.DGA4001N Remote Information Disclosure 
+
+canvas_modules - Updated:
+- d2sec_clientinsider updated with new exploits
+
+d2sec_modules - Added: 
+- d2sec_addjavascriptinterface: WebView addJavascriptInterface Remote Code Execution Vulnerability (Android Exploit)
+
+version 1.84 Jan 05, 2015
+------------------------------
+
+canvas_modules - Added: 
+- d2sec_honeywell: Honeywell OPOS Suite HWOPOSScale.ocx Open Method Stack Buffer Overflow Remote Code Execution Vulnerability (Exploit Windows)
+- d2sec_honeywell2: Honeywell OPOS Suite HWOPOSSCANNER.ocx Open Method Stack Buffer Overflow Remote Code Execution Vulnerability (Exploit Windows)
+- d2sec_h323_bf: H323 Bruteforcer Tool
+- d2sec_axis2_dirtrav: Apache Axis2 Directory Traversal Vulnerability (Web Exploit)
+
+
+version 1.83 Dec 03, 2014
+------------------------------
+
+canvas_modules - Added: 
+- d2sec_netcharts: Visual Mining NetCharts Server Remote Code Execution Vulnerability (Web Exploit)
+- d2sec_opmanager: ManageEngine OpManager Remote Code Execution Vulnerability (Web Exploit)
+- d2sec_axis2_discovery: Apache Axis2 Information Gathering (Recon)
+
+canvas_modules - Updated:
+- d2sec_axis2_filedisclo:
+  - d2sec_axis rename by d2sec_axis2_filedisclo
+  - minor improvments and bug fixes
+
+d2sec_modules - Added
+- d2sec_celery_ssh: An asynchronous ssh bruteforcer, using celery redis and hydra (Tools)
+
+d2sec_modules - Updated:
+- d2sec_axis_ws renamed by d2sec_axis2_ws
+
+version 1.82 Nov 05, 2014
+------------------------------
+
+canvas_modules - Added: 
+- d2sec_desktopcentral2: ManageEngine Desktop Central 9.0.0 Arbitrary File Upload Remote Code Execution Vulnerability (Web Exploit)
+- d2sec_eventlog: ManageEngine EventLog Analyzer 9.9 File Upload Remote Code Execution Vulnerability (Web Exploit)
+- d2sec_pwnrouter:
+  - Compal Broadband Networks CH6640 and CH6640E Sensitive Information Disclosure
+
+
+d2sec_modules - Added
+- d2sec_twiddle: Tool to use when the Jboss JMXInvokerServlet invoker is up
+  without authentication
+
+version 1.81 Oct 06, 2014
+------------------------------
+
+canvas_modules - Added: 
+- d2sec_pandora: Pandora FMS 5.0 RC1 Remote Command Injection Vulnerability (Exploit Linux)
+- d2sec_sepm: Symantec Endpoint Protection Manager Remote Command Execution Vulnerability (Exploit Windows)
+- d2sec_pwnrouter:
+  - Alpha Networks ASL-26555 Information Disclosure
+  - Asmax AR 1004g Admin password Disclosure
+  - Belkin G Plus MIMO Router Admin password Disclosure
+
+d2sec_modules - Added
+- d2sec_backsshd: a sshd remote backdoor (Tool Linux)
+
+
+version 1.80 Sept 04, 2014
+------------------------------
+
+canvas_modules - Added: 
+- d2sec_hpdp3: HP Data Protector Backup Client Service EXEC_BAR Remote Command Execution Vulnerability (Exploit Windows)
+- d2sec_tomsawyer: Tom Sawyer GET Extension Factory COM Object Instantiation Memory Corruption Vulnerability (Exploit Windows)
+
+canvas_modules - Updated:
+- d2sec_clientinsider updated with new exploit
+
+d2sec_modules - Added:
+- d2sec_axis_ws: Apache Axis2 backdoor service (Post-intrusion Tool)
+- d2sec_dnsfs: FUSE-based filesystem that uses DNS request to mount a remote directory on a local machine (Tools Linux)
+
+
+version 1.79 July 31, 2014
+------------------------------
+
+canvas_modules - Added:
+- d2sec_desktopcentral: ManageEngine Desktop Central 8.0.0 Arbitrary File Upload Remote Code Execution Vulnerability (Web Exploit)
+- d2sec_hpdp2: HP Data Protector 8.10 Remote Command Execution Vulnerability (Exploit Windows)
+- d2sec_pwnrouter:
+  - D-Link UPnP SOAP OS Remote Command Execution
+
+d2sec_modules - Added:
+- d2sec_httpfs: FUSE-based filesystem that uses HTTP messages to mount a remote directory on a local machine (Tools Linux)
+
+version 1.78 July 2, 2014
+------------------------------
+
+canvas_modules - Added:
+- d2sec_ipolis: Samsung iPOLiS Device Manager XnsSdkDeviceIpInstaller.ocx ActiveX Remote Code Execution Vulnerability (Exploit Windows)
+- d2sec_alienvault: AlienVault OSSIM av-centerd Util.pm Remote Code Execution Vulnerability (Exploit Linux)
+- d2sec_nagios_nrpe: Nagios NRPE Remote Command Exec Vulnerability (Exploit Linux)
+- d2sec_pwnrouter:
+  - D-Link DGL-5500, DIR-855L and DIR-835 Clear Text Password Vulnerability
+  - Huawei E5331 Mobile WiFi Information disclosure Vulnerability
+
+canvas_modules - Updated:
+- d2sec_clientinsider updated with new exploit
+
+version 1.77 June 6, 2014
+------------------------------
+
+canvas_modules - Added:
+- d2sec_aoamp4: AoA MP4 Converter ActiveX Buffer Overflow Vulnerability (Exploit Windows)
+- d2sec_teechart5: Borland Silk Central TeeChart ActiveX Buffer Overflow Vulnerability (Exploit Windows)
+- d2sec_pwnrouter:
+  - D-Link DSP-W215 Remote Command Execution Vulnerability
+  - D-Link DIR-100 Information Disclosure Vulnerability
+  - D-Link DIR-100 Authentication Bypass Vulnerability
+
+canvas_modules - Updated:
+- d2sec_clientinsider updated with new exploits
+
+d2sec_modules - Added:
+- d2sec_jdbpwn: Tool to interact with remote JDWP capable services (Tool All)
+
+version 1.76 May 5, 2014
+------------------------------
+
+canvas_modules - Added:
+- d2sec_bwocxrun: Advantech WebAccess bwocxrun.ocx ActiveX Control Remote Code Execution Vulnerability (Exploit Windows)
+- d2sec_iconics: ICONICS Dialog Wrapper Module ActiveX Buffer Overflow Vulnerability (Exploit Windows)
+- d2sec_webhmi: ICONICS WebHMI GenVersion.dll ActiveX Buffer Overflow Vulnerability (Exploit Windows)
+- d2sec_portfwd: Tool to redirect a TCP connection from a local network to Internet (Post-intrusion)
+- d2sec_pwnrouter:
+  - Netgear N600 Password Disclosure Vulnerability
+
+canvas_modules - Updated:
+- d2sec_clientinsider updated with new exploits
+
+
+version 1.75 Apr 3, 2014
+------------------------------
+
+canvas_modules - Added:
+- d2sec_swa2: Sophos Web Protection Appliance 3.7.8.1 Remote Code Execution Vulnerability (Web Exploit)
+- d2sec_vtigercrm2: vtiger CRM 5.4.0 File Upload Vulnerability (Web Exploit)
+- d2sec_openx_backdoor: OpenX Backdoor Vulnerability (Web Exploit)
+- d2sec_pwnrouter:
+  - Inteno DG301 Command Injection Vulnerability
+
+
+version 1.74 Mar 4, 2014
+------------------------------
+
+canvas_modules - Added:
+- d2sec_sitescope2: HP SiteScope 11.20 issueSiebelCmd Remote Code Execution Vulnerability (Web Exploit)
+- d2sec_hpimc: HP Intelligent Management Center BIMS UploadServlet Remote Code Execution Vulnerability (Web Exploit)
+- d2sec_pwnrouter:
+  - Technicolor Information Disclosure Vulnerability
+- d2sec_kernvuln:
+  - d2sec_recvmmsg: Linux Kernel 'compat_sys_recvmmsg()' Function Remote Memory Corruption Vulnerability
+
+version 1.73 Feb 5, 2014
+------------------------------
+
+canvas_modules - Added:
+- d2sec_lorex: Lorex Edge INetViewX ActiveX Buffer Overflow Vulnerability (Exploit Windows)
+- d2sec_sitescope: HP SiteScope 11.20 runOMAgentCommand Remote Code Execution Vulnerability (Web Exploit)
+- d2sec_struts_devmode: Apache Struts2 Devmode Remote Command Execution Tool (Tool)
+- d2sec_passdisclo: 
+  - Add JBoss EAP Permission Weakness Local Information Disclosure Vulnerability 
+  - minor updates
+- d2sec_pwnrouter:
+  - Nisuta Remote Authentication Bypass Vulnerability
+
+canvas_modules - Updated:
+- d2sec_clientinsider updated with new exploits
+
+
+version 1.72 Jan 2, 2014
+------------------------------
+
+canvas_modules - Added:
+- d2sec_cw3d: ABB RobotStudio Tools CWGraph3D ActiveX Control Remote Code Execution Vulnerability (Exploit Windows)
+- d2sec_solarwinds: SolarWinds Server and Application Monitor 6.0 Pepco32c.ocx ActiveX Buffer Overflow Vulnerability (Exploit Windows)
+- d2sec_apache_roller: Apache Roller OGNL Injection Vulnerability (Web Exploit)
+- d2sec_spip_rce_2: Spip Remote Command Execution Vulnerability (Web exploit)
+
+canvas_modules - Updated:
+- d2sec_clientinsider updated with new exploits
+- d2sec_spip_rce: minor update
+
+
+version 1.71 Dec 4, 2013
+------------------------------
+
+canvas_modules - Added:
+- d2sec_kingview: KingView 6.53 ActiveX Control Remote Code Execution Vulnerability (Exploit Windows)
+- d2sec_lrweb2: HP LoadRunner lrFileIOService ActiveX WriteFileBinary Remote Code Execution Vulnerability (Exploit Windows)
+- d2sec_solidedge: Siemens Solid Edge ST4/ST5 ActiveX Control Remote Code Execution Vulnerability (Exploit Windows)
+- d2sec_mysqlmosdef: Run a MOSDEF Trojan via a MySQL session (Linux Tools)
+- d2sec_pwnrouter:
+  - D-LINK Unauthenticated remote access Vulnerability
+
+canvas_modules - Updated:
+- d2sec_clientinsider updated with new exploits
+
+version 1.70 Nov 4, 2013
+------------------------------
+
+canvas_modules - Added:
+- d2sec_hppcm: HP PCM+ SNAC Registration Server UpdateCertificatesServlet Remote Code Execution Vulnerability (Web Exploit)
+- d2sec_hppcm2: HP PCM+ SNAC Registration Server UpdateDomainControllerServlet Remote Code Execution Vulnerability (Web Exploit)
+- d2sec_indusoft: Indusoft Thin Client 7.1 ActiveX Buffer Overflow Vulnerability (Exploit Windows)
+- d2sec_as400_ftpd_default_accounts: AS400 Ftpd Default Accounts Bruteforcer (Tool)
+- d2sec_pwnrouter:
+  - Backdoor D-LINK Vulnerability
+  - Pirelli Discus Password Disclosure Vulnerability
+  - GUI improvments  
+
+canvas_modules - Updated:
+- d2sec_clientinsider updated with new exploit
+- d2sec_passdisclo updated with CVE-2013-0337 - Nginx log files before 1.3.14 
+
+version 1.69 Oct 7, 2013
+------------------------------
+
+canvas_modules - Added:
+- d2sec_pineapp: PineApp Mail-SeCure Remote Code Execution Vulnerability (Web Exploit)
+- d2sec_swa: Sophos Web Protection Appliance 3.8.1 Remote Code Execution Vulnerability (Web Exploit)
+- d2sec_pwnrouter:
+  - Zoom ADSL Directory Traversal Vulnerability
+  - Zoom ADSL Information Disclosure Vulnerability
+  - Zoom ADSL Plain text storage of ISP/PPPoe usernames/passwords Vulnerability
+  - Snmpwalk client 
+  - minor improvements
+
+canvas_modules - Updated:
+- d2sec_pwnrouter: 
+    - ZYXEL Prestige 660H-61 Information Disclosure Vulnerability Improvements
+
+
+version 1.68 Sep 1, 2013
+------------------------------
+
+canvas_modules - Added:
+- d2sec_lrweb: HP LoadRunner lrFileIOService ActiveX WriteFileString Remote Code Execution Vulnerability (Exploit Windows)
+- d2sec_micwa: HP LoadRunner micWebAjax.dll ActiveX NotifyEvent Buffer Overflow Vulnerability (Exploit Windows)
+- d2sec_pwnrouter:
+  - Western Digital My Net Series Information Disclosure Vulnerability
+  - Sitecom N300/N600 Undocumented Telnet service and hard-coded credentials Vulnerability
+  - Netgear Prosafe Information Disclosure Vulnerability
+
+canvas_modules - Updated:
+- d2sec_clientinsider updated with new exploits
+- d2sec_defaultpass updated with SAP BusinessObjects Axis2
+
+d2sec_modules - Added:
+- d2sec_vmware: VMWare Setuid vmware-mount Unsafe popen(3) Vulnerability (Linux Exploit)
+
+version 1.67 Aug 1, 2013
+------------------------------
+
+canvas_modules - Added: 
+- d2sec_cwui: ABB DataManager National Instruments cwui.ocx Remote Code Execution Vulnerability (Exploit Windows)
+- d2sec_hpsmh: HP System Management Homepage Command Injection Vulnerability (Exploit Windows)
+- d2sec_struts4: Apache Struts2 remote command execution vulnerability (Web Exploit)
+- d2sec_pwnrouter:
+  - TP-LINK TL PS110U Information disclosure Vulnerability
+  - Linksys WRT160Nv2 OS Command Injection Vulnerability
+  - Linksys WRT160Nv2 Directory Traversal Vulnerability
+  - minor improvements
+
+canvas_modules - Updated:
+- d2sec_clientinsider updated with new exploit
+
+version 1.66 July 1, 2013
+------------------------------
+
+canvas_modules - Added:
+- d2sec_coao: Oracle WebCenter Content CheckOutAndOpen.dll ActiveX Control Remote Code Execution Vulnerability (Exploit Windows)
+- d2sec_zmdm: Novell ZENworks Mobile Management DUSAP.php Remote Code Execution Vulnerability (Web Exploit)
+- d2sec_kernvuln:
+  - d2sec_perf_swevent_init: Linux kernel perf_swevent_init Local Privilege Escalation Exploit
+
+canvas_modules - Updated:
+- d2sec_clientinsider updated with new exploit
+
+d2sec_modules - Added:
+- d2sec_mmap: FreeBSD 9 Address Space Manipulation Privilege Escalation Vulnerability (Exploit FreeBSD)
+
+version 1.65 June 6, 2013
+------------------------------
+
+canvas_modules - Added:
+- d2sec_c1sizer: IBM SPSS SamplePower c1sizer ActiveX Buffer Overflow Vulnerability (Exploit Windows)
+- d2sec_zcm2: Novell ZENWorks Configuration Management Arbitrary File Upload Remote Code Execution Vulnerability (Exploit Windows)
+- d2sec_execwrapper:
+  -> Infotecs products Insecure File Permissions Local Privilege Escalation Exploit
+- d2sec_kernvuln:
+  - a 64bit exploit for Linux sock_diag_handlers[] Local Privilege Escalation 
+- d2sec_pwnrouter:
+  - TP-LINK TL-WA701N / TL-WA701ND Directory Traversal Vulnerability
+
+canvas_modules - Updated:
+- d2sec_clientinsider updated with new exploit
+
+
+version 1.64 May 2, 2013
+------------------------------
+
+canvas_modules - Added:
+- d2sec_easeweftp: Easewe FTP ActiveX Control Remote Code Execution Vulnerability (Exploit Windows)
+- d2sec_edraw: EdrawSoft Office Viewer ActiveX Buffer Overflow Vulnerability (Exploit Windows)
+- d2sec_wdmybook_1: Western Digital MyBook NAS Default Account Vulnerability (Exploit)
+- d2sec_wdmybook_2: [0day] Western Digital MyBook NAS Information disclosure Vulnerability (Exploit Web)
+- d2sec_wdmybook_3: [0day] Western Digital MyBook NAS Information disclosure Vulnerability (Exploit Web)
+
+canvas_modules - Updated:
+- d2sec_clientinsider updated with new exploits
+
+
+version 1.63 April 7, 2013
+------------------------------
+
+canvas_modules - Added:
+- d2sec_elliot: Tool to exploit a web vulnerability with new D2 Elliot (Exploit Web)
+- d2sec_wibukey: WibuKey Runtime for Windows ActiveX Buffer Overflow Vulnerability (Exploit Windows)
+- d2sec_xgo: HP Application Lifecycle Management XGO.ocx ActiveX Remote Code Execution Vulnerability (Exploit Windows)
+- d2sec_apache_rave: Apache Rave User Information Disclosure (Web Exploit)
+- d2sec_pwnrouter:
+  - D-LINK DIR-645 Unauthenticated remote access Vulnerability
+  - D-LINK DIR-600/DIR 300 Local path disclosure Vulnerability
+  - D-LINK DIR-600/DIR 300 Information disclosure Vulnerability
+  - D-LINK DIR-600/DIR 300 Unauthenticated Remote Command Execution Vulnerability
+
+canvas_modules - Updated:
+- d2sec_clientinsider updated with new exploits
+- d2sec_spip_rce: minor update
+
+
+version 1.62 March 4, 2013
+------------------------------
+
+canvas_modules - Added: 
+- d2sec_gwcls: Novell GroupWise gwcls1.dll ActiveX Remote Code Execution Vulnerability (Exploit Windows)
+- d2sec_mof: D2 MOF file trojan generator (Tool)
+- d2sec_hnap_detect: Tool to detect HNAP on router devices (Tool)
+- d2sec_pwnrouter:
+  - D-LINK DIR-615 Router Remote Command Execution Vulnerability
+  - D-LINK DIR-615 Router Information Disclosure Vulnerability
+  - BELINK G Wireless F5D7234-4 v5, N150 Information Disclosure Vulnerability
+  - COMTREND CT-5624, CT-5637 Information Disclosure Vulnerability
+
+canvas_modules - Updated:
+- d2sec_clientinsider updated with new exploits
+- d2sec_drosera updated with log file feature
+
+
+version 1.61 February 1, 2013
+------------------------------
+
+canvas_modules - Added: 
+- d2sec_clearquest: IBM Rational ClearQuest CQOle ActiveX Code Execution Vulnerability (Exploit Windows)
+- d2sec_btm: Oracle Business Transaction Management Server FlashTunnel Service Remote Code Execution Vulnerability (Web Exploit)
+- d2sec_pwnrouter:
+  - TP-LINK TL-WR841N Router Remote Command Execution Vulnerability
+
+canvas_modules - Updated:
+- d2sec_clientinsider updated with new exploits
+- d2sec_nessus updated with export feature
+- d2sec_qualys updated with export feature
+- d2sec_passdisclo updated with CVE-2012-4574 - Pulp in Red Hat CloudForms before 1.1 
+
+d2sec_modules - Added:
+- d2sec_cups: CUPS Local Privilege Escalation Vulnerability
+
+version 1.60 January 4, 2013
+------------------------------
+
+canvas_modules - Added: 
+- d2sec_netiq: Novell NetIQ Privileged User Manager 2.3.1 Remote Code Execution Vulnerability (Exploit Windows)
+- d2sec_ntr: NTR ActiveX Buffer Overflow Vulnerability (Exploit Windows)
+- d2sec_pwnrouter:
+  - LINKSYS WRT310N Information Disclosure Vulnerability
+  - ZYXEL Prestige 660H-61 Remote Command Execution Vulnerability
+  - ZYXEL Prestige 660H-61 Information Disclosure Vulnerability
+  - D-LINK DSL-6740U Default Password Vulnerability
+  - D-LINK DSL-2640B Default Password Vulnerability
+
+canvas_modules - Updated:
+- d2sec_clientinsider updated with new exploits
+
+
+version 1.59 December 3, 2012
+------------------------------
+
+canvas_modules - Added: 
+- d2sec_privagent: Aladdin Knowledge System 'PrivAgent.ocx' ActiveX Buffer Overflow Vulnerability (Exploit Windows)
+- d2sec_sssplt: Oracle WebCenter Forms Recognition Sssplt30.ocx ActiveX Remote Code Execution Vulnerability (Exploit Windows)
+- d2sec_spip_rce: Spip Remote Command Execution Vulnerability (Web exploit)
+- d2sec_pwnrouter:
+  - D-LINK DIR-615 revD, DIR-320 and DIR-300 Security Restriction Bypass Vulnerability
+
+canvas_modules - Updated:
+- d2sec_clientinsider updated with new exploits
+
+d2sec_modules - Updated:
+- d2sec_defaultpass updated with 3Com OfficeConnect ADSL Wireless 108Mbps 11g Firewall Router
+
+
+version 1.58 November 2, 2012
+------------------------------
+
+canvas_modules - Added: 
+- d2sec_emcaxd: EMC ApplicationXtender Desktop Viewer ActiveX Remote Code Execution Vulnerability (Exploit Windows)
+- d2sec_emcaxwa: EMC ApplicationXtender Web Access .NET Viewer ActiveX Remote Code Execution Vulnerability (Exploit Windows)
+- d2sec_vss: Tool to download ntds.dit, SAM and SYSTEM files from a Windows Mosdef node (Post-Intrusion)
+- d2sec_pwnrouter:
+  - ASUSTEK Wireless-N Gigabit Router RT-N56U Information Disclosure Vulnerability (CVE-2011-4497)
+  - TP-LINK TL-WR841N Router Local File Include Vulnerability
+  
+canvas_modules - Updated:
+- d2sec_clientinsider updated with new exploits
+- d2sec_passdisclo updated with CVE-2012-2679 - RHN Configuration Client
+- d2sec_citrix: minor bug fix
+- d2sec_applet: minor bug fix
+
+
+version 1.57 October 1, 2012
+------------------------------
+
+canvas_modules - Added:
+- d2sec_op5: OP5 Monitor Remote Code Execution Vulnerability (Web Exploit)
+- d2sec_notesurl: IBM Lotus Notes URL Command Injection Remote Code Execution Vulnerability (Exploit Windows)
+- d2sec_pma_backdoor: PhpMyAdmin 3.5.2.2 Backdoor Vulnerability (Web Exploit)
+- d2sec_pwnrouter: Routers Vulnerabilities Exploitation Tool (Tool)
+
+canvas_modules - Updated:
+- d2sec_clientinsider updated with new exploit
+
+d2sec_modules - Updated:
+- d2sec_defaultpass updated with Wago I/O System 758 mode Industrial PC and
+  Symantec Messaging Gateway 9.5 default account
+
+
+version 1.56 September 1, 2012
+------------------------------
+
+canvas_modules - Added:
+- d2sec_qp2: IBM Lotus Quickr QP2 ActiveX Remote Code Execution Vulnerability (Exploit Windows)
+- d2sec_hpovpm: HP OpenView Performance Manager PMParamHandler Remote Code Execution Vulnerability (Exploit Windows)
+- d2sec_tunnelblick: Tunnelblick Local Privileges Escalation (Exploit MacOSX) 
+- d2sec_viscosity: Viscosity Local Privileges Escalation (Exploit MacOSX) 
+
+canvas_modules - Updated:
+- d2sec_clientinsider updated with new exploit
+- d2sec_checkenv:
+  - minor updates for Windows and Linux targets
+  - add OSX support
+- d2sec_lotus_scan: minor bugfixes
+
+d2sec_modules - Updated
+- d2sec_bigbrother with twiddle.sh in JBoss AS 5.0 and EAP 5.0 Vulnerability 
+
+
+version 1.55 August 2, 2012
+------------------------------
+
+canvas_modules - Added:
+- d2sec_crazytalk: Dell Webcam ActiveX crazytalk4.ocx Code Execution Vulnerability (Exploit Windows)
+- d2sec_zend_xmlrpc: Multiple Zend Local file disclosure via XXE injection Vulnerabilities (Web Exploit)
+- d2sec_OSX_CVE-2011-3435: Local User Hash Disclosure Vulnerability (Exploit MacOSX)
+
+canvas_modules - Updated:
+- d2sec_clientinsider updated with new exploits
+- d2sec_execwrapper:
+  -> Symantec LiveUpdate Administrator Insecure File Permissions Local Privilege Escalation Exploit
+  -> Minor update
+
+
+version 1.54 July 4, 2012
+------------------------------
+
+canvas_modules - Added:
+- d2sec_ciscoptz: Cisco Linksys WVC200 Wireless-G PTZ Internet Video Camera ActiveX PlayerPT.ocx Code Execution Vulnerability (Exploit Windows)
+- d2sec_net4switch: ASUS Net4Switch ipswcom.dll ActiveX Code Execution Vulnerability (Exploit Windows)
+- d2sec_plesk_backdoor: Plesk Backdoor Vulnerability (Web Exploit)
+- d2sec_passdisclo: Tools to check local files with sensitive informations (Post-intrusion)
+
+canvas_modules - Updated:
+- d2sec_clientinsider updated with new exploits
+
+d2sec_modules - Added:
+- d2sec_phpbb3captcha: Captcha decoder for all captcha generated by phpBB3 versions (Tools)
+
+version 1.53 June 4, 2012
+------------------------------
+
+canvas_modules - Added:
+- d2sec_thinkmngt: LANDesk Lenovo ThinkManagement 9.0.3 File Upload Vulnerability (Web Exploit)
+- d2sec_symwebgw: Symantec Web Gateway 5.0.2 Local File Include Vulnerability (Web Exploit)
+- d2sec_liferay_adduser: Liferay 6.1 addUser method Vulnerability (Web Exploit)
+- d2sec_liferay_leakuser: Liferay 6.1 users and email leak Vulnerability (Web Exploit)
+
+
+version 1.52 May 2, 2012
+------------------------------
+
+canvas_modules - Added:
+- d2sec_intrust: Quest InTrust AnnotateX.dll Uninitialized Pointer Code Execution Vulnerability (Exploit Windows)
+- d2sec_isig: Tivoli Provisioning Manager Express Stack Overflow Vulnerability (Exploit Windows)
+- d2sec_phpmyadmin_rce: Phpmyadmin config file code injection vulnerability (Web Exploit)
+- d2sec_vmware_fingerprint: VMWare ESX/ESXi Fingerprint Scanner (Tools)
+
+canvas_modules - Updated:
+- d2sec_clientinsider updated with new exploits
+- d2sec_execwrapper:
+  -> Symantec pcAnywhere Insecure File Permissions Local Privilege Escalation Exploit
+- d2sec_sshmosdef: minor update
+
+d2sec_modules - Updated:
+- d2sec_defaultpass updated with Open Mesh Router default account
+
+
+version 1.51 April 3, 2012
+------------------------------
+
+canvas_modules - Added
+- d2sec_wpthemetuner: Wordpress Theme Tuner 0.7 Local File Include Vulnerability (Web Exploit)
+- d2sec_wprelocate: Wordpress Relocate Upload 0.14 Local File Include Vulnerability (Web Exploit) 
+
+d2sec_modules - Added
+- d2sec_tty: Linux tools
+  - d2sec_ttymitm: Generic backdoor that will steal passwords from any program
+  asking for them interactively on a terminal (Linux tools)
+  - d2sec_ttyhijack: Program that can steal a tty from any process. It require
+  root privileges
+
+version 1.50 March 1, 2012
+------------------------------
+
+canvas_modules - Added
+- d2sec_hpeasy2: HP Easy Printer Care XMLCacheMgr Class ActiveX Control Code Execution Vulnerability (Exploit Windows)
+- d2sec_vbseo: vBulletin vBSEO Remote Code Execution Vulnerability (Web Exploit) 
+- d2sec_horde_backdoor: Horde 3.3.12 Backdoor Vulnerability (Web Exploit)
+- client XMLRPC:
+  -> support Apache Struts2 application
+
+canvas_modules - Updated
+- d2sec_clientinsider updated with new exploit
+- d2sec_kernvuln:
+  - a 32bit exploit for Linux Local Privilege Escalation via SUID /proc/pid/mem Vulnerability
+  - minor updates
+
+version 1.49 February 1, 2012
+------------------------------
+
+canvas_modules - Added
+- d2sec_launchhelp: Novell Zenworks Software Packaging LaunchHelp.dll ActiveX Control Remote Code Execution Vulnerability (Exploit Windows)
+- d2sec_zopeplone: Zope/Plone Remote Code Execution Vulnerability (Web Exploit)
+- d2sec_struts2:  Apache Struts2 (DebuggingInterceptor) remote command execution vulnerability (Web Exploit)
+- d2sec_struts3:  Apache Struts2 (ParametersInterceptor) remote command execution vulnerability (Web Exploit)
+- d2sec_kernvuln:
+  -> add Linux Local Privilege Escalation via SUID /proc/pid/mem Vulnerability
+
+canvas_modules - Updated
+- d2sec_clientinsider updated with new exploit
+
+version 1.48 January 4, 2012
+------------------------------
+
+canvas_modules - Added
+- d2sec_gwdva: Novell GroupWise Document Viewer Directory Traversal Vulnerability (Web Exploit)
+- d2sec_zam: Novell ZENWorks Asset Management Arbitrary File Upload Remote Code Execution Vulnerability (Web Exploit)
+- d2sec_upnp_discovery: UPNP Hosts Discovery Tool (Tools)
+
+d2sec_modules - Added
+- d2sec_pam: Several simple local PAM exploits to gain root privileges (Exploits)
+
+
+version 1.47 December 5, 2011
+------------------------------
+
+canvas_modules - Added
+- d2sec_tomatocart: TomatoCart 1.1.5 Local File Include Vulnerability (Web Exploit)
+- d2sec_exponent: Exponent CMS 2.0.2 Local File Include Vulnerability (Web Exploit)
+- d2sec_hpdpmo: HP Data Protector Media Operations Directory Traversal Vulnerability (Exploit Windows)
+- d2sec_kernleak: 
+  -> add Linux Kernel TIOCGICOUNT Information Disclosure Vulnerability
+
+canvas_modules - Updated
+- d2sec_joomla updated with new vulnerabilities
+
+d2sec_modules - Added
+- d2sec_tracker: a Script Kiddies tracker just for fun and profit (Tool Linux)
+
+version 1.46 November 2, 2011
+------------------------------
+
+canvas_modules - Added
+- d2sec_cmsms: CMS Made Simple 1.8 Local File Include Vulnerability (Web Exploit)
+- d2sec_vtigercrm: vtiger CRM 5.2.0 Local File Include Vulnerability (Web Exploit)
+- d2sec_autovue: Oracle AutoVue ActiveX Control Remote Code Execution Vulnerability (Exploit Windows)
+- d2sec_mybb_backdoor: MyBB Backdoor Arbitrary Command Execution (Web Exploit)
+
+canvas_modules - Updated
+- d2sec_clientinsider updated with new exploit
+- d2sec_joomla updated with new vulnerabilities
+
+d2sec_modules - Added
+- d2sec_backlua: a backdoor to execute Lua scripts on remote boxes (Tool Linux)
+
+
+version 1.45 October 3, 2011
+------------------------------
+
+canvas_modules - Added
+- d2sec_hpeasy: HP Easy Printer Care ActiveX Control Remote Code Execution Vulnerability (Exploit Windows)
+- d2sec_citrixnfuse: Decode NFuseProtocol password in Citrix XML files sent to Citrix XML service (Tool)
+- d2sec_wireshark: Wireshark Lua Script File Arbitrary Code Execution Vulnerability (Exploit Windows)
+- d2sec_mantisbt: MantisBT Local File Include Vulnerability (Web Exploit)
+- d2sec_mod_negotiation: Apache HTTPD mod_negotiation file bruter Tool (Tool)
+
+canvas_modules - Updated
+- d2sec_clientinsider updated with new exploit
+- d2sec_joomla updated with new vulnerabilities
+
+
+version 1.44 September 1,2011
+------------------------------
+
+canvas_modules - Added
+- d2sec_cad2d: CA ARCserve D2D Credentials Disclosure Vulnerability (Exploit Windows)
+- d2sec_ciscoany: Cisco AnyConnect VPN Client Arbitrary Program Execution Vulnerability (Exploit Windows)
+- d2sec_struts: Struts2/XWork remote command execution vulnerability (Web Exploit)
+- d2sec_whoisdiscovery: Fetching whois server about a domain or an ipaddr (Recon)
+
+canvas_modules - Updated
+- d2sec_clientinsider updated with new exploit
+- d2sec_joomla updated with new vulnerabilities
+- d2sec_dnsdiscovery and d2sec_vhostdiscovery improved and updated
+
+version 1.43 August 1,2011
+------------------------------
+
+canvas_modules - Added
+- d2sec_hpnnm7: HP Network Node Manager 7.53 Toolbar.exe Stack Overflow Vulnerability (Exploit Windows)
+- d2sec_emcrep: EMC RepliStor 6.3 Command Injection Vulnerability (Exploit Windows)
+- d2sec_eripp: eripp.com search engine interface (Tools)
+- d2sec_kernvuln: 
+  -> add Reliable Datagram Sockets (RDS) Protocol Local Privilege Escalation Vulnerability
+  -> updated Linux distribution supported by kernel exploits
+  -> minor updates
+
+canvas_modules - Updated
+- d2sec_joomla updated with new vulnerabilities
+- client XMLRPC: 
+  -> updated with VsFTPD module
+- d2sec_kernleak: minor bugfixes
+
+d2sec_modules - Added:
+- d2sec_apk: Malicious Android application with an embedded Java Mosdef (Tools Android)
+
+version 1.42 July 1,2011
+------------------------------
+
+canvas_modules - Added
+- d2sec_hpnnm5: HP Network Node Manager 7.53 getnnmdata.exe MaxAge Variable Stack Overflow Vulnerability (Exploit Windows)
+- d2sec_hpnnm6: HP Network Node Manager 7.53 snmpviewer.exe act Variable Stack Overflow Vulnerability (Exploit Windows)
+- d2sec_drupal: Pentesting Drupal CMS application (Tool)
+- client XMLRPC:
+  -> support Drupal CMS application
+- d2sec_kernvuln: 
+  -> add Faulty clone(2) implementation Vulnerability
+  -> updated Linux distribution supported by kernel exploits
+- d2sec_vsftpd_bdoor: Exploits a backdoor added to the VsFTPD archive (Exploit Linux)
+
+canvas_modules - Updated
+- d2sec_joomla updated with new vulnerability
+- d2sec_proftpd_bdoor updated
+
+
+version 1.41 June 1,2011
+------------------------------
+
+canvas_modules - Added
+- d2sec_nfragent: Novell File Reporter Agent Stack Overflow Vulnerability (Exploit Windows)
+- d2sec_realarcade: RealNetworks GameHouse InstallerDlg.dll ActiveX Remote Code Execution Vulnerability (Exploit Windows)
+- d2sec_joomla: Pentesting Joomla CMS application (Tool)
+- client XMLRPC:
+  -> support Joomla CMS application
+
+canvas_modules - Updated
+- d2sec_jconsole updated with automatic exploitation
+- d2sec_clientinsider updated with new exploit
+
+d2sec_modules - Added:
+- d2sec_nagiosxi: NagiosXI Privileges Escalation Vulnerability (Exploit Linux)
+
+version 1.40 May 3,2011
+------------------------------
+
+canvas_modules - Added:
+- d2sec_cddauri: RealNetworks RealPlayer ActiveX CDDA URI Uninitialized Pointer Remote Code Execution Vulnerability (Exploit Windows)
+- d2sec_jconsole: IBM Lotus Domino Server Controller Authentication Bypass Vulnerability (Exploit Windows)
+- d2sec_kernvuln: 
+  -> add CAP_SYS_ADMIN Local Privilege Escalation Vulnerability
+  -> updated Linux distribution supported by kernel exploits
+- d2sec_horde: Horde Horde_Image::factory driver Argument LFI Vulnerability (Web Exploit)
+- client XMLRPC:
+  -> support LDAP
+  -> updated with Citrix and Coldfusion modules
+  -> bugfixes and updates
+
+canvas_modules - Updated
+- d2sec_clientinsider updated with new exploit
+- d2sec_citrix updated
+
+version 1.39 April 4, 2011
+------------------------------
+
+canvas_modules - Added:
+- d2sec_citrixps: Citrix Provisioning Services streamprocess.exe Remote Code Execution Vulnerability (Exploit Windows)
+- d2sec_classloader: Oracle Java Unsigned Applet Applet2ClassLoader Remote Code Execution Vulnerability (Exploit Windows)
+- d2sec_majordomo2: Directory Traversal Vulnerability - Patch bypass (Web Exploit)
+
+canvas_modules - Updated
+- d2sec_clientinsider updated with new exploit
+- d2sec_svcwrapper updated with .NET Runtime Optimization Service Privilege Escalation exploit (Exploit Windows)
+
+d2sec_modules - Added:
+- d2sec_macdmg: Malicious MacOS dmg image with an embedded OSX Intel Universal Mosdef (Tools MacOS)
+
+version 1.38 March 1, 2011
+------------------------------
+
+canvas_modules - Added:
+- d2sec_lotuscal2: IBM Lotus Domino iCalendar Meeting Request Stack Overflow Vulnerability (Exploit Windows)
+- d2sec_recordclip: RealNetworks Realplayer RecordClip Parameter Injection Remote Code Execution Vulnerability (Exploit Windows)
+- d2sec_majordomo: Directory Traversal Vulnerability (Web Exploit)
+- d2sec_activemq: Add Directory Traversal Vulnerability (Web Exploit)
+
+d2sec_modules - Updated:
+- d2sec_clientinsider updated with new exploits
+- d2sec_defaultpass updated with CVE-2011-0354
+- d2sec_vmware: bug fixe 
+
+
+version 1.37 February 1, 2011
+------------------------------
+
+canvas_modules - Added:
+- d2sec_hpphoto: HP Photo Creative ContentMan.dll ActiveX Control Buffer Overflow Vulnerability (Exploit Windows)
+- d2sec_wmitools: Microsoft WMI Administrative Tools ActiveX Remote Code Execution Vulnerability (Exploit Windows)
+- d2sec_proftpd_bdoor: Exploits a backdoor added to the ProFTPD archive (Exploit Linux)
+- d2sec_proftpd_modsql: Exploits ProFTPD 'mod_sql' Username SQL Injection Vulnerability (Exploit Linux)
+
+canvas_modules - Updated
+- d2sec_clientinsider updated with new exploits
+- client XMLRPC:
+  -> updated with ProFTPD modules
+  -> minor bug fixes
+
+d2sec_modules - Added:
+- d2sec_defaultpass: Display default login/pass about equipments and softwares. (Tool)
+
+version 1.36 January 5, 2011
+------------------------------
+
+canvas_modules - Added:
+- d2sec_gwimap: Novell GroupWise Internet Agent IMAP Stack Buffer Overflow Vulnerability (Exploit Windows)
+- d2sec_httpstk: Novell eDirectory httpstk Stack Buffer Overflow Vulnerability (Exploit Windows)
+- d2sec_moodle_rexec: Moodle remote command execution Vulnerability (Web exploit)
+- d2sec_moodle_tex: Moodle 'texed.php' remote command execution Vulnerability (Web Exploit)
+
+
+version 1.35 December 1, 2010
+------------------------------
+
+canvas_modules - Added:
+- d2sec_adobe: Adobe XML External Entity Injection Vulnerability (Web Exploit)
+- d2sec_gwpoa: Novell GroupWise GWPOA Remote Code Execution Vulnerability (Exploit Windows)
+- d2sec_imanager: Novell iManager getMultiPartParameters Arbitrary File Upload Remote Code Execution Vulnerability (Web Exploit)
+- d2sec_coldfusion: Pentesting Coldfusion server (Tool)
+- d2sec_kernleak: 
+  -> Tool for Linux Kernel Information Disclosure Vulnerability 
+  -> Add Linux Kernel 'PKT_CTRL_CMD_STATUS' Invalid Pointer Dereference Vulnerability
+- client XMLRPC:
+  -> support Coldfusion applications 
+
+canvas_modules - Updated:
+- d2sec_metakern becomes d2sec_kernvuln
+- d2sec_jboss updated
+
+
+version 1.34 November 2, 2010
+------------------------------
+
+canvas_modules - Added:
+- d2sec_hpdp: HP OpenView Data Protector Recovery Manager Stack Buffer Overflow Vulnerability (Exploit Windows)
+- d2sec_javaws3: Sun Java Web Start BasicServiceImpl Remote Code Execution Vulnerability (Exploit Windows)
+- d2sec_cve_2010_3856: GNU C library dynamic linker LD_AUDIT DSO load Vulnreability (Exploit Linux)
+- d2sec_drosera: Check if a Windows node is already compromised with Drosera driver (Post-Intrusion)
+- d2sec_activemq: Pentesting Apache Activemq server (Tool)
+- d2sec_metakern: 
+  -> add Reliable Datagram Sockets (RDS) Protocol Local Privilege Escalation Vulnerability
+  -> updated Linux distribution supported by kernel exploits
+- client XMLRPC:
+  -> support Apache Activemq applications
+  -> bug fixes and updates
+
+canvas_modules - Updated:
+- d2sec_clientinsider updated with new exploit
+- d2sec_shodan: minor bug fix
+
+version 1.33 October 1, 2010
+------------------------------
+
+canvas_modules - Added:
+- d2sec_tispro: Trend Micro Internet Security Pro 2010 UfProxyBrowserCtrl ActiveX Remote Code Execution Vulnerability (Exploit Windows)
+- d2sec_lotuscal: IBM Lotus Domino iCalendar Email Address Stack Buffer Overflow Vulnerability (Exploit Windows)
+- d2sec_accton: Backdoor password in Accton-based switches Vulnerability (Exploit)
+- d2sec_smbmosdef: Run a MOSDEF trojan via a SMB session (completely rewritten with improvements, see help) (Tool)
+- d2sec_vhostdiscovery: Fetching vhosts about an ipaddr (Recon)
+- client XMLRPC:
+  -> support Netbios and SMB protocols
+  -> minor updates
+
+canvas_modules - Updated:
+- d2sec_shodan updated with JSON-based API
+- d2sec_clientinsider updated with new exploit
+
+version 1.32 September 1, 2010
+------------------------------
+
+canvas_modules - Added:
+- d2sec_zcm: Novell ZENworks Configuration Management FileUploadServlet Remote Code Execution Vulnerability (Web Exploit)
+- d2sec_iprint4: Novell iPrint Client ienipp.ocx ActiveX Stack Overflow (Exploit Windows)
+- d2sec_dnsdiscovery: Passive information gathering about DNS (Recon)
+- d2sec_axis: Apache Axis2 Remote File Access Vulnerability (Web Exploit)
+
+canvas_modules - Updated:
+- d2sec_clientinsider updated with new exploit
+- d2sec_jboss and client XMLRPC updated with JBoss vulnerabilities checks
+
+d2sec_modules - Added:
+- d2sec_mbuf: FreeBSD Kernel 7.x/8.x mbuf M_RDONLY Privilege Escalation (Exploit FreeBSD) 
+
+d2sec_modules - Updated
+- updated CVE for d2sec_modules (see d2sec_modules/CVE.txt)
+
+
+version 1.31 August 1, 2010
+------------------------------
+
+canvas_modules - Added:
+- d2sec_hpnnm3: HP Network Node Manager 7.53 Snmp.exe Oid Variable Stack Overflow Vulnerability (Exploit Windows)
+- d2sec_hpnnm4: HP Network Node Manager 7.53 OvWebHelp.exe Topic Variable Stack Overflow Vulnerability (Exploit Windows)
+- d2sec_tomcat: Pentesting Tomcat server (Tool)
+- d2sec_websphere: Pentesting Websphere server (Tool)
+- d2sec_tomcat_enumuser: Apache Tomcat User Enumeration Vulnerability (Web Exploit)
+- client XMLRPC:
+  -> support Tomcat and Websphere applications
+  -> logs format updated
+  -> bug fixes and updates
+
+canvas_modules - Updated:
+- d2sec_hpnnm minor update
+- d2sec_tomcat becomes d2sec_tomcat_utf8
+- d2sec_metakern: 
+  -> d2sec_udp_sendmsg supported version 64bits with d2sec_udp_sendmsg
+  -> updated Linux distribution supported by kernel exploits
+
+version 1.30 July 1, 2010
+------------------------------
+
+canvas_modules - Added:
+- d2sec_tsmcad: IBM Tivoli Storage Manager CAD Service Stack Overflow Vulnerability (Exploit Windows)
+- d2sec_tsmcad2: IBM Tivoli Storage Manager AGENT Service Stack Overflow Vulnerability (Exploit Windows)
+- d2sec_webdav: Pentesting Webdav server (Tool)
+- client XMLRPC:
+  -> move d2sec_masspwn in this application and delete d2sec_masspwn
+  -> add Webdav support
+  -> bug fixes and updates
+
+canvas_modules - Updated:
+- d2sec_jboss: minor update
+
+d2sec_modules - Added:
+- d2sec_sudo_cve_2010_1646: Sudo 'secure path' Security Bypass Vulnerability (Exploit Linux)
+
+d2sec_modules - Updated
+- updated CVE for d2sec_modules (see d2sec_modules/CVE.txt)
+
+
+version 1.29 June 1, 2010
+------------------------------
+
+canvas_modules - Added:
+- d2sec_hplr: HP Mercury LoadRunner Agent Remote Code Execution Vulnerability (Exploit Windows)
+- d2sec_caxosoft: CA XOsoft Control Service entry_point.aspx Remote Stack Overflow Vulnerability (Exploit Windows)
+- d2sec_masspwn:
+  -> support Lotus application
+  -> can submit a applications listing rather than a ports listing or scanning
+  -> get info headers for all 'http' services
+  
+canvas_modules - Updated:
+- d2sec_lotus_scan: updated with D2 api and minor updates
+- d2sec_lotus_hash: minor updates
+- client XMLRPC:
+  -> minor bug fixes 
+
+d2sec_modules - Added:
+- d2sec_udevd: udevd NETLINK messaging exploit (Exploit Linux)
+
+d2sec_modules - Updated
+- updated CVE for d2sec_modules (see d2sec_modules/CVE.txt)
+
+version 1.28 May 3, 2010
+------------------------------
+
+canvas_modules - Added:
+- d2sec_homebase: EMC HomeBase SSL Service Arbitrary File Upload Remote Code Execution Vulnerability (Exploit Windows)
+- d2sec_symiao: Symantec Intel Alert Originator Service Command Execution Vulnerabilty (Exploit Windows)
+- d2sec_lotus_hash: Old vulnerability to access to the password hashes of Lotus users (Exploit Windows/Linux)
+- d2sec_ntpscan: NTP Server Scanner (Tool)
+- d2sec_jboss: Pentesting JBoss server (Tool)
+- d2sec_masspwn:
+  -> support NTP protocol
+  -> support JBoss application
+
+canvas_modules - Updated:
+- d2sec_checkenv: minor update
+
+d2sec_webmodules - Added:
+- add a mssql payload to upload a binary and to execute it
+- add a API documentation and update README.txt
+- minor updates
+
+version 1.27 April 1, 2010
+------------------------------
+
+canvas_modules - Added:
+- d2sec_emcaxw: EMC ApplicationXtender Workflow Server Arbitrary File Upload Vulnerability (Exploit Windows)
+- d2sec_inotes2: IBM Lotus Domino Web Access ActiveX Stack Overflow Vulnerability (Exploit Windows)
+- d2sec_history: Extract bash history from a process memory (Post-intrusion)
+- d2sec_masspwn:
+  -> support MSSQL and MySQL applications
+  -> new logs handler
+  -> cleaned code and created api
+
+canvas_modules - Updated:  
+- d2sec_clientinsider updated with new exploit
+
+d2sec_modules - Added:
+- d2sec_jspshell: JSP shell to deploy with Tomcat for example (Tool)
+
+d2sec_webmodules - Added:
+- add a exploitation framework to exploit sql injection vulnerability
+- d2sec_phptroubleticket: PHP Trouble Ticket 2.2 Sql Injection
+
+
+version 1.26 March 1, 2010
+------------------------------
+
+canvas_modules - Added:
+- d2sec_jretk: Java Runtime Environment Deployment Toolkit Command Execution Vulnerability (Exploit Windows)
+- d2sec_hppm3: [0day] HP Power Manager Management Command Injection Vulnerability (Exploit Windows)
+- d2sec_ibmegath: IBM Access Support ActiveX Stack Overflow Vulnerability (Exploit Windows)
+- d2sec_vmware: VmWare Server Directory Traversal Vulnerability (Web Exploit)
+- d2sec_masspwn:
+  -> support SunRPC protocol
+- add a XMLRPC client (see 3rdparty/D2SEC/documentation/xmlrpc.txt) 
+
+canvas_modules - Updated:
+- d2sec_clientinsider updated with new exploits
+- d2sec_nmap: minor update
+
+version 1.25 February 1, 2010
+------------------------------
+
+canvas_modules - Added:
+- d2sec_npum: Novell Privileged User Manager Remote DLL Injection Vulnerability (Exploit Windows)
+- d2sec_hppm: HP Power Manager Login Stack Overflow Vulnerability (Exploit Windows)
+- d2sec_hppm2: HP Power Manager Export Logs Stack Overflow Vulnerability (Exploit Windows)
+- d2sec_metakern: add 'pipe.c' Local Privilege Escalation Vulnerability (Exploit Linux)
+- d2sec_taskpwddmp_gui: use d2sec_taskpwddmp on a Windows Mosdef Node (Post-intrusion)
+- d2sec_nmap: import a XML nmap file in a database created by d2sec_django (Tool)
+- d2sec_citrix: enumerate Citrix applications (Tool)
+- d2sec_masspwn:
+  -> support CITRIX application
+  -> for TELNET protocol:
+      add telnet_brute module 
+  -> can submit a ports listing rather than scanning
+
+canvas_modules - Updated:
+- d2sec_clientinsider improved and updated with new exploits
+- several client side modules updated
+- d2sec_shodan updated for d2sec_django
+
+d2sec_modules - Added:
+- d2sec_taskpwddmp: dump Windows Task Scheduler credentials (Tool Windows)
+
+version 1.24 January 4, 2010
+------------------------------
+
+canvas_modules - Added:
+- d2sec_hpnnm2: HP Network Node Manager Command Injection Vulnerability (Exploit Windows)
+- d2sec_altirisrc: Symantec Altiris Products ActiveX Stack Overflow Vulnerability (Exploit Windows)
+- d2sec_iprint3: Novell iPrint Client ienipp.ocx ActiveX Stack Overflow (Exploit Windows)
+- d2sec_shodan: Shodan search engine interface (Tools)
+- d2sec_masspwn:
+  -> support DNS and FINGER protocols
+  -> bug fixes and minor updates
+
+canvas_modules - Updated:
+- d2sec_nessus updated to support Nessus reports download with Nessus XMLRPC
+- d2sec_qualys improvements
+- d2sec_clientinsider updated with new client side exploits from D2 AND CANVAS
+- d2sec_sshbrute: minor updates
+- d2sec_urlbrute updated for d2sec_django (sqlite3 database)
+
+d2sec_modules - Added:
+- d2sec_rtld: FreeBSD 'execl()' Local Privilege Escalation Vulnerability (Exploit FreeBSD)
+
+d2sec_modules - Updated
+- updated CVE for d2sec_modules (see d2sec_modules/CVE.txt)
+- d2sec_masspwngui updated for d2sec_django
+
+version 1.23 December 2, 2009
+------------------------------
+
+canvas_modules - Added:
+- d2sec_robohelp: Adobe RoboHelp Server Arbitrary File Upload and Execute Vulnerability (Exploit Windows)
+- d2sec_xupload2: HP LoadRunner XUpload.ocx ActiveX Arbitrary File Download Vulnerability (Exploit Windows)
+- d2sec_emsmtp: Quiksoft EasyMail SMTP ActiveX Stack Overflow Vulnerability (Exploit Windows)
+- d2sec_sshbrute: Multiple SSH bruteforces tool (Tool)
+- d2sec_metakern: add 'udp_sendmsg()' MSG_MORE Flag Local Privilege Escalation Vulnerability (Exploit Linux)
+- d2sec_masspwn:
+  -> support TELNET and PROXY protocols
+  -> updated for d2sec_django (sqlite database)
+	-> bug fixes
+
+canvas_modules - Updated:
+- d2sec_qualys updated to support online Qualys reports download with Qualys API
+- d2sec_clientinsider updated with new client side exploits from D2 AND CANVAS and with some improvements
+- d2sec_exewrapper updated with Panda Products Insecure Program File Permissions exploit
+- d2sec_httpfingerprint updated for d2sec_django (sqlite3 database)
+- d2sec_metakern updated Linux distribution supported by kernel exploits
+- d2sec_checkenv: minor updates
+
+d2sec_modules - Added:
+- d2sec_django: www gui to consult sqlite3 database
+
+version 1.22 November 1, 2009
+------------------------------
+
+canvas_modules - Added:
+- d2sec_emckeyhelp: EMC Captiva QuickScan Pro KeyHelp ActiveX Stack Overflow Vulnerability (Exploit Windows)
+- d2sec_emcpdi: EMC Captiva PixTools Distributed Imaging ActiveX Arbitrary File Creation Vulnerability (Exploit Windows)
+- d2sec_altirisns: Symantec Altiris eXpress NS SC Download ActiveX Arbitrary File Download Vulnerability (Exploit Windows)
+- d2sec_qualys: D2 Qualys Report Analyzer (Tool)
+- d2sec_metakern: add 'sock_sendpage()' NULL Pointer Dereference Vulnerability (Exploit Linux)
+- d2sec_masspwn:
+	-> support POP3 and IMAP2 protocols
+	-> for HTTP protocol:
+			- add d2sec_createdico module		
+			- add a path disclosure test
+	-> check and select an existing dictionnary file useful to bruteforce attacks
+	-> minor updates
+	-> bug fixes
+
+canvas_modules - Updated:
+- d2sec_nessus updated to support the new report format of Nessus 4.2
+- d2sec_clientinsider updated with new client side exploits from D2
+- d2sec_metakern updated Linux distribution supported by kernel exploits
+- d2sec_createdico updated for d2sec_masspwn
+- d2sec_snmp: minor bug fix
+- d2sec_urlbrute updated with new urls
+- d2sec_canvasurls:
+	-> check if urls exist in d2sec_urlbrute files
+	-> minor bug fix
+
+d2sec_modules - Added:
+- d2sec_masspwngui: gui for d2sec_masspwn (Tool)
+
+version 1.21 October 1, 2009
+------------------------------
+
+canvas_modules - Added:
+- d2sec_vpnjun: Safenet SoftRemote IKE Service Remote Stack Overflow Vulnerability (Exploit Windows)
+- d2sec_ora_secback2: Oracle Secure Backup Arbitrary Command Execution Vulnerability (Exploit Windows)
+- d2sec_ms09_043: Microsoft Office Web Components 2000 Buffer Overflow Vulnerability (Exploit Windows)
+- d2sec_winsniff: Upload and execute a sniffer on a Windows node (Post-intrusion)
+- d2sec_ftpacct: Search FTP accounts on a Node (Post-intrusion)
+- d2sec_masspwn:
+	-> support HTTP protocol
+	-> check each scanned port if it's a supported protocol
+	-> minor updates
+	-> bug fixes
+
+canvas_modules - Updated:
+- d2sec_clientinsider updated with new client side exploit from D2
+- d2sec_waffingerprint: add IMPERVA fingerprint
+- d2sec_httpfingerprint updated for d2sec_masspwn
+- d2sec_urlbrute updated for d2sec_masspwn
+- d2sec_metakern: minor updates
+
+version 1.20 September 1, 2009
+------------------------------
+
+canvas_modules - Added:
+- d2sec_wyse: Wyse Device Manager Remote Stack Overflow Vulnerability (Exploit Windows)
+- d2sec_wyse2: Wyse Device Manager Remote Command Execution Vulnerability (Exploit Windows)
+- d2sec_emcrmc: EMC Replication Manager Client Control Service Remote Code Execution Vulnerability (Exploit Windows)
+- d2sec_filedisclo: File Disclosure Generic Exploit (Web Exploit)
+- d2sec_metakern: add procfs Kernel memory disclosure vulnerability (Exploit Linux)
+- d2sec_masspwn:
+	-> support SMTP protocol
+	-> for FTP protocol, test if anonymous access is available and list home directory
+	-> display banner for each scanned port
+	-> bug fixes
+
+canvas_modules - Updated:
+- d2sec_sshmosdef updated for the new SOLARISMOSDEF_INTEL version
+- d2sec_urlbrute updated with new urls
+- d2sec_metakern:
+		-> can display results in function of Linux distribution version or in function of Linux kernel version
+		-> minor updates
+
+d2sec_modules - Added
+- d2sec_proxy: a simple HTTP proxy to log visited uri (Tool)
+
+version 1.19 August 3, 2009
+------------------------------
+
+canvas_modules - Added:
+- d2sec_f5asm: [0day] F5 BIG-IP ASM Remote Buffer Overflow Vulnerability (Exploit Linux)
+- d2sec_f5post: F5 Networks ASM Post-intrusion Tool (Tool Linux)
+- d2sec_waffingerprint: WAF fingerprint (only for F5 WAF at this moment) (Recon) 
+- d2sec_ciscotftp: CiscoWorks TFTP Directory Traversal Vulnerability (Exploit Windows)
+- d2sec_owc: Microsoft Office Web Components ActiveX msDataSourceObject Code Execution Vulnerability (Exploit Windows)
+- d2sec_cisco_vpn: Cisco VPN Client Configuration Dumper (Tool Windows)
+- d2sec_masspwn:
+		-> support node (can run post-intrusion module)
+		-> support FTP protocol
+		-> bug fixes
+- d2sec_svcwrapper: 
+		-> add NOS getPlus Download Manager Local Privilege Escalation Vulnerability (Exploit Windows)
+
+canvas_modules - Updated
+- d2sec_clientinsider updated with new client side exploits from D2
+- d2sec_d2sec_wifi_intel: bug fixed
+- d2sec_checkenv updated for d2sec_masspwn
+- d2sec_sqlite: add a date field
+- d2sec_urlbrute updated for d2sec_sqlite
+- d2sec_webauthbf updated for d2sec_sqlite
+- d2sec_httpfingerprint updated for d2sec_sqlite
+
+version 1.18 July 1, 2009
+------------------------------
+
+canvas_modules - Added
+- d2sec_wifi_intel: Intel PROSet Wireless Configuration Dumper (Tool Windows)
+- d2sec_ampx: AOL AmpX.dll ActiveX Stack Overflow Vulnerability (Exploit Windows)
+- d2sec_sqlitemanager: SQLiteManager Local File Include Vulnerability (Web Exploit)
+- d2sec_directshow: Microsoft DirectX DirectShow QuickTime Video Code Execution Vulnerability (Exploit Windows)
+- d2sec_nssldap: PADL nss_ldap Local Information Disclosure Vulnerability (Exploit Linux)
+- d2sec_masspwn: Automated attack tool (Tool)
+
+canvas_modules - Updated
+- d2sec_clientinsider updated with new client side exploits from D2 and CANVAS
+
+d2sec_modules: Added
+- d2sec_modapache: Malicious Apache module executing a MOSDEF backdoor (Tool Linux) 
+
+d2sec_modules: Updated
+- d2sec_rpc: add rusers service support
+
+version 1.17 June 2, 2009
+------------------------------
+
+canvas_modules: Added
+- d2sec_hpnnm: [0 Day] HP Network Node Manager 7.53 Stack Overflow Vulnerability (Exploit Windows)
+- d2sec_sametime: IBM Lotus Sametime Community Services Multiplexer Stack Overflow Vulnerability (Exploit Windows)
+- d2sec_httpfingerprint: HTTP Server fingerprint (Recon)
+- d2sec_metakern: add exit_notify() CAP_KILL verification vulnerability (Exploit Linux)
+- d2sec_cscript: 
+		-> add vnc.vbs script to get RealVNC Password Hash
+
+d2sec_modules: Added
+- d2sec_forti: Fortinet FortiClient fortimon.sys Local Privilege Escalation (Exploit Windows)
+- d2sec_rpc: Tool to do rpc direct scan on Unix servers (Tool Linux)
+
+version 1.16 May 4, 2009
+------------------------------
+
+canvas_modules: Added
+- d2sec_msiag: Microsoft IAG 2007 ActiveX Stack Overflow Vulnerability (Exploit Windows)
+- d2sec_hpovas2: HP Network Node Manager Command Injection Vulnerability (Exploit Linux)
+- d2sec_webauthbf: Web Basic Authentication Brute Forcer (Tool)
+- d2sec_cscript: Add multiples VBS scripts 
+		-> checkvm.vbs: check if target is a virtual machine
+		-> dep.vbs: display DEP policy
+		-> disableaudit.vbs: disable audit policy
+		-> disablefw.vbs: disable firewall
+		-> process.vbs: display processus
+		-> services.vbs: display services
+		-> whologon.vbs: display who is logged
+
+canvas_modules - Updated
+- d2sec_clientinsider updated with new client side exploits from D2 and CANVAS
+- d2sec_urlbrute: minor update
+
+d2sec_modules - Added
+- d2sec_tmis: Trend Micro Internet Security 2008/2009 IOCTL Request Local Privilege Escalation (Exploit Windows)
+- d2sec_ms08_066: Microsoft Windows AFD Driver Local Privilege Escalation (Exploit Windows)
+- d2sec_paginit: AIX paginit Local Buffer Overflow Vulnerability (Exploit AIX)
+
+d2sec_modules - Updated
+- updated CVE for d2sec_modules (see d2sec_modules/CVE.txt)
+
+version 1.15 April 1, 2009
+------------------------------
+
+canvas_modules: Added
+- d2sec_k9web: Blue Coat K9 Web Protection 'Referer' Header Stack Overflow Vulnerability (Exploit Windows)
+- d2sec_lnk: Generic Malicous Shortcut file (Exploit Windows)
+- d2sec_wordclient: Microsoft Word file for D2 Client Insider (Exploit Windows)
+- d2sec_sqlite: Tool to create and to save log in a SQLite3 database (Tool)
+- d2sec_createdico: Modular tool to create URLs list to use with d2sec_urlbrute (Tool)
+	-> d2sec_canvasurls: Module to create URLs list from Canvas exploits (Tool)
+	-> d2sec_tmpurls: Module to create URLs list from a initial list and a suffix lists (Tool) 
+
+canvas_modules - Updated
+- d2sec_clientinsider updated for the new HTTP/HTTPS MOSDEF version
+- d2sec_urlbrute updated to save logs in a SQLite3 database
+- d2sec_sshmosdef updated with supported AIX platform
+- d2sec_scsnmp updated: 
+		-> SOLARIS platform added
+		-> minor updates
+
+d2sec_modules - Added
+- d2sec_passwd: Solaris passwd Vulnerability (Exploit Solaris)
+
+d2sec_modules - Updated
+- updated CVE for d2sec_modules (see d2sec_modules/CVE.txt)
+
+version 1.14 March 2, 2009
+------------------------------
+
+canvas_modules: Added
+- d2sec_jinitiator: Oracle JInitiator ActiveX Buffer Overflow (Exploit Windows)
+- d2sec_appstream: Symantec AppStream Client LaunchObj ActiveX Arbitrary Code Execution Vulnerability (Exploit Windows)
+- d2sec_mod_jk: Apache Tomcat JK Web Server Connector Stack Overflow Vulnerability (Exploit Windows/Linux/FreeBSD)
+- d2sec_axloader: BlackBerry Application Web Loader ActiveX Buffer Overflow (Exploit Windows)
+- d2sec_svcwrapper: Generic Service Exploit (Tool Windows)
+
+canvas_modules - Updated
+- d2sec_urlbrute updated with new urls
+- d2sec_scsnmp updated with supported AIX platform
+- d2sec_clientinsider updated with new client side exploits from D2
+- d2sec_lotus_domino: bug fixed
+
+d2sec_modules - Added
+- d2sec_mychangeuser: MySQL COM_CHANGE_USER Password Length Account Compromise Vulnerability (Exploit Linux)
+- d2sec_ads: Tool to play with NTFS streams (Tool Windows)
+
+version 1.13 February 2, 2009
+------------------------------
+
+canvas_modules: Added
+- d2sec_ca_slm: CA Service Level Management smmsnmpd Remote Command Execution Vulnerability (Exploit Windows)
+- d2sec_works7: Microsoft Works 7 WkImgSrv.dll ActiveX Remote Code Execution Vulnerability (Exploit Windows)
+- d2sec_ora_secback: Oracle Secure Backup Administration Server login.php Command Injection Vulnerability (Exploit Windows)
+- d2sec_lotus_domino_http: IBM Lotus Domino Web Server Accept-Language HTTP Header Buffer Overflow Vulnerability (Exploit Windows)
+- d2sec_fujitsu: Fujitsu HTTPD Server Directory Traversal Vulnerability (Exploit Solaris)
+
+canvas_modules - Updated
+- d2sec_clientinsider updated with new client side exploit from D2
+
+d2sec_modules - Added
+- d2sec_db2dasrrm: IBM DB2 Universal Database db2dasrrm Buffer Overflow Vulnerability (Exploit Linux)
+- d2sec_dasauto: IBM DB2 Universal Database dasauto Buffer Overflow Vulnerability (Exploit Linux)
+- d2sec_netgraph: FreeBSD netgraph and bluetooth Local Privilege Escalation Vulnerabilities (Exploit FreeBSD)
+
+d2sec_modules - Updated
+- updated CVE for d2sec_modules (see d2sec_modules/CVE.txt)
+
+version 1.12 January 5, 2009
+------------------------------
+
+canvas_modules: Added
+- d2sec_chm: Generic Malicous HTML HELP file (Exploit Windows)
+- d2sec_iprint2: Novell iPrint Client ienipp.ocx ActiveX Stack Overflow (Exploit Windows)
+- d2sec_trendoffice: Trend Micro OfficeScan 7.3 CGI Stack Overflow Vulnerability (Exploit Windows)
+- d2sec_cscript: Run scripts with cscript on a Windows Node (Tool Windows)
+- d2sec_sadmind: Solaris sadmind Buffer Overflow Vulnerability (Exploit Solaris)
+- d2sec_metakern: add sctp kernel memory disclosure (Exploit Linux)
+
+canvas_modules - Updated
+- d2sec_dominor5: bug fixed
+- d2sec_clientinsider updated with new client side exploit from D2
+- d2sec_unssh: change category to "Post-Intrusion"
+- d2sec_metakern: minor bug fixes
+- d2sec_ypupdated: minor updates and tested on Solaris 9 sparc
+- d2sec_urlbrute: minor updates 
+
+d2sec_modules - Added
+- d2sec_iso: NetBSD ISO(4) Buffer Overflow Vulnerability (Exploit NetBSD)
+- d2sec_mount: nmount(2) local arbitrary code execution Vulnerability (Exploit FreeBSD)
+
+d2sec_modules - Updated
+- d2sec_phpshell: add python extension 'safe_mode' Restriction Bypass Vulnerability
+
+version 1.11 December 1, 2008
+------------------------------
+
+canvas_modules - Added
+- d2sec_sapgui: SAP AG SAPgui mdrmsap.dll ActiveX Stack Overflow (Exploit Windows)
+- d2sec_saplpd: SAP AG SAPlpd 6.28 Stack Overflow (Exploit Windows)
+- d2sec_operaheap: Opera Web Browser file:// Heap Overflow (Exploit Windows)
+- d2sec_operaxss: Opera Web Browser History Search Input Validation Vulnerability (Exploit Windows)
+- d2sec_sshare: Run a MOSDEF trojan via a ssh shared session (Tool Linux)
+- d2sec_clientbackweb: Run a MOSDEF trojan via d2sec_backweb backdoor (Tool Linux)
+ 
+canvas_modules - Updated
+- d2sec_clientinsider now support NAT'd CANVAS interface
+- d2sec_clientinsider updated with new client side exploit from D2 and CANVAS
+- d2sec_solex improvements
+- d2sec_checkenv: bug fixes
+- d2sec_metakern: 
+		-> specify arch for each exploits (32 or 64)
+		-> can choose to check kernel version or to list all exploits
+
+d2sec_modules - Added
+- d2sec_netpr: Solaris netpr Buffer Overflow Vulnerability (Exploit Solaris)
+- d2sec_backweb:  a Apache remote backdoor to use with d2sec_clientbackweb (Tool Linux)
+
+d2sec_modules - Updated
+- d2sec_phpshell: add safe_mode bypass vulnerabilities (CVE-2008-2666 and CVE-2008-2665)
+- updated CVE for d2sec_modules (see d2sec_modules/CVE.txt)
+
+version 1.10 November 3, 2008
+------------------------------
+
+canvas_modules - Added
+- d2sec_metakern: add ptrace x86_64 ia32syscall emulation (Exploit Linux)
+- d2sec_clamav: Clamav Remote Code Execution Vulnerability (Exploit Linux)
+- d2sec_solex: Solaris local vulnerabilities scanner (Tool Solaris)
+- d2sec_hbdw: Hummingbird Deployment Wizard ActiveX Arbitrary Code Execution (Exploit Windows)
+
+canvas_modules - Updated
+- d2sec_clientinsider updated with new client side exploit from D2
+- d2sec_solex improvements
+- d2sec_backssh:
+    -> add FreeBSD support
+    -> bug fixes
+- d2sec_urlbrute: 
+    -> an urls file by application
+    -> add urls for SAP ITS application
+
+d2sec_modules - Added
+- d2sec_lotus: Owning Lotus Notes Server & Client (Tool Windows)
+- d2sec_phpshell: an evolved PHP script to upload (Tool) 
+- d2sec_ldaudit: Solaris Runtime Linker LD_AUDIT Privilege Escalation Vulnerability (Exploit Solaris)
+- d2sec_ext4: a PoC to hide/unhide a file on ext2/ext3 filesystem in userland mode (Tool Linux) 
+
+d2sec_modules - Updated
+- updated CVE for d2sec_modules (see d2sec_modules/CVE.txt)
+
+version 1.9 October 1, 2008
+------------------------------
+
+canvas_modules - Added
+- d2sec_jnlp: Generic Malicious Sun Java Web Start JNLP file (Exploit Windows)
+- d2sec_landesk_rc: [0 Day] LANDesk Management Suite 8.8 Remote Control Arbitrary File Writing Vulnerability (Exploit Windows)
+- d2sec_applet: Malicious Java Applet with arbitrary embedded binary (Exploit Windows)
+- d2sec_pdfbin: Generic Malicous PDF file with arbitrary embedded binary (Tool Windows)
+- d2sec_metakern: add vmsplice unchecked user-pointer dereference exploit (Exploit Linux)
+
+canvas_modules - Updated
+- d2sec_sunasp2: can specify a list of files to dump
+- d2sec_tomcat: can specify a list of files to dump
+- d2sec_urlbrute: add urls for fckeditor php application
+- d2sec_checkenv: change category to "Post-Intrusion"
+- d2sec_cmdline: improve 'suue' and 'send' commands
+- d2sec_clientinsider updated with new client side exploits from D2
+- d2sec_metakern:
+    -> fixed uploaded exploit name
+    -> fixed and improved gui
+    -> modified module category
+- create category "Web Exploits"
+
+d2sec_modules - Added
+- d2sec_backssh: a SSH client backdoor (Tool Linux/Solaris)
+- d2sec_clsuckit: a modified suckit client (golden oldie) (Tool Linux)
+- d2sec_priocntl: priocntl() System Call Local Root Vulnerability (Exploit Solaris)
+
+d2sec_modules - Updated
+- updated CVE for d2sec_modules (see d2sec_modules/CVE.txt)
+
+version 1.8 September 1, 2008
+------------------------------
+
+canvas_modules - Added
+- d2sec_pdf: Generic Malicious PDF File (Exploit Windows)
+- d2sec_javaws2: Sun Java Web Start Sandbox Bypass Vulnerability (Exploit Windows)
+- d2sec_msmask: Microsoft Visual Studio Msmask32.ocx ActiveX Stack Overflow (Exploit Windows)
+- d2sec_officescan: Trend Micro OfficeScan OfficeScanRemoveCtrl.dll ActiveX Stack Overflow (Exploit Windows)
+- d2sec_webex: WebEx Meeting Manager atucfobj.dll ActiveX Stack Overflow (Exploit Windows)
+- d2sec_tomcat: Apache Tomcat Directory Traversal Vulnerability (Exploit)
+- d2sec_mantis: Mantis Local File Include Vulnerability (Exploit Linux)
+- d2sec_scsnmp: SNMP Enumeration (Tool)
+
+canvas_modules - Updated
+- d2sec_clientinsider updated with new client side exploits from D2 and some improvements
+- d2sec_urlbrute: can specify a cookie and urls list upgraded
+- d2sec_cmdline:
+    -> can run a command for one, multiple or all nodes
+    -> can run a Canvas module from d2sec_cmdline
+
+d2sec_modules - Added
+- d2sec_errpt: AIX errpt Local Buffer Overflow (Exploit AIX)
+- d2sec_diag: AIX diag Local Privilege Escalation Vulnerability (Exploit AIX)
+
+d2sec_modules - Updated
+- d2sec_invscout: tested on AIX 5.2
+
+version 1.7 August 1, 2008
+-----------------------------
+
+canvas_modules - Added
+- d2sec_nessus: D2 Nessus Report Analyzer (Tool)
+- d2sec_ffmosdef: Malicious Firefox extension downloading and executing a MOSDEF trojan (Tool Windows/Linux)
+- d2sec_snpvw1: Microsoft Office Snapshot Viewer ActiveX Vulnerability - English Version (Exploit Windows)
+- d2sec_snpvw2: Microsoft Office Snapshot Viewer ActiveX Vulnerability - Generic Version (Exploit Windows)
+- d2sec_alphastor_lm: EMC AlphaStor Library Manager Remote Command Execution Vulnerability (Exploit Windows)
+- d2sec_urlbrute: HTTP Urls brute forcer (Tool)
+- d2sec_metakern: 
+    -> metakern is now a canvas module
+    -> add ptrace/execve race condition exploit for kernel 2.2.x 
+
+canvas_modules - Updated
+- d2sec_clientinsider updated with new client side exploits from D2 and some improvements
+- d2sec_smbmosdef improvements
+
+d2sec_modules - Added
+- d2sec_invscout: AIX invscout Local Command Execution Vulnerability (Exploit AIX)
+
+d2sec_modules - Updated
+- updated CVE for d2sec_modules (see d2sec_modules/CVE.txt)
+- d2sec_metakern deleted from d2sec_modules
+- d2sec_diagrpt: improve exploitation
+
+version 1.6 July 1, 2008
+-----------------------------
+
+canvas_modules - Added
+- d2sec_sunasp1: Sun Java System Active Server Pages Information Disclosure Vulnerability (Exploit Solaris)
+- d2sec_sunasp2: Sun Java System Active Server Pages Directory Traversal Vulnerability (Exploit Solaris)
+- d2sec_snmpv3: SNMP version 3 HMAC Authentication Vulnerability (Exploit)
+- d2sec_hpovas: HP OpenView Network Node Manager 7.5.3 Stack Overflow (Exploit Windows)
+- d2sec_gw7: Novell GroupWise mailto URI Handler Stack Overflow (Exploit Windows)
+- d2sec_activex: Malicious HTTP/HTTPS MOSDEF ActiveX (Exploit Windows)
+- d2sec_ciscoipm: Cisco CiscoWorks Internetwork Performance Monitor Remote Command Execution Vulnerability (Exploit Windows)
+- d2sec_ciscoipm2: Cisco CiscoWorks Internetwork Performance Monitor Local Privilege Escalation Vulnerability (Exploit Windows)
+- d2sec_rshmosdef: Run a MOSDEF trojan via a RSH session (Tool)
+
+canvas_modules - Updated
+- d2sec_cmdline:
+    -> exec command bug fix
+- d2sec_lotus_scan:
+    -> can specify host in HTTP header
+    -> bug fix
+- d2sec_clientinsider updated with new client side exploits from D2
+    
+d2sec_modules - Updated
+- d2sec_metakern:
+    -> add ptrace/setuid exec exploit for kernel 2.2.x
+    
+version 1.5 June 1, 2008
+-----------------------------
+
+canvas_modules - Added
+- d2sec_smbmosdef: Run a MOSDEF trojan via a SMB session (Tool)
+- d2sec_kwedit: SAP EnjoySAP KWEdit.DLL ActiveX Stack Overflow (Exploit Windows)
+- d2sec_akamai: Akamai Download Manager ActiveX Control Remote Code Execution Vulnerability (Exploit Windows)
+- d2sec_download: Automatic HTTP MOSDEF trojan download (Exploit Windows)
+- d2sec_creative: Creative Software AutoUpdate Engine ActiveX Stack Overflow (Exploit Windows)
+- d2sec_clientinsider: Mailer added in D2 Client Insider (Tool)
+
+canvas_modules - Updated
+- d2sec_execwrapper: can choose MOSDEF binary path
+- d2sec_cmdline:
+    -> compliant with Canvas and paramiko
+- d2sec_sshmosdef:
+    -> compliant with Canvas and paramiko
+    -> add rsa and dsa authentications 
+    -> some fixes  
+- d2sec_clientinsider: updated with HTTPS MOSDEF option and new client side exploits from D2 and Immunity
+- d2sec_lotus_scan: GUI improvement
+- all client side exploit modules updated and optimized for HTTPS MOSDEF
+
+d2sec_modules - Added
+- d2sec_sutrojan: su trojan horse for Linux (Tool)
+
+version 1.4 May 1, 2008
+-----------------------------
+
+canvas_modules - Added
+- d2sec_ypupdated: Solaris <= 10 rpc.ypupdated Command Execution Vulnerability (Exploit Solaris)
+- d2sec_dsadmin: RedHat Administration Server Command Execution Vulnerability (Exploit Linux)
+- d2sec_realconsole: RealNetworks RealPlayer rmoc3260.dll ActiveX Control Memory Corruption (Exploit Windows)
+- d2sec_facebook: Facebook Photo Uploader 4 ImageUploader4.1.ocx ActiveX Stack Overflow (Exploit Windows)
+- d2sec_ms08_017: Microsoft Office Web Components ActiveX Stack Overflow (Exploit Windows)
+- d2sec_ms07_055: Microsoft Windows Kodak Image Viewer Remote Code Execution Vulnerability (Exploit Windows)
+- d2sec_hprules: HP Software Update RulesEngine.dll ActiveX Arbitrary Code Execution Vulnerability (Exploit Windows)
+- d2sec_sshmosdef: Run a MOSDEF trojan via a SSH session (Tool)
+- d2sec_clientinsider: HTTP/HTTPS Server & Tools for automation of client side vulnerabilities exploitation (Tool)
+
+canvas_modules - Updated
+- all client side exploit modules updated and optimized for D2 Client Insider and HTTP MOSDEF
+- d2sec_dhcpd: add OpenBSD arch
+- d2sec_unssh:
+    -> improve hashed known_hosts files brute-force
+    -> fastest execution time
+    -> some fixes 
+- d2sec_cmdline:
+    -> can log session (shellshock for ex.)
+    -> add commands suue, ssh, sftp and srm
+    -> can interact with all nodes
+    -> some fixes
+    
+d2sec_modules - Added
+- d2sec_pam_auth: Red Hat 'capp-lspp-config' Local Privilege Escalation Vulnerability (Exploit Linux)
+
+version 1.3 April 1, 2008
+-----------------------------
+
+canvas_modules - Added
+- d2sec_dominor5: IBM Lotus Domino HTTP Authentication Logging Stack Overflow (Exploit Windows)
+- d2sec_notes_userid: IBM Lotus Notes User.ID File Key Information Disclosure Vulnerability (Exploit)
+- d2sec_real_wallclock: RealPlayer ParseWallClockValue Stack Overflow Vulnerability (Exploit Windows)
+- d2sec_ciscoucp: Cisco User-Changeable Password (UCP) Stack Overflow (Exploit Windows)
+- d2sec_calistctrl: CA BrightStor ListCtrl ActiveX Stack Overflow (Exploit Windows)
+- d2sec_javaws: Sun Java Web Start Untrusted Application Vulnerability (Exploit Windows)
+- d2sec_vmpegasus: VMware ESX Server OpenPegasus Stack Overflow Vulnerability (DoS)
+- d2sec_cmdline: A 'commandlineinterface' for CANVAS GUI (Tool)
+
+canvas_modules - Updated
+- d2sec_lotus_scan: 
+    -> improve Lotus Domino version detection
+    -> some fixes
+- d2sec_execwrapper: 
+		-> IBM Lotus Notes Local Insecure Default Directory Permissions exploit
+		-> Cisco VPN Client for Windows Local Privilege Escalation exploit
+		-> can use a MOSDEF Trojan or cmd.exe
+		-> some fixes
+- d2sec_maxdb: add an automatic MOSDEF trojan download and exec for Linux
+- d2sec_unssh:
+    -> improve hashed known_hosts files brute-force
+    -> some fixes 
+- d2sec_lotus_domino: Find socket shellcode for HTTPS
+
+d2sec_modules - Added 
+- d2sec_bigbrother: Generic Local Exploit for Linux, see README for information (Tool)
+      -> ldapscripts Local Command Line Information Disclosure Vulnerability (Linux)
+      
+d2sec_modules - Updated
+- d2sec_metakern:
+    -> add bluetooth exploit
+    
+version 1.2 March 3, 2008
+-----------------------------
+
+canvas_modules - Added
+- d2sec_lotus_scan: Lotus Notes Scanner (Tool)
+- d2sec_execwrapper: Generic Local Exploit (Tool)
+    -> VMware Workstation Path Specification Local Privilege Escalation Vulnerability (Windows)
+    -> VMware Products Shared Folders Variant Directory Traversal Vulnerability (Windows)
+- d2sec_maxdb: SAP MaxDB cons.exe Remote Command Injection Vulnerability (Exploit Windows/Linux)
+- d2sec_yahoomjb: Yahoo! Music Jukebox datagrid.dll ActiveX Stack Overflow (Exploit Windows)
+- d2sec_xupload: Persits Software XUpload ActiveX Stack Overflow (Exploit Windows)
+- d2sec_myspace: MySpace Uploader MySpaceUploader.ocx ActiveX Stack Overflow (Exploit Windows)
+- d2sec_iprint: Novell iPrint Client ienipp.ocx ActiveX Stack Overflow (Exploit Windows)
+- d2sec_incredimail: IncrediMail IMMenuShellExt ActiveX Stack Overflow (Exploit Windows)
+
+canvas_modules - Updated
+- all exploit modules updated with CVE Identifier
+- all exploit modules updated according to new filetree (/3rdparty/D2SEC)
+- d2sec_lotus_domino: HTTPS support
+
+d2sec_modules - Added
+- d2sec_citerm: Owning Citrix & Terminal Services Client Tool
+
+d2sec_modules - Updated
+- all exploit modules updated with CVE Identifier
+- all exploit modules updated according to new filetree (/3rdparty/D2SEC)
+- d2sec_metakern:
+    -> add vmsplice exploit
+    -> add CVE references by exploit (see file CVE.txt)
+    -> some fixes
+
+version 1.1 February 1, 2008
+-----------------------------
+
+canvas_modules - Added
+- d2sec_dhcpd: ISC dhcp-2 Stack-based Buffer Overflow (DoS)
+- d2sec_lighttpd1: Lighttpd Remote CGI Script Disclosure (Exploit Linux)
+- d2sec_lighttpd2: Lighttpd Script Source Disclosure (Exploit Windows)
+- d2sec_lighttpd3: Lighttpd Mod_FastCGI Request Headers Remote Header Overflow (Exploit Linux)
+- d2sec_imasrv: Citrix Metaframe Presentation Server 4.0 IMA Service Heap overflow vulnerability (Exploit Windows)
+- d2sec_hpinfo: HP Info Center HPInfoDLL.DLL ActiveX Arbitrary Code Execution Vulnerability (Exploit Windows)
+- d2sec_jetflext: COWON America jetAudio JetFlExt.dll ActiveX Arbitrary Code Execution Vulnerability (Exploit Windows)
+- d2sec_pdwizard: Microsoft Visual Studio PDWizard.ocx ActiveX Arbitrary Code Execution Vulnerability (Exploit Windows)
+- d2sec_vmvielib: VMware Vielib.DLL ActiveX Arbitrary Code Execution Vulnerability (Exploit Windows)
+
+canvas_modules - Updated
+- d2sec_cahsm: fix exploit name
+- d2sec_uripdf: improvement of file4hta.py
+
+d2sec_modules - Added
+- d2sec_ncnwfs: [0 Day] Novell Client 4.91 SP1-SP4 NWFS IOCTL Local Privilege Escalation
+
+d2sec_modules - Updated
+- d2sec_metakern:
+    -> add proc_control exploit for /proc control vulnerability
+    -> fix help stdout (metakern -h)

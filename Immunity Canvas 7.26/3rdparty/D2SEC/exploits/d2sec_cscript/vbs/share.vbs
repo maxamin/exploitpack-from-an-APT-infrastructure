@@ -1,0 +1,20 @@
+'
+' Proprietary D2 Exploitation Pack source code - use only under the license
+' agreement specified in LICENSE.txt in your D2 Exploitation Pack
+'
+' Copyright DSquare Security, LLC, 2007-2009
+'
+
+strComputer = "."
+Set objWMIService = GetObject("winmgmts:" _
+     & "{impersonationLevel=impersonate}!\\" & strComputer & "\root\cimv2" )
+
+Set colShares = objWMIService.ExecQuery("Select * from Win32_Share" )
+
+For each objShare in colShares
+	Wscript.Echo "[#] Name: " & objShare.Name 
+	Wscript.Echo "Allow Maximum: " & objShare.AllowMaximum 
+	Wscript.Echo "Caption: " & objShare.Caption 
+	Wscript.Echo "Maximum Allowed: " & objShare.MaximumAllowed
+	Wscript.Echo "Path: " & objShare.Path 
+Next

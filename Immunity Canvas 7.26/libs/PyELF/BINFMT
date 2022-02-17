@@ -1,0 +1,36 @@
+The POUVELF binary format is basically a reinterpretation of the ELF binary
+format that is compatible with a simplified userland elf loader.
+
+The approach is similar to the one taken in the Self project by Pluf & Ripe,
+and similar prior work in ul_exec by the grugq. But has been completely
+written from scratch to work with modern glibc static binaries and driven by
+a pure-python Elf parser.
+
+The POUVELF loader currently only handles static ELF binaries. But has been
+modernized to be able to deal with PT_TLS sections. It supports both 32bit
+and 64bit Linux ELF binaries.
+
+POUVELF object format:
++---------------------+
+|       e_entry       |
++---------------------+
+|       e_phoff       +
++---------------------+ 
+|      _dl_phdr       |
++---------------------+
+|      _dl_phnum      |
++---------------------+
+|      _dl_random     |
++---------------------+
+|      hdr_count      |
++---------------------+ 
+|      hdr + data     |
++---------------------+
+|      ...            |
++---------------------+
+|      hdr + data     |
++---------------------+
+|      orig phdrs     |
++---------------------+
+
+

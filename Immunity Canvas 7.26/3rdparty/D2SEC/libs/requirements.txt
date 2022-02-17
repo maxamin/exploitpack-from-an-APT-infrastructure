@@ -1,0 +1,6 @@
+D2SEC Exploitation Pack needs pycrypto. See here:
+http://www.amk.ca/python/code/crypto.html
+
+On Windows, you can find instructions on downloading and installing
+pycrypto for your Python here:
+http://www.voidspace.org.uk/python/modules.shtml#pycrypto

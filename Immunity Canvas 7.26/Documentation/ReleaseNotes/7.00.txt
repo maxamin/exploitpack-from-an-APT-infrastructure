@@ -1,0 +1,63 @@
+########################################################################
+#                       *CANVAS Release 7.00*                          #
+########################################################################
+
+*Date*: 31 March 2015
+
+*Version*: 7.00
+
+*Download URL*: https://canvas.immunityinc.com/cgi-bin/getcanvas.py
+
+*Release Notes*:
+
+In this CANVAS release we are bringing you 2 new modules, several modules
+update and bugfixes.
+Our new modules include ms14_064 (Windows OLE Automation Array Remote Code Execution)
+and a new shareenum_ng (based on our old shareenum module, we added multithreading
+and support for targets/netmask).
+
+==Changes==
+
+o x64linuxremoteresolver fixes
+
+o x86 opcode generation fix
+
+o mosdefmigrate fix
+
+o report node id on listener shell
+
+o kerberos_ticket_list, kerberos_ticket_export
+ o 64bit support for Linux
+ o massive tickets extraction
+ o enabling TGT extraction using registry
+
+o psexec bugfix
+
+o info_sessions module update (now displaying sessionID)
+
+o smbclient now supports kerberos
+
+o shareenum now supports kerberos and fixed a bug on Windows 2008
+
+==New Modules==
+
+o ms14_064_ie_oleaut32
+
+o shareenum_ng
+
+
+*CANVAS Tips 'n' Tricks*:
+
+That red text you see whenever you get a shell is pulled from fortunes.txt.
+You can safely remove that file if you prefer not to see it or add quotes from
+your own team!
+
+*Links*:
+
+Support email       : support@immunityinc.com
+Sales support       : sales@immunityinc.com
+Support/Sales phone : +1 786-220-0600
+
+
+########################################################################
+########################################################################

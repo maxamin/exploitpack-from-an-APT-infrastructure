@@ -1,0 +1,65 @@
+########################################################################
+#                       *CANVAS Release 6.62*                          #
+########################################################################
+
+*Date*: 17 September 2010 
+
+*Version*: 6.61 ("Tornado")
+
+*Download URL*: https://canvas.immunityinc.com/cgi-bin/getcanvas.py
+
+*Release Notes*:
+
+
+==Changes==
+
+o NTP OS Detection now included.
+
+o PELib now creates much larger (but more compatible) PE Files.
+
+o MS10_048 now supports x64 targets (against all Windows platforms)
+
+==New Modules==
+
+ms10_061 - This exploit works well against Windows XP boxes where a
+printer is shared - likewise, other Windows machines may be vulnerable
+(see the Microsoft note in the Documentation for more information). It
+will automatically load MOSDEF on the target machine.
+
+flash_wild2 - This exploit requires that the target machine does not
+have DEP, but it is not currently patched.
+
+trendmicro_setowned - This exploit bypasses DEP on vulnerable Trend
+Micro installations.
+
+quick_punk - This exploit also bypasses DEP, and has recently been
+patched by the vendor.
+
+CF_directory_traversal - This exploit will target Cold Fusion on all
+vulnerable versions and platforms. See
+http://www.immunityinc.com/webex.shtml for a demo of this exploit in
+action.
+
+acrobat_ttf_sing - This exploit bypasses DEP and ASLR and is currently
+unpatched.
+
+xampp_webdav - This exploit looks for servers with the default XAMPP
+WebDav password
+
+*Forum*
+Still at https://forum.immunityinc.com/ . Useful for all your many questions!
+
+*CANVAS Tips 'n' Tricks*:
+
+Sometimes avoiding an AV/HIDS is as simple as binding your callback to a port that is not
+port 25.
+
+*Links*:
+
+Support email      : support@immunityinc.com
+Sales support      : sales@immunityinc.com
+Support/Sales phone: +1 786-220-0600
+
+
+########################################################################
+########################################################################

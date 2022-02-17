@@ -1,0 +1,151 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2010
+#
+
+import sys, os
+import datetime
+
+sys.path.append(".")
+sys.path.append(os.path.join(os.getcwd(), '3rdparty/D2SEC/libs'))
+sys.path.append(os.path.join(os.getcwd(), '3rdparty/D2SEC/d2sec_modules/All/d2sec_django'))
+
+import socket
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+import proto.http
+
+# Django
+os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
+try:
+  import www.database
+except:
+  pass
+
+# GUI info
+NAME = "HTTP Fingerprint"
+DESCRIPTION = "Fingerprint an HTTP Server" 
+VERSION="1.0"
+
+DOCUMENTATION = {}
+DOCUMENTATION['VENDOR'] = ""
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION['Date public'] = ""
+DOCUMENTATION['References'] = ""
+DOCUMENTATION['Versions Affected'] = ""
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = ""
+DOCUMENTATION["CVE Url"] = ""
+DOCUMENTATION["Notes"] = """ 
+
+This tool fingerprints HTTP servers by sending a long request to them
+and examining the 414 Response.
+
+Use dbsave argument to save results in a django database (module d2sec_django).
+"""
+
+PROPERTY={}
+PROPERTY['TYPE'] = 'Recon'
+PROPERTY['SITE'] = 'Remote'
+
+FINGERPRINT = {}
+FINGERPRINT['Lighttpd']     = 76943 # Tested on lighttpd 1.4.19
+FINGERPRINT['Apache']       = 8177 
+FINGERPRINT['IIS']          = 16383
+FINGERPRINT['Squid']        = 32652
+FINGERPRINT['GWS (Google)'] = 2048
+ 
+class theexploit(tcpexploit):
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.name = NAME
+    self.host = ''
+    self.port = 80
+    self.https = 0
+    self.website = self.host
+    self.useragent = "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)"
+    self.proxy_host = ""
+    self.proxy_port = 0
+    self.dbsave = 0
+    self.h = None
+    
+  def getArgs(self):
+    self.host = self.target.interface
+    self.port = int(self.argsDict.get('port',self.port))
+    self.https = int(self.argsDict.get("https",self.https))
+    self.website = self.argsDict.get("website",self.website)
+    if not self.website:
+      self.website = self.host
+    self.proxy_host = self.argsDict.get("hproxy",self.proxy_host)
+    self.proxy_port = self.argsDict.get("pproxy",self.proxy_port)
+    self.dbsave = int(self.argsDict.get("dbsave",self.dbsave))
+    return 0
+
+  def init_http_request(self):
+    self.h.setheaders('Host', self.website)
+    self.h.setheaders('User-agent', self.useragent)
+
+  def httpfingerprint(self, url):
+    self.h.cnx = self.h.connect()
+    if self.h.cnx == None:
+    	return 0
+    resp = self.h.request("GET", url)
+    print resp.status
+    if resp != None and resp.status == 414:
+    	return 414
+    self.h.cnx.close()
+    return 0
+
+  def run(self):
+    if self.getArgs():
+    	self.setInfo(' %s attacking %s - done (failed)' % (NAME,self.host,self.port))
+    	return 0
+
+    self.log('[D2 LOG] %s running against %s:%d' % (NAME,self.host,self.port))
+    self.setInfo('%s attacking %s:%d - running' % (NAME,self.host,self.port))
+
+    self.h = proto.http.apihttp(self.host, self.port)
+    if self.https: self.h.usehttps(https)
+    if self.proxy_host and self.proxy_port != 0: self.h.setproxy(self.proxy_host, self.proxy_port)
+    self.init_http_request()
+
+    server = ''
+
+    for httpd, size in FINGERPRINT.iteritems():
+    	i = self.httpfingerprint('/'+"A"*size)
+    	if i == 414:
+    		server = httpd
+    		break
+
+    if server:	
+    	self.result = "HTTP Server: %s" % server
+    else:
+    	self.result = "HTTP Server: unknown"
+    self.log(self.result)
+
+    if self.dbsave:
+      try:
+        self.db = www.database.db()
+        target  = self.db.db_unique_host(title=self.host, host=self.host)
+        service = self.db.db_unique_service(target, '%d/tcp' % self.port)
+        info    = self.db.db_unique_info(target, service, 'HTTP Server Fingerprint', 'd2sec_httpfingerprint', server)
+      except Exception, e:
+        self.log('[D2 LOG] %s' % e)
+        self.log('[D2 LOG] Django (http://www.djangoproject.com/) installed ?')
+
+    self.setInfo('%s attacking %s:%d - done' % (NAME,self.host,self.port))
+    return 1
+
+  def usage(self):
+    print 'Usage: %s -t host -p port -O https:[0|1] -O website:url -O hproxy:host -O pproxy:port -O dbsave:[0|1]' % (sys.argv[0])
+    return
+
+if __name__ == '__main__':
+  print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

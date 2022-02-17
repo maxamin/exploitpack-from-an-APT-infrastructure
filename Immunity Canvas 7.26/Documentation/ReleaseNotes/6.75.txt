@@ -1,0 +1,65 @@
+########################################################################
+#                       *CANVAS Release 6.75*                          #
+########################################################################
+
+*Date*: 29 December 2011
+
+*Version*: 6.75 ("Formless")
+
+*Download URL*: https://canvas.immunityinc.com/cgi-bin/getcanvas.py
+
+*Release Notes*:
+
+This release comes with 4 new exploits. First, we have pdf_u3d, a
+clientside for the recently disclosed Adobe Reader U3D vulnerability.
+An excellent way to gain access on systems that use the Adobe Reader
+plugin in their browsers.
+
+Our second new exploit, plone, is a remote command execution module
+that will pop up a MOSDEF node against Linux systems that run the
+vulnerable Plone/Zope setup.
+
+Finally, our two new Windows kernel local privilege escalation
+exploits, ms11_080 and ms11_098, cover the whole gamut of Windows systems
+from XP up to 7.
+
+
+==Changes==
+
+o Improvements to command line
+
+o Improvements to mysqllib
+
+o Improvements to Android MOSDEF & listener
+
+
+==New Modules==
+
+o pdf_u3d (Adobe Acrobat Reader U3D exploit)
+
+o plone (Plone/Zope Remote Command Execution)
+
+o ms11_080 (AfdJoinLeaf Pointer Overwrite Local Privilege Escalation)
+
+o ms11_098 (Windows Kernel Exception Handler Privilege Escalation)
+
+
+*Forum*
+
+Still at https://forum.immunityinc.com/ . Useful for all your many questions!
+
+*CANVAS Tips 'n' Tricks*:
+
+Web application vulnerabilities are often the easiest way into a target
+network and our new Plone/Zope exploit offers reliable remote exploitation
+through a blind command execution window. Try it and see how easy it is!
+
+*Links*:
+
+Support email      : support@immunityinc.com
+Sales support      : sales@immunityinc.com
+Support/Sales phone: +1 786-220-0600
+
+
+########################################################################
+########################################################################

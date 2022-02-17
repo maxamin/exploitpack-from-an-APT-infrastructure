@@ -1,0 +1,15 @@
+#
+# Short DNS host file for iterator, each entry gets 47 combinations 
+# (i.e. www1, www2, wwwa, wwwb, etc)
+www
+web
+stmp
+email
+mail
+irc
+ns
+ftp
+pc
+server
+vpn
+citrix

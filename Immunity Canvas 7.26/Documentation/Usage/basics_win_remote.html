@@ -1,0 +1,265 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Exploiting Windows Remotely &mdash; Immunity CANVAS 1 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="Immunity CANVAS 1 documentation" href="index.html"/>
+        <link rel="next" title="Exploiting Windows Locally (Privilege Escalation)" href="basics_win_local.html"/>
+        <link rel="prev" title="CANVAS Basic Usage" href="canvas_basics.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Immunity CANVAS
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="license.html">CANVAS EULA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installing CANVAS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="terminology.html">Terminology</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_intro.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_basics.html">CANVAS Basic Usage</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Exploiting Windows Remotely</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#select-the-target-host">Select The Target Host</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scan-the-target-host">Scan The Target Host</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#exploit-the-target-host">Exploit The Target Host</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="basics_win_local.html">Exploiting Windows Locally (Privilege Escalation)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basics_clientside.html">Exploiting Client-Side Vulnerablities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="post_exploitation.html">Post-Exploitation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_tips.html">Canvas Tips and Tricks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_videos.html">Canvas Video Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_advanced.html">CANVAS Advanced Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_strategic.html">CANVAS Strategic</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">Immunity CANVAS</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Exploiting Windows Remotely</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/basics_win_remote.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="exploiting-windows-remotely">
+<h1>Exploiting Windows Remotely<a class="headerlink" href="#exploiting-windows-remotely" title="Permalink to this headline">¶</a></h1>
+<p>Suppose we are in a network and our goal is to scan, identify and exploit some Windows machines, remotely. There are many different modules targeting Windows machines available in Canvas, aimed at different versions of Windows. Of course it very rare to find a Windows machine exposed over the Internet that is vulnerable to some old known RPC vulnerablitie, but auditing and penetration testing internal networks is a different story. It is likely that in larger networks you discover systems vulnerable to issues from a few years back.</p>
+<p>In this example scenario, we will be using the exploit module for Windows Server Service (MS08-67) against a Windows 2003 Server virtual machine. While it is a rather old and outdated OS, it servers the purpose of demonstration well.</p>
+<div class="section" id="select-the-target-host">
+<h2>Select The Target Host<a class="headerlink" href="#select-the-target-host" title="Permalink to this headline">¶</a></h2>
+<p>Once the VM is up and running, we obtain the IP address of the server, and add it to Canvas as a new host using <em>Target Host</em> button in the GUI. This will also make it our default target automatically. Depending on your environment and VM networking configurations, you might need to select the right network interface in Canvas, as the call-back interface. If the VM is configured to use <em>NAT</em> network connectivity, you should also select the relevant virtual interface in Canvas.</p>
+<p>In this example our Windows VM is running with the IP address 172.16.249.146. So By right-clicking
+on the <em>LocalNode</em> in the <em>Node Management</em> tab, we select the right interface, which would be 172.16.249.1.</p>
+<img alt="_images/canvas_target_selected.png" src="_images/canvas_target_selected.png" />
+</div>
+<div class="section" id="scan-the-target-host">
+<h2>Scan The Target Host<a class="headerlink" href="#scan-the-target-host" title="Permalink to this headline">¶</a></h2>
+<p>Once we add the target to our Canvas knowledge, we want to know what ports are open on it, and what services are running behind them. While most people would prefer to use tools such as Nmap for this purpose, and we do recommend that as well, there is a port-scan module provided in Canvas that can identify open ports using different port scanning techniques (SYN, FIN, XMAS, NULL). This module is also capable of fingerprinting the web server if any HTTP service is found, as well as performing an extensive DCE-RPC fingerprinting, which is basically done by running <em>ifids</em> module automatically in the background, against any open RPC ports on Windows.</p>
+<img alt="_images/canvas_portscan.png" src="_images/canvas_portscan.png" />
+<p>You can monitor the progress of the module execution in the <em>Current Status</em> tab in the GUI. Results of the module will be printed in the <em>Canvas Log</em> tab. You will get results similar to this:</p>
+<img alt="_images/canvas_portscan_results.png" src="_images/canvas_portscan_results.png" />
+<p>While the main goal of this module is to identify open ports, scanning and fingerprinting RPC can be a very useful and effective way to fingerprinting the remote Windows system.</p>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">It is important to select &#8216;ifids&#8217; DCE-RPC enumeration module on all open RPC ports. Different software and services bind to different ports, so enumeration will get different results from each port. Enumerated ids can be reliably linked to specific services or software running on the machine. An easy way to identify unknown ids is to simply search them in Google! For example there are certain ifids exposed, only of the machine is a domain controller, the ifids <em>c6c94c23-538f-4ac5-b34a-00e76ae7c67a</em> represents Avast Anti-virus RPC server.</p>
+</div>
+<p>We can also use the <code class="docutils literal"><span class="pre">osdetect</span></code> module in Canvas, which uses a combination of methods to reliably detect the version of remote system. In case of Windows, based results from identified web server and open shares via SMB service, the module identifies the version. In this case the version is correctly identified as Windows 2003 SP1.</p>
+<img alt="_images/canvas_osdetect.png" src="_images/canvas_osdetect.png" />
+</div>
+<div class="section" id="exploit-the-target-host">
+<h2>Exploit The Target Host<a class="headerlink" href="#exploit-the-target-host" title="Permalink to this headline">¶</a></h2>
+<p>Now that we have confirmed the availability of some services, as well as exact version of Windows, we can proceed with using an exploit against it.</p>
+<p>By either using the search feature in the GUI, or browsing through list of modules select the <code class="docutils literal"><span class="pre">ms08_067</span></code> module. It is located in <em>Exploits &gt; Remote &gt; Windows &gt; Windows
+2003 &gt; ms08_067</em>. After running the module, a window showing options available for this specific module will be shown. Options are module specific and are other modules might have different options and requirements to specify before launching the exploit. Note that the value for the &#8216;Host&#8217; is not editable at this window and Canvas will not use the new IP address you change it here.</p>
+<blockquote>
+<div><img alt="_images/canvas_ms08067.png" src="_images/canvas_ms08067.png" />
+</div></blockquote>
+<p>When possible, Canvas takes care of version detection automatically so there is no need to worry about which version of payload to select unless you are already certain about it. In this case we leave the option <em>Autoversioning</em> as selected.</p>
+<p>By confirming the settings we proceed with exploitation. You will start seeing a Log of actions Canvas is performing in te <em>Canvas Log</em> tab, to prepare the payload, send the exploit and wait for the call-back connection from MOSDEF. Once exploitation process is finished, you will see a &#8216;Listener-shell&#8217; window pop up, which allow us interact with the exploited machine to perform actions such as running commands or upload/download files.</p>
+<img alt="_images/canvas_ms08067_success.png" src="_images/canvas_ms08067_success.png" />
+<p>Each successfully exploited host, appears as a new circle in the <em>Node Tree</em> tab.  From this tab, you can perform actions against the new node, such as selecting them as the Current target, using their network interfaces as your Callback interface, or if you have more than one node, select a group of them to run a module against all of them at the same time.</p>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">You can use +/- keys to zoom in or out in the Node Tree, or use the <em>Delete</em> key to delete selected node. Deleting a node will also remove all of its child nodes and you will loose access to that node. Pressing &#8220;L&#8221; will pop up a new Listener window linked to the currently selected host.</p>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">Pay attention to each exploit&#8217;s description provided in the GUI. There is a section titled <em>REPEATABILITY</em> which notes whether you can re-use the
+same exploit against the same machine multiple times, without requiring a restart of service or OS. When repeatablity is listed as <em>infinity</em>, it means
+you can exploit the target multiple times. Some exploits might list <em>Single-Shot</em> in this section. This means you only have once chance to exploit the remote service. Even if the exploit succeeds, you will not be able to exploit the same machine again, until it is restarted. Not all memory corruption vulnerabilities can be exploited with very high reliability.</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="basics_win_local.html" class="btn btn-neutral float-right" title="Exploiting Windows Locally (Privilege Escalation)" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="canvas_basics.html" class="btn btn-neutral" title="CANVAS Basic Usage" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Immunity Inc..
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

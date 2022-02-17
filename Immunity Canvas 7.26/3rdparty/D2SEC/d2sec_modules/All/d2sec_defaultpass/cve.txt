@@ -1,0 +1,16 @@
+# Vendor;Model;Version;Access Type;Username;Password;Privileges;Notes;CVE
+PolyVision;RoomWizard;Firmware 3.2.3 (Model RW10);HTTP;admin;roomwizard;Admin;;CVE-2010-0214
+CA;ARCServe;D2D r15;HTTP (port 8014);admin;axis2;Admin;;
+SAP;BusinessObjects Enterprise XI;3.2;HTTP (port 8014);admin;axis2;Admin;;
+HP;Universal CMDB Server;9.0;HTTP;admin;admin;Admin;;
+HP;MSA2000 G3 SAN;;;admin;!admin;Admin;;
+Camtron/TecVoz;CMNC-200 Full HD IP Camera;V1.102A-008 / Board ID 66;Telnet;root;m;;;CVE-2010-4233
+Linksys;WAP54Gv3;Firmware 3.04.03;HTTP;Gemtek;gemtekswd;;;CVE-2010-1573
+Cisco;Tandberg C Series Endpoints, Tandberg E and EX Personal Video;<TC4.0.0;HTTP;root;(none);;;CVE-2011-0354
+Open Mesh;;;SSH;root;0p3nm35h;root;;
+WAGO;I/O System 758 model;758-870, 758-874, 758-875, and 758-876 Industrial PC (IPC);HTTP;Admin;wago;Admin;;CVE-2012-3013
+WAGO;I/O System 758 model;758-870, 758-874, 758-875, and 758-876 Industrial PC (IPC);HTTP;User;user;;;CVE-2012-3013
+WAGO;I/O System 758 model;758-870, 758-874, 758-875, and 758-876 Industrial PC (IPC);HTTP;Guest;guest;;;CVE-2012-3013
+Symantec;Messaging Gateway;9.5;SSH;support;symantec;;;CVE-2012-3579
+3Com;OfficeConnect ADSL Wireless 108Mbps 11g Firewall Router;3CRWDR200A-75_v3.6.14_WW;HTTP;admin;admin;Admin;;;
+SAP;SAP BusinessObjects;;HTTP;admin;axis2;Admin;;CVE-2010-0219

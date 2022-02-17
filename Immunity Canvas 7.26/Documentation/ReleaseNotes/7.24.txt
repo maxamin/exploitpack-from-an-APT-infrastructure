@@ -1,0 +1,89 @@
+########################################################################
+#                       *CANVAS Release 7.24*                          #
+########################################################################
+
+*Date*: 10 December 2019
+
+*Version*: 7.24
+
+*Download URL*: https://canvas.immunityinc.com/getcanvas
+
+*Release Notes*:
+
+In this CANVAS release we are bringing you five new modules and bugfixes.
+
+Our new modules include two Local Privilege Escalation modules targeting Windows 10,
+two Remote Code Execution modules targeting Jenkins and vBulletin and an exploit
+for Confluence (LFI).
+
+We are also pushing a lot of bugfixes and updates in order to add support for
+Windows 64bit to old modules and be compatible with GetSystem.
+
+
+==Changes==
+
+o linux installer improvements (prompt-toolkit installation)
+ o prompt-toolkit installation
+ o Documentation has been updated
+
+o BLUEKEEP payload improvements (stability)
+
+o idrac_appweb_rce improvements and BINDSHELL payload support
+
+o auto_lpe_windows improvements
+
+o Commands updated to support 64bit
+ o hw_enum
+ o callbackloop
+ o cleareventlog
+ o recordaudio
+ o drinkcoaster
+ o getallprocessdata
+ o keylogmem
+ o keylog
+ o checkvm
+
+o GetSystem fixes and improvements
+ o tpminit_wbemcomn
+ o unmarshal_to_system
+ o dde_closehandle_lpe
+ o setimeinfoex_lpe
+ o smb2_negotiate_local
+ o atmfd_pool_buffer_underflow
+ o event_viewer_mscfile
+ o alpc_takeover_lpe
+ o alpc_tasksched_lpe
+ o ESET_LPC
+ o ESET_EpFwNDIS
+ o ms_ntvdm
+ o ms16_135
+ o ms16_111
+ o ms16_032
+ o ms15_076
+ o ms14_040
+ o ms10_059
+ o ms08_034
+ o ms08_025
+ o ms07_066
+ o ms05_040
+
+==New Modules==
+
+o jenkins_checkscript_rce (CVE-2019-1003029 CVE-2019-1003005 CVE-2018-1000861)
+
+o vbulletin_widget_rce (CVE-2019-16759)
+
+o confluence_macro_lfi (CVE-2019-3396)
+
+o alpc_appxedge_lpe (CVE-2019-1253)
+
+o error_reporting_lpe (CVE-2019-1315)
+
+
+*CANVAS Tips 'n' Tricks*:
+
+If jenkins_checkscript_rce fails when a target is detected as vulnerable, it's due
+to an internal jenkins error. You just have to re-run the module!
+
+########################################################################
+########################################################################

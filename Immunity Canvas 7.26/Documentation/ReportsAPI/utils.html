@@ -1,0 +1,200 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>utils &mdash; CANVAS Reports 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="CANVAS Reports 0.1 documentation" href="index.html" />
+    <link rel="up" title="Reference" href="reference.html" />
+    <link rel="prev" title="document" href="document.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="document.html" title="document"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">CANVAS Reports 0.1 documentation</a> &raquo;</li>
+          <li><a href="reference.html" accesskey="U">Reference</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-libs.reports.utils">
+<span id="utils"></span><h1>utils<a class="headerlink" href="#module-libs.reports.utils" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="libs.reports.utils.Data">
+<em class="property">class </em><tt class="descclassname">libs.reports.utils.</tt><tt class="descname">Data</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#libs.reports.utils.Data" title="Permalink to this definition">¶</a></dt>
+<dd><p>A dict subclass that allows attribute access to values.</p>
+<p>Attributes can be accessed directly or using the standard dict API.
+Any attribute/value that is missing will return <cite>None</cite>.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="libs.reports.utils.DefaultData">
+<em class="property">class </em><tt class="descclassname">libs.reports.utils.</tt><tt class="descname">DefaultData</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#libs.reports.utils.DefaultData" title="Permalink to this definition">¶</a></dt>
+<dd><p>A Data subclass that returns <em>&lt;unknown&gt;</em> instead of <cite>None</cite>.</p>
+<p>This class is useful to pass to templates so that values will display
+<em>&lt;unknown&gt;</em> rather than <em>None</em>.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="libs.reports.utils.LoadError">
+<em class="property">exception </em><tt class="descclassname">libs.reports.utils.</tt><tt class="descname">LoadError</tt><a class="headerlink" href="#libs.reports.utils.LoadError" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="libs.reports.utils.closest_int">
+<tt class="descclassname">libs.reports.utils.</tt><tt class="descname">closest_int</tt><big>(</big><em>v</em>, <em>l</em><big>)</big><a class="headerlink" href="#libs.reports.utils.closest_int" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the value from <em>l</em> which is closest to the value <em>v</em>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="libs.reports.utils.dict_fix_unicode">
+<tt class="descclassname">libs.reports.utils.</tt><tt class="descname">dict_fix_unicode</tt><big>(</big><em>d</em><big>)</big><a class="headerlink" href="#libs.reports.utils.dict_fix_unicode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="libs.reports.utils.find_exploit_report">
+<tt class="descclassname">libs.reports.utils.</tt><tt class="descname">find_exploit_report</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#libs.reports.utils.find_exploit_report" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="libs.reports.utils.fix_unicode">
+<tt class="descclassname">libs.reports.utils.</tt><tt class="descname">fix_unicode</tt><big>(</big><em>s</em><big>)</big><a class="headerlink" href="#libs.reports.utils.fix_unicode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="libs.reports.utils.format_datetime">
+<tt class="descclassname">libs.reports.utils.</tt><tt class="descname">format_datetime</tt><big>(</big><em>t</em><big>)</big><a class="headerlink" href="#libs.reports.utils.format_datetime" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="libs.reports.utils.generate_output_filename">
+<tt class="descclassname">libs.reports.utils.</tt><tt class="descname">generate_output_filename</tt><big>(</big><em>name</em>, <em>ext='odt'</em><big>)</big><a class="headerlink" href="#libs.reports.utils.generate_output_filename" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="libs.reports.utils.get_canvas_path">
+<tt class="descclassname">libs.reports.utils.</tt><tt class="descname">get_canvas_path</tt><big>(</big><em>*path</em><big>)</big><a class="headerlink" href="#libs.reports.utils.get_canvas_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="libs.reports.utils.get_module_dir">
+<tt class="descclassname">libs.reports.utils.</tt><tt class="descname">get_module_dir</tt><big>(</big><em>module_file</em><big>)</big><a class="headerlink" href="#libs.reports.utils.get_module_dir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="libs.reports.utils.get_reports_path">
+<tt class="descclassname">libs.reports.utils.</tt><tt class="descname">get_reports_path</tt><big>(</big><em>session=None</em>, <em>filename=''</em><big>)</big><a class="headerlink" href="#libs.reports.utils.get_reports_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="libs.reports.utils.get_resources_path">
+<tt class="descclassname">libs.reports.utils.</tt><tt class="descname">get_resources_path</tt><big>(</big><em>filename=''</em><big>)</big><a class="headerlink" href="#libs.reports.utils.get_resources_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="libs.reports.utils.get_template_path">
+<tt class="descclassname">libs.reports.utils.</tt><tt class="descname">get_template_path</tt><big>(</big><em>module_file</em><big>)</big><a class="headerlink" href="#libs.reports.utils.get_template_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="libs.reports.utils.round_int">
+<tt class="descclassname">libs.reports.utils.</tt><tt class="descname">round_int</tt><big>(</big><em>v</em>, <em>resolution</em>, <em>floor=True</em><big>)</big><a class="headerlink" href="#libs.reports.utils.round_int" title="Permalink to this definition">¶</a></dt>
+<dd><p>Round <em>v</em> to the nearest value in the range of <em>resolution</em>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="libs.reports.utils.time_resolution">
+<tt class="descclassname">libs.reports.utils.</tt><tt class="descname">time_resolution</tt><big>(</big><em>delta</em>, <em>resolutions=None</em><big>)</big><a class="headerlink" href="#libs.reports.utils.time_resolution" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an appropriate time resolution for <em>delta</em>.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="document.html"
+                        title="previous chapter">document</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/utils.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="document.html" title="document"
+             >previous</a> |</li>
+        <li><a href="index.html">CANVAS Reports 0.1 documentation</a> &raquo;</li>
+          <li><a href="reference.html" >Reference</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012 Immunity, Inc..
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

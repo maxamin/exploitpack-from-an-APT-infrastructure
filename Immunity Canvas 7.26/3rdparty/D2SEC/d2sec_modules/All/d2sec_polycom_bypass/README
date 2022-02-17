@@ -1,0 +1,30 @@
+D2 Exploitation Pack
+====================
+
+Copyright (c) 2007-2015 DSquare Security, LLC
+
+
+License information
+-------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Local exploit
+---------------
+
+This tool exploit two vulnerabilities on Polycom HDX PSH telnetd service to spawn a root shell :
+
+V1. Polycom HDX Telnet Service Connection Saturation Authentication Bypass 
+http://osvdb.org/show/osvdb/90195
+
+V2. Polycom HDX setenv devboot Manipulation Telnet Server Invocation Local Privilege Escalation 
+http://osvdb.org/show/osvdb/91458
+ 
+
+How to use the exploit
+------------------------
+
+$ python d2sec_polycom_bypass <target> [<number of thread>]
+

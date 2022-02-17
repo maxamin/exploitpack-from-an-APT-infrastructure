@@ -1,0 +1,31 @@
+PycURL Installation Instructions
+
+A few modules depend on PycURL so PycURL can be found at:
+http://pycurl.sourceforge.net/
+
+To install this library :
+
+Linux:
+  Ubuntu (10.10+):
+    - sudo apt-get install python-pip python-dev build-essentials
+    - sudo pip install --upgrade pip
+    - sudo pip install --upgrade virtualenv
+    - sudo pip install pycurl
+
+  Ubuntu (10.04 and earlier):
+    - sudo apt-get install python-setuptools python-dev build-essentials
+    - sudo easy_install pip
+    - sudo pip install --upgrade  virtualenv
+    - sudo pip install pycurl
+
+  Fedora (FC 15+):
+    - sudo yum install python-pip
+    - sudo python-pip install pycurl
+
+
+Windows:
+  Download the Windows Installer: http://pycurl.sourceforge.net/download/
+
+OSX:
+  Not supported at this time
+

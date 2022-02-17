@@ -1,0 +1,74 @@
+D2 Exploitation Pack
+
+Copyright (c) 2007-2015 DSquare Security, LLC
+All rights reserved.
+
+License information
+---------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Description
+-------------
+
+d2sec_gist is a simple tool to automate the search by keyword on
+gist.github.com.
+
+Usage
+------
+
+To search sftp-config.json: 
+
+$ python2 d2sec_gist.py sftp-config.json
+$ ls data/
+ls data/
+alancwoo       clarklab        fc1698          jaredSiebert  marekmaurizio  Riske
+AmrMekkawy     danjesus        foiseworth      jerelmiller   martylouis     RomanGorbatko
+bastos         DareWreck       gbuckingham89   jodytate      MasterOdin     rupl
+bencooling     di5abled        ghanbak         jorgt         namklabs       Schwarzenegger
+borisschapira  duccuong2808    Gideonnn        kaizhuQin     nieuwenhuisen  takahiro47
+BTooLs         fabiantheblind  herminiotorres  kublaios      okeyaki        taylankasap
+cesarvargas00  facelordgists   infn8           lanesgists    pansit         Xtremefaith
+charlesroper   Fantikerz       itaruru         leogono       radel          yellowcake
+$ cat data/alancwoo/290898eb2f98120dde631b705838bd572544da43 
+.DS_Store
+
+# This is a template .gitignore file for git-managed WordPress projects.
+#
+# Fact: you don't want WordPress core files, or your server-specific
+# configuration files etc., in your project's repository. You just don't.
+#
+# Solution: stick this file up your repository root (which it assumes is
+# also the WordPress root directory) and add exceptions for any plugins,
+# themes, and other directories that should be under version control.
+#
+# See the comments below for more info on how to add exceptions for your
+# content. Or see git's documentation for more info on .gitignore files:
+# http://kernel.org/pub/software/scm/git/docs/gitignore.html
+
+# Ignore everything in the root except the "wp/wp-content" directory.
+/wp/*
+*.scssc
+sftp-config.json
+.htaccess
+!.gitignore
+!wp/wp-content/
+
+# Ignore everything in the "wp/wp-content" directory, except the "plugins"
+# and "themes" directories.
+wp/wp-content/*
+!wp/wp-content/plugins/
+!wp/wp-content/themes/
+
+# Ignore everything in the "plugins" directory, except the plugins you
+# specify (see the commented-out examples for hints on how to do this.)
+wp/wp-content/plugins/*
+# !wp/wp-content/plugins/my-single-file-plugin.php
+# !wp/wp-content/plugins/my-directory-plugin/
+
+# Ignore everything in the "themes" directory, except the themes you
+# specify (see the commented-out example for a hint on how to do this.)
+wp/wp-content/themes/*
+!wp/wp-content/themes/theme-name/

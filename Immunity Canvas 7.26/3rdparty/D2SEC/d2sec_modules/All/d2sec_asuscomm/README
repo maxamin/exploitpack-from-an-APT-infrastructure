@@ -1,0 +1,27 @@
+D2 Exploitation Pack
+
+Copyright (c) 2007-2015 DSquare Security, LLC
+All rights reserved.
+
+License information
+---------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Description
+-------------
+
+d2sec_asuscomm is a little script to map the IP address for every single router using
+AiCloud [1]
+
+Usage
+------
+
+Run d2sec_asuscomm.sh and, wait and see :
+
+$ ./d2sec_asuscomm.sh
+
+-- 
+[1] http://w00tsec.blogspot.fr/2014/07/hacking-asus-rt-ac66u-and-preparing-for.html 

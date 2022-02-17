@@ -1,0 +1,20 @@
+D2 Exploitation Pack
+
+Copyright (c) 2007-2011 DSquare Security, LLC
+All rights reserved.
+
+License information
+---------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Description
+-------------
+
+Several simple local PAM exploits to gain root privileges :
+
+- d2sec_openpam.sh : FreeBSD 8.1
+- d2sec_pam_motd.sh : Ubuntu 9.10 and 10.04 LTS
+- d2sec_pam_env.sh : Debian 6.0

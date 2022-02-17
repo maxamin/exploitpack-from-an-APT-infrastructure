@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp spec="1.0" xmlns:jfx="http://javafx.com" href="[JNLP_NAME]">
+
+	<information>
+		<title>JNLP Applet launcher</title>
+		<vendor>null</vendor>
+		<description>null</description>
+		<offline-allowed/>
+	</information>
+
+	<resources>
+		<j2se version="1.7+" href="http://java.sun.com/products/autodl/j2se" />
+		<jar href="[JAR_FILENAME]" main="true" />
+	</resources>
+
+	<applet-desc 
+				name="Demo Applet"
+				main-class="[MAIN_CLASSNAME]"
+				width="1"
+				height="1">
+		<param name="__applet_ssv_validated" value="true"></param>
+		<param name="host" value="[HOST]"></param>
+		<param name="port" value="[PORT]"></param>
+		<param name="mosdef_type" value="[MOSDEF_TYPE]"></param>
+		<param name="id" value="[ID]"></param>
+		<param name="conn_type" value="[CONN_TYPE]"></param>
+		<param name="use_ssl" value="[USE_SSL]"></param>     
+	</applet-desc>
+
+	<update check="background"/>
+ 
+</jnlp>
+

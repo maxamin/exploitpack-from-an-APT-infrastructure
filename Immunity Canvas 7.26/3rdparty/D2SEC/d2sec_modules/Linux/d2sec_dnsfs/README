@@ -1,0 +1,42 @@
+D2 Exploitation Pack
+=====================
+
+Copyright (c) 2007-2014 DSquare Security, LLC
+
+License information
+--------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Description
+--------------
+
+d2sec_dnsfs is a FUSE-based filesystem that uses a DNS tunnel to mount a remote
+directory on a local machine.
+
+The following options are available: 
+
+  * Creating and deleting files and folders, 
+  * Reading and writing files 
+  * Etc..
+
+Each operation (reading, deleting, listing) results in the transmission of one
+or multiple DNS requests. 
+
+Usage
+-------
+
+ 1. Configure src/conf/dns2tcpdrc and src/conf/dns2tcpdrc to specify domain
+ 2. On the server: 
+    $ ./bin/dns2tcpd -F -f conf/dns2tcpdrc 
+    $ python server/start.py -k conf/test_rsa.key
+ 3. On the client:
+    $ ./bin/dns2tcpc -f conf/dns2tcprc -r ssh -l 1089 -z domain -k foobar ns1.afraid.org
+    $ python client/dnsfuse.py localhost:1089 mnt/
+
+And the filesystem is mounted on /mnt.
+
+It is recommended to disable certain nautilus options (overview files, counting
+the number of files in a folder, etc..) to limit the number of queries.

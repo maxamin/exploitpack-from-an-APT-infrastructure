@@ -1,0 +1,37 @@
+D2 Exploitation Pack
+=====================
+
+Copyright (c) 2007-2014 DSquare Security, LLC
+
+License information
+--------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Description
+--------------
+
+d2sec_httpfs is a FUSE-based filesystem that uses HTTP messages to mount a
+remote directory on a local machine, relying on a generated server-side script
+(only PHP script with this version) installed on the server.
+
+The following options are available: 
+
+  * Creating and deleting files and folders, 
+  * Reading and writing files 
+  * Etc..
+
+Each operation (reading, deleting, listing) results in the transmission of one
+or multiple HTTP requests. Thus, the tool leaves traces in the logs.
+
+Usage
+-------
+
+ 1. mkdir /tmp/d2 && python2 ./d2sec_httpfs.py -o server=10.0.0.164 -o uri="/fuse/eval.php" -f /tmp/d2
+ 3. nautilus /tmp/d2
+ 4. fusermount -z -u /tmp/d2
+
+It is recommended to disable certain nautilus options (overview files, counting
+the number of files in a folder, etc..) to limit the number of queries.

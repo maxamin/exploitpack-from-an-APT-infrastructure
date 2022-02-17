@@ -1,0 +1,54 @@
+########################################################################
+#                       *CANVAS Release 6.84*                          #
+########################################################################
+
+*Date*: 30 November 2012
+
+*Version*: 6.84 ("Hierophant")
+
+*Download URL*: https://canvas.immunityinc.com/cgi-bin/getcanvas.py
+
+*Release Notes*:
+
+For this release, we bring you our latest Java clientsides, straight from
+CANVAS Early Updates in the form of java_CVE_2012_5088 and java_jaxws.
+
+Moreover, we include a preliminary Windows keylogger that operates
+in-memory and live-streams the recorded key strokes back to CANVAS.
+
+==Changes==
+
+o Fixed a Java MOSDEF issue on XP (unable to determine OS)
+
+==New Modules==
+
+o java_CVE_2012_5088 (Java MethodHandles.Lookup Remote Code Execution)
+
+o java_jaxws (Java Applet JAX-WS Remote Code Execution)
+
+o keylog2mem (In-Memory Win32 Keylogger with Live Streaming)
+
+
+*Forum*
+
+Still at https://forum.immunityinc.com/ . Useful for all your many questions!
+
+*CANVAS Tips 'n' Tricks*:
+
+Taking advantage of our recently introduced Java MOSDEF HTTP/HTTPS
+payloads, our Java clientsides for this release are ready to transparently
+use system-configured proxies in order to escape controlled/corporate
+environments. All you need to do is enable the relevant options in ClientD!
+
+A demo movie illustrating some of this month's new features can also
+be found here: http://partners.immunityinc.com/movies/canvasdemodec.mp4
+
+*Links*:
+
+Support email      : support@immunityinc.com
+Sales support      : sales@immunityinc.com
+Support/Sales phone: +1 786-220-0600
+
+
+########################################################################
+########################################################################

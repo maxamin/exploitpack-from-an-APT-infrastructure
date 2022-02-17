@@ -1,0 +1,141 @@
+
+INSTALLER INSTRUCTIONS FOR WINDOWS
+==================================
+
+There's a Documentation\CANVAS_Basics.pdf that will detail the installation
+process for you.
+
+Before you do this, you should know that Windows XP SP2 and Vista both limit
+the outbound TCP sockets. This makes CANVAS and other network scanners slow.
+We don't use WinPCAP to avoid this because WinPCAP has its own fun issues. So
+although CANVAS works fine from Windows (and some of our developers use
+Windows natively just to be sure) we still recommend you install an Ubuntu VM
+if you want to do anything hard-core (like scan a Class C automatically using
+massattack). VMWare has a free VMWare Server product which is quite good for
+this exact purpose.
+
+CANVAS Needs pyGTK and GTK+ for Windows. You can find instructions on
+downloading and installing these for your Python here:
+http://www.pygtk.org/downloads.html
+
+You can track down the very latest (and hence, the best) PyGTK for
+Windows by googling "pygtk installer windows". 
+
+However, Immunity has packaged a snapshot of them all up for you in one
+tarball:
+
+https://www.immunityinc.com/downloads/PyGTK.tar.gz (you'll need WinZip or Cygwin
+to unpack .tar.gz files on Windows). 
+
+Since version 6.27 , CANVAS needs the pycairo bindings for CAIRO GRAPHICS,
+which is used for graphing the node view. PyCairo for Windows is 
+installed in the above tarball.
+
+Once these are all installed, CANVAS should run by just using the canvas.bat
+file. If you already have Python or PyGTK installed, you don't need to
+reinstall them. If this doesn't work, most likely one of the following things
+happened:
+
+1. PyGTK didn't quite install properly because you have more than one Python
+installed.
+
+2. You forgot to install one of the executables.
+
+RUNNING CANVAS ON WINDOWS
+=========================
+
+Unpack CANVAS into some directory on your hard drive using winzip or winrar. 
+If it gives you an error about corruption, ignore it. Use canvas.bat to start the 
+CANVAS GUI. If you did not select the default directory for your Python or 
+GTK install, you may need to edit canvas.bat respectively.
+
+All canvas.bat does is set up the path environment variable so python can find
+the GTK libraries. 
+
+If you're using cygwin, in some cases the executables (.exe files) included
+with CANVAS for helper utilities will not untar with the +x bit set. This will
+not prevent the loading of CANVAS, but CANVAS will be unable to portscan
+effectively or find the interfaces on the local host. To fix this, after
+untaring the CANVAS distribution .tar.gz file, please use the "chmod +x *.exe"
+command from the cygwin commandline.
+
+Note for users of SPANISH WINDOWS:
+==================================
+
+The common file path is \Program Files\Common files\ by default but the installation
+of the three packages on a Spanish windows is in an other path, namely:
+\Archivos de Programas\Archivos Comunes\.
+
+Note for users of other charsets than UTF-8:
+============================================
+
+If you are using a different charset like chinese (big5), Korean (euc-kr), Arabic 
+(iso-8859-6) Greek (iso-8859-7), Hebrew (iso-8859-8), Japanese (x-euc, shift-jis), 
+and others, and you have installed CANVAS in a directory containing charset specific 
+characters, Glade might give you an error where it can not find the main glade file 
+for running CANVAS. To solve this problem, remove any charset specific character 
+from path, and try running canvas again. The simplest way of doing that is just 
+to move CANVAS to a partition root directory, like:
+
+C:\CANVAS\ 
+
+
+INSTALLER INSTRUCTIONS FOR LINUX
+================================
+
+You will need a current pygtk (with threading enabled) and at least python 2.5 
+to run CANVAS on Linux. 
+
+To unpack CANVAS you can type "tar xvzf CANVAS.tar.gz"
+
+To start CANVAS, cd into the base CANVAS directory and execute './runcanvas.sh'
+
+To run exploits from the commandline you give the full path to the exploit from
+the CANVAS base directory e.g. ./exploits/exploitname/exploitname.py
+
+INSTALLER INSTRUCTIONS FOR OS X
+================================
+
+You'll need Python 2.5 and PyGTK installed and working. You don't want to get
+into a situation where you have two Pythons and only the Python 2.4 has PyGTK.
+
+If you decide to compile pyGTK from source, here is a quicky click-list. 
+http://apnaopus.var.cc/wiki/index.php/ApnaOpus_on_OSX#Installing_Gtk.2C_PyGtk
+
+It's really not that hard - we have lots of people using CANVAS on OS X, just
+not our developer team. :> 
+
+INSTALLER INSTRUCTIONS FOR GeoIP
+================================
+
+Download and install the latest versions of GeoIP from their website.
+Linux users might want to put /usr/local/lib in /etc/ld.so.conf and rerun
+/sbin/ldconfig
+
+INSTALLER INSTRUCTION FOR OPENCV
+================================
+
+ The OpenCV (Open Computer Vision) is a library of more than 500 algorithms for real time computer vision. CANVAS uses this library for detecting faces on the 'facedetection' module.
+ Linux
+ =====
+ If you want to installed on linux, you will need the following libraries:
+  libcv1 - computer vision library 
+  libcvaux1 - computer vision extension library
+  libhighgui1 - computer vision GUI library
+  python-ctypes - Python package to create and manipulate C data types
+
+ On ubuntu-debian should be easy as apt-get install LIBNAME
+ Just in case, avoid installing the python-opencv module since it might bring compatiblities issue with CANVAS current opencv's ctype wrapper.
+
+ Windows
+ =======
+ Download and Install http://sourceforge.net/project/downloading.php?group_id=22870&filename=OpenCV_1.0.exe
+ After that, you probably will need to update the PATH.
+ Right-click on "My computer" / Properties / Advanced / Environment Variables
+ Modify the Environment Variable PATH, adding
+   ";c:\Program Files\OpenCV\bin\" at the end, if that's the path chosen for your OpenCV installation.
+
+
+
+
+

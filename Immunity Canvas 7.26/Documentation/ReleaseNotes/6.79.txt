@@ -1,0 +1,58 @@
+########################################################################
+#                       *CANVAS Release 6.79*                          #
+########################################################################
+
+*Date*: 30 April 2012
+
+*Version*: 6.79 ("Engram")
+
+*Download URL*: https://canvas.immunityinc.com/cgi-bin/getcanvas.py
+
+*Release Notes*:
+
+We have three new modules for this release, all SMB related. First our
+two new exploits for the recent Samba vulnerability/CVE_2012_1182 
+(NX and NONX versions) will give you root on vulnetable targets. 
+Our new recon module, smbversion, will query a remote SMB server for 
+version information which can be useful in targeted attacks. 
+
+Immunity's AlexM has prepared a movie that showcases the exploit which
+you can get from here:
+
+http://partners.immunityinc.com/movies/CANVAS-SambaNDR.mov
+
+==Changes==
+
+o Bugfixes to listener dialog upload/download for Unix
+
+o Bugfixes to ClientD (plugin version detection)
+
+
+==New Modules==
+
+o CVE_2012_1182 (SAMBA 3.4.x/3.5.x/3.6.x remote root)
+
+o CVE_2012_1182_NONX (SAMBA 3.4.x/3.5.x/3.6.x remote root FreeBSD/Linux NONX)
+
+o smbversion
+
+
+*Forum*
+
+Still at https://forum.immunityinc.com/ . Useful for all your many questions!
+
+*CANVAS Tips 'n' Tricks*:
+
+One can get useful information out of smbversion that can be used for
+fairly accurate OS fingerprinting. Just another useful recon module to have in your
+arsenal!
+
+*Links*:
+
+Support email      : support@immunityinc.com
+Sales support      : sales@immunityinc.com
+Support/Sales phone: +1 786-220-0600
+
+
+########################################################################
+########################################################################

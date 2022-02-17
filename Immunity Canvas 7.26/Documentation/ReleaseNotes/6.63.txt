@@ -1,0 +1,50 @@
+########################################################################
+#                       *CANVAS Release 6.63*                          #
+########################################################################
+
+*Date*: 20 October 2010 
+
+*Version*: 6.63 ("Vortex")
+
+*Download URL*: https://canvas.immunityinc.com/cgi-bin/getcanvas.py
+
+*Release Notes*:
+
+
+==Changes==
+
+o Remote resolving functionality for Linux and OSX 
+  Updates and test programs to come in future update
+
+o Local exploits can now test to see if the server is
+  vulnerable before running (getfileversion/get_installed_updates)
+  
+o Fixed issue with OSX/intel32, stack must be 16-byte aligned at the point
+  of function calls
+
+==New Modules==
+
+CVE_2010_3847 
+ms10_059 
+java_docbase 
+padding_oracle 
+
+getfileversion/get_installed_updates - Exploits can now use these commands
+in order to determine if the server is vulnerable before running.
+
+*Forum*
+Still at https://forum.immunityinc.com/ . Useful for all your many questions!
+
+*CANVAS Tips 'n' Tricks*:
+
+The mstaskscheduler exploit is still not patched ;-)
+
+*Links*:
+
+Support email      : support@immunityinc.com
+Sales support      : sales@immunityinc.com
+Support/Sales phone: +1 786-220-0600
+
+
+########################################################################
+########################################################################

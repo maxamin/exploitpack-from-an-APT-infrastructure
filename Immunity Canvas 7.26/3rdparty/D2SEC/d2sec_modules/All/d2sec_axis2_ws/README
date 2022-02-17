@@ -1,0 +1,21 @@
+D2 Exploitation Pack
+
+Copyright (c) 2007-2014 DSquare Security, LLC
+All rights reserved.
+
+License information
+---------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Description
+-------------
+
+d2sec_axis2_ws is an Apache Axis2 Backdoor service to execute arbitrary command
+on the compromised server.
+
+To trigger this backdoor:
+http://server/path_to_axis2/exec_cmd/run?cmd=<cmd>
+

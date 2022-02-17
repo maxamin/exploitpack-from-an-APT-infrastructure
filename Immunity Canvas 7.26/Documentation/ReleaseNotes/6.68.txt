@@ -1,0 +1,59 @@
+########################################################################
+#                       *CANVAS Release 6.68*                          #
+########################################################################
+
+*Date*: 18 April 2011
+
+*Version*: 6.68 ("Infiltrate")
+
+*Download URL*: https://canvas.immunityinc.com/cgi-bin/getcanvas.py
+
+*Release Notes*:
+
+This release introduces two new exploits for Windows. Use ms11_032
+to escalate privileges on XP, 2003, Vista, 2008 and Windows 7
+and ms11_003 to exploit IE7 on the clientside.
+
+Moreover, we include safari_navaction (for OSX x64 and Windows)
+and CVE_2011_0182 that can be used to escalate privileges
+to root on OSX 10.6.6 and below.
+
+==Changes==
+
+o Improvements to Padding Oracle library and exploit
+
+o Improvements to SpikeProxy and SSL support
+
+o Improvements to Windows x64 MOSDEF
+
+o Logging bugfixes
+
+==New Modules==
+
+o ms11_003 (IE7 recursive  import css vulnerability)
+
+o ms11_032 (OpenType signed integer vulnerability)
+
+o CVE_2011_0182 (OSX local privilege escalation)
+
+o safari_navaction (Safari navaction vulnerability)
+
+
+*Forum*
+Still at https://forum.immunityinc.com/ . Useful for all your many questions!
+
+*CANVAS Tips 'n' Tricks*:
+Demonstrate local privilege escalation on modern systems using
+either ms11_032 or CVE_2011_0182. Customers always know
+that you can get local root - but seeing it in action is
+a whole different feeling.
+
+*Links*:
+
+Support email      : support@immunityinc.com
+Sales support      : sales@immunityinc.com
+Support/Sales phone: +1 786-220-0600
+
+
+########################################################################
+########################################################################

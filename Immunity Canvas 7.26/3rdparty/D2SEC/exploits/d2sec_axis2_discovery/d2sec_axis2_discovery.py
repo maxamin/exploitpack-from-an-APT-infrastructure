@@ -1,0 +1,141 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2014
+#
+
+###
+# STD Modules
+###
+import sys
+
+sys.path.append(".")
+
+###
+# CANVAS Modules
+###
+import canvasengine
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+###
+# Description
+###
+NAME = "d2sec_axis2_discovery"
+VERSION = "0.1"
+DESCRIPTION = "Apache Axis2 Information Gathering Module"
+
+GTK2_DIALOG = 'dialog.glade2'
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Recon"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["All"] ]
+
+DOCUMENTATION = {}
+DOCUMENTATION["Vendor"] = ""
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["Versions Affected"] = ""
+DOCUMENTATION["Date public"] = ""
+DOCUMENTATION["References"] = ""
+DOCUMENTATION["CVE Name"] = ""
+DOCUMENTATION["CVE Url"] = ""
+DOCUMENTATION["Notes"] = ""
+
+CHANGELOG="""
+"""
+
+
+class theexploit (tcpexploit):
+    
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.name = NAME
+    self.vhost = ''
+    self.port = 8080 
+	
+  def discovery_request(self, uri):
+    request = "GET /%s HTTP/1.1\r\n" % uri
+    request += "Host: %s\r\n" % self.vhost
+    request += "User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.1.4322; .NET CLR 2.0.50727)\r\n\r\n"
+    data = ''
+    try:
+      s = self.gettcpsock()
+      s.connect((self.host, self.port))
+      self.websend(s, request)
+      while 1:
+        tmp = ''
+        try:
+          tmp = self.webrecv(s, 1024)
+        except socket.error, e:
+          self.log('[D2] socket error: %s'%e)
+          return 0
+        if len(tmp) < 1:
+          break
+        data += tmp
+    except Exception, e:
+      self.log('[D2] %s'%e)
+      return None
+    return data
+
+  def getargs(self):
+    self.host = self.target.interface
+    self.port = int(self.argsDict.get("port", self.port))
+    self.vhost = self.argsDict.get("vhost", self.vhost)
+    if not self.vhost:
+      self.vhost = self.host
+    return 0
+
+  def run(self):
+    nfo = ''
+    self.getargs()
+    self.setInfo("%s attacking %s:%d" % (NAME, self.host, self.port))
+
+    u = 'axis2/'
+    try:
+      data = self.discovery_request(u)
+      if data and 'Welcome!' in data:
+        nfo += '[+] Axis2 default webpage is enabled : %s\n' % u
+    except Exception as e:
+        self.log('[D2] Error while opening URL: %s'%e)
+
+    u = 'axis2/services/listServices'
+    try:
+      data = self.discovery_request(u)
+      if data and 'Available services' in data:
+        nfo += '[+] List of all the available services: %s\n' % u
+    except Exception as e:
+        self.log('[D2] Error while opening URL: %s'%e)
+
+    u = 'axis2/services/'
+    try:
+      data = self.discovery_request(u)
+      if data and 'Deployed services' in data:
+        nfo += '[+] List of deployed services: %s\n' % u
+    except Exception as e:
+        self.log('[D2] Error while opening URL: %s'%e)
+
+    u = 'axis2/axis2-admin'
+    try:
+      data = self.discovery_request(u)
+      if data and 'Welcome' in data:
+        nfo += '[+] Axis2 administration console : %s\n' % u
+    except Exception as e:
+        self.log('[D2] Error while opening URL: %s'%e)
+
+    self.log('[D2] Apache Axis2 Information Gathering')
+    self.log(nfo)
+    self.setInfo("%s attacking %s:%d - done" % (NAME, self.host, self.port))
+    return 1
+
+  def usage(self):
+    print "Usage: %s -t target [-p port:8080] -O vhost:<url>" % sys.argv[0]
+    sys.exit(0)
+    
+if __name__ == '__main__':
+  print "Running CANVAS %s v %s" % (NAME,VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

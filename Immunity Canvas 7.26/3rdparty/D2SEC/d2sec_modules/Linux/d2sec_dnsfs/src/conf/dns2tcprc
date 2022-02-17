@@ -1,0 +1,10 @@
+#
+# configuration :
+#
+
+domain = domain
+resource = ssh
+local_port = 1089
+key = foobar
+debug_level=1
+# server = my_dns

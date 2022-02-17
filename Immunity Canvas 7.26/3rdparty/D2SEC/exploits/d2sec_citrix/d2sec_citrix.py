@@ -1,0 +1,101 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2010
+#
+
+import os, sys, time
+import httplib
+
+sys.path.append('.')
+sys.path.append(os.path.join(os.getcwd(), '3rdparty/D2SEC/libs'))
+sys.path.append(os.path.join(os.getcwd(), '3rdparty/D2SEC/d2sec_modules/All/d2sec_django'))
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+import appli.citrix
+
+# Django
+os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
+try:
+  import www.database
+except:
+  pass
+
+NAME        = 'd2sec_citrix'
+DESCRIPTION = 'This tool enumerate Citrix applications.'
+VERSION     = '0.1'
+
+DOCUMENTATION                  = {}
+DOCUMENTATION['References']    = ''
+DOCUMENTATION['Repeatability'] = 'Infinite'
+DOCUMENTATION["Notes"]         = '''
+Use dbsave argument to save results in a django database (module d2sec_django).
+'''
+
+PROPERTY         = {}
+PROPERTY['TYPE'] = 'Tools'
+PROPERTY['SITE'] = 'Remote'
+PROPERTY['ARCH'] = [ ["Linux"], ["Windows"], ["Solaris"], ["AIX"], ["FreeBSD"], ["MacOSX"], ["HP-UX"] ]
+
+class theexploit(tcpexploit):
+  def __init__(self):
+    tcpexploit.__init__(self)        
+    self.name = NAME
+    self.host = ""
+    self.port = 1494
+    self.dbsave = 0
+    self.result = ''
+
+  def getArgs(self):
+    self.host = self.target.interface
+    self.port = int(self.argsDict.get('port',self.port))
+    self.dbsave = int(self.argsDict.get("dbsave",self.dbsave))
+
+  def run(self):
+    if self.getArgs():
+      self.setInfo('[D2] %s attacking %s:%d - done (failed)' % (NAME,self.host,self.port))
+      return 0
+
+    self.log('[D2] %s running against %s:%d'%(NAME,self.host,self.port))
+    self.setInfo('[D2] %s attacking %s:%d - running'%(NAME,self.host,self.port))
+
+    discovery = [
+      appli.citrix.app_enum,
+    ]
+
+    infos = []
+    self.result = ''
+    for fct in discovery:
+      infos = fct(self.host)
+      if infos:
+        for info in infos:
+          self.result += '%s' % info
+          self.log('[D2] %s' % info)
+
+    if self.dbsave:
+      try:
+        self.db = www.database.db()
+        target  = self.db.db_unique_host(title=self.host, host=self.host)
+        service = self.db.db_unique_service(target, '%d/tcp' % self.port)
+        info    = self.db.db_unique_info(target, service, 'Citrix info', 'd2sec_citrix', self.result)
+      except Exception, e:
+        self.log('[D2] %s' % e)
+        self.log('[D2] Django (http://www.djangoproject.com/) installed ?')
+      self.setInfo('[D2] %s attacking %s:%d - done' % (NAME,self.host,self.port))
+      return 1
+
+    self.setInfo('[D2] %s attacking %s:%d - done (failed)' % (NAME,self.host,self.port))
+    return 0
+
+  def usage(self):
+    print 'Usage: %s -t host -p port -O dbsave:[0|1]' % (sys.argv[0])
+    sys.exit(0)
+
+if __name__=='__main__':
+  app = theexploit()
+  ret = standard_callback_commandline(app)

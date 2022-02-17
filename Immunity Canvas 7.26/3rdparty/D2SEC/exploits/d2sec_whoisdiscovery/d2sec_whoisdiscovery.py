@@ -1,0 +1,71 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2010
+#
+
+import sys, os, string, re
+import datetime
+
+sys.path.append(".")
+sys.path.append(os.path.join(os.getcwd(), '3rdparty/D2SEC/libs'))
+sys.path.append(os.path.join(os.getcwd(), '3rdparty/D2SEC/libs/ext'))
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+import discovery.whois
+
+# GUI info
+NAME = "d2sec_whoisdiscovery"
+DESCRIPTION = "Fetching information about a domain/ip from whois servers" 
+VERSION="1.1"
+
+DOCUMENTATION = {}
+DOCUMENTATION['VENDOR'] = ''
+DOCUMENTATION["Repeatability"] = 'Infinite'
+DOCUMENTATION['Date public'] = ''
+DOCUMENTATION['References'] = ''
+DOCUMENTATION['Versions Affected'] = ''
+DOCUMENTATION["CERT Advisory"] = ''
+DOCUMENTATION["CVE Name"] = ''
+DOCUMENTATION["CVE Url"] = ''
+
+PROPERTY = {}
+PROPERTY["TYPE"]= "Recon"
+PROPERTY["SITE"]=  "Remote"
+PROPERTY["ARCH"]= [ ["All"] ]
+
+class theexploit(tcpexploit):
+
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.name = NAME
+    self.host = ''
+
+  def run(self):
+    self.host = self.target.interface
+    self.setInfo('[D2] %s attacking %s - running' % (NAME,self.host))
+    nic_client = discovery.whois.NICClient()
+    nfo = nic_client.whois_lookup(None, self.host, 0)
+    self.log('[D2] Whois information:')
+    self.log('%s' % nfo)
+    if 'inetnum' in nfo:
+      nfo = nfo.split('\n')
+    for r in nfo:
+      if 'inetnum' in r:
+        self.log('[D2] Inetnum reverse dns:')
+        start = r.split()[1]
+        stop = r.split()[3]
+        discovery.whois.reversedns(start, stop)
+    self.setInfo('[D2] %s attacking %s - done' % (NAME,self.host))
+    return 1
+
+if __name__ == '__main__':
+  print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

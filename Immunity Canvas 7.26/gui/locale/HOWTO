@@ -1,0 +1,29 @@
+OK, The CANVAS gui can now be localised once a tranlastion file is in place, 
+to create a translation file do the following:
+
+1. Make a copy of CANVAS.pot and name it with the correct language identifier
+   you want e.g. en_GB.po or ja.po (for British or Japanese) and save it to
+   CANVAS/gui/locale/po/*.po
+2. Edit the *.po file to have the translations for the strings it contains
+3. Edit Makefile in CANVAS/gui/locale to contain the language identifier of 
+   your new translation
+4. Run make, this creates the .mo file in the CANVAS/gui/locale/* directory
+5. Execute the canvas gui with the appropriate language environmental variable 
+   set: LANG=en_GB.UTF8 sh ./runcanvas.sh
+
+#For Korean Support:
+   yum groupinstall korean-support 
+   LANG=ko_KR.utf8
+
+#Japanese
+   Had to modify the .po quite a bit before it would compile
+   LANG=ja_JP.utf8 
+
+locale -a to list the installed locales
+#Resources
+Find the fonts:
+http://linux-cjk.net/Testing/#LC
+General overview of glade localisation:
+http://www.servin.com/linux/GladeInternationalization.html
+
+Rich

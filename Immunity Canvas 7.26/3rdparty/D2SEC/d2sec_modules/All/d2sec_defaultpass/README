@@ -1,0 +1,18 @@
+D2 Exploitation Pack
+
+Copyright (c) 2007-2011 DSquare Security, LLC
+All rights reserved.
+
+License information
+---------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Description
+-------------
+
+d2sec_defaultpass lists default login/pass about equipments and softwares. It
+uses phenoelit list and a local file (see cve.txt). It's possible to search
+login/pass by vendor (option -v) and/or model (option -m).

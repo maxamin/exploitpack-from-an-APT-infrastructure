@@ -1,0 +1,39 @@
+#!/usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2014
+#
+
+import socket
+import select
+import sys
+
+lport = int(sys.argv[1])
+rhost = sys.argv[2]
+rport = int(sys.argv[3])
+
+r = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+r.connect((rhost, rport))
+
+l = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+l.connect(('127.0.0.1', lport))
+
+while True:
+    ls, _, _ = select.select([ r, l ], [], [])
+    if l in ls:
+        data = l.recv(4096)
+        if not data:
+            break
+        r.sendall(data)
+    if r in ls:
+        data = r.recv(4096)
+        if not data:
+            break
+        l.sendall(data)
+
+r.close()
+l.close()
+

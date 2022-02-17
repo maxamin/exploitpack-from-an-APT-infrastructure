@@ -1,0 +1,61 @@
+########################################################################
+#                       *CANVAS Release 7.14*                          #
+########################################################################
+
+*Date*: 26 Jun 2017
+
+*Version*: 7.14
+
+*Download URL*: https://canvas.immunityinc.com/getcanvas
+
+*Release Notes*:
+
+In this CANVAS release we are bringing you 7 new modules.
+
+Our new modules include 5 remote exploits, two of them targeting Struts (CVE-2017-5638)
+and Drupal (CVE-2017-5638), one targeting IIS 6 (CVE-2017-7269) and two modules
+targeting solaris (rpc.cmsd and EBBISLAND). We are also including two local modules,
+one exploiting a local privilege escalation bug in GNU Screen (CVE-2017-5618)
+and one UAC bypass through SDCLT.
+
+
+==Changes==
+
+o Add STRATEGIC documentation (Documentation/Usage)
+
+o Fix an issue within the CANVAS dependency checker that was causing a crash
+  on platforms that were missing the required libraries
+
+o Fix a UI issue in apport_crash_handler (required to choose a local file
+  several times)
+
+
+==New Modules==
+
+o iis6_propfind (CVE-2017-7269)
+
+o solaris_rpc_cmsd
+
+o solaris_rpc_libnsl (CVE-2017-3623)
+
+o linux_screen (CVE-2017-5618)
+
+o struts_ognl (CVE-2017-5638)
+
+o sdclt_uac_bypass
+
+o drupal_services_sqli
+
+
+*CANVAS Tips 'n' Tricks*:
+
+Did you know that CANVAS lets you customize the HTML response delivered
+by clientd? When you set up a new clientside session be sure to click on
+the Response tab and you can edit your HTML freely. Since clientd is written
+to serve clientsides rather than cat memes, it is a good idea to host
+the site resources (CSS, JS, images) from a proper webserver and let
+CANVAS focus on doing what it does best, getting you shells!
+
+
+########################################################################
+########################################################################

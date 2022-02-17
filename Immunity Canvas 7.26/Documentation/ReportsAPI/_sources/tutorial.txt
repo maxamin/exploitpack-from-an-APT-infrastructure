@@ -1,0 +1,105 @@
+Tutorial
+========
+
+Reporting Events
+----------------
+
+Creating reporting events
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. currentmodule:: libs.reports.reporter
+
+Begin by importing the :mod:`libs.reports` module and creating a
+:class:`Reporter` instance::
+    
+    from libs.reports import Reporter
+    r = Reporter()
+
+To create a new event use the :meth:`~Reporter.new_event` method::
+    
+    r.new_event('new host', {
+        'ip': ip,
+        })
+
+:meth:`~Reporter.new_event` takes two required arguments: an event name, and the
+event data. The event data can be of any type, though in practice it is
+usually a `dict`. If a third argument is provided, it should be the name
+of the object calling :meth:`~Reporter.new_event`. This value defaults to "canvas".
+
+.. Note::
+    All arguments to :meth:`~Reporter.new_event` must be pickleable.
+
+Creating reporting events from a CANVAS exploit
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+For convenience, the :mod:`canvasexploit` base class has a :meth:`new_event`
+method::
+
+    class Exploit(canvasexploit):
+        def run(self):
+            # ...
+            self.new_event('passwordz', password_data)
+
+:meth:`canvasexploit.new_event` accepts only 2 arguments. The event will
+automatically be passed the name of the exploit.
+
+Retrieving events from an event file
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The :class:`Reporter` class provides a :meth:`~Reporter.events` method that
+returns all the events in a event file::
+
+    for event in r.events():
+        if event.module == 'canvas':
+            print event.name, event.data
+
+:meth:`~Reporter.events` accepts two optional arguments: *name*, which returns
+only those events that matched *name*, and *pattern* which filters the returned
+events based on a regex pattern.
+
+Generating Reports
+------------------
+
+The :mod:`libs.reports` module provides 2 ways to generate OpenOffice
+documents.
+
+The first method uses a template created in OpenOffice that
+contains markup that is then processed by the :mod:`libs.py3o.template`
+library to produce a document.
+
+The second method uses the :mod:`libs.odfpy` library to directly manipulate
+the XML document data of an OpenOffice document.
+
+A combination of these two methods can be used, for example, to generate the
+overall report using a template, and then add structures such as charts using
+XML.
+
+.. Note::
+
+    For examples of complete report generation modules demonstrating both
+    methods see the CANVAS report generator (:file:`{CANVAS}/libs/reports/canvas_report.py`)
+    or the ClientD report generator (:file:`{CANVAS}/exploits/clientd/report.py`).
+
+Generating template-based reports
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The benefit to using template-based generation is that the report can be
+designed and formatted visually within OpenOffice. The drawback is that
+certain structures within a document can not be manipulated, such as charts.
+It can also sometimes be tricky to correctly place the :mod:`libs.py3o.template`
+markup so that the report generates as expected.
+
+.. Note::
+
+    For examples of the templates actually in use to generate reports, see the
+    CANVAS report template (:file:`{CANVAS}/Resources/report_template.odt`) or
+    the ClientD report template (:file:`{CANVAS}/exploits/clientd/report_template.odt`).
+
+Generating XML-based reports
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The benefit to using XML-based generation is that every possible structure
+within an OpenOffice document can be directly accessed and manipulated. The
+drawback is that finding and generating the exact structures and properties
+needed to format the document correctly requires looking through unhelpful
+documentation and lots of trial-and-error.

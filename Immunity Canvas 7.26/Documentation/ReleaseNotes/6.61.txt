@@ -1,0 +1,44 @@
+########################################################################
+#                       *CANVAS Release 6.61*                          #
+########################################################################
+
+*Date*: 18 August 2010 
+
+*Version*: 6.61 ("RampantRhino")
+
+*Download URL*: https://canvas.immunityinc.com/cgi-bin/getcanvas.py
+
+*Release Notes*:
+
+==Changes==
+
+o Major improvements to the web application auditing code in CANVAS. However, the actual
+checks for web vulnerabilities have not been added yet.
+
+o Legacy support enabled by default for PHP Script Nodes.
+
+==New Modules==
+
+o windows_shell_LNK - this exploit works for all vulnerable versions of Windows, including x64 
+o ms10_048 - This local exploit is highly reliable on almost all 32-bit Windows platforms
+o ms10_060 - This client-side exploit is highly reliable on unpatched .Net 
+o FCKEditor module now is much more reliable, and supports auto targeting. 
+
+
+*Forum*
+Still at https://forum.immunityinc.com/ . Useful for all your many questions!
+
+*CANVAS Tips 'n' Tricks*:
+
+The White Phosphorus CANVAS Exploit Pack's Wireshark exploit is useful when trying 
+to win Capture the Flag games! And the mysql exploit is great as well!
+
+*Links*:
+
+Support email      : support@immunityinc.com
+Sales support      : sales@immunityinc.com
+Support/Sales phone: +1 786-220-0600
+
+
+########################################################################
+########################################################################

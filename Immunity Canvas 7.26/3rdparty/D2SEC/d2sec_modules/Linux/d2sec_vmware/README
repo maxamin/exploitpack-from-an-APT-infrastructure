@@ -1,0 +1,27 @@
+D2 Exploitation Pack
+====================
+
+Copyright (c) 2007-2013 DSquare Security, LLC
+
+
+License information
+-------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Local exploit
+---------------
+
+CVE-2013-1662 VMWare Setuid vmware-mount Unsafe popen(3)
+
+CVE Name : CVE-2013-1662
+CVE URL  : http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2013-1662
+Ref.     : http://blog.cmpxchg8b.com/2013/08/security-debianisms.html
+           http://www.vmware.com/support/support-resources/advisories/VMSA-2013-0010.html
+
+How to use the exploit
+------------------------
+
+$ ./d2sec_vmware.sh

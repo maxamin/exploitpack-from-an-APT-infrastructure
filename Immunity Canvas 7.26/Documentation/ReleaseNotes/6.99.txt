@@ -1,0 +1,54 @@
+########################################################################
+#                       *CANVAS Release 6.99*                          #
+########################################################################
+
+*Date*: 27 February 2015
+
+*Version*: 6.99
+
+*Download URL*: https://canvas.immunityinc.com/cgi-bin/getcanvas.py
+
+*Release Notes*:
+
+In this CANVAS release we are bringing you 4 new modules and various fixes.
+Our new modules include a local privilege escalation for MacOS X Mavericks
+(all versions), a kerberos_ticket_list and kerberos_ticket_export module that
+you can use for listing and exporting kerberos tickets, and our own psexec
+implementation.
+
+==Changes==
+
+o mosdefmigrate fixes on 64bit
+
+o pyembryo fix for MacOS X
+
+o fix the status view in CANVAS GUI (now showing always the last module run)
+
+o autoprivesc module removed (was deprecated)
+
+==New Modules==
+
+o osx_stickykeysfree (IOHIKeyboardMapper::stickyKeysfree local privilege escalation)
+
+o psexec
+
+o kerberos_ticket_list
+
+o kerberos_ticket_export
+
+
+*CANVAS Tips 'n' Tricks*:
+
+If you want to change the default callback port, check canvas.conf. It's full
+of useful options that you may not know about like starting automatic listeners
+each time you start CANVAS!
+
+*Links*:
+
+Support email       : support@immunityinc.com
+Sales support       : sales@immunityinc.com
+Support/Sales phone : +1 786-220-0600
+
+
+########################################################################
+########################################################################

@@ -1,0 +1,3199 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-03-04 13:27-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: canvasgui2_default.glade:524 canvasgui2_default.glade:537
+#: canvasgui2_default.glade:947 canvasgui2_default.glade:991
+#: ../canvasgui2_default.glade:524 ../canvasgui2_default.glade:537
+#: ../canvasgui2_default.glade:947 ../canvasgui2_default.glade:991
+msgid " "
+msgstr ""
+
+#: canvasgui2_default.glade:1979 ../canvasgui2_default.glade:1979
+msgid " Target(s) "
+msgstr "目标（拧）"
+
+#: canvasgui2_default.glade:752 ../canvasgui2_default.glade:752
+msgid "(Gets Current Working Directory)"
+msgstr "（获取当前工作目录）"
+
+#: canvasgui2_default.glade:738 ../canvasgui2_default.glade:738
+msgid "."
+msgstr "。"
+
+#: canvasgui2_default.glade:1418 ../canvasgui2_default.glade:1418
+#: ../canvasgui2_default.glade:405
+msgid "0.0.0.0"
+msgstr "0.0.0.0"
+
+#: canvasgui2_default.glade:2477 ../canvasgui2_default.glade:2477
+#: ../canvasgui2_default.glade:2130
+msgid "<b>Canvas Log</b>"
+msgstr "<b>帆布日志</b>"
+
+#: canvasgui2_default.glade:2447 ../canvasgui2_default.glade:2447
+#: ../canvasgui2_default.glade:2071
+msgid "<b>Current Status</b>"
+msgstr "<b>现状</b>"
+
+#: canvasgui2_default.glade:2548 ../canvasgui2_default.glade:2548
+#: ../canvasgui2_default.glade:2253
+msgid "<b>Data View</b>"
+msgstr "<b>数据视图</b>"
+
+#: canvasgui2_default.glade:2508 ../canvasgui2_default.glade:2508
+#: ../canvasgui2_default.glade:2189
+msgid "<b>Debug Log</b>"
+msgstr "<b>调试日志</b>"
+
+#: canvasgui2_default.glade:2258 ../canvasgui2_default.glade:2258
+#: ../canvasgui2_default.glade:1994
+msgid "<b>Exploit Description</b>"
+msgstr "<b>漏洞描述</b>"
+
+#: canvasgui2_default.glade:2675 ../canvasgui2_default.glade:2675
+msgid "<b>Host to Add:</b>"
+msgstr "<b>主机的地址：</b>"
+
+#: canvasgui2_default.glade:1285 ../canvasgui2_default.glade:1285
+msgid "<b>HostName or IP:</b>"
+msgstr "<b>主机名或IP：</b>"
+
+#: canvasgui2_default.glade:1065 canvasgui2_default.glade:3183
+#: ../canvasgui2_default.glade:1065 ../canvasgui2_default.glade:3183
+#: ../canvasgui2_default.glade:3052
+msgid "<b>Listening Port:</b>"
+msgstr "<b>侦听端口：</b>"
+
+#: canvasgui2_default.glade:2226 ../canvasgui2_default.glade:2226
+#: ../canvasgui2_default.glade:1935
+msgid "<b>Node Tree</b>"
+msgstr "<b>节点树</b>"
+
+#: canvasgui2_default.glade:2399 ../canvasgui2_default.glade:2399
+msgid "<b>Search Modules</b>"
+msgstr "<b>搜索模块</b>"
+
+#: canvasgui2_default.glade:2582 ../canvasgui2_default.glade:2582
+#: ../canvasgui2_default.glade:2309
+msgid "<b>Set Covertness:</b>"
+msgstr "<b>设置隐蔽性：</b>"
+
+#: canvasgui2_default.glade:3059 ../canvasgui2_default.glade:3059
+#: ../canvasgui2_default.glade:2870
+msgid "<b>Third Party Exploit Pack Information</b>"
+msgstr "<b>第三方漏洞Pack信息</b>"
+
+#: canvasgui2_default.glade:1080 canvasgui2_default.glade:3198
+#: ../canvasgui2_default.glade:1080 ../canvasgui2_default.glade:3198
+#: ../canvasgui2_default.glade:3024
+msgid "<b>Type of Listener:</b>"
+msgstr "<b>类型的听众：</b>"
+
+#: canvasgui2_default.glade:1271 canvasgui2_default.glade:2688
+#: ../canvasgui2_default.glade:1271 ../canvasgui2_default.glade:2688
+msgid "<b>Type of OS:</b>"
+msgstr "<b>操作系统类型：</b>"
+
+#: canvasgui2_default.glade:1338 ../canvasgui2_default.glade:1338
+#: ../canvasgui2_default.glade:140
+msgid "Add New Interface"
+msgstr "添加新接口"
+
+#: canvasgui2_default.glade:1908 ../canvasgui2_default.glade:1908
+#: ../canvasgui2_default.glade:968
+msgid "Add Target Host"
+msgstr "添加目标主机"
+
+#: canvasgui2_default.glade:174 ../canvasgui2_default.glade:174
+msgid "Add To Targets"
+msgstr "添加到目标"
+
+#: canvasgui2_default.glade:2631 ../canvasgui2_default.glade:2631
+msgid "Add a Host"
+msgstr "添加主机"
+
+#: canvasgui2_default.glade:1227 ../canvasgui2_default.glade:1227
+msgid "Add a host"
+msgstr "添加主机"
+
+#: canvasgui2_default.glade:2108 ../canvasgui2_default.glade:2108
+#: ../canvasgui2_default.glade:1743
+msgid "Add to Target"
+msgstr "添加到目标"
+
+#: canvasgui2_default.glade:2783 ../canvasgui2_default.glade:2783
+#: ../canvasgui2_default.glade:2427
+msgid "All commands to be ran are located here"
+msgstr "所有的命令要在这里跑的位置"
+
+#: canvasgui2_default.glade:354 ../canvasgui2_default.glade:354
+msgid "As Covert As Possible"
+msgstr "由于隐蔽越好"
+
+#: canvasgui2_default.glade:381 ../canvasgui2_default.glade:381
+msgid "As Reliable as Possible"
+msgstr "尽可能地可靠"
+
+#: canvasgui2_default.glade:684 canvasgui2_default.glade:2815
+#: ../canvasgui2_default.glade:684 ../canvasgui2_default.glade:2815
+#: ../canvasgui2_default.glade:2491
+msgid "Browse"
+msgstr "浏览"
+
+#: canvasgui2_default.glade:3032 ../canvasgui2_default.glade:3032
+#: ../canvasgui2_default.glade:2803
+msgid "CANVAS Exploit Packs"
+msgstr "帆布包漏洞"
+
+#: canvasgui2_default.glade:261 ../canvasgui2_default.glade:261
+msgid "CANVAS Log"
+msgstr "帆布日志"
+
+#: canvasgui2_default.glade:3049 ../canvasgui2_default.glade:3049
+#: ../canvasgui2_default.glade:2847
+msgid ""
+"CANVAS Professional has loaded the third party exploit packs listed below.\n"
+"These exploit packs add extra features and exploits to CANVAS Professional, "
+"but are not provided or supported by Immunity Inc. Use of third party "
+"exploit packs is subject to the license of the exploit pack, so be sure to "
+"be familiar with these terms before using third party functionality. "
+msgstr ""
+"帆布专业已加载第三方利用下列包。\n"
+"这些开发包添加额外的功能和专业的帆布攻击，"
+"但不提供或豁免公司使用的第三方支持"
+"开发包是受攻击的包，因此一定要许可证"
+"这些条款与以前熟悉使用第三方的功能。"
+
+#: canvasgui2_default.glade:2208 ../canvasgui2_default.glade:2208
+#: ../canvasgui2_default.glade:1856
+msgid "CANVAS World Map"
+msgstr "帆布世界地图"
+
+#: canvasgui2_default.glade:1675 ../canvasgui2_default.glade:1675
+msgid "CANVAS World Service"
+msgstr "帆布世界服务"
+
+#: canvasgui2_default.glade:1962 ../canvasgui2_default.glade:1962
+msgid "Callback "
+msgstr "回调"
+
+#: canvasgui2_default.glade:2877 ../canvasgui2_default.glade:2877
+#: ../canvasgui2_default.glade:2585
+msgid "Change Directory"
+msgstr "更改目录"
+
+#: canvasgui2_default.glade:709 ../canvasgui2_default.glade:709
+msgid "Change the current directory"
+msgstr "改变当前目录"
+
+#: canvasgui2_default.glade:2183 ../canvasgui2_default.glade:2183
+#: ../canvasgui2_default.glade:1813
+msgid "Classic Node View"
+msgstr "经典节点查看"
+
+#: canvasgui2_default.glade:368 ../canvasgui2_default.glade:368
+msgid "Covertness Bar"
+msgstr "隐蔽酒吧"
+
+#: canvasgui2_default.glade:1011 canvasgui2_default.glade:3115
+#: ../canvasgui2_default.glade:1011 ../canvasgui2_default.glade:3115
+#: ../canvasgui2_default.glade:2952
+msgid "Create A New Listener"
+msgstr "创建新的侦听器"
+
+#: canvasgui2_default.glade:24 ../canvasgui2_default.glade:24
+msgid "Current Callback IP"
+msgstr "当前回调的IP"
+
+#: canvasgui2_default.glade:287 ../canvasgui2_default.glade:287
+msgid "Debug Log"
+msgstr "调试日志"
+
+#: canvasgui2_default.glade:783 ../canvasgui2_default.glade:783
+msgid "Delete a file"
+msgstr "删除一个文件"
+
+#: canvasgui2_default.glade:596 ../canvasgui2_default.glade:596
+msgid "Dir"
+msgstr "迪尔"
+
+#: canvasgui2_default.glade:660 ../canvasgui2_default.glade:660
+#: ../canvasgui2_default.glade:3783
+msgid "Download"
+msgstr "下载"
+
+#: canvasgui2_default.glade:2855 ../canvasgui2_default.glade:2855
+#: ../canvasgui2_default.glade:2553
+msgid "Download a file"
+msgstr "下载文件"
+
+#: canvasgui2_default.glade:497 ../canvasgui2_default.glade:497
+msgid "Download a file from the remote server (source file)"
+msgstr "下载文件从远程服务器（源文件）"
+
+#: canvasgui2_default.glade:1444 ../canvasgui2_default.glade:1444
+#: ../canvasgui2_default.glade:352
+msgid "End Port"
+msgstr "结束端口"
+
+#: canvasgui2_default.glade:1855 ../canvasgui2_default.glade:1855
+#: ../canvasgui2_default.glade:831
+msgid "Exit CANVAS GUI"
+msgstr "退出帆布图形用户界面"
+
+#: canvasgui2_default.glade:1854 ../canvasgui2_default.glade:1854
+#: ../canvasgui2_default.glade:830
+msgid "Exits CANVAS GUI"
+msgstr "退出帆布图形用户界面"
+
+#: canvasgui2_default.glade:3251 ../canvasgui2_default.glade:3251
+#: ../canvasgui2_default.glade:3158
+msgid "Filesystem Browser"
+msgstr "文件系统浏览器"
+
+#: canvasgui2_default.glade:2310 ../canvasgui2_default.glade:2310
+#: ../canvasgui2_default.glade:1475
+msgid "GO"
+msgstr "转到"
+
+#: canvasgui2_default.glade:2899 ../canvasgui2_default.glade:2899
+#: ../canvasgui2_default.glade:2617
+msgid "Get Directory Listing"
+msgstr "获取目录列表"
+
+#: canvasgui2_default.glade:737 ../canvasgui2_default.glade:737
+msgid "Get directory listing"
+msgstr "获取目录列表"
+
+#: canvasgui2_default.glade:797 canvasgui2_default.glade:815
+#: canvasgui2_default.glade:833 canvasgui2_default.glade:851
+#: canvasgui2_default.glade:869 canvasgui2_default.glade:887
+#: canvasgui2_default.glade:905 canvasgui2_default.glade:923
+#: ../canvasgui2_default.glade:797 ../canvasgui2_default.glade:815
+#: ../canvasgui2_default.glade:833 ../canvasgui2_default.glade:851
+#: ../canvasgui2_default.glade:869 ../canvasgui2_default.glade:887
+#: ../canvasgui2_default.glade:905 ../canvasgui2_default.glade:923
+msgid "Go"
+msgstr "离去"
+
+#: canvasgui2_default.glade:1921 ../canvasgui2_default.glade:1921
+#: ../canvasgui2_default.glade:986
+msgid "Halt Current Exploit"
+msgstr "停止目前的漏洞"
+
+#: canvasgui2_default.glade:1757 ../canvasgui2_default.glade:1757
+msgid "Host"
+msgstr "主人"
+
+#: canvasgui2_default.glade:1497 ../canvasgui2_default.glade:1497
+#: ../canvasgui2_default.glade:240
+msgid "IP (external IP for NAT)"
+msgstr "知识产权（外部IP为NAT）"
+
+#: canvasgui2_default.glade:8 canvasgui2_default.glade:1835
+#: ../canvasgui2_default.glade:8 ../canvasgui2_default.glade:1835
+#: ../canvasgui2_default.glade:759
+msgid "Immunity CANVAS (http://www.immunityinc.com/)"
+msgstr "免疫帆布（http://www.immunityinc.com/）"
+
+#: canvasgui2_default.glade:1510 ../canvasgui2_default.glade:1510
+#: ../canvasgui2_default.glade:212
+msgid "Interface Name"
+msgstr "接口名称"
+
+#: canvasgui2_default.glade:115 ../canvasgui2_default.glade:115
+msgid "List of exploits and utility modules"
+msgstr "利用和实用的模块列表"
+
+#: canvasgui2_default.glade:417 canvasgui2_default.glade:2756
+#: ../canvasgui2_default.glade:417 ../canvasgui2_default.glade:2756
+#: ../canvasgui2_default.glade:2365
+msgid "Listener Shell"
+msgstr "听众壳牌"
+
+#: canvasgui2_default.glade:3288 ../canvasgui2_default.glade:3288
+#: ../canvasgui2_default.glade:3242
+msgid "Module Log"
+msgstr "模块日志"
+
+#: canvasgui2_default.glade:2068 ../canvasgui2_default.glade:2068
+#: ../canvasgui2_default.glade:1246 ../canvasgui2_default.glade:1272
+msgid "Modules"
+msgstr "模块"
+
+#: canvasgui2_default.glade:1560 ../canvasgui2_default.glade:1560
+#: ../canvasgui2_default.glade:517
+msgid "My Screenshots"
+msgstr "我的截图"
+
+#: canvasgui2_default.glade:1385 ../canvasgui2_default.glade:1385
+#: ../canvasgui2_default.glade:445
+msgid "NAT"
+msgstr "NAT的"
+
+#: canvasgui2_default.glade:1470 ../canvasgui2_default.glade:1470
+#: ../canvasgui2_default.glade:296
+msgid "NAT Interface"
+msgstr "NAT的接口"
+
+#: canvasgui2_default.glade:1484 ../canvasgui2_default.glade:1484
+#: ../canvasgui2_default.glade:268
+msgid "Netmask Bits (24 is class C)"
+msgstr "掩码位（24是C类）"
+
+#: canvasgui2_default.glade:1149 canvasgui2_default.glade:1175
+#: ../canvasgui2_default.glade:1149 ../canvasgui2_default.glade:1175
+#: ../canvasgui2_default.glade:8 ../canvasgui2_default.glade:80
+msgid "Network Dump Filter String"
+msgstr "网络转储筛选字符串"
+
+#: canvasgui2_default.glade:1590 ../canvasgui2_default.glade:1590
+#: ../canvasgui2_default.glade:592
+msgid "Network Dump Window"
+msgstr "网络转储窗口"
+
+#: canvasgui2_default.glade:1432 ../canvasgui2_default.glade:1432
+#: ../canvasgui2_default.glade:384
+msgid "New Interface"
+msgstr "新界面"
+
+#: canvasgui2_default.glade:2151 ../canvasgui2_default.glade:2151
+#: ../canvasgui2_default.glade:1675
+msgid "Node Management"
+msgstr "节点管理"
+
+#: canvasgui2_default.glade:1608 ../canvasgui2_default.glade:1608
+#: ../canvasgui2_default.glade:642
+msgid "Note to Add"
+msgstr "注意：要添加"
+
+#: canvasgui2_default.glade:2919 ../canvasgui2_default.glade:2919
+#: ../canvasgui2_default.glade:2646
+msgid "PWD - Gets current working Directory"
+msgstr "密码 - 获取当前工作目录"
+
+#: canvasgui2_default.glade:1770 ../canvasgui2_default.glade:1770
+msgid "Password"
+msgstr "密码"
+
+#: canvasgui2_default.glade:2790 ../canvasgui2_default.glade:2790
+#: ../canvasgui2_default.glade:2447
+msgid "Pick file to upload"
+msgstr "选择要上传的文件"
+
+#: canvasgui2_default.glade:564 canvasgui2_default.glade:2930
+#: ../canvasgui2_default.glade:564 ../canvasgui2_default.glade:2930
+#: ../canvasgui2_default.glade:2662
+msgid "Piped Command"
+msgstr "管道命令"
+
+#: canvasgui2_default.glade:1744 ../canvasgui2_default.glade:1744
+msgid "Port"
+msgstr "港口"
+
+#: canvasgui2_default.glade:2331 ../canvasgui2_default.glade:2331
+#: ../canvasgui2_default.glade:1505
+msgid "Raw"
+msgstr "生肉"
+
+#: canvasgui2_default.glade:2345 ../canvasgui2_default.glade:2345
+#: ../canvasgui2_default.glade:1524
+msgid "Regex"
+msgstr "正则表达式"
+
+#: canvasgui2_default.glade:1864 ../canvasgui2_default.glade:1864
+#: ../canvasgui2_default.glade:821
+msgid "Reload CANVAS Modules"
+msgstr "刷新帆布模块"
+
+#: canvasgui2_default.glade:1863 ../canvasgui2_default.glade:1863
+#: ../canvasgui2_default.glade:820
+msgid "Reloads CANVAS Modules"
+msgstr "重整帆布模块"
+
+#: canvasgui2_default.glade:2119 ../canvasgui2_default.glade:2119
+#: ../canvasgui2_default.glade:1759
+msgid "Remove from Target"
+msgstr "从目标中删除"
+
+#: canvasgui2_default.glade:187 ../canvasgui2_default.glade:187
+msgid "Remove from Targets"
+msgstr "从目标中删除"
+
+#: canvasgui2_default.glade:768 ../canvasgui2_default.glade:768
+msgid "Run a command and get the standard output."
+msgstr "运行一个命令并获得标准输出。"
+
+#: canvasgui2_default.glade:2016 ../canvasgui2_default.glade:2016
+#: ../canvasgui2_default.glade:1161
+msgid "Screen Shots"
+msgstr "屏幕快照"
+
+#: canvasgui2_default.glade:1934 ../canvasgui2_default.glade:1934
+#: ../canvasgui2_default.glade:1004
+msgid "Set OS Configuration"
+msgstr "设置操作系统配置"
+
+#: canvasgui2_default.glade:1092 canvasgui2_default.glade:3133
+#: ../canvasgui2_default.glade:1092 ../canvasgui2_default.glade:3133
+#: ../canvasgui2_default.glade:3128
+msgid "Set fromcreatethread"
+msgstr "集fromcreatethread"
+
+#: canvasgui2_default.glade:612 ../canvasgui2_default.glade:612
+msgid "Spawn Process"
+msgstr "产卵过程"
+
+#: canvasgui2_default.glade:2888 ../canvasgui2_default.glade:2888
+#: ../canvasgui2_default.glade:2601
+msgid "Spawn a Process"
+msgstr "产卵一个过程"
+
+#: canvasgui2_default.glade:1883 ../canvasgui2_default.glade:1883
+#: ../canvasgui2_default.glade:854
+msgid "Start New MOSDEF Listener"
+msgstr "开始新MOSDEF听众"
+
+#: canvasgui2_default.glade:1457 ../canvasgui2_default.glade:1457
+#: ../canvasgui2_default.glade:324
+msgid "Start Port"
+msgstr "开始端口"
+
+#: canvasgui2_default.glade:3273 ../canvasgui2_default.glade:3273
+#: ../canvasgui2_default.glade:3213
+msgid "Status Bar"
+msgstr "状态栏"
+
+#: canvasgui2_default.glade:162 canvasgui2_default.glade:2097
+#: ../canvasgui2_default.glade:162 ../canvasgui2_default.glade:2097
+#: ../canvasgui2_default.glade:1727
+msgid "Target"
+msgstr "目标"
+
+#: canvasgui2_default.glade:2170 ../canvasgui2_default.glade:2170
+#: ../canvasgui2_default.glade:1782
+msgid "The information such as targets and interfaces"
+msgstr "如指标和接口的信息"
+
+#: canvasgui2_default.glade:118 ../canvasgui2_default.glade:118
+msgid "This lets you look at all the modules you can use"
+msgstr "这让你看的所有模块可以使用"
+
+#: canvasgui2_default.glade:2941 ../canvasgui2_default.glade:2941
+#: ../canvasgui2_default.glade:2678
+msgid "Unlink"
+msgstr "取消链接"
+
+#: canvasgui2_default.glade:644 ../canvasgui2_default.glade:644
+msgid "Upload"
+msgstr "上传"
+
+#: canvasgui2_default.glade:2866 ../canvasgui2_default.glade:2866
+#: ../canvasgui2_default.glade:2569
+msgid "Upload a File"
+msgstr "上传文件"
+
+#: canvasgui2_default.glade:677 ../canvasgui2_default.glade:677
+msgid ""
+"Upload a file to the remote server (click browse to pick, or type directly)"
+msgstr ""
+"上传文件到远程服务器（点击浏览选择，或直接输入）"
+
+#: canvasgui2_default.glade:1783 ../canvasgui2_default.glade:1783
+msgid "Username"
+msgstr "用户名"
+
+#: canvasgui2_default.glade:1847 ../canvasgui2_default.glade:1847
+#: ../canvasgui2_default.glade:802 ../canvasgui2_default.glade:3936
+msgid "_File"
+msgstr "_File"
+
+#: canvasgui2_default.glade:1876 ../canvasgui2_default.glade:1876
+#: ../canvasgui2_default.glade:844
+msgid "_Listeners"
+msgstr "_Listeners"
+
+#: canvasgui2_default.glade:628 ../canvasgui2_default.glade:628
+msgid "cd"
+msgstr "光盘"
+
+#: canvasgui2_default.glade:1706 ../canvasgui2_default.glade:1706
+msgid "localhost"
+msgstr "本地主机"
+
+#: canvasgui2_default.glade:117 ../canvasgui2_default.glade:117
+msgid "module_treeview"
+msgstr "module_treeview"
+
+#: canvasgui2_default.glade:580 ../canvasgui2_default.glade:580
+msgid "pwd"
+msgstr "密码"
+
+#: canvasgui2_default.glade:723 ../canvasgui2_default.glade:723
+msgid "spawn() on Windows, fexecve() on Unix"
+msgstr "产卵（）在Windows，fexecve（）在Unix"
+
+#: canvasgui2_default.glade:548 ../canvasgui2_default.glade:548
+msgid "unlink"
+msgstr "断开"
+
+#: canvasgui2_default.glade:1581 ../canvasgui2_default.glade:1581
+#: ../canvasgui2_default.glade:564
+msgid "window2"
+msgstr "window2"
+
+#: ../canvasgui2_default.glade:811
+msgid "Install GeoIP database...."
+msgstr "安装GeoIP数据库...."
+
+#: ../canvasgui2_default.glade:853
+msgid "Start a MOSDEF listener service on the current callback interface"
+msgstr "开始对目前的回调接口MOSDEF侦听器服务"
+
+#: ../canvasgui2_default.glade:867
+msgid "_Session"
+msgstr "_Session"
+
+#: ../canvasgui2_default.glade:877
+msgid "Define the name of the CANVAS session and switch to that session."
+msgstr "界定帆布会议的名称，并切换到该会议。"
+
+#: ../canvasgui2_default.glade:878
+msgid "Set CANVAS Session Name"
+msgstr "设置帆布会话名称"
+
+#: ../canvasgui2_default.glade:887
+msgid "Save as much data from this session as we can"
+msgstr "本届会议从大量的数据，我们可以保存"
+
+#: ../canvasgui2_default.glade:888
+msgid "Save CANVAS Session"
+msgstr "保存帆布会议"
+
+#: ../canvasgui2_default.glade:897
+msgid "Restore data from a previous session"
+msgstr "从上届会议恢复数据"
+
+#: ../canvasgui2_default.glade:898
+msgid "Restore CANVAS Session"
+msgstr "还原帆布会议"
+
+#: ../canvasgui2_default.glade:911
+msgid "_Help"
+msgstr "_Help"
+
+#: ../canvasgui2_default.glade:921
+msgid "About this CANVAS release"
+msgstr "关于此帆布发布"
+
+#: ../canvasgui2_default.glade:922
+msgid "About"
+msgstr "大约"
+
+#: ../canvasgui2_default.glade:931
+msgid "Check to see if this is the latest version of CANVAS available"
+msgstr "检查是否这是帆布最新的版本"
+
+#: ../canvasgui2_default.glade:932
+msgid "Check for updates..."
+msgstr "检查更新..."
+
+#: ../canvasgui2_default.glade:1048
+msgid ""
+"Current\n"
+"Callback"
+msgstr ""
+"当前的\n"
+"回调"
+
+#: ../canvasgui2_default.glade:1094
+msgid ""
+"Current \n"
+"Target(s) "
+msgstr ""
+"当前的\n"
+"目标（拧）"
+
+#: ../canvasgui2_default.glade:1322
+msgid "ALL"
+msgstr "所有"
+
+#: ../canvasgui2_default.glade:1337
+msgid "MODULE NAME"
+msgstr "模块名称"
+
+#: ../canvasgui2_default.glade:1346
+msgid "CVE Name"
+msgstr "CVE名称"
+
+#: ../canvasgui2_default.glade:1355
+msgid "CVE Url"
+msgstr "CVE网址"
+
+#: ../canvasgui2_default.glade:1364
+msgid "VENDOR"
+msgstr "卖方"
+
+#: ../canvasgui2_default.glade:1373
+msgid "MSADV"
+msgstr "MSADV"
+
+#: ../canvasgui2_default.glade:1382
+msgid "OS"
+msgstr "操作系统"
+
+#: ../canvasgui2_default.glade:1391
+msgid "TYPE"
+msgstr "型"
+
+#: ../canvasgui2_default.glade:1400
+msgid "SITE"
+msgstr "网站"
+
+#: ../canvasgui2_default.glade:1409
+msgid "ARCH"
+msgstr "拱"
+
+#: ../canvasgui2_default.glade:1418
+msgid "VERSION"
+msgstr "版本"
+
+#: ../canvasgui2_default.glade:1427
+msgid "KERNELVER"
+msgstr "KERNELVER"
+
+#: ../canvasgui2_default.glade:1436
+msgid "THIRD PARTY"
+msgstr "第三方"
+
+#: ../canvasgui2_default.glade:1595
+msgid "Search"
+msgstr "搜索"
+
+#: ../canvasgui2_default.glade:1899
+msgid "CmdLine"
+msgstr "命令行"
+
+#: ../canvasgui2_default.glade:2695
+msgid "Open filesystem browser"
+msgstr "打开文件浏览器"
+
+#: ../canvasgui2_default.glade:3293
+msgid "Set CANVAS session name"
+msgstr "设置帆布会话名称"
+
+#: ../canvasgui2_default.glade:3366
+msgid "<b>Session name:</b>"
+msgstr "<b>会议名称：</b>"
+
+#: ../canvasgui2_default.glade:3398
+msgid "session_name"
+msgstr "session_name"
+
+#: ../canvasgui2_default.glade:3426
+msgid "Add a contact route"
+msgstr "新增联络路线"
+
+#: ../canvasgui2_default.glade:3499
+msgid "<b>Email/IM/RSS</b>"
+msgstr "<b>电子邮件/即时消息/的RSS</b>"
+
+#: ../canvasgui2_default.glade:3527
+msgid "<b>Type of Route:</b>"
+msgstr "<b>路线类型：</b>"
+
+#: ../canvasgui2_default.glade:3604
+msgid "Application Name"
+msgstr "应用程序名称"
+
+#: ../canvasgui2_default.glade:3605
+msgid "Immunity Inc"
+msgstr "免疫公司"
+
+#: ../canvasgui2_default.glade:3609
+msgid "translator-credits"
+msgstr "翻译，信贷"
+
+#: ../canvasgui2_default.glade:3634
+msgid "CANVAS Error"
+msgstr "帆布错误"
+
+#: ../canvasgui2_default.glade:3684
+msgid "error goes here"
+msgstr "错误到这里"
+
+#: ../canvasgui2_default.glade:3711
+msgid "Update check"
+msgstr "检查更新"
+
+#: ../canvasgui2_default.glade:3865
+msgid ""
+"Version update msg here\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+msgstr ""
+"在此版本更新味精\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+
+#: ../canvasgui2_default.glade:3946
+msgid "Test1"
+msgstr "Test1"
+
+#: ../canvasgui2_default.glade:3954
+msgid "tes2"
+msgstr "tes2"
+
+#: ../canvasgui2_default.glade:3968
+msgid "Delete node ..."
+msgstr "删除节点..."
+
+#: ../canvasgui2_default.glade:4031
+msgid "Are you sure you want to delete this node?"
+msgstr "您确定要删除此节点？"
+
+#: ../canvasgui2_default.glade:4061
+msgid "Knowledge"
+msgstr "知识"
+
+#: ../canvasgui2_default.glade:4083
+msgid "Add new host"
+msgstr "添加新的主机"
+
+#: ../canvasgui2_default.glade:4092
+msgid "Forget all knowledge"
+msgstr "忘掉所有的知识"
+
+#: ../canvasgui2_default.glade:4101
+msgid "Add hosts from file"
+msgstr "从文件添加主机"
+
+#: ../canvasgui2_default.glade:4120
+msgid "Interfaces"
+msgstr "接口"
+
+#: ../canvasgui2_default.glade:4142
+msgid "Add interface"
+msgstr "添加界面"
+
+#: ../canvasgui2_default.glade:4211
+msgid "Help text goes here - overide in your python code!"
+msgstr "帮助文本到这里 - 在你的Python代码overide！"
+
+#: ../canvasgui2_default.glade:4240
+msgid "All Knowledge"
+msgstr "所有知识"
+
+#: ../canvasgui2_default.glade:4334
+msgid "Select the GeoIP data file ....."
+msgstr "选择GeoIP数据文件....."
+
+#: ../WorldMap/graph_base.glade:7
+msgid "CANVAS Nodes"
+msgstr "帆布节点"
+
+#: ../WorldMap/graph_base.glade:31
+msgid "close"
+msgstr "关闭"
+
+#: ../license_view.glade:46
+msgid "Accept"
+msgstr "接受"
+
+#: ../license_view.glade:55
+msgid "Decline"
+msgstr "下降"
+
+#: ../canvasguigtk2.py:1775 ../canvasguigtk2.py:1809
+msgid "Recon Tools"
+msgstr "侦察工具"
+
+#: ../canvasguigtk2.py:800
+msgid ""
+"Your use of CANVAS is subject to certain terms and conditions, as specified "
+"in the CANVAS License. By using CANVAS, you agree to these terms."
+msgstr ""
+"您使用的帆布受某些条款及条件，指明"
+"在帆布许可证。通过使用帆布，您同意这些条款。"
+
+#: ../canvasguigtk2.py:801
+msgid ""
+"One of these conditions is that the CANVAS license, as included with this "
+"package, is the sole description of your rights."
+msgstr ""
+"这些条件之一是，帆布许可证，这包括与"
+"包，是您的权利的唯一描述。"
+
+#: ../canvasguigtk2.py:802
+msgid "Have you visited the CANVAS forum yet? https://forum.immunityinc.com"
+msgstr "你参观了帆布论坛了吗？通过https：/ / forum.immunityinc.com"
+
+#: ../canvasguigtk2.py:803
+msgid "Local IP="
+msgstr "本地IP ="
+
+#: ../canvasguigtk2.py:805
+msgid "Your CANVAS subscription expires"
+msgstr "画布订阅到期"
+
+#: ../canvasguigtk2.py:806
+msgid "Your CANVAS subscription is registered to"
+msgstr "画布的订阅注册"
+
+#: ../canvasguigtk2.py:807
+msgid ""
+"If you are getting close to expiring, contact +1-786-220-0600 or "
+"admin@immunityinc.com to renew!"
+msgstr ""
+"如果你是贴近止，或联系+1-786-220-0600"
+"admin@immunityinc.com延续！"
+
+#: ../canvasguigtk2.py:1542
+msgid "Status"
+msgstr "身份"
+
+#: ../canvasguigtk2.py:1547
+msgid "Action"
+msgstr "行动"
+
+#: ../canvasguigtk2.py:1552
+msgid "Start Time"
+msgstr "开始时间"
+
+#: ../canvasguigtk2.py:1557
+msgid "End Time"
+msgstr "结束时间"
+
+#: ../canvasguigtk2.py:1562
+msgid "Information"
+msgstr "信息"
+
+#: ../canvasguigtk2.py:1794
+msgid "CANVAS Exploits"
+msgstr "帆布侵入"
+
+#: ../canvasguigtk2.py:1797
+msgid "Control Active Listener"
+msgstr "控制积极的倾听"
+
+#: ../canvasguigtk2.py:1798
+msgid "For the active node"
+msgstr "对于主动节点"
+
+#: ../canvasguigtk2.py:1801
+msgid "3rd Party Exploit Packs"
+msgstr "第三方漏洞包"
+
+#: ../canvasguigtk2.py:1806
+msgid "Commands For Nodes"
+msgstr "节点的命令"
+
+#: ../canvasguigtk2.py:1807
+msgid "Post Exploit Control"
+msgstr "邮政漏洞控制"
+
+#: ../canvasguigtk2.py:1808
+msgid "Misc Tools"
+msgstr "船务工具"
+
+#: ../canvasguigtk2.py:1810
+msgid "Recon Tools For Nodes"
+msgstr "节点的侦察工具"
+
+#: ../canvasguigtk2.py:1811
+msgid "Remote recon tools that run against a target"
+msgstr "远程侦察工具，对目标运行"
+
+#: ../canvasguigtk2.py:1812
+msgid "Denial of Service Modules"
+msgstr "拒绝服务模块"
+
+#: ../canvasguigtk2.py:1813
+msgid "Configuration Modules"
+msgstr "配置模块"
+
+#: ../canvasguigtk2.py:1814
+msgid "CANVAS Servers"
+msgstr "帆布服务器"
+
+#: ../canvasguigtk2.py:1815
+msgid "Fuzzing Modules"
+msgstr "起毛模块"
+
+#: ../canvasguigtk2.py:1816
+msgid "Cross Tool Interface"
+msgstr "交叉工具接口"
+
+#: ../canvasguigtk2.py:1817
+msgid "Various tools for use post-intrusion."
+msgstr "各种工具使用后的入侵。"
+
+#: ../canvasguigtk2.py:1818
+msgid "CANVAS Reports"
+msgstr "帆布报告"
+
+#: ../canvasguigtk2.py:1823
+msgid "Local attacks that run against a node"
+msgstr "本地攻击，对一个节点运行"
+
+#: ../canvasguigtk2.py:1824
+msgid "Client side attacks"
+msgstr "客户端攻击"
+
+#: ../canvasguigtk2.py:1825
+msgid "Remote attacks"
+msgstr "远程攻击"
+
+#: ../canvasguigtk2.py:1826
+msgid "Attacks against Microsoft platforms"
+msgstr "攻击微软平台"
+
+#: ../canvasguigtk2.py:1827
+msgid "Attacks against unix platforms"
+msgstr "攻击UNIX平台"
+
+#: ../canvasguigtk2.py:1828
+msgid "Attacks against web applications"
+msgstr "攻击网络应用程序"
+
+#: ../canvasguigtk2.py:2145
+msgid "Various tools for exploiting custom web applications"
+msgstr "为定制的Web应用开发的各种工具"
+
+msgid "User Defined Modules"
+msgstr "用户自定义模块"
+
+msgid "New Monthly Modules"
+msgstr "新的每月模块"
+
+msgid "1024 CMS <= 1.4.4 Remote File Include"
+msgstr "1024不育系“= 1.4.4远程文件包含"
+
+msgid "3com's TFTP Server (UDP port 69) version 2.0.1 overflow in mode"
+msgstr "3Com的TFTP服务器（UDP端口69）2.0.1版溢出模式"
+
+msgid "Misdesign in RDS.DataStore allows for arbitrary object execution"
+msgstr "在RDS.DataStore Misdesign允许任意对象执行"
+
+msgid "Creates an executable that will call back to MOSDEF"
+msgstr "创建一个可执行文件，将回调MOSDEF"
+
+msgid "Creates an hlp file that will call back to MOSDEF"
+msgstr "创建一个HLP文件，将回调MOSDEF"
+
+msgid ""
+"Creates an executable that will call back to download and execute a file "
+"over HTTP/s"
+msgstr ""
+"创建一个可执行文件，将召回下载并执行文件"
+"通过HTTP /秒"
+
+msgid ""
+"Create a working RSS reader widget that silently connects back to a CANVAS "
+"host"
+msgstr ""
+"创建工作的RSS阅读器精灵，静静地连接回帆布"
+"主人"
+
+msgid "CLOUDBURST VMware Workstation Guest Escape"
+msgstr "倾盆大雨VMware Workstation的客户逃逸"
+
+msgid "Local privilege escalation for AIX 5.x"
+msgstr "针对AIX 5.x的本地权限提升"
+
+msgid "Local privilege escalation for Solaris 10"
+msgstr "适用于Solaris 10的区域权限升级"
+
+msgid "Creates a process given a token"
+msgstr "由于创建一个进程令牌"
+
+msgid "DNS Baliwick attack"
+msgstr "攻击的DNS Baliwick"
+
+msgid "prctl PR_SET_DUMPABLE Linux Local (2.6.13 < 2.6.17.4)"
+msgstr "prctl PR_SET_DUMPABLE Linux的地方（2.6.13“2.6.17.4）"
+
+msgid "Creates a primary token from another token"
+msgstr "创建一个主令牌从另一个令牌"
+
+msgid "EXPLOITDESCRIPTION"
+msgstr "EXPLOITDESCRIPTION"
+
+msgid ""
+"An obvious memory exaustion bug in Exchange Server 2000's MSRPC endpoint"
+msgstr ""
+"一个明显的内存在Exchange Server 2000的MSRPC端点exaustion错误"
+
+msgid "Exits Windows - this will return, and then windows will shut down"
+msgstr "退出视窗 - 这将返回，然后Windows将关闭"
+
+msgid "Tapi Stack Overflow"
+msgstr "大埤堆栈溢出"
+
+msgid "Foxit PDF reader permission bypass"
+msgstr "福昕PDF阅读器允许旁路"
+
+msgid ""
+"A vulnerability in the way Windows 2000/XP handles GDI structures allows for "
+"writing to kernel space"
+msgstr ""
+"阿于Windows 2000/XP的处理GDI的结构的脆弱允许"
+"写入内核空间"
+
+msgid "Get as much info as we can from Outlook Address Book"
+msgstr "得到尽可能多的信息，我们可以从Outlook通讯簿"
+
+msgid ""
+"Get as much info as we can from the installed web browsers of the current "
+"user: histories, bookmarks, cached password etc\n"
+"NOTE: If FF3 is open the sqlite files cannot be grabbed - I assume they are "
+"locked ?"
+msgstr ""
+"得到尽可能多的信息，我们可以从安装的Web浏览器的电流"
+"用户：历史，书签，缓存的密码等\n"
+"注意：如果FF3是打开不能抓住sqlite的文件 - 我猜想他们是"
+"锁定？"
+
+msgid "COMMANDDESCRIPTION"
+msgstr "COMMANDDESCRIPTION"
+
+msgid "Gets the language of the node"
+msgstr "获取节点的语言"
+
+msgid ""
+"This module attempts to determine if a user is actively moving the mouse or "
+"typing on all selected nodes."
+msgstr ""
+"这个模块试图确定用户积极移动鼠标或"
+"输入所有选定的节点。"
+
+msgid "IA WebMail <= 3.1 Stack Overflow"
+msgstr "保险业监督邮局“= 3.1堆栈溢出"
+
+msgid "Compaq Insight CIM-XML exploit"
+msgstr "康柏洞察CIM标准的XML开发"
+
+msgid "Gets a primary token given a username and password"
+msgstr "获取一个主令牌给用户名和密码"
+
+msgid "MailEnable WebMail Authorization Buffer Overflow"
+msgstr "MailEnable邮局授权缓冲区溢出"
+
+msgid ""
+"Microsoft Windows Media Player Malformed PNG Remote Code Execution "
+"Vulnerability"
+msgstr ""
+"微软Windows媒体播放器格式不正确的巴纽远程执行代码"
+"漏洞"
+
+msgid ""
+"A stack overflow in the SUBSCRIBE IMAP call allows for a post-auth compromise"
+msgstr ""
+"阿栈溢出订阅IMAP呼吁允许后权威性妥协"
+
+msgid "Check to see if NTLM auth worked on a web server"
+msgstr "请检查是否使用NTLM权威性Web服务器上工作"
+
+msgid ""
+"Incorrect DBUS deny statement setting allows access to NetworkManager "
+"secrets of other users (such WEP/WPA keys)"
+msgstr ""
+"不正确杜布斯否认声明，制订NetworkManager已允许访问"
+"其他用户机密（例如的WEP / WPA的键）"
+
+msgid "PROC FS Linux 2.6.x local root exploit"
+msgstr "财政司司长的Linux 2.6.x的进程内本地根利用"
+
+msgid "Test not for release"
+msgstr "测试不释放"
+
+msgid "Get a Win32 Node on a VNC system"
+msgstr "获得一个VNC系统的一个Win32节点"
+
+msgid "Safe Vulnerability Assessment Tool"
+msgstr "安全漏洞评估工具"
+
+msgid "Poor input validation allows remote users to include remote files"
+msgstr "标准普尔输入验证允许远程用户远程文件包含"
+
+msgid "WS_FTPD Stack Overflow"
+msgstr "WS_FTPD堆栈溢出"
+
+msgid "Get WEP and WPA keys off the target system"
+msgstr "获取WEP和小康目标系统的WPA密钥"
+
+msgid "Abyss Web Server Overflow"
+msgstr "深渊Web服务器溢出"
+
+msgid "Adobe Acrobat Reader 9.1.3/8.1.6 Heap Overflow leads to code execution"
+msgstr "使用Adobe Acrobat Reader 9.1.3/8.1.6堆溢出导致代码执行"
+
+msgid "Adobe Acrobat Flash Uninitialized object"
+msgstr "使用Adobe Acrobat闪光未初始化的对象"
+
+msgid "Adobe Acrobat Reader 9.0 Stack Overflow"
+msgstr "使用Adobe Acrobat Reader 9.0堆栈溢出"
+
+msgid "Adobe Acrobat Reader Stack Overflow"
+msgstr "Adobe Acrobat Reader软件堆栈溢出"
+
+msgid "Adobe Acrobat Reader Stack Overflow (Collab.getIcon)"
+msgstr "Adobe Acrobat Reader软件堆栈溢出（Collab.getIcon）"
+
+msgid "Adobe Acrobat Reader Use After Free (DocMedia.newplayer)"
+msgstr "用Adobe Acrobat Reader免费后（DocMedia.newplayer）"
+
+msgid "Adobe Acrobat Reader Heap Overflow (ClodMeshDeclaration CVE-2009-2994)"
+msgstr "Adobe Acrobat Reader软件堆溢出（ClodMeshDeclaration CVE - 2009 - 2994）"
+
+msgid ""
+"Sends an activation packet to a host that has the MOSDEF rootkit running. "
+"Returns a Win32Node. Can take up to 60 seconds.Doesn't matter if the remote "
+"host has the Windows firewall turned on, because our rootkit sits below it."
+msgstr ""
+"激活数据包发送到主机具有MOSDEF rootkit的运行。"
+"返回Win32Node。最多可能需要60 seconds.Doesn'吨的问题，如果远程"
+"主机已打开Windows防火墙，因为我们的rootkit它下面的成员。"
+
+msgid "Adds a host to the host knowledge tree"
+msgstr "添加一个主机到主机的知识树"
+
+msgid "Adds a list of hosts from a file to the host knowledge tree"
+msgstr "从文件添加到主机知识树的主机列表"
+
+msgid "adds a null share on the local or remote machine"
+msgstr "增加了对本地或远程计算机上的份额为空"
+
+msgid ""
+"Calls popen2() or equivalent to issue local command to add a user. Uses "
+"first selected node."
+msgstr ""
+"呼吁popen2（）或相当于本地的命令来添加一个用户。用途"
+"第一个选定的节点。"
+
+msgid ""
+"Poor input validation allows remote users to insert php code into the blog "
+"and execute commands"
+msgstr ""
+"标准普尔输入验证允许远程用户插入到博客PHP代码"
+"并执行命令"
+
+msgid "Calendar Manager stack overflow for AIX"
+msgstr "日历管理AIX的堆栈溢出"
+
+msgid "ttdbserver libtt.a _tt_internal_realpath stack overflow"
+msgstr "ttdbserver libtt.a _tt_internal_realpath堆栈溢出"
+
+msgid "Alt-N Security Gateway 1.0.1 - Admin HTTP Server Overflow"
+msgstr "Alt - N公司安全网关1.0.1 - 管理员HTTP服务器溢出"
+
+msgid "Windows Animated Cursor Stack Overflow"
+msgstr "Windows动画光标堆栈溢出"
+
+msgid ""
+"\n"
+"Apache 2.0.46-52 and IBM HTTP Web Server 2.0.42-47 are vulnerable to DoS via "
+"excessive use of spaces in an HTTP GET Request"
+msgstr ""
+"\n"
+"阿帕奇2.0.46-52和IBM HTTP Web服务器2.0.42-47很容易受到拒绝服务通过"
+"过度使用的空间在HTTP GET请求"
+
+msgid "Apache Chunked encoding exploit for win32"
+msgstr "阿帕奇攻击区块编码为Win32"
+
+msgid ""
+"Finds all the hosts on the local network interfaces using an brute force arp "
+"scan"
+msgstr ""
+"查找所有本地网络上的主机接口，使用蛮力阿尔普"
+"扫描"
+
+msgid "Performs an ARP scan"
+msgstr "执行一个ARP扫描"
+
+msgid "SAMBA api_lsa_lookup_sids Heap Overflow"
+msgstr "桑巴api_lsa_lookup_sids堆溢出"
+
+msgid "Microsoft Scheduler Service NetrJobAdd"
+msgstr "微软计划程序服务NetrJobAdd"
+
+msgid "Assess the exposure of a given box"
+msgstr "评估暴露给定盒"
+
+msgid "Try to hack into the given box"
+msgstr "尝试侵入给定盒"
+
+msgid "Tries to escalate privilege on a node"
+msgstr "尝试升级一个节点特权"
+
+msgid "awservices.exe stack overflow"
+msgstr "awservices.exe堆栈溢出"
+
+msgid "barryvancompo-0.3 Remote file include"
+msgstr "barryvancompo - 0.3远程文件包含"
+
+msgid "Basic Authentication Bruteforce"
+msgstr "基本身份验证Bruteforce"
+
+msgid "Big Ant Messenging Server 2.2 - HTTP GET Stack Overflow"
+msgstr "大蚂蚁通讯软件服务器2.2 - 堆栈溢出的HTTP GET"
+
+msgid ""
+"It allows us to inject an executable file inside an OLE2 docfile and execute "
+"it using VBA."
+msgstr ""
+"它使我们注入了OLE2文件档案内的可执行文件并执行"
+"它使用VBA。"
+
+msgid "BlackIce stack overflow"
+msgstr "黑冰堆栈溢出"
+
+msgid "Blind ISAPI stack overflow brute forcer"
+msgstr "盲人的ISAPI堆栈溢出暴力破解器"
+
+msgid "Blind SQL Injection"
+msgstr "盲SQL注入"
+
+msgid ""
+"Borland Interbase ibserver.exe Create-Request Buffer Overflow Vulnerability"
+msgstr ""
+"Borland公司Interbase ibserver.exe创建，请求缓冲区溢出漏洞"
+
+msgid "Break Chroot on old Linux 2.2/2.4"
+msgstr "打破旧的chroot的Linux 2.2/2.4试用"
+
+msgid "CA BrightStor ARCserve Backup Arbitrary Command Execution"
+msgstr "加利福尼亚的BrightStor ARCserve Backup任意命令执行"
+
+msgid "CA BrightStor ARCserve Backup Discovery Service Stack Overflow"
+msgstr "加利福尼亚的BrightStor ARCserve Backup发现服务堆栈溢出"
+
+msgid "CA BrightStor ARCserve Backup Media Server RPC Interface Stack Overflow"
+msgstr "加利福尼亚的BrightStor ARCserve备份媒体服务器的RPC接口堆栈溢出"
+
+msgid "CA BrightStor ARCserve Backup RPC Interface ascore.dll Stack Overflow"
+msgstr "加利福尼亚的BrightStor ARCserve Backup的RPC接口ascore.dll堆栈溢出"
+
+msgid "CA License Manager Stack Overflow"
+msgstr "CA证书管理器堆栈溢出"
+
+msgid "cachefsd .cfs_mnt File Stack Overflow (requires in.lpd for file upload)"
+msgstr "cachefsd。cfs_mnt文件堆栈溢出（需要in.lpd的文件上传）"
+
+msgid "Flexible MOSDEF callbacks"
+msgstr "柔性MOSDEF回调"
+
+msgid "cam.exe stack overflow."
+msgstr "cam.exe堆栈溢出。"
+
+msgid "CesarFTP Stack Overflow on MKD command"
+msgstr "CesarFTP堆栈溢出指挥据悉，MKD"
+
+msgid "Changes directory. Uses first selected node."
+msgstr "更改目录。使用一个选定的节点。"
+
+msgid "Checks to see if we're inside a VM"
+msgstr "检查，如果我们在一个虚拟机正在"
+
+msgid "Local privilege escalation via chfn escape character"
+msgstr "通过文件chfn转义字符本地特权提升"
+
+msgid "CitectSCADA ODBC Buffer Overflow"
+msgstr "缓冲区溢出属性现在的ODBC"
+
+msgid "Citrix IMA Heap Overflow Demo"
+msgstr "思杰IMA的堆溢出演示"
+
+msgid "Citrix MetaFrame XP Print Provider Stack Overflow"
+msgstr "Citrix MetaFrame的XP的打印提供程序堆栈溢出"
+
+msgid ""
+"Completely Clears the Application, System, And Security Event Logs in Windows"
+msgstr ""
+"完全清除应用程序，系统和安全事件日志在Windows"
+
+msgid ""
+"Creates spreadsheet and charts from SploitD pickles. Requires Open Office >= "
+"3.0"
+msgstr ""
+"从SploitD泡菜创建电子表格和图表。要求开放式办公“="
+"3.0"
+
+msgid "HTTP Server for client side vulnerabilities"
+msgstr "HTTP服务器的客户端漏洞"
+
+msgid "rpc.cmsd xdr_array heap overflow"
+msgstr "rpc.cmsd xdr_array堆溢出"
+
+msgid ""
+"Poor input validation allows remote users to call eval with their own "
+"contents"
+msgstr ""
+"标准普尔输入验证允许远程用户拨打自己的eval"
+"内容"
+
+msgid "Ask for a file in MOSDEF C and create a tiny .exe"
+msgstr "要求在MOSDEF C文件，并创建出一个微小的。exe"
+
+msgid "Get the computer name"
+msgstr "获取计算机的名称"
+
+msgid "Connects to remote MOSDEF service via TCP"
+msgstr "通过TCP连接到远程MOSDEF服务"
+
+msgid ""
+"Builds, uploads and runs a MOSDEF callback trojan. This is useful when you "
+"have a less full-featured Node such as a PHP ScriptNode, JavaNode or "
+"UnixShell, and want the full MOSDEF capability."
+msgstr ""
+"建立，上载和运行MOSDEF回调木马。这是非常有用当你"
+"少了全节点如PHP ScriptNode，JavaNode或特色"
+"UnixShell，并希望充分MOSDEF能力。"
+
+msgid "Remote vulnerablility in Coppermine gets Shell"
+msgstr "遥感技术在铜矿vulnerablility得到壳牌"
+
+msgid "Attack Corptax"
+msgstr "攻击Corptax"
+
+msgid "cpCommerce 1.2.x Remote File Include"
+msgstr "cpCommerce 1.2.x版本的远程文件包含"
+
+msgid "CreateReport"
+msgstr "CreateReport"
+
+msgid "Creates a service on all selected nodes"
+msgstr "创建于所有选定的节点服务"
+
+msgid "cutenews/strawberry Remote Code Execution"
+msgstr "cutenews /草莓远程执行代码"
+
+msgid "Stack overflow vulnerability in IBM DB2 JDBC Applet Server"
+msgstr "堆栈在IBM DB2的JDBC Applet的溢出漏洞服务器"
+
+msgid "DCE Dumper"
+msgstr "DCE的自卸车"
+
+msgid "Threaded SSH password bruteforcer"
+msgstr "螺纹SSH密码bruteforcer"
+
+msgid "Deletes a service on all selected nodes"
+msgstr "删除对所有选定的节点服务"
+
+msgid ""
+"Calls popen2() or equivalent to issue local command to remove a user. Uses "
+"first selected node."
+msgstr ""
+"呼吁popen2（）或相当于本地的命令来删除一个用户。用途"
+"第一个选定的节点。"
+
+msgid ""
+"Deploys a PINK drone to the remote workstation. Also generates the necessary "
+"text for the blog posting."
+msgstr ""
+"无人驾驶飞机部署粉红色到远程工作站。还可以生成必要的"
+"案文的博客中。"
+
+msgid "Gets directory listing"
+msgstr "获取目录列表"
+
+msgid ""
+"Weakness where the Windows Defender API allows you to zero out a flag that "
+"bypasses a code signing check. This allows unsigned code to disable Windows "
+"Defender."
+msgstr ""
+"弱点，Windows Defender的API，可以零出一个标志，"
+"绕过一个代码签名检查。这允许未签名的代码，以禁用Windows"
+"后卫。"
+
+msgid ""
+"Disable Windows Firewall through COM interface in XP/2003 (Instantly) or by "
+"registry in Win7/Vista/2008 (need service restart to take effect)"
+msgstr ""
+"禁用Windows防火墙通过COM接口在XP/2003中（即时）或"
+"在Win7/Vista/2008注册表（需要服务重新启动才能生效）"
+
+msgid ""
+"Searches a remote node for a file pattern. Optionally can download all "
+"matching files automatically.Please note that searching the primary hard "
+"drive and/or downloading files can take a few minutes,unless CANVAS reports "
+"an error just be patient and you should see results."
+msgstr ""
+"文件搜索模式的远程节点。可以有选择地下载所有"
+"匹配的文件automatically.Please注意搜索主硬盘"
+"驱动器和/或下载文件可能需要几分钟的时间，除非帆布报告"
+"一个错误只是耐心等待，您应该看到的结果。"
+
+msgid "Enumerate hosts in a domain based on a dictionary attack"
+msgstr "关于字典攻击的主机域枚举"
+
+msgid "Dokeos LMS <= 1.8.5 Remote Code Execution"
+msgstr "Dokeos LMS“= 1.8.5远程执行代码"
+
+msgid "DokuWiki Spell Checker Embedded Link Arbitrary PHP Code Execution  "
+msgstr "DokuWiki的拼写检查器嵌入式连接任意PHP代码执行"
+
+msgid "DokuWiki 2009-02-14 Globals overwrite / Code execeution"
+msgstr "DokuWiki的2009年2月14号全局变量覆盖/代码execeution"
+
+msgid "Lotus Domino IMAP4 Server CRAM-MD5 Stack Overflow"
+msgstr "Lotus Domino的IMAP4服务器强加的MD5堆栈溢出"
+
+msgid "Denial of service tool"
+msgstr "拒绝服务工具"
+
+msgid "Downloads files through a supplied directory traversal vulnerability"
+msgstr "通过提供的下载文件的目录遍历漏洞"
+
+msgid "Download file. Uses first selected node."
+msgstr "下载文件。使用一个选定的节点。"
+
+msgid "Dragoon 0.1 Remote File Include"
+msgstr "龙骑兵0.1远程文件包含"
+
+msgid "Provides a useful drink coaster! (drive D: is used)"
+msgstr "提供了有益的饮料过山车！ （驱动器D：是使用）"
+
+msgid "dtspcd heap overflow"
+msgstr "dtspcd堆溢出"
+
+msgid "e107 CMS Code execution"
+msgstr "e107不育系代码执行"
+
+msgid "Easy File Sharing Stack Overflow on PASS command"
+msgstr "简易文件共享密码命令堆栈溢出"
+
+msgid "Easy Px 41 CMS v09.00.00B1 (fiche) Local File Include"
+msgstr "易酶41不育系v09.00.00B1（菲切）本地文件包含"
+
+msgid "Stack overflow vulnerability in Novell eDirectory HTTP stack"
+msgstr "在Novell的eDirectory堆栈溢出漏洞HTTP堆栈"
+
+msgid "Sends email to every currently selected contact route of type 'email'"
+msgstr "发送电子邮件到当前选定的每一个类型的'路线电子邮件联系'"
+
+msgid "Sends email via SMTP"
+msgstr "通过SMTP发送电子邮件"
+
+msgid "Gets the services and their state"
+msgstr "获取服务及其状态"
+
+msgid "Exit the process"
+msgstr "退出过程"
+
+msgid "Exit the current thread"
+msgstr "退出当前线程"
+
+msgid "EZNet stack overflow"
+msgstr "EZNet堆栈溢出"
+
+msgid "Detect if someone is on the compromised computer with a webcam"
+msgstr "检测如果有人用摄像头被感染的计算机上"
+
+msgid "Grab a picture from a webcam"
+msgstr "抓住一个图片从摄像头"
+
+msgid "FileCOPA Stack Overflow on LIST command"
+msgstr "FileCOPA堆栈溢出指挥清单"
+
+msgid "Find Non-authenticated VNC Servers"
+msgstr "找到非验证的VNC服务器"
+
+msgid "Firefox 3.5 Remote Code Execution"
+msgstr "火狐3.5远程执行代码"
+
+msgid ""
+"A flaw in the way Mozilla Firefox Javascript Engine handle the defineSetter "
+"method allows to simulate a JSObject from an arbitrary memory area"
+msgstr ""
+"阿在Mozilla Firefox的JavaScript引擎处理defineSetter缺陷"
+"方法允许模拟从任意内存领域JSObject"
+
+msgid "FireFox UTF8 Stack Overflow"
+msgstr "火狐UTF8的堆栈溢出"
+
+msgid ""
+"Adobe Flash Player (<= 9.0.115.0) DefineSceneAndFrameLabelData Tag Integer "
+"Overflow"
+msgstr ""
+"Adobe Flash Player的“（<= 9.0.115.0）DefineSceneAndFrameLabelData标签整数"
+"溢出"
+
+msgid ""
+"A flaw in the way Adobe Flash handle the Long String Tags could lead into a "
+"buffer overflow."
+msgstr ""
+"阿方式的Adobe Flash处理长字符串标签可能会成为一个缺陷"
+"缓冲区溢出。"
+
+msgid "Foxit PDF Reader Action Overflow"
+msgstr "福昕PDF阅读器行动溢出"
+
+msgid "Foxit Reader Javascript Function util.printf()"
+msgstr "福昕阅读器的JavaScript功能util.printf（）"
+
+msgid "FP30REG.DLL Chunked Heap Overflow (MS03-051)"
+msgstr "FP30REG.DLL区块堆溢出（MS03 - 051）"
+
+msgid "Imports data from Foundstone scans into CANVAS"
+msgstr "Foundstone的进口数据，从扫描到帆布"
+
+msgid "Checks an FTP server for remote access with a few default usernames"
+msgstr "检查为有几个默认的用户名远程访问FTP服务器"
+
+msgid "fuzzylime cms <= 3.01 Remote File include"
+msgstr "fuzzylime厘米“= 3.01远程文件包括："
+
+msgid "GREENAPPLE mrxsmb.sys remote ring0 exploit"
+msgstr "GREENAPPLE Mrxsmb.sys中利用远程ring0"
+
+msgid ""
+"Grab the local DNS cache from the compromised host, useful for backtracking "
+"any old queries."
+msgstr ""
+"抓住本地DNS缓存从被感染的主机，有益的回溯"
+"任何旧的疑问。"
+
+msgid "Gets a dump of one process's memory"
+msgstr "获取了一个进程的内存转储"
+
+msgid "Calls getcwd() or equivalent. Uses first selected node."
+msgstr "调用getcwd（）或同等学历。使用一个选定的节点。"
+
+msgid "Gets all the emails from a certain website/url."
+msgstr "获取从某个网站上的所有电子邮件/网址。"
+
+msgid "resolves a host to an ip"
+msgstr "解决了主机的IP"
+
+msgid "Get a key from the remote host"
+msgstr "从远程主机的关键"
+
+msgid "Get user password hashes for offline cracking"
+msgstr "找破解脱机用户的密码哈希"
+
+msgid "Gets process id on selected node"
+msgstr "获取进程选定的节点ID"
+
+msgid "Get the print providers on a remote Windows machine"
+msgstr "获取远程Windows机器的印刷服务供应商"
+
+msgid "Enables a privilege"
+msgstr "实现了特权"
+
+msgid "Gets process name of our current process"
+msgstr "获取当前进程的进程名"
+
+msgid "Get the language pack of a remote Windows machine"
+msgstr "获取远程Windows机器语言包"
+
+msgid "XXXXXXXXXXXXXXXXXXXXXXXXX"
+msgstr "XXXXXXXXXXXXXXXXXXXXXXXXX"
+
+msgid "Windows Remote Services Enumeration"
+msgstr "Windows远程服务枚举"
+
+msgid "Gets information on each thread in the process for all nodes"
+msgstr "获取每个进程中的线程中所有节点的信息"
+
+msgid "Gathers WWW hostnames for an IP address"
+msgstr "收集万维网主机一个IP地址"
+
+msgid ""
+"A buffer overflow in the OpenURL function allows us execute arbitrary code"
+msgstr ""
+"阿中引用的函数缓冲区溢出允许我们执行任意代码"
+
+msgid ""
+"Overflow on commands issued by authenticated users in the Goodtech SSH server"
+msgstr ""
+"溢出就在祥谷SSH服务器身份验证的用户发出的命令"
+
+msgid "gpsd"
+msgstr "gpsd"
+
+msgid "Grape Web Statistics Remote File include"
+msgstr "葡萄网站统计远程文件包含"
+
+msgid ""
+"Overflow in URL handler SDSurf.dll that is injected into all browser "
+"processes by Green Dam."
+msgstr ""
+"在URL处理器SDSurf.dll溢出，被注入到所有浏览器"
+"过程绿色大坝。"
+
+msgid "GROUP-E 1.6.41 Remote file include"
+msgstr "集团娥1.6.41远程文件包含"
+
+msgid ""
+"There exists an Accept-Language Buffer Overflow in Novell GroupWise "
+"Messenger 2.0"
+msgstr ""
+"存在的Novell GroupWise的一个Accept - Language缓冲区溢出"
+"信使2.0"
+
+msgid "Novell GroupWise WebAccess Base64 Decoding Stack Overflow"
+msgstr "Novell公司的GroupWise WebAccess中的Base64解码堆栈溢出"
+
+msgid "Harbor Listen.exe"
+msgstr "港Listen.exe"
+
+msgid ""
+"Configure beacon callback host and port for HCN rootkit. The beacon interval "
+"determines how often the rootkit will attempt to connect to CANVAS. A "
+"successful beacon connection will give you a win32Node with full SYSTEM "
+"privileges.\n"
+"\n"
+"When running hcn_beaconlistener, make sure to set the same host/pair "
+"combination for the Beacon Host and Beacon Port settings."
+msgstr ""
+"灯塔回调配置的主机和端口为氰化氢的rootkit。信标间隔"
+"决定了经常的rootkit将尝试连接到画布上。字母a"
+"成功的灯塔连接会给你一个完整的系统与win32Node"
+"特权。\n"
+"\n"
+"当运行hcn_beaconlistener，确保设置相同的主机/对"
+"组合的灯塔主机和端口设置灯塔。"
+
+msgid ""
+"\n"
+"This sets up the necessary listeners for the Windows rootkit to call to "
+"CANVAS and establish a SYSTEM shell. The Beacon Host and Beacon Port should "
+"be set to the same host/port that was set in hcn_beaconconfig. The CANVAS "
+"host/port is where the callback shell will call, you can have this set to a "
+"local CANVAS instance (it will start a listener on its own), or a remote "
+"listening post where you already have a WIN32MOSDEF callback listening.\n"
+"\n"
+"Note: Make sure to set the \"fromcreatethread\" option when starting your "
+"listener on a different host.\n"
+msgstr ""
+"\n"
+"为在Windows的rootkit必要的听众此套电话"
+"帆布和建立一个系统外壳。主机的灯塔和灯塔港口应"
+"被设置为相同的主机/端口设置在hcn_beaconconfig。在Canvas"
+"主机/端口就是回调外壳会调用，您可以有这一套"
+"当地帆布实例（它将开始了自己的侦听器），或远程"
+"监听站，你已经有一个WIN32MOSDEF回调听。\n"
+"\n"
+"注意：请一定要设置\\“fromcreatethread \\”选项启动时您的"
+"听众在不同的主机。\n"
+
+msgid ""
+"Hides a directory in the target node. Simply enter the directory like: c:"
+"\\MOSDEF and it will disappear from view."
+msgstr ""
+"在目标节点隐藏的目录。只需输入想目录：C："
+"\\ \\ MOSDEF，它将从视图中消失。"
+
+msgid ""
+"\n"
+"Hides network connection stats from programs like netstat.\n"
+"\n"
+"Some examples, assuming your target lives on 192.168.244.123 and your CANVAS "
+"host is at 192.168.244.1:\n"
+"\n"
+"Source: 192.168.244.123\n"
+"Dest  : 192.168.244.1\n"
+"\n"
+"This will hide the ports of your choosing where the connection was outbound "
+"to your CANVAS host. If you had a trojaned service running on your target "
+"and you wanted to hide the inbound connection you would do it like this:\n"
+"\n"
+"Source: 192.168.244.1\n"
+"Dest  : 192.168.244.123\n"
+"\n"
+"You must discard Dest address and port range for UDP port hide. Such "
+"information is not available inside internal Windows Kernel Network "
+"Structures.\n"
+msgstr ""
+"\n"
+"隐藏网络的连接等netstat程序统计。\n"
+"\n"
+"一些例子，假设在192.168.244.123和画布您的目标的生活"
+"主机是192.168.244.1：\n"
+"\n"
+"来源：192.168.244.123\n"
+"将DeST：192.168.244.1\n"
+"\n"
+"这将隐藏您选择的港口是在出站连接"
+"您的帆布主机。如果你有一个木马服务在您的目标运行"
+"你想隐藏的入站连接，您会做这样说：\n"
+"\n"
+"来源：192.168.244.1\n"
+"将DeST：192.168.244.123\n"
+"\n"
+"你必须抛弃DeST的地址和端口UDP端口隐藏范围。这种"
+"信息不可用Windows内核内的内部网络"
+"结构。\n"
+
+msgid ""
+"Hides a running process from view of the operating system. Uses the process "
+"PID."
+msgstr ""
+"隐藏了从操作系统的观点正在运行的进程。使用过程"
+"的PID。"
+
+msgid ""
+"Hides a registry key in the target node. Reg names must follow kernel "
+"registry names:\n"
+"\n"
+"    * HKEY_LOCAL_MACHINE = \\Registry\\Machine\n"
+"    * HKEY_USERS                = \\Registry\\User\n"
+"    * HKEY_CURRENT_USER  = \\Registry\\User\\User_SID\n"
+"    \n"
+"For example, to hide:\n"
+"\n"
+"HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\Run"
+"\\canvastrojan.exe\n"
+"\n"
+"you would use the following:\n"
+"\n"
+"\\REGISTRY\\MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\run"
+"\\canvastrojan.exe"
+msgstr ""
+"在目标节点隐藏的注册表项。注册名称必须遵循的内核"
+"登录名：\n"
+"\n"
+"* HKEY_LOCAL_MACHINE = \\ \\登录\\ \\机\n"
+"* HKEY_USERS = \\ \\登录\\ \\用户\n"
+"* HKEY_CURRENT_USER = \\ \\登录\\ \\用户\\ \\ User_SID\n"
+"\n"
+"例如，要隐藏：\n"
+"\n"
+"HKEY_LOCAL_MACHINE \\ \\软件\\ \\微软\\ \\的Windows \\ \\ CurrentVersion \\ \\运行"
+"\\ \\ canvastrojan.exe\n"
+"\n"
+"你可以使用如下：\n"
+"\n"
+"\\ \\注册表\\ \\机\\ \\软件\\ \\微软\\ \\的Windows \\ \\ CurrentVersion \\ \\运行"
+"\\ \\ canvastrojan.exe"
+
+msgid "Installs the HCN rootkit."
+msgstr "氢氰酸安装的rootkit。"
+
+msgid "Removes HCN rootkit from target host."
+msgstr "删除氢氰酸来自目标主机的rootkit。"
+
+msgid ""
+"Uses the Windows rootkit to hide files on the remote host. Renames an "
+"existing file with the 'mosdef' prefix. Keep in mind that running processes "
+"cannot have their executable's filename changed until they are stopped."
+msgstr ""
+"使用Windows的rootkit隐藏在远程主机上的文件。重命名1"
+"现有的文件与'mosdef'前缀。请记住，正在运行的进程"
+"不能将其可执行文件的文件名更改，直到它们被停止。"
+
+msgid ""
+"Hides a TCP port from the view of the operating system. Needs to have the "
+"MOSDEF rootkit loaded first."
+msgstr ""
+"从操作系统的观点隐藏TCP端口。需要有"
+"MOSDEF首先加载的rootkit。"
+
+msgid ""
+"Hides a running process from view of the operating system. Uses the process "
+"name (no extension)."
+msgstr ""
+"隐藏了从操作系统的观点正在运行的进程。使用过程"
+"名（没有扩展名）。"
+
+msgid ""
+"Hides a running process from view of the operating system. Uses the process "
+"PID (no extension)."
+msgstr ""
+"隐藏了从操作系统的观点正在运行的进程。使用过程"
+"的PID（没有扩展名）。"
+
+msgid ""
+"Connects to HP Printers and provides basic file access (dir/upload/download)"
+msgstr ""
+"惠普打印机连接，并提供基本的文件访问（署长/上传/下载）"
+
+msgid "HTTP Proxy for MOSDEF Callbacks"
+msgstr "HTTP代理的MOSDEF回调"
+
+msgid "Fingerprint an HTTP Server"
+msgstr "指纹的HTTP服务器"
+
+msgid "HTTP Server that uploads files for you"
+msgstr "HTTP服务器，为您上传的文件"
+
+msgid "Driver Impersonation Attack Could Allow Local Privilege Escalation"
+msgstr "驱动模拟攻击可能允许本地权限提升"
+
+msgid "ICECAST exploit"
+msgstr "ICECAST利用"
+
+msgid "ICMP Proxy for MOSDEF Callbacks"
+msgstr "ICMP协议代理的MOSDEF回调"
+
+msgid "Checks for ICMP messages against remote hosts"
+msgstr "检查的ICMP消息对远程主机"
+
+msgid ""
+"A flaw in the way of handling special characters in URIs. Requires IE7 + WMP"
+msgstr ""
+"A为处理URI的特殊字符的方式存在缺陷。 WMP的需要IE7中+"
+
+msgid "Microsoft IE Comments Use-After-Free bug (Aurora)"
+msgstr "微软IE评论使用后无缺陷（极光）"
+
+msgid ""
+"A flaw in the MIME/type comprobation in IE that can be used to force IE to "
+"interpret non-html files."
+msgstr ""
+"阿在MIME漏洞/ IE浏览器中键入comprobation可以用来强制IE浏览器"
+"解释非HTML文件。"
+
+msgid "Client-Side vulnerability in IE"
+msgstr "客户端IE中的漏洞"
+
+msgid ""
+"A flaw in the way of handling special characters in URIs. Requires IE7 + "
+"Adobe Acrobat Reader"
+msgstr ""
+"A为处理URI的特殊字符的方式存在缺陷。需要IE7中+"
+"使用Adobe Acrobat Reader"
+
+msgid "DCE Interface ID's Query Tool"
+msgstr "DCE接口ID的查询工具"
+
+msgid "IIS 5.0 Webdav Indexed Directory Disclosure"
+msgstr "IIS 5.0中披露的WebDav索引目录"
+
+msgid "IIS 5.0 .asp Heap Overflow"
+msgstr "IIS 5.0中的。asp堆溢出"
+
+msgid "Poor input validation allows remote users to execute arbitrary commands"
+msgstr "标准普尔输入验证允许远程用户执行任意命令"
+
+msgid ""
+"IIS 5.0 Webdav Indexed Directory Disclosure - IIS 6.0 Webdav Auth bypass"
+msgstr ""
+"IIS 5.0中的WebDav索引目录披露 - IIS 6.0中的WebDav权威性地绕过"
+
+msgid "IIS FTP GLOBBING Stack Exhaustion"
+msgstr "IIS中的FTP通配符堆栈穷竭"
+
+msgid "IIS FTP NLST Stack Overflow"
+msgstr "IIS中的FTP NLST堆栈溢出"
+
+msgid "IMAIL Imap4 stack overflow in Login field"
+msgstr "易网邮Imap4堆栈溢出领域登录"
+
+msgid "IMail SMTPD32 Stack Overflow"
+msgstr "堆栈溢出Imail产品SMTPD32"
+
+msgid "LSASRV.DLL LSASS.EXE stack overflow"
+msgstr "LSASRV.DLL Lsass.exe中的堆栈溢出"
+
+msgid "Imports a port/vulnerability scan from an external tool"
+msgstr "进口端口/漏洞扫描工具从外部"
+
+msgid "in.lpd command execution (Solaris 8)"
+msgstr "in.lpd命令执行（Solaris的8）"
+
+msgid "Upload a DLL and inject into a running process."
+msgstr "上传一个DLL注入正在运行的进程。"
+
+msgid "Installs MOSDEF service"
+msgstr "安装MOSDEF服务"
+
+msgid "Installs remote MOSDEF service over SMB"
+msgstr "远程安装服务在中小企业MOSDEF"
+
+msgid ""
+"Misdesign in a component of Macrovision InstallShield 2008 ActiveX version "
+"5.01.100.47363 allows for arbitrary code execution"
+msgstr ""
+"Misdesign在2008年的Macrovision的InstallShield版本的ActiveX组件"
+"5.01.100.47363允许任意代码执行"
+
+msgid "NULL Pointer Dereference bug in win32k.sys"
+msgstr "空指针解引用错误的Win32k.sys"
+
+msgid "Gathers data needed for IP Fingerprinting from a remote host"
+msgstr "知识产权指纹需要从远程主机收集数据"
+
+msgid ""
+"Parse the results we get from OSDETECT/ipfingerpring to determine OS info"
+msgstr ""
+"分析的结果让我们从OSDETECT / ipfingerpring信息，以确定操作系统"
+
+msgid "iPlanet Chunked Encoding Overflow"
+msgstr "iPlanet块编码溢出"
+
+msgid "IpSwitch Calendar Directory Traversal"
+msgstr "Ipswitch公司日历目录遍历"
+
+msgid "Jaf-CMS Statistics Remote File include"
+msgstr "JAF的内容管理系统统计远程文件包括："
+
+msgid "Misdesign in Java deserializing allows JVM sandbox escape"
+msgstr "在反序列化的Java Misdesign允许JVM的沙箱逃生"
+
+msgid "Joomla 12pic Component Remote File Inclusion"
+msgstr "Joomla 12pic组件远程文件共享"
+
+msgid "Joomla! 1.5 Beta code execution"
+msgstr "Joomla！ 1.5版代码执行"
+
+msgid "Joomla Chronoforms Component Remote File Inclusion"
+msgstr "Joomla Chronoforms组件远程文件共享"
+
+msgid "Joomla com_colorlab Component Remote File Inclusion"
+msgstr "Joomla com_colorlab组件远程文件共享"
+
+msgid "Joomla Component custompages Remote File Inclusion "
+msgstr "Joomla组件custompages远程文件共享"
+
+msgid "Joomla Flashfun Component Remote File Inclusion"
+msgstr "Joomla Flashfun组件远程文件共享"
+
+msgid "Joomla FlashUploader Component Remote File Inclusion"
+msgstr "Joomla FlashUploader组件远程文件共享"
+
+msgid "Joomla jContentSubscription Component Remote File Inclusion"
+msgstr "Joomla jContentSubscription组件远程文件共享"
+
+msgid "Joomla JUser Component Remote File Inclusion"
+msgstr "Joomla JUser组件远程文件共享"
+
+msgid "Joomla mosDirectory Component Remote File Inclusion"
+msgstr "Joomla mosDirectory组件远程文件共享"
+
+msgid "Joomla mosMedia Component Remote File Inclusion"
+msgstr "Joomla mosMedia组件远程文件共享"
+
+msgid "Joomla com_mp3_allopass Component Remote File Inclusion"
+msgstr "Joomla com_mp3_allopass组件远程文件共享"
+
+msgid "Joomla FlashQuiz 1.0.2 Remote File Inclusion "
+msgstr "Joomla FlashQuiz 1.0.2远程文件共享"
+
+msgid "Joomla Slideshow Component Remote File Inclusion"
+msgstr "Joomla幻灯片组件远程文件共享"
+
+msgid "Joomla panoramic Component Remote File Inclusion"
+msgstr "Joomla全景组件远程文件共享"
+
+msgid "Journalness <= 4.1 Remote Code Execution exploit"
+msgstr "Journalness“= 4.1远程执行代码漏洞"
+
+msgid "Retrieves installed browser plugin info"
+msgstr "安装浏览器插件获取信息"
+
+msgid "Simple Win32 Keylogger"
+msgstr "简单的Win32键盘记录"
+
+msgid "Sends a terminate signal to the process identified by a PID"
+msgstr "发送一个终止信号，由确定的进程的PID"
+
+msgid "Lamasoftware Remote file include"
+msgstr "Lamasoftware远程文件包含"
+
+msgid "Linksys WRT54G apply.cgi buffer overflow"
+msgstr "Linksys的WRT54G apply.cgi缓冲区溢出"
+
+msgid "Interacts with linux rootkit"
+msgstr "与Linux的rootkit的相互作用"
+
+msgid "Loads a LKM based 2.6 rootkit"
+msgstr "基于LKM的加载2.6的rootkit"
+
+msgid "Installs the CANVAS Ring0 node."
+msgstr "安装帆布Ring0节点。"
+
+msgid "Local LPC privilege escalation [ Windows 2000 / XP / 2003 ]"
+msgstr "当地LPC特权升级[视窗2000 / XP / 2003]"
+
+msgid "Locates a node"
+msgstr "位于节点"
+
+msgid "LookStrike Lan Manager v0.9 Remote file include"
+msgstr "LookStrike LAN管理器v0.9的远程文件包含"
+
+msgid "Lotus Domino 8.0.0 HTTP Server - Accept-Language Overflow"
+msgstr "8.0.0的Lotus Domino HTTP服务器 - 接受国语言溢出"
+
+msgid "Loudblog Remote Code Execution"
+msgstr "Loudblog远程执行代码"
+
+msgid "Litespeed HTTPD file disclosure"
+msgstr "Litespeed文件披露的HTTPD"
+
+msgid "MailEnable Stack Overflow"
+msgstr "MailEnable堆栈溢出"
+
+msgid "MailEnable IMAP Login overflow"
+msgstr "MailEnable IMAP的登录溢出"
+
+msgid "Mantis BugTracker => 1.1.3 Remote Code Execution"
+msgstr "螳螂错误追踪=“1.1.3远程执行代码"
+
+msgid "Multi-threaded attack tool"
+msgstr "多线程攻击工具"
+
+msgid "Multi-threaded attack tool (With improved threading)"
+msgstr "多线程（线程获得改善攻击工具）"
+
+msgid "MDaemon Stack Overflow"
+msgstr "MDaemon软件堆栈溢出"
+
+msgid ""
+"Parses a memory dump for common pieces of information like email addresses, "
+"IP addresses, and more."
+msgstr ""
+"解析内存转储的电子邮件地址等信息的一些作品，"
+"IP地址，等等。"
+
+msgid "Mindmeld Remote file include"
+msgstr "Mindmeld远程文件包含"
+
+msgid "Man In the Middle Attack"
+msgstr "中间人攻击"
+
+msgid "Create/Modify a registry key "
+msgstr "创建/修改注册表项"
+
+msgid ""
+"Serves an installable ActiveX control to the target host. The ActiveX calls "
+"back a shell."
+msgstr ""
+"服务于一个ActiveX控件安装到目标主机。该ActiveX调用"
+"回壳。"
+
+msgid "MOSDEF Process Migration"
+msgstr "MOSDEF进程迁移"
+
+msgid "Detect if there is motion on the remote computer (using the webcam)"
+msgstr "检测如果在远程计算机上的议案（使用摄像头）"
+
+msgid "IIS 5.0 IPP ISAPI (.printer) Overflow"
+msgstr "IPP的IIS 5.0中的ISAPI（。打印机）溢出"
+
+msgid "IIS 5.0 Index Server ISAPI (.ida) Overflow"
+msgstr "IIS 5.0的索引服务器的ISAPI（。IDA）的溢出"
+
+msgid "Microsoft Windows RPC Locator locator.exe Stack Overflow"
+msgstr "微软Windows RPC定位器locator.exe堆栈溢出"
+
+msgid "Microsoft IIS 5.0 WebDav ntdll.dll Buffer Overflow"
+msgstr "微软的IIS 5.0的WebDav Ntdll.dll中缓冲区溢出"
+
+msgid "IIS 5.0 Windows Media Services ISAPI (nsisslog.dll) Overflow"
+msgstr "IIS 5.0的Windows媒体服务的ISAPI（nsisslog.dll）溢出"
+
+msgid "Microsoft Windows RPC Interface Stack Overflow"
+msgstr "微软Windows的RPC接口堆栈溢出"
+
+msgid "Microsoft Windows Workstation Service RPC Stack Overflow"
+msgstr "微软Windows工作站服务的RPC堆栈溢出"
+
+msgid "MSASN1.DLL bitstring decoding heap overwrite"
+msgstr "MSASN1.DLL位串解码堆覆盖"
+
+msgid "Microsoft Windows LsaSs RPC lsasrv.dll Stack Overflow"
+msgstr "微软Windows的LSASS的RPC lsasrv.dll堆栈溢出"
+
+msgid "Microsoft SSL PCT Hello Stack Overflow"
+msgstr "微软的SSL厘您好堆栈溢出"
+
+msgid "Microsoft Windows NetDDE RPC netdde.exe Stack Overflow"
+msgstr "微软Windows NetDDE中的RPC netdde.exe堆栈溢出"
+
+msgid "WINS Name Validation Stack Overflow"
+msgstr "WINS名称验证堆栈溢出"
+
+msgid "Microsoft License Logging Service .data Buffer Overflow"
+msgstr "微软许可证记录服务。数据缓冲区溢出"
+
+msgid ""
+"Microsoft Message Queuing Service GetQueueIdForDirectFormatName() Stack "
+"Overflow"
+msgstr ""
+"微软消息队列服务GetQueueIdForDirectFormatName（）堆栈"
+"溢出"
+
+msgid ""
+"MS Exchange 2000 contains a heap overflow flaw when handling the XLINK2STATE "
+"command"
+msgstr ""
+"微软Exchange 2000包含一个堆溢出漏洞在处理XLINK2STATE"
+"命令"
+
+msgid "Microsoft Windows PnP umpnpmgr.dll RPC Stack Overflow"
+msgstr "微软Windows即插即用umpnpmgr.dll的RPC堆栈溢出"
+
+msgid "Windows Telephony Service Stack Overflow"
+msgstr "视窗电话服务堆栈溢出"
+
+msgid "Windows Print Spooler win32spl.dll Heap Overflow"
+msgstr "Windows打印后台处理程序win32spl.dll堆溢出"
+
+msgid "Microsoft Netware Service RPC Stack Overflow"
+msgstr "微软的NetWare服务的RPC堆栈溢出"
+
+msgid "Microsoft Windows Media Player Malformed PNG Vulnerability"
+msgstr "微软Windows媒体播放器漏洞的畸形巴纽"
+
+msgid "RasMan RPC Server Signedness Bug"
+msgstr "RasMan RPC服务器符号类型错误"
+
+msgid "RasMan RPC Server Stack Overflow"
+msgstr "RasMan RPC服务器堆栈溢出"
+
+msgid "Windows Server Service CanonicalizePathName() Stack Overflow"
+msgstr "Windows Server服务CanonicalizePathName（）堆栈溢出"
+
+msgid "Internet Explorer Vector Markup Language Stack Overflow"
+msgstr "Internet Explorer的矢量标记语言堆栈溢出"
+
+msgid "Internet Explorer WebViewFolderIcon setSlice() Overflow"
+msgstr "Internet Explorer的WebViewFolderIcon setSlice（）溢出"
+
+msgid "Microsoft Netware RPC Interface Stack Overflow"
+msgstr "微软的NetWare RPC接口堆栈溢出"
+
+msgid "Microsoft Workstation Service Overflow"
+msgstr "微软工作站服务溢出"
+
+msgid "Microsoft XML Core Services 4.0 Vulnerability"
+msgstr "微软的XML Core Services 4.0中的漏洞"
+
+msgid "Microsoft SNMP Service Remote Arbitrary GlobalFree"
+msgstr "微软SNMP服务远程任意GlobalFree"
+
+msgid "Microsoft Windows VML recolorinfo Bug"
+msgstr "微软Windows的VML recolorinfo问题"
+
+msgid ""
+"Windows XP UPnP upnphost.dll CHttpRequest::GetServerVariable Stack Overflow"
+msgstr ""
+"Windows XP中的UPnP upnphost.dll CHttpRequest：：GetServerVariable堆栈溢出"
+
+msgid "Microsoft DNS Server RPC Interface Stack Overflow"
+msgstr "Microsoft DNS服务器的RPC接口堆栈溢出"
+
+msgid ""
+"\n"
+"From CVE: vulnerability in the Windows Schannel Security Package for \n"
+"Microsoft Windows 2000 SP4, XP SP2, and Server 2003 SP1 and SP2, allows \n"
+"remote servers to execute arbitrary code or cause a denial of service \n"
+"via crafted digital signatures that are processed during an SSL \n"
+"handshake."
+msgstr ""
+"\n"
+"从CVE：在Windows Schannel安全软件包脆弱性\n"
+"微软Windows 2000 SP4的，XP的SP2和Server 2003 SP1和SP2的，允许\n"
+"远程服务器上执行任意代码或导致拒绝服务攻击\n"
+"通过特制的数字是在签名的SSL处理\n"
+"握手。"
+
+msgid "Microsoft Agent URL InternetCanonicalizeUrlW Stack Overflow"
+msgstr "Microsoft Agent中的网址InternetCanonicalizeUrlW堆栈溢出"
+
+msgid "Outlook Express NNTP Heap Overflow"
+msgstr "Outlook Express的NNTP的堆溢出"
+
+msgid ""
+"Microsoft Message Queuing Service ReplaceDNSNameWithNetBiosName() Stack "
+"Overflow"
+msgstr ""
+"微软消息队列服务ReplaceDNSNameWithNetBiosName（）堆栈"
+"溢出"
+
+msgid "Microsoft Vista ALPC Dangling Pointer Overwrite"
+msgstr "微软Vista ALPC悬空指针覆盖"
+
+msgid "Macrovision SecDrv.sys Arbitrary Overwrite"
+msgstr "Macrovision的SecDrv.sys任意覆盖"
+
+msgid ""
+"Vulnerability in Windows Media File Format Could Allow Remote Code Execution"
+msgstr ""
+"在Windows Media文件格式中的漏洞可能允许远程执行代码"
+
+msgid "Windows TCP/IP IGMPv3 Kernel Pool Overflow"
+msgstr "视窗TCP / IP协议的IGMPv3内核池溢出"
+
+msgid "Integer Overflow in "
+msgstr "整数溢出"
+
+msgid ""
+"Vulnerability in VBScript and JScript Scripting Engines Could Allow Remote "
+"Code Execution"
+msgstr ""
+"在VBScript和JScript脚本引擎中的漏洞可能允许远程"
+"执行代码"
+
+msgid "Vulnerability in Windows Kernel Could Allow Elevation of Privilege"
+msgstr "Windows内核中的漏洞可能允许特权提升"
+
+msgid "Microsoft SAMI Buffer Overflow"
+msgstr "微软的SAMI缓冲区溢出"
+
+msgid "Microsoft WINS Server Vulnerability"
+msgstr "微软的WINS服务器中的漏洞"
+
+msgid ""
+"Vulnerability in InternalOpenProfile function Could Allow Remote Code "
+"Execution"
+msgstr ""
+"在InternalOpenProfile功能的漏洞可能允许远程代码"
+"执行"
+
+msgid "Vulnerabilities in Event System Could Allow Remote Code Execution"
+msgstr "事件系统中的漏洞可能允许远程执行代码"
+
+msgid ""
+"A buffer overflow in the GetDetailString allows us execute arbitrary code"
+msgstr ""
+"GetDetailString中的一个缓冲区溢出允许我们执行任意代码"
+
+msgid "Microsoft Host Integration Server RPC Interface Vulnerability"
+msgstr "微软主机集成服务器的RPC接口中的漏洞"
+
+msgid "Windows Internet Printing Service Overflow"
+msgstr "Windows Internet打印服务溢出"
+
+msgid "Windows SMB Server Overflow"
+msgstr "视窗SMB服务器溢出"
+
+msgid "Windows Server Service CanonicalizePathName() Stack Underflow"
+msgstr "Windows Server服务CanonicalizePathName（）堆栈下溢"
+
+msgid "SMB Credential Reflection"
+msgstr "中小企业凭据的思考"
+
+msgid "MS Internet Explorer XML Parsing Vulnerability"
+msgstr "微软IE的XML解析漏洞"
+
+msgid ""
+"Memory corruption in Internet Explorer 7 allows arbitrary code execution."
+msgstr ""
+"内存在Internet Explorer 7腐败允许任意代码执行。"
+
+msgid "Windows HTTP Service Integer Underflow"
+msgstr "视窗HTTP服务整数溢"
+
+msgid "Microsoft Windows Print Spooler Overflow"
+msgstr "微软Windows后台打印程序溢出"
+
+msgid "Microsoft Windows Print Spooler Arbitrary DLL Loading"
+msgstr "微软Windows后台打印程序任意DLL加载"
+
+msgid "Microsoft Embedded OpenType Font Engine Vulnerability"
+msgstr "微软嵌入式OpenType字体引擎中的漏洞"
+
+msgid "Microsoft DirectShow (msvidctl.dll) Vulnerability"
+msgstr "微软DirectShow（msvidctl.dll）漏洞"
+
+msgid "WINS Integer Overflow"
+msgstr "整数溢出的WINS"
+
+msgid "Windows Server Service NetrGetJoinDomainInformation() Double Free"
+msgstr "Windows Server服务NetrGetJoinDomainInformation（）双人免费"
+
+msgid "ASF_Audio_media Parsing bug"
+msgstr "ASF_Audio_media解析错误"
+
+msgid "LSASS NTLM Authenticate Vulnerability"
+msgstr "使用NTLM身份验证的LSASS漏洞"
+
+msgid "MS09-061 Microsoft .NET CAS Type Verification Vulnerability"
+msgstr "MS09 - 061的Microsoft。NET中科院类型验证漏洞"
+
+msgid "ADFS Remote Code Execution"
+msgstr "ADFS的远程执行代码"
+
+msgid "msdtc MIDL_user_allocate bug"
+msgstr "MSDTC的MIDL_user_allocate错误"
+
+msgid ""
+"A VDM process can trick a cs:eip check to allow access to a trusted function "
+"thru a #GP trap handler"
+msgstr ""
+"阿VDM进程能够引诱政务司司长：电子信息核对，以允许访问受信任函数"
+"通过＃大奖赛陷阱处理程序"
+
+msgid "Enables an identity token and setthreadtokens it"
+msgstr "启用身份令牌和setthreadtokens它"
+
+msgid "MSRPC MESSENGER Heap Overflow"
+msgstr "MSRPC信使堆溢出"
+
+msgid "MS Internet Explorer 7 XML Parsing Stack Overflow"
+msgstr "微软Internet Explorer 7的XML解析堆栈溢出"
+
+msgid "[0day] MSRPC Crash (INSTANTREPLAY)"
+msgstr "[零天] MSRPC崩溃（INSTANTREPLAY）"
+
+msgid "Fuzzer for MSRPC Endpoints"
+msgstr "模糊测试工具的MSRPC端点"
+
+msgid "Authentication with or without a pass"
+msgstr "认证或不及格"
+
+msgid "replwritetovarbin stored procedure overflow."
+msgstr "replwritetovarbin存储过程溢出。"
+
+msgid "MS SQL Hello Stack Overflow"
+msgstr "微软的SQL您好堆栈溢出"
+
+msgid "MS SQL Injection Routines"
+msgstr "微软SQL注入套路"
+
+msgid "MS SQL Resolver Ping"
+msgstr "微软的SQL分解平"
+
+msgid "MS SQL Resolver Stack Overflow"
+msgstr "微软的SQL分解堆栈溢出"
+
+msgid "WINS Pointer hijacking exploit"
+msgstr "劫持利用WINS的指针"
+
+msgid "MS Exchange 2000 contains a flaw when handling the XEXCH50 command"
+msgstr "微软Exchange 2000包含一个缺陷在处理XEXCH50命令"
+
+msgid "MacOS X 10.4 mDNSResponder UPNP Remote Root Exploit"
+msgstr "马乔什X 10.4的mDNSResponder即插即用远程root权限"
+
+msgid "Authentication bypass with zeroed-string password"
+msgstr "验证旁路归零串密码"
+
+msgid "Nagios < 3.1.1 statuswml.cgi Command Injection Vulnerability"
+msgstr "Nagios的“3.1.1 statuswml.cgi命令注入漏洞"
+
+msgid "NAI Enterprise Virus 7.0 Stack Overflow"
+msgstr "佴企业病毒7.0堆栈溢出"
+
+msgid "Imports data from other tools into CANVAS"
+msgstr "从进口的其他工具将数据帆布"
+
+msgid "VERITAS NetBackup Java User Interface Format String"
+msgstr "VERITAS的NetBackup的Java用户界面格式字符串"
+
+msgid "NETDDE.EXE Exploit through NetBIOS"
+msgstr "NETDDE.EXE通过NetBIOS漏洞"
+
+msgid "Novell NetMail Login Stack Overflow"
+msgstr "NetMail加到登录Novell公司堆栈溢出"
+
+msgid "Novell Netmail WebAdmin Stack Overflow"
+msgstr "Novell公司NetMail加到WebAdmin的堆栈溢出"
+
+msgid "Netopia ADSL/Wireless information gathering"
+msgstr "Netopia公司的宽带/无线信息采集"
+
+msgid "netRisk Remote file include"
+msgstr "netRisk远程文件包含"
+
+msgid "NewsOffice 1.1 Remote File Include Vulnerabilitiy"
+msgstr "NewsOffice 1.1远程文件包含Vulnerabilitiy"
+
+msgid "NIPrint stack overflow"
+msgstr "NIPrint堆栈溢出"
+
+msgid "Imports a port scan from an nmap xml output"
+msgstr "进口从端口扫描Nmap的XML输出"
+
+msgid "Symantec/Norton UPX overflow."
+msgstr "赛门铁克/诺顿UPX压缩溢出。"
+
+msgid "Netscape NSS Library Remote Compromise"
+msgstr "网景新高中图书馆远程妥协"
+
+msgid "Novell Netware Client for Windows Print Providor Stack Overflow"
+msgstr "Novell NetWare客户端的Windows打印Providor堆栈溢出"
+
+msgid "Novell Netware Client for Windows Print Provider Stack Overflow"
+msgstr "Novell NetWare客户端的Windows打印提供程序堆栈溢出"
+
+msgid ""
+"Create one pdf file that has multiple exploits for different pdf readers."
+msgstr ""
+"创建一个PDF文件，对不同的PDF阅读器的多个漏洞。"
+
+msgid ""
+"A flaw in the java support over SQL queries allows an attacker to execute "
+"any static java method"
+msgstr ""
+"在一个SQL查询的支持Java缺陷使黑客能够执行"
+"任何静态Java方法"
+
+msgid "OpenAds 2.4.0 <= x <= 2.4.2 Remote Code Execution"
+msgstr "Openads的2.4.0“= X信息”= 2.4.2远程执行代码"
+
+msgid "Open-Realty <= 2.4.3 Remote Code Execution"
+msgstr "开放式房地产“= 2.4.3远程执行代码"
+
+msgid "OpenSSL key_arg_len Overflow"
+msgstr "OpenSSL的key_arg_len溢出"
+
+msgid "HP OpenView Trace Service OVTrace.exe Stack Overflow"
+msgstr "惠普OpenView跟踪服务OVTrace.exe堆栈溢出"
+
+msgid "Oracle8i <= 8.1.7 TNS Listener Argument stack overflow"
+msgstr "Oracle8i中“= 8.1.7 TNS监听参数堆栈溢出"
+
+msgid "Oracle <= Oracle Info"
+msgstr "甲骨文“=甲骨文信息"
+
+msgid "Oracle <= Password"
+msgstr "甲骨文“=密码"
+
+msgid "Oracle <= Usernames"
+msgstr "甲骨文“=用户名"
+
+msgid "OS Detection"
+msgstr "操作系统探测"
+
+msgid "PacerCMS 0.6 Remote Code Execution"
+msgstr "PacerCMS 0.6远程执行代码"
+
+msgid "Performs passive os detection"
+msgstr "全部检测被动执行"
+
+msgid "PGP wdef IOCTL bug"
+msgstr "PGP的wdef的IOCTL错误"
+
+msgid "PHP <= 4.3.7 memory_limit exploit"
+msgstr "PHP的“= 4.3.7 memory_limit的利用"
+
+msgid "PHP 5.2.1 Rejected Session ID Double Free Exploit"
+msgstr "5.2.1 PHP的会话ID拒绝双重释放漏洞"
+
+msgid "PHPauction GPL 2.51 Remote File include"
+msgstr "PHPauction GPL的2.51远程文件包含"
+
+msgid "phpBB Highlight code execution"
+msgstr "亚历克标明代码执行"
+
+msgid "PHPBlock Remote File include"
+msgstr "PHPBlock远程文件包括："
+
+msgid "php_callback client"
+msgstr "php_callback客户端"
+
+msgid "PHPlinks Remote file include"
+msgstr "PHPlinks远程文件包含"
+
+msgid "PHPList <= 2.10.7 Local File Include"
+msgstr "PHPList“= 2.10.7本地文件包含"
+
+msgid "phpMyAdmin PHP injection 2.11.x - 2.11.9.4 and 3.x - 3.1.3.0"
+msgstr "phpMyAdmin的PHP的注射2.11.x - 2.11.9.4和3 x - 3.1.3.0"
+
+msgid ""
+"Poor input validation allows remote users to insert php code into the forum "
+"and execute commands"
+msgstr ""
+"标准普尔输入验证允许远程用户插入论坛PHP代码"
+"并执行命令"
+
+msgid "phporacle Remote file include"
+msgstr "phporacle远程文件包含"
+
+msgid "phpProfiles Remote file include"
+msgstr "phpProfiles远程文件包含"
+
+msgid "phpQLAdmin 2.2.7 Remote file include"
+msgstr "phpQLAdmin 2.2.7远程文件包含"
+
+msgid "PHPSlash <= 0.8.1.1 Remote Code Execution"
+msgstr "PHPSlash“= 0.8.1.1远程执行代码"
+
+msgid "phpUserBase Remote file include"
+msgstr "phpUserBase远程文件包含"
+
+msgid "PHPyabs 0.1.2 Remote File Include"
+msgstr "PHPyabs 0.1.2远程文件包含"
+
+msgid "Piwik Remote Code Execution"
+msgstr "Piwik远程执行代码"
+
+msgid "Pluck 4.6.2 Local File Include"
+msgstr "采摘4.6.2本地文件包含"
+
+msgid "PNphpBB2 1.2i Local File Include"
+msgstr "作者书面许可1.2i本地文件包含"
+
+msgid "Podcast Generator <= 1.0 BETA 2 Remote file include"
+msgstr "播客发电机“= 1.0 Beta 2的远程文件包含"
+
+msgid "Portail Web Php Remote file include"
+msgstr "波尔塔伊网络PHP远程文件包含"
+
+msgid "Portscanner"
+msgstr "Portscanner"
+
+msgid "Scans for one port on many hosts"
+msgstr "一个端口扫描在许多主机"
+
+msgid "Injects a callback shellcode into a process"
+msgstr "注入到进程中一shellcode的回调"
+
+msgid ""
+"proto ops / udp_sendmsg null deref Linux Kernel local root (2.6.X 32bit "
+"Edition)"
+msgstr ""
+"原合作社/ udp_sendmsg空deref Linux内核的本地根（2.6.x的32位"
+"版）"
+
+msgid "Gets a listing of the processes on all selected nodes"
+msgstr "获取一个对所有选定的节点的过程上市"
+
+msgid "CVS pserverd heap overflow"
+msgstr "CVS的pserverd堆溢出"
+
+msgid "PunBB RC1 Remote Code Execution"
+msgstr "PunBB RC1的远程执行代码"
+
+msgid "PunBB user language include => code execution"
+msgstr "PunBB用户语言包括=>“代码执行"
+
+msgid "Imports data from QualysGuard 6.5 scans into CANVAS"
+msgstr "从进口数据的QualysGuard 6.5到帆布扫描"
+
+msgid "Quantum Game Library 0.7.2c Remote file include"
+msgstr "量子博弈图书馆0.7.2c远程文件包含"
+
+msgid "Attacks hosts with exploits imported from Qualysreport"
+msgstr "从Qualysreport进口的攻击攻击主机"
+
+msgid ""
+"Misdesign in a component of QuickTime 7.2 permits arbitrary code execution"
+msgstr ""
+"在一个QuickTime的组件Misdesign 7.2允许任意代码执行"
+
+msgid ""
+"A misdesign in the RTSP parser allows arbitrary execution using the Content-"
+"Type header"
+msgstr ""
+"RTSP协议中的一个分析器misdesign允许使用任意处决内容"
+"头型"
+
+msgid "Apple QuickTime rtsp URL Handler Stack Overflow"
+msgstr "苹果公司的QuickTime RTSP协议的URL处理程序堆栈溢出"
+
+msgid "QuickTeam Remote File Include"
+msgstr "QuickTeam远程文件包含"
+
+msgid "Quinsonnas Mail Checker 1.55 Remote File Inclusion "
+msgstr "Quinsonnas邮件检查器1.55远程文件共享"
+
+msgid "Attacks hosts with exploits imported from Rapid7 Reports"
+msgstr "报告从Rapid7进口主机漏洞攻击"
+
+msgid "Novadigm 3.1 radexecd.exe stack overflow."
+msgstr "Novadigm 3.1 radexecd.exe堆栈溢出。"
+
+msgid ""
+"Dumps all physical RAM available on target machine. Uses a kernel driver to "
+"bypass usermode restrictions in some versions of Windows."
+msgstr ""
+"所有的物理内存转储在目标计算机上可用。使用内核驱动程序"
+"绕过某些版本的Windows用户模式的限制。"
+
+msgid "Real Player ActiveX Import Stack Overflow"
+msgstr "真正的球员的ActiveX进口堆栈溢出"
+
+msgid "RealServer ../../ stack overflow"
+msgstr "RealServer ../../堆栈溢出"
+
+msgid "Helix Server Content-Length overflow."
+msgstr "Helix服务器内容长度溢出。"
+
+msgid "Detect buggy authentication in RealVNC Servers"
+msgstr "在检测出的RealVNC认证服务器"
+
+msgid "Record audio from the microphone"
+msgstr "录制音频的麦克风"
+
+msgid "Record video from a webcam"
+msgstr "记录视频摄像头"
+
+msgid "Make a remark into the logs"
+msgstr "请把日志的话"
+
+msgid "Creates spreadsheet from CANVAS session pickles. Requires Open Office."
+msgstr "会议由帆布创建泡菜电子表格。需要开放式办公。"
+
+msgid "Restarts a service on all selected nodes"
+msgstr "重新启动对所有选定的节点服务"
+
+msgid "Rexd remote \"exploit\""
+msgstr "Rexd远程\\“剥削\\”"
+
+msgid "Remove a Directory. Uses first selected node."
+msgstr "删除一个目录。使用一个选定的节点。"
+
+msgid "RoundCube Webmail Pre-Authentication Code Execution"
+msgstr "RoundCube邮局预认证执行代码"
+
+msgid "SunRPC Port Mapper"
+msgstr "SunRPC端口映射"
+
+msgid "Rsync Heap Overflow"
+msgstr "Rsync的堆溢出"
+
+msgid "Test of RTSP library"
+msgstr "对RTSP测试库"
+
+msgid "Calls popen2() or equivalent. Uses first selected node."
+msgstr "呼吁popen2（）或同等学历。使用一个选定的节点。"
+
+msgid "Starts up a sniffer instance"
+msgstr "嗅探器启动一个实例"
+
+msgid "Sadmind Remote Exploit for Solaris"
+msgstr "Sadmind适用于Solaris的远程漏洞"
+
+msgid "Steal files from target machine through Safari local file:/// URI"
+msgstr "窃取文件的目标机通过Safari本地文件：/ / / URI的"
+
+msgid "Steal files from target machine through Safari XSL local file access"
+msgstr "从目标计算机窃取文件通过Safari访问本地文件的XSL"
+
+msgid "Samba Nttrans Overflow"
+msgstr "桑巴Nttrans溢出"
+
+msgid "Samba Trans2 Stack Overflow"
+msgstr "桑巴Trans2堆栈溢出"
+
+msgid "SamiFTP Stack Overflow on USER command"
+msgstr "SamiFTP堆栈溢出指挥用户"
+
+msgid "SAPDB Stack Overflow"
+msgstr "SAPDB堆栈溢出"
+
+msgid "savant web server stack overflow."
+msgstr "萨万的网络服务器堆栈溢出。"
+
+msgid "Grab a picture of the screen"
+msgstr "抓取图片的屏幕"
+
+msgid ""
+"Stack overflow on parsing the Cookie/Session paramater of a HTTP POST "
+"request."
+msgstr ""
+"堆栈溢出的解析曲奇/会议在HTTP POST paramater"
+"请求。"
+
+msgid "Set the osdetection configuration information"
+msgstr "设置osdetection配置信息"
+
+msgid "Sets the thread token (0 for reverttoself)"
+msgstr "设置线程令牌（0为reverttoself）"
+
+msgid "Sets the user ID on Unix-family systems"
+msgstr "设置用户在Unix身份证，家庭制度"
+
+msgid ""
+"Get a list of shares from the remote machine using srvsvc::NetrShareEnum"
+msgstr ""
+"获得的股份从远程使用srvsvc机列表：：NetrShareEnum"
+
+msgid "Format string exploit for versions 1.9.4 and 1.9.2"
+msgstr "利用格式化字符串为版本1.9.4和1.9.2"
+
+msgid "SiteX <= 0.7.4.418 Local File Include"
+msgstr "SiteX“= 0.7.4.418本地文件包含"
+
+msgid "SL Web Supervisor HTTP Subversion Stack Overflow"
+msgstr "可溶性网络监控的HTTP Subversion的堆栈溢出"
+
+msgid "Smallaxe Remote file include"
+msgstr "Smallaxe远程文件包含"
+
+msgid "SmarTag Bug on Microsoft Word"
+msgstr "智能标签在Microsoft Word问题"
+
+msgid "Smart Publisher 1.0.1 PHP code execution"
+msgstr "智能版1.0.1 PHP代码执行"
+
+msgid "SMB2 Negotiate Pointer Dereference Vulnerability"
+msgstr "SMB2谈判指针中的隐患取消"
+
+msgid "Slow SMB bruteforcer"
+msgstr "慢中小企业bruteforcer"
+
+msgid "smbclient"
+msgstr "smbclient的"
+
+msgid "Simple Machines Forum => 1.1.6 CSRF Remote Code Execution"
+msgstr "简单机械论坛=“1.1.6 CSRF的远程执行代码"
+
+msgid "Simple Machines Forum 1.1.2 - 1.1.3 Remote Code Execution"
+msgstr "简单机械论坛1.1.2 - 1.1.3远程执行代码"
+
+msgid "Simple Machines Forum => 1.1.6 Remote Code Execution"
+msgstr "简单机械论坛=“1.1.6远程执行代码"
+
+msgid "Fingerprints SMTP servers by sending various requests"
+msgstr "指纹SMTP服务器发送的各种要求"
+
+msgid ""
+"Use a web search query to generate a list of SMTP servers for fingerprinting"
+msgstr ""
+"使用网络搜索查询生成的SMTP服务器的指纹名单"
+
+msgid "snmpXdmid Buffer Overflow"
+msgstr "snmpXdmid缓冲区溢出"
+
+msgid "Snort <= 2.6.2 DCE/RPC reassembly exploit"
+msgstr "Snort的“= 2.6.2 DCE的/ RPC的重组利用"
+
+msgid "Solaris printer configuration stack overflow"
+msgstr "打印机配置Solaris的堆栈溢出"
+
+msgid "Local privilege escalation [ Solaris 7/8/9 (sun4u) ]"
+msgstr "本地特权提升[Solaris的7/8/9（sun4u）]"
+
+msgid ""
+"Telnet to host without having to authenticate due to flaw in environment "
+"variable passing"
+msgstr ""
+"远程登录到主机无需验证由于环境缺陷"
+"变量传递"
+
+msgid "Local privilege escalation for Solaris"
+msgstr "适用于Solaris本地特权提升"
+
+msgid "Sourdough Remote FIle Include"
+msgstr "索尔多远程文件包含"
+
+msgid "spawns an executable on the remote host"
+msgstr "产卵一个远程主机上的可执行文件"
+
+msgid "Windows Service Pack Detection"
+msgstr "Windows服务包检测"
+
+msgid ""
+"Misdesign in a component of Microsoft Speech API 4 allows for arbitrary code "
+"execution"
+msgstr ""
+"在一个Microsoft Speech API的四部分Misdesign允许任意代码"
+"执行"
+
+msgid ""
+"Run a web proxy as if you were on a remote box, with specialized attack "
+"functionality"
+msgstr ""
+"运行网络代理作为如果你是在一个远程中，专门攻击"
+"功能"
+
+msgid ""
+"Dumps connection settings (including passwords) from SQL Server Management "
+"Studio 2008"
+msgstr ""
+"转储连接设置（包括密码）由SQL Server管理"
+"工作室2008"
+
+msgid "Create a reverse SSH tunnel between you and the target"
+msgstr "创建您和目标反向SSH隧道"
+
+msgid ""
+"Stack-based buffer overflow in the pdg2.dll ActiveX control in SSReader 4.0"
+msgstr ""
+"基于堆栈中的超星阅览器4.0 pdg2.dll ActiveX控件缓冲区溢出"
+
+msgid "Starts a remote service over SMB"
+msgstr "启动比中小型企业远程服务"
+
+msgid "Starts a service on all selected nodes"
+msgstr "开始对所有选定的节点服务"
+
+msgid "Snort <= 2.4.2 BO pp exploit"
+msgstr "Snort的“= 2.4.2公报利用页"
+
+msgid "Stops a service on all selected nodes"
+msgstr "停止对所有选定的节点服务"
+
+msgid "Configuration setting TEMPLATE"
+msgstr "配置设置模板"
+
+msgid "Strawberry 1.1.1 Local File Include"
+msgstr "草莓1.1.1本地文件包含"
+
+msgid "SugarCRM <= 5.2.0e Remote Code Execution"
+msgstr "SugarCRM公司“= 5.2.0e远程执行代码"
+
+msgid "Sun Java HsbParser.getSoundBank Stack Buffer Overflow Vulnerability"
+msgstr "Sun的Java HsbParser.getSoundBank堆栈缓冲区溢出漏洞"
+
+msgid "Solaris Login Overflow"
+msgstr "Solaris的登录溢出"
+
+msgid "Solaris Login pamh Overflow"
+msgstr "Solaris的登录pamh溢出"
+
+msgid "Subversion utf-8 Apache2/WebDAV Stack Overflow"
+msgstr "颠覆的UTF - 8 Apache2/WebDAV堆栈溢出"
+
+msgid "Switch our user context to another user with a username/password combo."
+msgstr "我们的用户上下文切换到另一个用户名/密码组合用户。"
+
+msgid "Symantec Alert Management System 2 Stack Overflow"
+msgstr "赛门铁克预警管理系统2堆栈溢出"
+
+msgid "Symantec Remote Management Rtvscan.exe Stack Overflow"
+msgstr "赛门铁克远程管理Rtvscan.exe堆栈溢出"
+
+msgid ""
+"Gets basic OS information from a node. It's like osdetect, but for running "
+"on a node, instead of against a target."
+msgstr ""
+"从节点获取信息的基本操作系统。这就像osdetect，但运行"
+"一个节点上，而不是针对一个目标。"
+
+msgid "TCP Hello World test (for bouncing tests)"
+msgstr "技术合作的Hello World测试（测试的弹跳）"
+
+msgid "Finds all the hosts on the local network interfaces"
+msgstr "查找所有本地网络上的主机接口"
+
+msgid "Telnet Brute Force"
+msgstr "远程登录蛮力"
+
+msgid "Telnet Banner Grabber (used for osdetect)"
+msgstr "远程登录横幅采集卡（用于osdetect）"
+
+msgid "Poor input validation allows remote users to call system(command)"
+msgstr "标准普尔输入验证允许远程用户呼叫系统（指挥）"
+
+msgid "Test module for the PHP safemode bypass"
+msgstr "测试模块的PHP的安全模式绕过"
+
+msgid "Scan the box for exploitability."
+msgstr "扫描的开发性框。"
+
+msgid ""
+"Used in the testomatic framework to connect and send commands to a remote "
+"testomatic node."
+msgstr ""
+"在testomatic框架，用来连接并发送命令到远程"
+"testomatic节点。"
+
+msgid "testsploit (Used for MOSDEF testing)"
+msgstr "testsploit（用于MOSDEF测试）"
+
+msgid "Fuzzer for TFTP Servers"
+msgstr "模糊测试工具使用TFTP服务器"
+
+msgid "TFTP Server for uploading files"
+msgstr "TFTP服务器上载文件"
+
+msgid "[0day] TightVNC integer overflow (client-side)"
+msgstr "[零天] TightVNC的整数溢出（客户端）"
+
+msgid "TikiWiki function create exploit"
+msgstr "TikiWiki函数创建开发"
+
+msgid "IBM Tivoli Storage Manager Express CAD Service Buffer Overflow"
+msgstr "IBM Tivoli存储管理器快速CAD服务缓冲区溢出"
+
+msgid "Trend Micro ServerProtect StCommon.dll RPC Stack Overflow"
+msgstr "趋势科技ServerProtect的StCommon.dll的RPC堆栈溢出"
+
+msgid "Trend Micro ServerProtect Agent RPC Stack Overflow"
+msgstr "趋势科技ServerProtect的代理的RPC堆栈溢出"
+
+msgid "Change file access and modification time on selected node"
+msgstr "改变文件的访问和修改时间选定节点"
+
+msgid ""
+"Change file access and modification time srcfile->dstfile on selected node"
+msgstr ""
+"改变文件的访问和修改时间srcfile，“选定节点dstfile"
+
+msgid "CANVAS Traceroute"
+msgstr "帆布路由跟踪"
+
+msgid "TrixBox (Asterisk) PBX Remote Command Execution"
+msgstr "TrixBox（星号）交换机远程命令执行"
+
+msgid "rpc.ttdbserverd xdr_array Heap Overflow"
+msgstr "rpc.ttdbserverd xdr_array堆溢出"
+
+msgid "TWiki SEARCH variable arbitrary shell command execution"
+msgstr "高能物理研究所TWiki搜寻变量任意shell命令的执行"
+
+msgid "udevd NETLINK messaging exploit"
+msgstr "udevd NetLink对信息利用"
+
+msgid "Scans for open UDP Ports"
+msgstr "扫描UDP端口开放"
+
+msgid ""
+"Scans for one port on many hosts - reports hosts that have the port closed"
+msgstr ""
+"一个在许多主机端口扫描 - 报告有主机端口关闭"
+
+msgid "umpnpmgr.dll/srvsvc memory exhaustion via msrpc"
+msgstr "umpnpmgr.dll / srvsvc内存耗尽通过msrpc"
+
+msgid ""
+"Tries to connect to a host and port and convert that into a Unix Shell Server"
+msgstr ""
+"尝试连接到主机和端口，将其转化为Unix的外壳服务器"
+
+msgid "CANVAS Unlink"
+msgstr "帆布取消链接"
+
+msgid "Removes the CANVAS rootkit."
+msgstr "删除帆布的rootkit。"
+
+msgid "Upload and Excute a shell-giving Exploit Binary"
+msgstr "上传和Excute外壳，使漏洞二进制"
+
+msgid "Upload file. Uses first selected node."
+msgstr "上传文件。使用一个选定的节点。"
+
+msgid "Create domains to check for phishing"
+msgstr "创建域检查钓鱼"
+
+msgid "Get a list of users"
+msgstr "获取用户列表"
+
+msgid "Break PHP Safemode with Usort Vulnerability"
+msgstr "折价PHP的安全模式与Usort漏洞"
+
+msgid "ut2004 stack overflow with \\secure\\"
+msgstr "ut2004栈\\溢出\\安全\\ \\"
+
+msgid "Utorrent announcement overflow"
+msgstr "utorrent的公告溢出"
+
+msgid "Veritas Backup Exec stack overflow"
+msgstr "VERITAS Backup Exec的堆栈溢出"
+
+msgid "VisualPic 0.3.1 Remote File Include"
+msgstr "VisualPic 0.3.1远程文件包含"
+
+msgid "vmsplice Linux Kernel local root"
+msgstr "vmsplice Linux内核的本地根"
+
+msgid "VMware dhcpd Stack Overflow"
+msgstr "VMware的dhcpd堆栈溢出"
+
+msgid ""
+"A flaw in the way MS Excel handle the Shared String Table could lead into an "
+"integer overflow."
+msgstr ""
+"阿在MS Excel中的处理方式共享字符串表可能导致成为一个缺陷"
+"整数溢出。"
+
+msgid "Exchangepop3 Stack Based overflow in rcpt to: command"
+msgstr "Exchangepop3堆栈溢出的总部设在rcpt to：命令"
+
+msgid "Remote Buffer Overflow on Login"
+msgstr "远程缓冲区溢出的登录"
+
+msgid "Winamp 5.12 .pls overflow"
+msgstr "WinAMP的5.12。薪酬水平调查溢出"
+
+msgid "Winproxy Stack Overflow"
+msgstr "Winproxy的堆栈溢出"
+
+msgid "w3who.dll stack overflow"
+msgstr "w3who.dll堆栈溢出"
+
+msgid "WarFTP 1.65 Stack Overflow on USER command"
+msgstr "WarFTP 1.65堆栈溢出指挥用户"
+
+msgid "Tries to exploit all known web vulnerabilities against a server"
+msgstr "试图利用对服务器的所有已知的网络漏洞"
+
+msgid "Attempt to brute force POST based web logins given a password dict"
+msgstr "尝试蛮力邮政提供基于网络的登录密码字典"
+
+msgid ""
+"Remote root exploit for Perl efix svarg index bug, through webmin miniserv.pl"
+msgstr ""
+"远程根利用Perl的efix通过Webmin的miniserv.pl svarg指数错误，"
+
+msgid "wFTPD Stack Overflow on the SIZE command"
+msgstr "wFTPD堆栈溢出的大小命令"
+
+msgid "Gets the first external IP off of a traceroute"
+msgstr "获取第一个外部IP过一个路由跟踪"
+
+msgid "Gets id result on each selected node"
+msgstr "获取每个选定的节点ID结果"
+
+msgid "Windows 7 Netbios Crash"
+msgstr "崩溃的Windows 7的Netbios"
+
+msgid "Wingate 6.1.1 stack overflow"
+msgstr "盖特6.1.1堆栈溢出"
+
+msgid ""
+"A vulnerability in the way NPF.sysd handles IOCTL arguments allows for "
+"writing to kernel space"
+msgstr ""
+"阿NPF.sysd的方式处理的IOCTL论点漏洞允许"
+"写入内核空间"
+
+msgid "Misdesign in WMF file parser allows for shellcode execution"
+msgstr "在WMF文件分析器Misdesign允许shellcode的执行"
+
+msgid "Eudora Qualcomm WorldMail 3.0 IMAP4 stack overflow"
+msgstr "尤多拉通WorldMail 3.0 IMAP4堆栈溢出"
+
+msgid "WordPress plugin BackUpWordPress <= 0.4.2b Remote File Inclusion"
+msgstr "WordPress插件BackUpWordPress“= 0.4.2b远程文件共享"
+
+msgid "WordPress 2.2.2 SQL injection/Command execution"
+msgstr "WordPress的2.2.2 SQL注入/命令执行"
+
+msgid "Wordpress plugin myflash Remote File Inclusion"
+msgstr "WordPress的插件myflash远程文件共享"
+
+msgid "Wordpress Plugin Sniplets 1.1.2 Remote Code Execution exploit"
+msgstr "WordPress的插件Sniplets 1.1.2远程执行代码漏洞"
+
+msgid "WordPress Plugin Sniplets 1.1.2 Remote File Include"
+msgstr "WordPress的插件Sniplets 1.1.2远程文件包含"
+
+msgid "Ipswitch WS_FTP Server XCRC Stack Overflow"
+msgstr "Ipswitch WS_FTP Server在XCRC堆栈溢出"
+
+msgid "WuFTPD SITE EXEC Formatstring Bug"
+msgstr "WuFTPD网站Exec的的FormatString问题"
+
+msgid "WuFTPD Globbing Arbitrary Free"
+msgstr "WuFTPD通配符任意免费"
+
+msgid "Vulnerability in XFS allows for remote compromise as NOBODY user"
+msgstr "在XFS中的漏洞允许用户远程因为没有人妥协"
+
+msgid "Buffer overflow in If-Modified-Since gets a remote shell"
+msgstr "缓冲区溢出的If - Modified - Since的获得一个远程shell"
+
+msgid "XML RPC For CANVAS Web Service"
+msgstr "对于帆布的XML RPC的Web服务"
+
+msgid "X11 server for local vulnerabilities"
+msgstr "X11服务器本地安全漏洞"
+
+msgid "Test"
+msgstr "测试"
+
+msgid "ypbind YPBINDPROC_DOMAIN Stack Overflow"
+msgstr "ypbind YPBINDPROC_DOMAIN堆栈溢出"
+
+msgid "yppasswdd YPPASSWD_UPDATE Stack Overflow"
+msgstr "yppasswdd YPPASSWD_UPDATE堆栈溢出"
+
+msgid "imail imap4 stack overflow in Login field"
+msgstr "易网邮imap4堆栈溢出领域登录"
+
+msgid "ZenCart 1.3.8 Remote Code Execution"
+msgstr "ZenCart 1.3.8远程执行代码"
+
+msgid "Discovers services on the .local. domain advertised over zeroconf"
+msgstr "发现的。当地服务。域多zeroconf的广告"
+
+msgid "Set as target host"
+msgstr "设置为目标主机"
+
+msgid "Set as additional target host"
+msgstr "设为额外目标主机"
+
+msgid "Unset as targeted host"
+msgstr "取消设置有针对性的主机"
+
+msgid "Forget this host knowledge"
+msgstr "忘记此主机知识"
+
+msgid "Save host to file"
+msgstr "保存到文件的主机"
+
+msgid "Don't try to delete the loopback interface, please"
+msgstr "不要试图删除loopback接口，请"
+
+msgid "Add note to host"
+msgstr "添加笔记主办"
+
+msgid "Set as callback interface"
+msgstr "设为回调接口"
+
+msgid "Check for listener connection"
+msgstr "检查侦听连接"
+
+msgid "View all knowledge"
+msgstr "查看所有知识"
+
+msgid "Active Listeners"
+msgstr "积极的听众"
+
+msgid "Unset FromCreateThread"
+msgstr "取消设置FromCreateThread"
+
+msgid "Set FromCreateThread"
+msgstr "集FromCreateThread"
+
+msgid "Target Host"
+msgstr "目标主机"
+
+msgid "Stop Exploit"
+msgstr "停止漏洞"
+
+msgid "OS Config"
+msgstr "操作系统配置"

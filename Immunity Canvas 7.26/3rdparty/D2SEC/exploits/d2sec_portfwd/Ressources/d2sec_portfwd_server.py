@@ -1,0 +1,56 @@
+#!/usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2014
+#
+
+import socket
+import select
+import sys
+
+REMOTE = ('0.0.0.0', int(sys.argv[1]))
+LOCAL  = ('127.0.0.1', int(sys.argv[2]))
+
+# local socket
+l = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+l.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+l.bind(LOCAL)
+l.listen(1)
+
+# remote host will connect to this one
+r = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+r.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+r.bind(REMOTE)
+r.listen(1)
+
+while True:
+    rc, addr = r.accept()
+    print 'Connected by', addr
+
+    # wait for a local connection
+    lc, addr = l.accept()
+    print 'Connected by', addr
+
+    while True:
+        ls, _, _ = select.select([ rc, lc ], [], [])
+        if lc in ls:
+            data = lc.recv(4096)
+            if not data:
+                break
+            rc.sendall(data)
+        if rc in ls:
+            data = rc.recv(4096)
+            if not data:
+                break
+            lc.sendall(data)
+
+    print 'connection closed'
+    rc.close()
+    lc.close()
+    break
+
+r.close()
+l.close()

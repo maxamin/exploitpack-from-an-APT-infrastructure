@@ -1,0 +1,89 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007
+#
+
+import sys, os
+
+sys.path.append(".")
+
+from canvasexploit import canvasexploit
+
+NAME="Check linux kernel version"
+DESCRIPTION="Command to check linux kernel version"
+DOCUMENTATION={}
+DOCUMENTATION["Notes"]="This module does not care what target you've set - it always uses localhost"
+
+VERSION="1.0"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Commands"
+PROPERTY['ARCH'] = [ ["Linux"] ]
+
+class theexploit(canvasexploit):
+	def __init__(self):
+		canvasexploit.__init__(self)
+		self.node = "" 
+		self.supportedNodeArgs = [["linuxNode"]]
+		self.total = 3.0 
+		self.score = 0.0
+		self.version = ""
+
+	def uname(self):
+		str = self.node.runcommand("/bin/uname -r") 
+		self.version = str[:-1]
+		self.log("[1] /bin/uname: %s" % str)
+
+	def osrelease(self):
+		str = self.node.runcommand("/bin/cat /proc/sys/kernel/osrelease")
+		str = str[:-1]
+
+		if self.version == str:
+			self.score += 1.0
+
+		self.log("[2] /proc/sys/kernel/osrelease: %s" % str)
+	
+	def proc_version(self):
+		str = self.node.runcommand("/bin/cat /proc/version")
+		str = str.split()[2]
+
+		if self.version == str:
+			self.score += 1.0
+
+		self.log("[3] /proc/version: %s" % str)
+	
+	def usrsrc(self):
+		str = self.node.runcommand("/bin/ls -alp /usr/src")
+
+		if str.find("linux-%s" % self.version) >= 0:
+			self.score += 1.0
+
+		self.log("[4] list /usr/src\n")
+		self.log(str)
+		self.log("\n")
+	
+	def run(self):
+		self.setInfo("%s (in progress)"%(NAME))
+
+		self.log("#------------- Checking linux kernel version ---------------#\n")
+		for node in self.argsDict["passednodes"]:
+				type = node.nodetype
+				if type not in self.supportedNodeArgs[0]:
+					self.log("%s node type not supported"%type)
+					continue
+
+				self.node = node
+
+				self.uname()
+				self.osrelease()
+				self.proc_version()
+				self.usrsrc()
+
+				self.log("[%d%%] linux kernel version : %s" % (int((self.score/self.total)*100), self.version))
+			
+if __name__ == "__main__":
+	print "This module is meant to be run only within CANVAS"

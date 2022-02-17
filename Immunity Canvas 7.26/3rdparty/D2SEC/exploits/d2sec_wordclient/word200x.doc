@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?mso-application progid="Word.Document"?>
+<w:wordDocument xmlns:w="http://schemas.microsoft.com/office/word/2003/wordml" 
+ xmlns:v="urn:schemas-microsoft-com:vml" 
+ xmlns:w10="urn:schemas-microsoft-com:office:word" 
+ xmlns:sl="http://schemas.microsoft.com/schemaLibrary/2003/core" 
+ xmlns:aml="http://schemas.microsoft.com/aml/2001/core" 
+ xmlns:wx="http://schemas.microsoft.com/office/word/2003/auxHint" 
+ xmlns:o="urn:schemas-microsoft-com:office:office" 
+ xmlns:dt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882" 
+ w:macrosPresent="no" 
+ w:embeddedObjPresent="no" 
+ w:ocxPresent="yes" xml:space="preserve">
+ 
+ <o:DocumentProperties>
+  <o:Title>Document</o:Title>
+ </o:DocumentProperties>
+ 
+ <w:fonts>
+ <w:defaultFonts w:ascii="Times New Roman" w:fareast="Times New Roman" w:h-ansi="Times New Roman" w:cs="Times New Roman"/>
+ </w:fonts>
+ 
+ <w:styles>
+  <w:versionOfBuiltInStylenames w:val="4"/>
+  <w:latentStyles w:defLockedState="off" w:latentStyleCount="156"/>
+  <w:style w:type="paragraph" w:default="on" w:styleId="Normal"><w:name w:val="Normal"/><w:rPr><wx:font wx:val="Times New Roman"/><w:sz w:val="24"/><w:sz-cs w:val="24"/><w:lang w:val="EN-US" w:fareast="EN-US" w:bidi="AR-SA"/></w:rPr></w:style>
+  <w:style w:type="character" w:default="on" w:styleId="Policepardfaut"><w:name w:val="Default Paragraph Font"/><wx:uiName wx:val="Police par défaut"/><w:semiHidden/></w:style>
+  <w:style w:type="table" w:default="on" w:styleId="TableauNormal"><w:name w:val="Normal Table"/><wx:uiName wx:val="Tableau Normal"/><w:semiHidden/><w:rPr><wx:font wx:val="Times New Roman"/></w:rPr><w:tblPr><w:tblInd w:w="0" w:type="dxa"/><w:tblCellMar><w:top w:w="0" w:type="dxa"/><w:left w:w="108" w:type="dxa"/><w:bottom w:w="0" w:type="dxa"/><w:right w:w="108" w:type="dxa"/></w:tblCellMar></w:tblPr></w:style>
+  <w:style w:type="list" w:default="on" w:styleId="Aucuneliste"><w:name w:val="No List"/><wx:uiName wx:val="Aucune liste"/><w:semiHidden/></w:style>
+  <w:style w:type="character" w:styleId="Lienhypertexte"><w:name w:val="Hyperlink"/><wx:uiName wx:val="Lien hypertexte"/><w:basedOn w:val="Policepardfaut"/><w:rPr><w:color w:val="0000FF"/><w:u w:val="single"/></w:rPr></w:style>
+  <w:style w:type="character" w:styleId="Lienhypertextesuivi"><w:name w:val="FollowedHyperlink"/><wx:uiName wx:val="Lien hypertexte suivi"/><w:basedOn w:val="Policepardfaut"/><w:rPr><w:color w:val="800080"/><w:u w:val="single"/></w:rPr></w:style>
+ </w:styles>
+ 
+ <w:shapeDefaults>
+ <o:shapedefaults v:ext="edit" spidmax="1026"/>
+ <o:shapelayout v:ext="edit"><o:idmap v:ext="edit" data="1"/></o:shapelayout>
+ </w:shapeDefaults>
+ 
+ <w:docPr>
+ <w:view w:val="web"/>
+ <w:zoom w:percent="100"/>
+ <w:formsDesign/>
+ <w:attachedTemplate w:val=""/>
+ <w:defaultTabStop w:val="720"/><w:characterSpacingControl w:val="DontCompress"/><w:optimizeForBrowser/><w:validateAgainstSchema/><w:saveInvalidXML w:val="off"/><w:ignoreMixedContent w:val="off"/><w:alwaysShowPlaceholderText w:val="off"/><w:compat/>
+ </w:docPr>
+ 
+ <w:body>
+ <wx:sect><w:p><w:r><w:pict>
+ <w:ocx w:data="DATA:application/x-oleobject;BASE64,ENCODEDDATA" w:id="target" w:name="target" w:classid="CLSID:AE24FDAE-03C6-11D1-8B76-0080C744F389" w:w="200" w:h="123" wx:iPersistPropertyBag="true"/>
+ </w:pict></w:r></w:p><w:sectPr><w:pgSz w:w="12240" w:h="15840"/><w:pgMar w:top="1440" w:right="1800" w:bottom="1440" w:left="1800" w:header="720" w:footer="720" w:gutter="0"/><w:cols w:space="720"/><w:docGrid w:line-pitch="360"/> </w:sectPr></wx:sect>
+ </w:body>
+ 
+ </w:wordDocument>
+ 
+ 
+ 

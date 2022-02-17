@@ -1,0 +1,1947 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by Shanit Gupta (Carnegie Mellon University) -->
+<searchEngineSignature>
+	<signature>
+		<signatureReferenceNumber>22</signatureReferenceNumber>
+		<categoryref>T1</categoryref>
+		<category>TECHNOLOGY PROFILE</category>
+		<querytype>DON</querytype>
+		<querystring>intitle:"Index of" secring.bak</querystring>
+		<shortDescription>Locates secret PGP key's.</shortDescription>
+		<textualDescription>PGP is a public key / private key encryption technology.  Your public key is given out to people while your secret key (secring) is kept private.  Encrypted communications can be decrypted by attackers who have your public key, secret key, and passphrase. This is why its extremely important to keep your secret key safe.</textualDescription>
+		<cveNumber>1000</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>23</signatureReferenceNumber>
+		<categoryref>T2</categoryref>
+		<category>TECHNOLOGY PROFILE</category>
+		<querytype>DON</querytype>
+		<querystring>intitle:index.of master.passwd</querystring>
+		<shortDescription>Gives "passwd" file</shortDescription>
+		<textualDescription>This directory listing might contain a potential password file.</textualDescription>
+		<cveNumber>1000</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>24</signatureReferenceNumber>
+		<categoryref>T3</categoryref>
+		<category>TECHNOLOGY PROFILE</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:"Index of" ".htpasswd" htpasswd.bak</querystring>
+		<shortDescription>Gives file with Hashed Passwords</shortDescription>
+		<textualDescription>This directory listing might contain a potential password file.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>13</signatureReferenceNumber>
+		<categoryref>RA1</categoryref>
+		<category>REMOTE ADMIN INTERFACE</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:"Index of" upload.asp</querystring>
+		<shortDescription>Possible upload capabilities.</shortDescription>
+		<textualDescription>Looking for upload.asp. Upload.asp, if not protected might allow an attacker to upload malicious content to the server that might allow them to execute code.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>14</signatureReferenceNumber>
+		<categoryref>RA2</categoryref>
+		<category>REMOTE ADMIN INTERFACE</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:"Index of" AT-admin.cgi</querystring>
+		<shortDescription>Administer CGI server</shortDescription>
+		<textualDescription>Looks for at-admin.cgi. Used to administer a cgi server</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>15</signatureReferenceNumber>
+		<categoryref>RA3</categoryref>
+		<category>REMOTE ADMIN INTERFACE</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:"Index of" global.inc</querystring>
+		<shortDescription>Remote Administration Informaion</shortDescription>
+		<textualDescription>Looks for global.inc. This file often contains remote administration information</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>4</signatureReferenceNumber>
+		<categoryref>C1</categoryref>
+		<category>CONFIG MANAGEMENT</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:"Index of" guestbook.cgi</querystring>
+		<shortDescription>Key to guestbook.cgi vulnerabilities</shortDescription>
+		<textualDescription>Looking for guestbook.cgi. There are a number of vulnerabilities associated with this various freeware guestbook's.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>5</signatureReferenceNumber>
+		<categoryref>C2</categoryref>
+		<category>CONFIG MANAGEMENT</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:"Index of" fpcount.exe</querystring>
+		<shortDescription>Frontpage extentions may be installed.</shortDescription>
+		<textualDescription>Looking for frontpage extensions. There are a number of vulnerabilities associated with frontpage extensions. </textualDescription>
+		<cveNumber>CAN-1999-1376</cveNumber>
+		<cveLocation>http://cve.mitre.org/cgi-bin/cvename.cgi?name=CAN-1999-1376</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>6</signatureReferenceNumber>
+		<categoryref>C3</categoryref>
+		<category>CONFIG MANAGEMENT</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:"Index of" msadcs.dll</querystring>
+		<shortDescription>checks IIS MDAC Vulnerability</shortDescription>
+		<textualDescription>This check looks for the Microsoft Data Access Components  DLL. (msadcs.dll). the MDAC DLL has had multiple vulnerabilities associated with it.</textualDescription>
+		<cveNumber>CAN-2003-0903</cveNumber>
+		<cveLocation>http://cve.mitre.org/cgi-bin/cvekey.cgi?keyword=MDAC</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>19</signatureReferenceNumber>
+		<categoryref>S1</categoryref>
+		<category>BACKUP FILES</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:index.of .bash_history</querystring>
+		<shortDescription>Log of user's command line history.</shortDescription>
+		<textualDescription>This file contains a command history and would be particularly helpful to an attacker who is doing information gathering.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>20</signatureReferenceNumber>
+		<categoryref>S2</categoryref>
+		<category>BACKUP FILES</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:index.of .sh_history</querystring>
+		<shortDescription>Log of user's command line history.</shortDescription>
+		<textualDescription>This file contains a command history and would be particularly helpful to an attacker who is doing information gathering.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>21</signatureReferenceNumber>
+		<categoryref>S3</categoryref>
+		<category>CONFIG MANAGEMENT</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:index.of trillian.ini</querystring>
+		<shortDescription>Encoded usernames, passwords, and  buddylist for Trillian users.</shortDescription>
+		<textualDescription>Trillian is a multi-messaging client that supports AIM, MSN, Yahoo, IRC,  and ICQ. The trillian.ini  file contain's encoded passwords, usernames, buddy lists.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>16</signatureReferenceNumber>
+		<categoryref>RV1</categoryref>
+		<category>REPORTED VULNS</category>
+		<querytype>DONT</querytype>
+		<querystring>"Select a database to view" intitle:"filemaker pro"</querystring>
+		<shortDescription>Server providing access to Filemaker pro</shortDescription>
+		<textualDescription>This search locates servers which provides access to Filemaker pro databases via the web. The severity of this search varies wildly depending on the security of the database itself</textualDescription>
+		<cveNumber>GENERIC-MAP-NOMATCH</cveNumber>
+		<cveLocation>http://www.securityfocus.com/bid/1159/discussion/</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>17</signatureReferenceNumber>
+		<categoryref>RV2</categoryref>
+		<category>REPORTED VULNS</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:"osCommerce" inurl:admin originurlextension:php</querystring>
+		<shortDescription>Web facing admin interface to osCommerce.</shortDescription>
+		<textualDescription>Explore the admin interface of osCommerce e-commerce sites. Depending on how bad the setup of the web store is, web surfers can even Google their way into customer details and order status, all from the Google cache.</textualDescription>
+		<cveNumber>CVE-MAP-NOMATCH</cveNumber>
+		<cveLocation>http://www.securityfocus.com/bid/10235</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>18</signatureReferenceNumber>
+		<categoryref>RV3</categoryref>
+		<category>REPORTED VULNS</category>
+		<querytype>DONT</querytype>
+		<querystring>"phpMyAdmin" "running on" inurl:"main.php"</querystring>
+		<shortDescription>checks for accessible phpMyAdmin tool</shortDescription>
+		<textualDescription>From phpmyadmin.net : "phpMyAdmin is a tool written in PHP intended to handle the administration of MySQL over the WWW." Great, easy to use, but lock it down! Things you can do include viewing MySQL runtime information and system variables, show processes, reloading MySQL, changing privileges, and modifying or exporting databases. Hacker-fodder for sure!</textualDescription>
+		<cveNumber>CVE-MAP-NOMATCH</cveNumber>
+		<cveLocation>http://www.securityfocus.com/bid/7965</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>7</signatureReferenceNumber>
+		<categoryref>E1</categoryref>
+		<category>ERROR MESSAGES</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:"the page cannot be found" inetmgr</querystring>
+		<shortDescription>checks for IIS 4.0 servers</shortDescription>
+		<textualDescription>IIS 4.0 servers. Old web hack.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>8</signatureReferenceNumber>
+		<categoryref>E2</categoryref>
+		<category>ERROR MESSAGES</category>
+		<querytype>DONT</querytype>
+		<querystring>"supplied argument is not a valid MySQL result resource"</querystring>
+		<shortDescription>Reveals real path names in webserver</shortDescription>
+		<textualDescription>Reveals real path names in webserver</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>9</signatureReferenceNumber>
+		<categoryref>E3</categoryref>
+		<category>ERROR MESSAGES</category>
+		<querytype>DONT</querytype>
+		<querystring>"access denied for user" "using password"</querystring>
+		<shortDescription>SQL error that displays useful information</shortDescription>
+		<textualDescription>This SQL error message can display the username, database, path names and partial SQL statements.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>1</signatureReferenceNumber>
+		<categoryref>B1</categoryref>
+		<category>BACKUP FILES</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:"Index of" index.html.bak</querystring>
+		<shortDescription>HTML files with .bak extension</shortDescription>
+		<textualDescription>HTML files with .bak extension can be viewed as plain text.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>2</signatureReferenceNumber>
+		<categoryref>B2</categoryref>
+		<category>BACKUP FILES</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:"Index of" index.php.bak</querystring>
+		<shortDescription>PHP files with .bak extension's can be viewed as plain text.</shortDescription>
+		<textualDescription>PHP files with .bak extension's can be viewed as plain text.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>3</signatureReferenceNumber>
+		<categoryref>B3</categoryref>
+		<category>BACKUP FILES</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:"Index of" index.jsp.bak</querystring>
+		<shortDescription>JSP files with .bak extension's can be viewed as plain text.</shortDescription>
+		<textualDescription>JSP files with .bak extension's can be viewed as plain text.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>10</signatureReferenceNumber>
+		<categoryref>P1</categoryref>
+		<category>PRIVACY RELATED</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:"Index of" access_log</querystring>
+		<shortDescription>HTTP log's may reveal user names, IP addresses, and other data.</shortDescription>
+		<textualDescription>HTTP log's may reveal user names, IP addresses, and other data.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>11</signatureReferenceNumber>
+		<categoryref>P2</categoryref>
+		<category>PRIVACY RELATED</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:"Index of" WSFTP.LOG</querystring>
+		<shortDescription>WS_FTP log files</shortDescription>
+		<textualDescription>Access to WS_FTP log files. WS_FTP log files may reveal hidden directories or files.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>12</signatureReferenceNumber>
+		<categoryref>P3</categoryref>
+		<category>PRIVACY RELATED</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:"Index of" service.pwd</querystring>
+		<shortDescription>Access to service.pwd.file</shortDescription>
+		<textualDescription>Access to services.pwd file. The file often contains username and passwords</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>25</signatureReferenceNumber>
+		<categoryref>C4</categoryref>
+		<category>CONFIG MANAGEMENT</category>
+		<querytype>DONT</querytype>
+		<querystring>allinurl:auth_user_file.txt</querystring>
+		<shortDescription>Access to DCForum's password file</shortDescription>
+		<textualDescription>This file contains a list of passwords, usernames and email addresses for shopping cart application and form DCForum and for DCShop.</textualDescription>
+		<cveNumber>CAN-2001-0821</cveNumber>
+		<cveLocation>http://www.securityfocus.com/bid/2889</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>26</signatureReferenceNumber>
+		<categoryref>C5</categoryref>
+		<category>CONFIG MANAGEMENT</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:"index.of" config.php"</querystring>
+		<shortDescription>Access to config.php file</shortDescription>
+		<textualDescription>config.php can sometimes be a configuration file containing both a username and a password information for a SQL database. </textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>27</signatureReferenceNumber>
+		<categoryref>C6</categoryref>
+		<category>CONFIG MANAGEMENT</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:index.of.etc</querystring>
+		<shortDescription>Acess to etc directory that has password files</shortDescription>
+		<textualDescription>This search looks for indexed /etc directories, where many many many types of password files and other config files can be found. </textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>28</signatureReferenceNumber>
+		<categoryref>C7</categoryref>
+		<category>CONFIG MANAGEMENT</category>
+		<querytype>DONT</querytype>
+		<querystring>originurlextension:xls username password email</querystring>
+		<shortDescription>Excel files with keywords username, password, and email</shortDescription>
+		<textualDescription>This search looks for Microsoft Excel spreadsheets containing the words username, password and email. There may be a high number of flase positives for this one. </textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>29</signatureReferenceNumber>
+		<categoryref>C8</categoryref>
+		<category>CONFIG MANAGEMENT</category>
+		<querytype>DONT</querytype>
+		<querystring>originurlextension:htpasswd htpasswd</querystring>
+		<shortDescription>Searches for htpasswd files.</shortDescription>
+		<textualDescription>.htpasswd is the default file name for Apache basic authentication files. Htpasswd files contain usernames and crackable passwords for web pages and directories. </textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>30</signatureReferenceNumber>
+		<categoryref>C9</categoryref>
+		<category>CONFIG MANAGEMENT</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:"Index of" ".htpasswd" "htgroup"  -intitle:"dist" -apache -htpasswd.c</querystring>
+		<shortDescription>Shows the password files</shortDescription>
+		<textualDescription>.htpasswd is the default file name for Apache basic authentication files. Htpasswd files contain usernames and crackable passwords for sites using basic authentication.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>31</signatureReferenceNumber>
+		<categoryref>B4</categoryref>
+		<category>BACKUP FILES</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:"Index of" ".htpasswd" htpasswd.bak</querystring>
+		<shortDescription>Looks for backup copies of the htpasswd file.</shortDescription>
+		<textualDescription>Looks for backup copies of the htpasswd file.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>32</signatureReferenceNumber>
+		<categoryref>C10</categoryref>
+		<category>CONFIG MANAGEMENT</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:index.of administrators.pwd</querystring>
+		<shortDescription>Frontpage username and encoded passwords.</shortDescription>
+		<textualDescription>This file contains administrative user names and (weakly) encrypted password for Microsoft Front Page. The file should not be readble to the general public</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>33</signatureReferenceNumber>
+		<categoryref>C11</categoryref>
+		<category>CONFIG MANAGEMENT</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:Index.of etc shadow</querystring>
+		<shortDescription>Searches for indexed /etc/shadow file.</shortDescription>
+		<textualDescription>This file contains usernames and encrypted passwords. Using John the ripper, an attacker can crack passwords and log into the system.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>34</signatureReferenceNumber>
+		<categoryref>C12</categoryref>
+		<category>CONFIG MANAGEMENT</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:index.of secring.pgp</querystring>
+		<shortDescription>Secret keyring file for PGP</shortDescription>
+		<textualDescription>This file is the secret keyring for PGP encryption. With this file and the passphrase an attacker could decrypt communications.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>35</signatureReferenceNumber>
+		<categoryref>C13</categoryref>
+		<category>CONFIG MANAGEMENT</category>
+		<querytype>DONT</querytype>
+		<querystring>inurl:config.php dbuname dbpass</querystring>
+		<shortDescription>Access to cleartext usernames and  password's.</shortDescription>
+		<textualDescription>The config.php script can contain usernames and passwords.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>36</signatureReferenceNumber>
+		<categoryref>C14</categoryref>
+		<category>CONFIG MANAGEMENT</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:"Index of" master.passwd</querystring>
+		<shortDescription>Access to master.passwd file</shortDescription>
+		<textualDescription> "master.passwd" files which contain encrypted passwords which may look like this: "guest MMCHhvZ6ODgFo"   Using the base64 decoder in Cain and Able (www.oxid.it) an attacker can easily decode this. </textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>37</signatureReferenceNumber>
+		<categoryref>C15</categoryref>
+		<category>CONFIG MANAGEMENT</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:"Index of" .mysql_history</querystring>
+		<shortDescription>Log of previously typed commands in mysql</shortDescription>
+		<textualDescription>The .mysql_history file contains commands that were performed against a mysql database. </textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>38</signatureReferenceNumber>
+		<categoryref>C16</categoryref>
+		<category>CONFIG MANAGEMENT</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:index.of passlist</querystring>
+		<shortDescription>This file sometimes contains usernames and passwords.</shortDescription>
+		<textualDescription>This file sometimes contains usernames and passwords.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>39</signatureReferenceNumber>
+		<categoryref>C17</categoryref>
+		<category>CONFIG MANAGEMENT</category>
+		<querytype>DONT</querytype>
+		<querystring>inurl:passlist.txt</querystring>
+		<shortDescription>This file sometimes contains usernames and passwords.</shortDescription>
+		<textualDescription>This file sometimes contains usernames and passwords.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>40</signatureReferenceNumber>
+		<categoryref>C18</categoryref>
+		<category>CONFIG MANAGEMENT</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:"Index of" passwd passwd.bak</querystring>
+		<shortDescription>This file sometimes contains usernames and passwords.</shortDescription>
+		<textualDescription>This file sometimes contains usernames and passwords.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>41</signatureReferenceNumber>
+		<categoryref>C19</categoryref>
+		<category>CONFIG MANAGEMENT</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:"Index of..etc" passwd</querystring>
+		<shortDescription>This file sometimes contains usernames and passwords.</shortDescription>
+		<textualDescription>This file sometimes contains usernames and passwords.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>42</signatureReferenceNumber>
+		<categoryref>P4</categoryref>
+		<category>PRIVACY RELATED</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:"Index of" "people.lst"</querystring>
+		<shortDescription>Lists the users </shortDescription>
+		<textualDescription>Lists the users </textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>43</signatureReferenceNumber>
+		<categoryref>P5</categoryref>
+		<category>PRIVACY RELATED</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:"Index of" pwd.db</querystring>
+		<shortDescription>This file sometimes contains usernames and passwords.</shortDescription>
+		<textualDescription>This file sometimes contains usernames and passwords.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>44</signatureReferenceNumber>
+		<categoryref>C20</categoryref>
+		<category>CONFIG MANAGEMENT</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:"Index of" spwd.db passwd -pam.conf</querystring>
+		<shortDescription>This file sometimes contains usernames and passwords.</shortDescription>
+		<textualDescription>This file sometimes contains usernames and passwords.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>46</signatureReferenceNumber>
+		<categoryref>RV4</categoryref>
+		<category>REPORTED VULNS</category>
+		<querytype>DONT</querytype>
+		<querystring>inurl:Custva.asp </querystring>
+		<shortDescription>Multiple vulnerabilities in Earlyimpact Productcart</shortDescription>
+		<textualDescription>The EarlyImpact Productcart contains multiple vulnerabilites, which could exploited to allow an attacker to steal user credentials or mount other attacks. See http://www.securityfocus.com/bid/9669 for more informationfor more information. Also see http://www.securityfocus.com/bid/9677</textualDescription>
+		<cveNumber>CVE-MAP-NOMATCH</cveNumber>
+		<cveLocation>http://www.securityfocus.com/bid/9677</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>47</signatureReferenceNumber>
+		<categoryref>RV5</categoryref>
+		<category>REPORTED VULNS</category>
+		<querytype>DONT</querytype>
+		<querystring>"Powered by mnoGoSearch - free web search engine software"</querystring>
+		<shortDescription>Buffer Overflows in some mnGoSearch  </shortDescription>
+		<textualDescription>According to http://www.securityfocus.com/bid/9667, certain versions of mnGoSearch contain a buffer overflow vulnerability which allow an attacker to execute commands on the server. </textualDescription>
+		<cveNumber>CVE-MAP-NOMATCH</cveNumber>
+		<cveLocation>http://www.securityfocus.com/bid/9667</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>48</signatureReferenceNumber>
+		<categoryref>T4</categoryref>
+		<category>TECHNOLOGY PROFILE</category>
+		<querytype>DONT</querytype>
+		<querystring>"#mysql dump" originurlextension:sql</querystring>
+		<shortDescription>Reveals mySQL database dumps</shortDescription>
+		<textualDescription>This reveals mySQL database dumps. These database dumps list the structure and content of databases, which can reveal many different types of sensitive information.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>49</signatureReferenceNumber>
+		<categoryref>T5</categoryref>
+		<category>TECHNOLOGY PROFILE</category>
+		<querytype>DONT</querytype>
+		<querystring>"This summary was generated by wwwstat"</querystring>
+		<shortDescription>www statistics may contain email address of intranet users.</shortDescription>
+		<textualDescription>More www statistics on the web. This one is very nice.. Lots of directory info, and client access statistics, email addresses.. lots os good stuff.
+
+You know, these are SOOO dangerous, especially if INTRANET users get logged... talk about mapping out an intranet quickly...
+
+thanks, sac =)
+
+</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>50</signatureReferenceNumber>
+		<categoryref>T6</categoryref>
+		<category>TECHNOLOGY PROFILE</category>
+		<querytype>DONT</querytype>
+		<querystring>"Host Vulnerability Summary Report" </querystring>
+		<shortDescription>Reveals host vulnerability scanner reports</shortDescription>
+		<textualDescription>This search yeids host vulnerability scanner reports, revealing potential vulnerabilities on hosts and networks. Even if some of the vulnerabilities have been fixed, information about the network/hosts can still be gleaned. </textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>51</signatureReferenceNumber>
+		<categoryref>T7</categoryref>
+		<category>TECHNOLOGY PROFILE</category>
+		<querytype>DONT</querytype>
+		<querystring>"Index of" / "chat/logs" </querystring>
+		<shortDescription>Reveals chat logs</shortDescription>
+		<textualDescription>This search reveals chat logs. Depending on the contents of the logs, these files could contain just about anything!</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>52</signatureReferenceNumber>
+		<categoryref>T8</categoryref>
+		<category>TECHNOLOGY PROFILE</category>
+		<querytype>DONT</querytype>
+		<querystring>"Most Submitted Forms and Scripts" "this section"</querystring>
+		<shortDescription>www statistics, may contain email address of intranet loggers</shortDescription>
+		<textualDescription>www statistics publicly indexed on the web. This man contain directory info, client access statistics,  and email addresses.
+</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>53</signatureReferenceNumber>
+		<categoryref>T9</categoryref>
+		<category>TECHNOLOGY PROFILE</category>
+		<querytype>DONT</querytype>
+		<querystring>"Network Host Assessment Report" "Internet Scanner"</querystring>
+		<shortDescription>Reveals ISS scan reports</shortDescription>
+		<textualDescription>This search yeids ISS scan reports, revealing potential vulnerabilities on hosts and networks. Even if some of the vulnerabilities have been fixed, information about the network/hosts can still be gleaned. </textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>54</signatureReferenceNumber>
+		<categoryref>T10</categoryref>
+		<category>TECHNOLOGY PROFILE</category>
+		<querytype>DONT</querytype>
+		<querystring>"Network Vulnerability Assessment Report"</querystring>
+		<shortDescription>Reveals host vulnerabilites report</shortDescription>
+		<textualDescription>This search yeids vulnerability scanner reports, revealing potential vulnerabilities on hosts and networks. Even if some of the vulnerabilities have been fixed, information about the network/hosts can still be gleaned. </textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>55</signatureReferenceNumber>
+		<categoryref>T11</categoryref>
+		<category>PRIVACY RELATED</category>
+		<querytype>DONT</querytype>
+		<querystring>"not for distribution" confidential</querystring>
+		<shortDescription>May reveal some sensitive information</shortDescription>
+		<textualDescription>The terms "not for distribution" and confidential indicate a sensitive document. Results vary wildly, but web-based documents are for public viewing, and should neither be considered confidential or private.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>57</signatureReferenceNumber>
+		<categoryref>T13</categoryref>
+		<category>TECHNOLOGY PROFILE</category>
+		<querytype>DONT</querytype>
+		<querystring>"These statistics were produced by getstats"</querystring>
+		<shortDescription>Web based statistics </shortDescription>
+		<textualDescription>Website statistics may allow an an attacker to find hidden pages or directories.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>58</signatureReferenceNumber>
+		<categoryref>T14</categoryref>
+		<category>TECHNOLOGY PROFILE</category>
+		<querytype>DONT</querytype>
+		<querystring>"robots.txt" + "Disallow:" originurlextension:txt</querystring>
+		<shortDescription>Searches for disallow tags meant for web crawlers</shortDescription>
+		<textualDescription>The robots.txt file serves as a set of instructions for web crawlers. The "disallow" tag tells a web crawler where not to look.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>60</signatureReferenceNumber>
+		<categoryref>T16</categoryref>
+		<category>TECHNOLOGY PROFILE</category>
+		<querytype>DONT</querytype>
+		<querystring>"Thank you for your order" +receipt</querystring>
+		<shortDescription>Provides insight into web-based shop</shortDescription>
+		<textualDescription>After placing an order via the web, many sites provide a page containing the phrase "Thank you for your order" and provide a receipt for future reference. At the very least, these pages can provide insight into the structure of a web-based shop.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>61</signatureReferenceNumber>
+		<categoryref>T17</categoryref>
+		<category>TECHNOLOGY PROFILE</category>
+		<querytype>DONT</querytype>
+		<querystring>"This file was generated by Nessus"</querystring>
+		<shortDescription>Reveals nessus scan reports for vulnerabilities</shortDescription>
+		<textualDescription>This search yeids nessus scan reports. Even if some of the vulnerabilities have been fixed, we can still gather valuable information about the network/hosts. This also works with ISS and any other vulnerability scanner which produces reports in html or text format.
+
+</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>62</signatureReferenceNumber>
+		<categoryref>T18</categoryref>
+		<category>TECHNOLOGY PROFILE</category>
+		<querytype>DONT</querytype>
+		<querystring>"This report lists" "identified by Internet Scanner"</querystring>
+		<shortDescription>Reveals ISS scan reports for vulnerabilities</shortDescription>
+		<textualDescription>This search yeids ISS scan reports, revealing potential vulnerabilities on hosts and networks. Even if some of the vulnerabilities have been fixed, information about the network/hosts can still be gleaned. 
+
+</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>63</signatureReferenceNumber>
+		<categoryref>T19</categoryref>
+		<category>TECHNOLOGY PROFILE</category>
+		<querytype>DONT</querytype>
+		<querystring>"This report was generated by WebLog"</querystring>
+		<shortDescription>Weblog-generated statistics for websites</shortDescription>
+		<textualDescription>These are weblog generated statistics for web sites which may contain hidden directories and pages.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>64</signatureReferenceNumber>
+		<categoryref>T20</categoryref>
+		<category>TECHNOLOGY PROFILE</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:index.of cgiirc.config'</querystring>
+		<shortDescription>cgiirc.config files man contain information useful to an attacker.</shortDescription>
+		<textualDescription>cgiirc.config files man contain information useful to an attacker.
+</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>65</signatureReferenceNumber>
+		<categoryref>T21</categoryref>
+		<category>TECHNOLOGY PROFILE</category>
+		<querytype>DONT</querytype>
+		<querystring>inurl:'cgiirc.config'</querystring>
+		<shortDescription>cgiirc.config files man contain information useful to an attacker.</shortDescription>
+		<textualDescription>This is another less reliable way of finding the cgiirc.config file. cgiirc.config files man contain information useful to an attacker.
+
+
+</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>66</signatureReferenceNumber>
+		<categoryref>P7</categoryref>
+		<category>PRIVACY RELATED</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:"Index of" finance.xls</querystring>
+		<shortDescription>Excel sheet showing the finance information</shortDescription>
+		<textualDescription>Excel sheet showing the finance information</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>67</signatureReferenceNumber>
+		<categoryref>P8</categoryref>
+		<category>PRIVACY RELATED</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:"Index of" finances.xls</querystring>
+		<shortDescription>Excel sheet showing the finance information</shortDescription>
+		<textualDescription>Excel sheet showing the finance information</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>68</signatureReferenceNumber>
+		<categoryref>T22</categoryref>
+		<category>TECHNOLOGY PROFILE</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:"Ganglia" "Cluster Report for"</querystring>
+		<shortDescription>Reveals cluster reports, useful for fingerprinting</shortDescription>
+		<textualDescription>These are server cluster reports, great for info gathering. </textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>69</signatureReferenceNumber>
+		<categoryref>T23</categoryref>
+		<category>TECHNOLOGY PROFILE</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:index.of haccess.ctl</querystring>
+		<shortDescription>Reveals administrative usernames and authorization file paths for Frontpage.</shortDescription>
+		<textualDescription>Reveals administrative usernames and authorization file paths for Frontpage.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>70</signatureReferenceNumber>
+		<categoryref>T24</categoryref>
+		<category>TECHNOLOGY PROFILE</category>
+		<querytype>DONT</querytype>
+		<querystring>originurlextension:htaccess Basic</querystring>
+		<shortDescription>Possible password file.</shortDescription>
+		<textualDescription>Possible password file.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>71</signatureReferenceNumber>
+		<categoryref>P9</categoryref>
+		<category>PRIVACY RELATED</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:"statistics of" "advanced web statistics"</querystring>
+		<shortDescription>Statistics for web servers</shortDescription>
+		<textualDescription></textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>72</signatureReferenceNumber>
+		<categoryref>P10</categoryref>
+		<category>PRIVACY RELATED</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:"Usage Statistics for" "Generated by Webalizer"</querystring>
+		<shortDescription>Statistics for web servers</shortDescription>
+		<textualDescription>The webalizer program shows web statistics for web servers. This information includes who is visiting the site, what pages they visit, error codes produced, filetypes hosted on the server, number of hits, referrers, exit pages, and more which can provide interesting information for an attacker.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>73</signatureReferenceNumber>
+		<categoryref>T25</categoryref>
+		<category>TECHNOLOGY PROFILE</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:"wbem" compaq login</querystring>
+		<shortDescription>Good fingerprinting information</shortDescription>
+		<textualDescription>These devices are running HP Insight Management Agents for Servers which "provide device information for all managed subsystems. Alerts are generated by SNMP traps." The information on these pages include server addresses and other assorted SNMP information.
+</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>74</signatureReferenceNumber>
+		<categoryref>T26</categoryref>
+		<category>TECHNOLOGY PROFILE</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:admin intitle:login</querystring>
+		<shortDescription>Finds administrative login pages</shortDescription>
+		<textualDescription>This search can find administrative login pages. Not a vulnerability in and of itself, this query serves as a locator for administrative areas of a site. Further investigation of the surrounding directories can often reveal interesting information.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>75</signatureReferenceNumber>
+		<categoryref>T27</categoryref>
+		<category>TECHNOLOGY PROFILE</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:index.of "Apache" "server at"</querystring>
+		<shortDescription>Shows version of Apache</shortDescription>
+		<textualDescription>This is a very basic string found on directory listing pages which show the version of the Apache web server. Hackers can use this information to find vulnerable targets without querying the servers.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>76</signatureReferenceNumber>
+		<categoryref>P11</categoryref>
+		<category>PRIVACY RELATED</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:index.of inbox dbx</querystring>
+		<shortDescription>Potential location of mailbox</shortDescription>
+		<textualDescription>This search reveals potential location for mailbox files by keying on the Outlook Express cleanup.log file. In some cases, the data in this directory or file may be of a very personal nature and may include sent and received emails and archives of email data. </textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>77</signatureReferenceNumber>
+		<categoryref>P12</categoryref>
+		<category>PRIVACY RELATED</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:index.of dead.letter</querystring>
+		<shortDescription>Reveals unfinished emails</shortDescription>
+		<textualDescription>dead.letter contains the contents of unfinished emails created on the UNIX platform. Emails (finished or not) can contain sensitive information. </textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>78</signatureReferenceNumber>
+		<categoryref>P13</categoryref>
+		<category>PRIVACY RELATED</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:index.of inbox</querystring>
+		<shortDescription>Reveals potential location of mailbox files</shortDescription>
+		<textualDescription>This search reveals potential location for mailbox files. In some cases, the data in this directory or file may be of a very personal nature and may include sent and received emails and archives of email data. </textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>79</signatureReferenceNumber>
+		<categoryref>P14</categoryref>
+		<category>PRIVACY RELATED</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:index.of inbox dbx</querystring>
+		<shortDescription>Reveals potential location of mailbox files</shortDescription>
+		<textualDescription>This search reveals potential location for mailbox files. In some cases, the data in this directory or file may be of a very personal nature and may include sent and received emails and archives of email data. </textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>80</signatureReferenceNumber>
+		<categoryref>P15</categoryref>
+		<category>PRIVACY RELATED</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:index.of ws_ftp.ini</querystring>
+		<shortDescription>ws_ftp.ini config files has usernames and passwords</shortDescription>
+		<textualDescription>ws_ftp.ini is a configuration file for a popular FTP client that stores usernames, (weakly) encoded passwords, sites and directories that the user can store for later reference. These should not be on the web!</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>81</signatureReferenceNumber>
+		<categoryref>P16</categoryref>
+		<category>PRIVACY RELATED</category>
+		<querytype>DONT</querytype>
+		<querystring>inurl:admin originurlextension:xls</querystring>
+		<shortDescription>Excel file in administrative directory</shortDescription>
+		<textualDescription>This search can find Excel spreadsheets in an administrative directory or of an administrative nature. Many times these documents contain sensitive information.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>82</signatureReferenceNumber>
+		<categoryref>T27</categoryref>
+		<category>TECHNOLOGY PROFILE</category>
+		<querytype>DONT</querytype>
+		<querystring>inurl:admin intitle:login</querystring>
+		<shortDescription>Finds administrative login pages</shortDescription>
+		<textualDescription>This search can find administrative login pages. This is not a vulnerability in and of itself, this query serves as a locator for administrative areas of a site. Further investigation of the surrounding directories can often reveal interesting information.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>83</signatureReferenceNumber>
+		<categoryref>T28</categoryref>
+		<category>TECHNOLOGY PROFILE</category>
+		<querytype>DONT</querytype>
+		<querystring>inurl:changepassword.asp</querystring>
+		<shortDescription>Reveals script for changing password</shortDescription>
+		<textualDescription>This is a common script for changing passwords. This doesn't actually reveal the password, but it provides great information about the security layout of a server. These links can be used to troll around a website. 
+
+</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>84</signatureReferenceNumber>
+		<categoryref>T29</categoryref>
+		<category>TECHNOLOGY PROFILE</category>
+		<querytype>DONT</querytype>
+		<querystring>inurl:main.php phpMyAdmin</querystring>
+		<shortDescription>Reveals accessibility to phpMyAdmin tool</shortDescription>
+		<textualDescription>From phpmyadmin.net : "phpMyAdmin is a tool written in PHP intended to handle the administration of MySQL over the WWW." </textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>85</signatureReferenceNumber>
+		<categoryref>T29</categoryref>
+		<category>TECHNOLOGY PROFILE</category>
+		<querytype>DONT</querytype>
+		<querystring>inurl:main.php Welcome to phpMyAdmin</querystring>
+		<shortDescription>Reveals accessibility to phpMyAdmin tool</shortDescription>
+		<textualDescription>From phpmyadmin.net : "phpMyAdmin is a tool written in PHP intended to handle the administration of MySQL over the WWW." </textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>86</signatureReferenceNumber>
+		<categoryref>T30</categoryref>
+		<category>TECHNOLOGY PROFILE</category>
+		<querytype>DONT</querytype>
+		<querystring>inurl:vbstats.php "page generated"</querystring>
+		<shortDescription>Statistical information about the visitors</shortDescription>
+		<textualDescription>This is your typical stats page listing referrers and top ips and such. This information can certainly be used to gather information about a site and its visitors.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>87</signatureReferenceNumber>
+		<categoryref>T31</categoryref>
+		<category>TECHNOLOGY PROFILE</category>
+		<querytype>DONT</querytype>
+		<querystring>inurl:ipsec.conf -intitle:manpage</querystring>
+		<shortDescription>ipsec.conf file reveals what is protected</shortDescription>
+		<textualDescription>The ipsec.conf may reveal information about freeswan VPN's.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>88</signatureReferenceNumber>
+		<categoryref>T32</categoryref>
+		<category>TECHNOLOGY PROFILE</category>
+		<querytype>DONT</querytype>
+		<querystring>inurl:ipsec.secrets -history -bugs</querystring>
+		<shortDescription>Contains useful information ipsec_secrets</shortDescription>
+		<textualDescription>The manpage for ipsec_secrets: "It is vital that these secrets be protected. The file should be owned by the super-user, and its permissions should be set to block all access by others." </textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>89</signatureReferenceNumber>
+		<categoryref>T33</categoryref>
+		<category>TECHNOLOGY PROFILE</category>
+		<querytype>DONT</querytype>
+		<querystring>inurl:ipsec.secrets "holds shared secrets"</querystring>
+		<shortDescription>Contains useful information</shortDescription>
+		<textualDescription>The manpage for ipsec_secrets: "It is vital that these secrets be protected. The file should be owned by the super-user, and its permissions should be set to block all access by others." </textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>90</signatureReferenceNumber>
+		<categoryref>T34</categoryref>
+		<category>TECHNOLOGY PROFILE</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:"Index of" mt-db-pass.cgi</querystring>
+		<shortDescription>Has interesting information</shortDescription>
+		<textualDescription></textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>91</signatureReferenceNumber>
+		<categoryref>P17</categoryref>
+		<category>PRIVACY RELATED</category>
+		<querytype>DONT</querytype>
+		<querystring>mystuff.xml intitle:"index of"</querystring>
+		<shortDescription>check other files in the same directory</shortDescription>
+		<textualDescription></textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>92</signatureReferenceNumber>
+		<categoryref>T35</categoryref>
+		<category>TECHNOLOGY PROFILE</category>
+		<querytype>DONT</querytype>
+		<querystring>"phpinfo.php" -manual</querystring>
+		<shortDescription>phpinfo.php has lots of useful information</shortDescription>
+		<textualDescription>"phpinfo.php" files contain system versioning, SSL version, sendmail version and path, ftp, LDAP, SQL info, and Apache mods.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>93</signatureReferenceNumber>
+		<categoryref>T36</categoryref>
+		<category>TECHNOLOGY PROFILE</category>
+		<querytype>DONT</querytype>
+		<querystring>"# phpMyAdmin MySQL-Dump" originurlextension:txt</querystring>
+		<shortDescription>Reveals accessibility to phpMyAdmin tool</shortDescription>
+		<textualDescription>Reveals phpMyAdmin SQL information.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>94</signatureReferenceNumber>
+		<categoryref>T37</categoryref>
+		<category>TECHNOLOGY PROFILE</category>
+		<querytype>DONT</querytype>
+		<querystring>"# phpMyAdmin MySQL-Dump" "INSERT INTO" -"the"</querystring>
+		<shortDescription>Reveals accessibility to phpMyAdmin tool</shortDescription>
+		<textualDescription>Reveals accessibility to phpMyAdmin tool</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>95</signatureReferenceNumber>
+		<categoryref>T38</categoryref>
+		<category>TECHNOLOGY PROFILE</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:Index.of robots.txt</querystring>
+		<shortDescription>File provides pointers to restricted files/directories</shortDescription>
+		<textualDescription>The robots.txt file contains "rules" about where web spiders are allowed (and NOT allowed) to look in a website's directory structure. Without over-complicating things, this means that the robots.txt file gives a mini-roadmap of what's somewhat public and what's considered more private on a web site. </textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>96</signatureReferenceNumber>
+		<categoryref>P18</categoryref>
+		<category>PRIVACY RELATED</category>
+		<querytype>DONT</querytype>
+		<querystring>site:edu grades admin</querystring>
+		<shortDescription>Student names, SSN, grades</shortDescription>
+		<textualDescription>Potential exposure of student names, Grades, and SSN's.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>97</signatureReferenceNumber>
+		<categoryref>T39</categoryref>
+		<category>TECHNOLOGY PROFILE</category>
+		<querytype>DONT</querytype>
+		<querystring>"# Dumping data for table"</querystring>
+		<shortDescription>SQL database dumps</shortDescription>
+		<textualDescription>Raw SQL dumps may provide information to an attacker.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>98</signatureReferenceNumber>
+		<categoryref>T40</categoryref>
+		<category>TECHNOLOGY PROFILE</category>
+		<querytype>DONT</querytype>
+		<querystring>"cacheserverreport for" "This analysis was produced by calamaris"</querystring>
+		<shortDescription>Reveals squid server cache reports</shortDescription>
+		<textualDescription>Web proxy logs may log sensitive information.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>99</signatureReferenceNumber>
+		<categoryref>P19</categoryref>
+		<category>PRIVACY RELATED</category>
+		<querytype>DONT</querytype>
+		<querystring>"index of" / lck</querystring>
+		<shortDescription>Used for Username harvesting</shortDescription>
+		<textualDescription>These lock files often contain usernames of the user that has locked the file. Username harvesting can be done using this technique by spammers or attackers.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>100</signatureReferenceNumber>
+		<categoryref>C21</categoryref>
+		<category>CONFIG MANAGEMENT</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:"Index of" .bash_history</querystring>
+		<shortDescription>Log of what the user typed inside a bash shell.</shortDescription>
+		<textualDescription>Log of what the user typed inside a bash shell.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>101</signatureReferenceNumber>
+		<categoryref>P20</categoryref>
+		<category>PRIVACY RELATED</category>
+		<querytype>DONT</querytype>
+		<querystring>inurl:admin originurlextension:asp inurl:userlist</querystring>
+		<shortDescription>Reveals userlists</shortDescription>
+		<textualDescription>This search reveals userlists of administrative importance. Userlists found using this method can range from benign "message group" lists to system userlists containing passwords.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>102</signatureReferenceNumber>
+		<categoryref>P21</categoryref>
+		<category>PRIVACY RELATED</category>
+		<querytype>DONT</querytype>
+		<querystring>inurl:admin inurl:userlist</querystring>
+		<shortDescription>Reveals userlists</shortDescription>
+		<textualDescription>This search reveals userlists of administrative importance. Userlists found using this method can range from benign "message group" lists to system userlists containing passwords.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>103</signatureReferenceNumber>
+		<categoryref>C22</categoryref>
+		<category>CONFIG MANAGEMENT</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:"Index of" .sh_history</querystring>
+		<shortDescription>Log of what the user typed inside a shell.</shortDescription>
+		<textualDescription>Log of what the user typed inside a shell.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>104</signatureReferenceNumber>
+		<categoryref>E4</categoryref>
+		<category>ERROR MESSAGES</category>
+		<querytype>DONT</querytype>
+		<querystring>"ORA-00921: unexpected end of SQL command"</querystring>
+		<shortDescription>Reveals web pathnames and php filenames</shortDescription>
+		<textualDescription>Reveals web pathnames and php filenames</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>105</signatureReferenceNumber>
+		<categoryref>E5</categoryref>
+		<category>ERROR MESSAGES</category>
+		<querytype>DONT</querytype>
+		<querystring>"A syntax error has occurred" originurlextension:ihtml</querystring>
+		<shortDescription>Possible source code disclosure.</shortDescription>
+		<textualDescription>An Informix error message, this message can display path names, function names, filenames and partial code. Possible source code disclosure.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>106</signatureReferenceNumber>
+		<categoryref>E6</categoryref>
+		<category>ERROR MESSAGES</category>
+		<querytype>DONT</querytype>
+		<querystring>"access denied for user" "using password"</querystring>
+		<shortDescription>Possible source code disclosure.</shortDescription>
+		<textualDescription>Another SQL error message, this message can display the username, database, path names and partial SQL code. Possible source code disclosure.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>107</signatureReferenceNumber>
+		<categoryref>E7</categoryref>
+		<category>ERROR MESSAGES</category>
+		<querytype>DONT</querytype>
+		<querystring>"An illegal character has been found in the statement" -"previous message"</querystring>
+		<shortDescription>Possible source code disclosure.</shortDescription>
+		<textualDescription>An Informix error message, this message can display path names, function names, filenames and partial code, all of which are very helpful for hackers...</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>108</signatureReferenceNumber>
+		<categoryref>E8</categoryref>
+		<category>ERROR MESSAGES</category>
+		<querytype>DONT</querytype>
+		<querystring>"Can't connect to local" intitle:warning</querystring>
+		<shortDescription>Lots of source code information</shortDescription>
+		<textualDescription>Another SQL error message, this message can display database name, path names and partial SQL code, all of which are very helpful for hackers...</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>109</signatureReferenceNumber>
+		<categoryref>E9</categoryref>
+		<category>ERROR MESSAGES</category>
+		<querytype>DONT</querytype>
+		<querystring>"Chatologica MetaSearch" "stack tracking:"</querystring>
+		<shortDescription>Possible information disclosure attacker against Chatologica.</shortDescription>
+		<textualDescription>Possible information disclosure attacker against Chatologica.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>110</signatureReferenceNumber>
+		<categoryref>E9</categoryref>
+		<category>ERROR MESSAGES</category>
+		<querytype>DONT</querytype>
+		<querystring>"detected an internal error [IBM][CLI Driver][DB2/6000]"</querystring>
+		<shortDescription>Lots of source code information</shortDescription>
+		<textualDescription>A DB2 error message, this message can display path names, function names, filenames, partial code and program state.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>111</signatureReferenceNumber>
+		<categoryref>E10</categoryref>
+		<category>ERROR MESSAGES</category>
+		<querytype>DONT</querytype>
+		<querystring>"Fatal error: Call to undefined function" -reply -the -next</querystring>
+		<shortDescription>Lots of source code information</shortDescription>
+		<textualDescription>This error message can reveal information such as compiler used, language used, line numbers, program names and partial source code.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>112</signatureReferenceNumber>
+		<categoryref>E11</categoryref>
+		<category>ERROR MESSAGES</category>
+		<querytype>DONT</querytype>
+		<querystring>"Incorrect syntax near"</querystring>
+		<shortDescription>Possible information disclosure attack.</shortDescription>
+		<textualDescription>An SQL Server error message, this message can display path names, function names, filenames and partial code, all of which are very helpful for hackers...</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>113</signatureReferenceNumber>
+		<categoryref>E12</categoryref>
+		<category>ERROR MESSAGES</category>
+		<querytype>DONT</querytype>
+		<querystring>"Incorrect syntax near" -the</querystring>
+		<shortDescription>Possible information disclosure attacke.</shortDescription>
+		<textualDescription>An SQL Server error message, this message can display path names, function names, filenames and partial code, all of which are very helpful for hackers...</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>114</signatureReferenceNumber>
+		<categoryref>E13</categoryref>
+		<category>ERROR MESSAGES</category>
+		<querytype>DONT</querytype>
+		<querystring>"ORA-00933: SQL command not properly ended"</querystring>
+		<shortDescription>Possible information disclosure attack.</shortDescription>
+		<textualDescription>An Oracle error message, this message can display path names, function names, filenames and partial SQL code.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>115</signatureReferenceNumber>
+		<categoryref>E14</categoryref>
+		<category>ERROR MESSAGES</category>
+		<querytype>DONT</querytype>
+		<querystring>"PostgreSQL query failed:  ERROR:  parser: parse error"</querystring>
+		<shortDescription>Lots of source code information</shortDescription>
+		<textualDescription>An PostgreSQL error message, this message can display path names, function names, filenames and partial code.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>116</signatureReferenceNumber>
+		<categoryref>E15</categoryref>
+		<category>ERROR MESSAGES</category>
+		<querytype>DONT</querytype>
+		<querystring>"Supplied argument is not a valid MySQL result resource"</querystring>
+		<shortDescription>Possible information disclosure attack.</shortDescription>
+		<textualDescription>Another generic SQL message, this message can display path names, function names, filenames and partial SQL code.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>117</signatureReferenceNumber>
+		<categoryref>E16</categoryref>
+		<category>ERROR MESSAGES</category>
+		<querytype>DONT</querytype>
+		<querystring>"Syntax error in query expression " -the</querystring>
+		<shortDescription>Possible information disclosure attack.</shortDescription>
+		<textualDescription>An Access error message, this message can display path names, function names, filenames and partial code.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>118</signatureReferenceNumber>
+		<categoryref>E16</categoryref>
+		<category>ERROR MESSAGES</category>
+		<querytype>DONT</querytype>
+		<querystring>"Unclosed quotation mark before the character string"</querystring>
+		<shortDescription>Possible information disclosure attack.</shortDescription>
+		<textualDescription>An SQL Server error message, this message can display path names, function names, filenames and partial code.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>119</signatureReferenceNumber>
+		<categoryref>E17</categoryref>
+		<category>ERROR MESSAGES</category>
+		<querytype>DONT</querytype>
+		<querystring>"Warning: Cannot modify header information - headers already sent"</querystring>
+		<shortDescription>Lots of source code information</shortDescription>
+		<textualDescription>A PHP error message, this message can display path names, function names, filenames and partial code, all of which are very helpful for hackers...</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>120</signatureReferenceNumber>
+		<categoryref>E18</categoryref>
+		<category>ERROR MESSAGES</category>
+		<querytype>DONT</querytype>
+		<querystring>An unexpected token "END-OF-STATEMENT" was found</querystring>
+		<shortDescription>Lots of source code information</shortDescription>
+		<textualDescription>A DB2 error message, this message can display path names, function names, filenames, partial code and program state, all of which are very helpful for hackers...</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>121</signatureReferenceNumber>
+		<categoryref>E19</categoryref>
+		<category>ERROR MESSAGES</category>
+		<querytype>DONT</querytype>
+		<querystring>"Error Diagnostic Information" intitle:"Error Occurred While" </querystring>
+		<shortDescription>Gives some interesting information about web sites</shortDescription>
+		<textualDescription>These aren't too horribly bad, but there are SO MANY of them. These sites got googlebotted while the site was having "technical difficulties." The resulting cached error message gives lots of juicy tidbits about the target site.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>122</signatureReferenceNumber>
+		<categoryref>E20</categoryref>
+		<category>ERROR MESSAGES</category>
+		<querytype>DONT</querytype>
+		<querystring>originurlextension:asp "Custom Error Message" Category Source</querystring>
+		<shortDescription>Gives out some source code information</shortDescription>
+		<textualDescription>This is an ASP error message that can reveal information such as compiler used, language used, line numbers, program names and partial source code.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>123</signatureReferenceNumber>
+		<categoryref>E21</categoryref>
+		<category>ERROR MESSAGES</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:"the page cannot be found" inetmgr</querystring>
+		<shortDescription>Signature for IIS 4.0 servers</shortDescription>
+		<textualDescription>IIS 4.0 servers. Extrememly old, incredibly easy to hack...</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>124</signatureReferenceNumber>
+		<categoryref>E22</categoryref>
+		<category>ERROR MESSAGES</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:"the page cannot be found" "internet information services"</querystring>
+		<shortDescription>Searchs for IIS servers</shortDescription>
+		<textualDescription>This query finds various types of IIS servers. This error message is fairly indicative of a somewhat unmodified IIS server, meaning it may be easier to break into...</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>125</signatureReferenceNumber>
+		<categoryref>E23</categoryref>
+		<category>ERROR MESSAGES</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:"500 Internal Server Error" "server at"</querystring>
+		<shortDescription>Reveals the type of web server running by the site</shortDescription>
+		<textualDescription>This one shows the type of web server running on the site, and has the ability to show other information depending on how the message is internally formatted. </textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>126</signatureReferenceNumber>
+		<categoryref>E24</categoryref>
+		<category>ERROR MESSAGES</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:"Under construction" "does not currently have"</querystring>
+		<shortDescription>Narrows OS and wev server version</shortDescription>
+		<textualDescription>This error message can be used to narrow down the operating system and web server version which can be used by hackers to mount a specific attack.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>127</signatureReferenceNumber>
+		<categoryref>E26</categoryref>
+		<category>ERROR MESSAGES</category>
+		<querytype>DONT</querytype>
+		<querystring>"supplied argument is not a valid MySQL result resource"</querystring>
+		<shortDescription>Provides path names inside the webserver</shortDescription>
+		<textualDescription>Potential interesting information from this error message . The results of this message give you real path names inside the webserver as well as more php scripts for potential "crawling" activities.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>128</signatureReferenceNumber>
+		<categoryref>E27</categoryref>
+		<category>ERROR MESSAGES</category>
+		<querytype>DONT</querytype>
+		<querystring>"mySQL error with query"</querystring>
+		<shortDescription>Provides information regarding mySql</shortDescription>
+		<textualDescription>Another error message, this appears when an SQL query bails. This is a generic mySQL message, so there's all sort of information hackers can use, depending on the actual error message...</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>129</signatureReferenceNumber>
+		<categoryref>E28</categoryref>
+		<category>ERROR MESSAGES</category>
+		<querytype>DONT</querytype>
+		<querystring>"ORA-00921: unexpected end of SQL command"</querystring>
+		<shortDescription>Provides some Sql source information</shortDescription>
+		<textualDescription>Another generic SQL message, this message can display path names, function names, filenames and partial SQL code, all of which are very helpful for hackers...</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>130</signatureReferenceNumber>
+		<categoryref>E29</categoryref>
+		<category>ERROR MESSAGES</category>
+		<querytype>DONT</querytype>
+		<querystring>"ORA-00936: missing expression"</querystring>
+		<shortDescription>Provides path names and partial database code</shortDescription>
+		<textualDescription>A generic ORACLE error message, this message can display path names, function names, filenames and partial database code.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>131</signatureReferenceNumber>
+		<categoryref>E30</categoryref>
+		<category>ERROR MESSAGES</category>
+		<querytype>DONT</querytype>
+		<querystring>inurl:sitebuildercontent</querystring>
+		<shortDescription>Shows a naive web site builder</shortDescription>
+		<textualDescription>This is a default directory for the sitebuilder web design software program. </textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>132</signatureReferenceNumber>
+		<categoryref>E31</categoryref>
+		<category>ERROR MESSAGES</category>
+		<querytype>DONT</querytype>
+		<querystring>inurl:sitebuilderfiles</querystring>
+		<shortDescription>Shows a naive web site builder</shortDescription>
+		<textualDescription>This is a default directory for the sitebuilder web design software program. If these people posted web pages with default sitebuilder directory names.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>133</signatureReferenceNumber>
+		<categoryref>E32</categoryref>
+		<category>ERROR MESSAGES</category>
+		<querytype>DONT</querytype>
+		<querystring>inurl:sitebuilderpictures</querystring>
+		<shortDescription>Shows a naive web site builder</shortDescription>
+		<textualDescription>This is a default directory for the sitebuilder web design software program. If these people posted web pages with default sitebuilder directory names.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>134</signatureReferenceNumber>
+		<categoryref>E33</categoryref>
+		<category>ERROR MESSAGES</category>
+		<querytype>DONT</querytype>
+		<querystring>"You have an error in your SQL syntax near"</querystring>
+		<shortDescription>Displays partial SQL code and path names </shortDescription>
+		<textualDescription>Another generic SQL message, this message can display path names and partial SQL code.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>135</signatureReferenceNumber>
+		<categoryref>E34</categoryref>
+		<category>ERROR MESSAGES</category>
+		<querytype>DONT</querytype>
+		<querystring>"Supplied argument is not a valid PostgreSQL result"</querystring>
+		<shortDescription>Displays function names, filename, source code</shortDescription>
+		<textualDescription>An PostgreSQL error message, this message can display path names, function names, filenames and partial code, all of which are very helpful for hackers...</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>136</signatureReferenceNumber>
+		<categoryref>E35</categoryref>
+		<category>ERROR MESSAGES</category>
+		<querytype>DONT</querytype>
+		<querystring>warning "error on line" php sablotron</querystring>
+		<shortDescription>This error message reveals interesting information</shortDescription>
+		<textualDescription>Sablotron is an XML tool. This query hones in on error messages generated by this toolkit. These error messages reveal all sorts of interesting informaion such as source code snippets, path and filename info, etc.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>137</signatureReferenceNumber>
+		<categoryref>E36</categoryref>
+		<category>ERROR MESSAGES</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:"the page cannot be found" "2004 microsoft corporation"</querystring>
+		<shortDescription>Fingerprints a Window 2000 web server</shortDescription>
+		<textualDescription>Windows 2000 web servers are usually weak spots.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>138</signatureReferenceNumber>
+		<categoryref>C23</categoryref>
+		<category>CONFIG MANAGEMENT</category>
+		<querytype>DONT</querytype>
+		<querystring>"Welcome to phpMyAdmin" AND " Create new database"</querystring>
+		<shortDescription>give access to phpMyAdmin to maintain SQL</shortDescription>
+		<textualDescription>phpMyAdmin is a widly spread webfrontend used to mantain sql databases. The default security mechanism is to leave it up to the admin of the website to put a .htaccess file in the directory of the application. </textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>139</signatureReferenceNumber>
+		<categoryref>C23</categoryref>
+		<category>CONFIG MANAGEMENT</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:"Index of c:\Windows"</querystring>
+		<shortDescription>Sharing C:\Windows directory</shortDescription>
+		<textualDescription>These pages indicate that they are sharing the C:\WINDOWS directory, which is the system folder for many Windows installations. </textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>140</signatureReferenceNumber>
+		<categoryref>P22</categoryref>
+		<category>PRIVACY RELATED</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:"index.of.personal"</querystring>
+		<shortDescription>Reveals personal information</shortDescription>
+		<textualDescription>This directory has various personal documents and pictures.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>141</signatureReferenceNumber>
+		<categoryref>B5</categoryref>
+		<category>BACKUP FILES</category>
+		<querytype>DONT</querytype>
+		<querystring>inurl:backup intitle:index.of inurl:admin</querystring>
+		<shortDescription>Reveals back up directories.</shortDescription>
+		<textualDescription>This query reveals backup directories. These directories can contain various information ranging from source code, sql tables, userlists, and even passwords.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>142</signatureReferenceNumber>
+		<categoryref>B6</categoryref>
+		<category>BACKUP FILES</category>
+		<querytype>DONT</querytype>
+		<querystring>"Index of /backup"</querystring>
+		<shortDescription>Reveals back up directories with juicy stuff</shortDescription>
+		<textualDescription>Backup directories are good targets for information gathering.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>143</signatureReferenceNumber>
+		<categoryref>P22</categoryref>
+		<category>PRIVACY RELATED</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:index.of.private</querystring>
+		<shortDescription>Private directories are interesting</shortDescription>
+		<textualDescription></textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>144</signatureReferenceNumber>
+		<categoryref>P23</categoryref>
+		<category>PRIVACY RELATED</category>
+		<querytype>DONT</querytype>
+		<querystring>inurl:index.of.protected</querystring>
+		<shortDescription>Potential access to a protected direcroty.</shortDescription>
+		<textualDescription>Potential access to a protected direcroty.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>145</signatureReferenceNumber>
+		<categoryref>P24</categoryref>
+		<category>PRIVACY RELATED</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:index.of.protected</querystring>
+		<shortDescription>Potential access to a "secure" directory.</shortDescription>
+		<textualDescription>Potential access to a "secure" directory.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>146</signatureReferenceNumber>
+		<categoryref>P25</categoryref>
+		<category>PRIVACY RELATED</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:index.of.secret</querystring>
+		<shortDescription>Potential access to a "secure" directory.</shortDescription>
+		<textualDescription>Potential access to a "secure" directory.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>147</signatureReferenceNumber>
+		<categoryref>P26</categoryref>
+		<category>PRIVACY RELATED</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:"index.of.secure"</querystring>
+		<shortDescription>Potential access to a "secure" directory.</shortDescription>
+		<textualDescription>Potential access to a "secure" directory.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>148</signatureReferenceNumber>
+		<categoryref>C24</categoryref>
+		<category>CONFIG MANAGEMENT</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:index.of.winnt</querystring>
+		<shortDescription>checks if \WINNT is shared</shortDescription>
+		<textualDescription>The \WINNT directory is the directory that Windows NT is installed into by default. Now just because google can find them, this doesn't necessarily mean that these are Windows NT directories that made their way onto the web. However, sometimes this happens. </textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>149</signatureReferenceNumber>
+		<categoryref>T41</categoryref>
+		<category>TECHNOLOGY PROFILE</category>
+		<querytype>DONT</querytype>
+		<querystring>"Select a database to view" intitle:"filemaker pro"</querystring>
+		<shortDescription>Locates servers providing Filemake pro</shortDescription>
+		<textualDescription>This search locates servers which provides access to Filemaker pro databases via the web. The severity of this search varies wildly depending on the security of the database itself. </textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>150</signatureReferenceNumber>
+		<categoryref>T40</categoryref>
+		<category>PRIVACY RELATED</category>
+		<querytype>DONT</querytype>
+		<querystring>"Welcome to Intranet"</querystring>
+		<shortDescription>Intranet should not be accessible from the internet.</shortDescription>
+		<textualDescription>Potential access to an internal site.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>151</signatureReferenceNumber>
+		<categoryref>T42</categoryref>
+		<category>TECHNOLOGY PROFILE</category>
+		<querytype>DONT</querytype>
+		<querystring>"Welcome to PHP-Nuke" congratulations</querystring>
+		<shortDescription>Searches defaults installation of postnuke CMS system</shortDescription>
+		<textualDescription>This finds default installations of the postnuke CMS system. In many cases, default installations can be insecure especially considering that the administrator hasn't gotten past the first few installation steps.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>152</signatureReferenceNumber>
+		<categoryref>T43</categoryref>
+		<category>TECHNOLOGY PROFILE</category>
+		<querytype>DONT</querytype>
+		<querystring>"YaBB SE Dev Team"</querystring>
+		<shortDescription>This Bulletin board has SQL injection vulnerability</shortDescription>
+		<textualDescription>Yet Another Bulletin Board (YABB) SE (versions 1.5.4 and 1.5.5 and perhaps others) contain an SQL injection vulnerability which may allow several attacks including unauthorized database modification or viewing. See http://www.securityfocus.com/bid/9674</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.securityfocus.com/bid/9674</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>153</signatureReferenceNumber>
+		<categoryref>T44</categoryref>
+		<category>CONFIG MANAGEMENT</category>
+		<querytype>DONT</querytype>
+		<querystring>allinurl:install/install.php</querystring>
+		<shortDescription>Pages with install/install.php may be insecure</shortDescription>
+		<textualDescription>Pages with install/install.php files may be in the process of installing a new service or program. These servers may be insecure due to insecure default settings. In some cases, these servers may allow for a new installation of a program or service with insecure settings. In other cases, snapshot data about an install process can be gleaned from cached page images.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>155</signatureReferenceNumber>
+		<categoryref>P28</categoryref>
+		<category>PRIVACY RELATED</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:"Gallery in Configuration mode"</querystring>
+		<shortDescription>Gallery config mode allows changes in gallery</shortDescription>
+		<textualDescription>Gallery configuration mode allows outsiders to make changes to your gallery.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>156</signatureReferenceNumber>
+		<categoryref>T45</categoryref>
+		<category>TECHNOLOGY PROFILE</category>
+		<querytype>DONT</querytype>
+		<querystring>inurl:shop "Hassan Consulting's Shopping Cart Version 1.18"</querystring>
+		<shortDescription>Vulnerable to ../ and many other bugs</shortDescription>
+		<textualDescription>These servers can be messed with in many ways. One specific way is by way of the "../" bug. This lets you cruise around the web server in a somewhat limited fashion.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>157</signatureReferenceNumber>
+		<categoryref>RA4</categoryref>
+		<category>REMOTE ADMIN INTERFACE</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:"osCommerce" inurl:admin originurlextension:php</querystring>
+		<shortDescription>Explore admin interface </shortDescription>
+		<textualDescription>This is a decent way to explore the admin interface of osCommerce e-commerce sites. Depending on how bad the setup of the web store is, web surfers can even Google their way into customer details and order status, all from the Google cache.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>158</signatureReferenceNumber>
+		<categoryref>RA5</categoryref>
+		<category>REMOTE ADMIN INTERFACE</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:"Remote Desktop Web Connection"</querystring>
+		<shortDescription>MS remote desktop connection</shortDescription>
+		<textualDescription>Microsoft Remote Desktop Connection Web Connection pages. These pages are not necessarily insecure, sine many layers of security can be wrapped around the actual use of this service, but simply being able to find these in Google gives hackers an informational advantage, and many of the sites are not implemented securely. In the worst case scenario these pages may allow an attacker to bypass a firewall gaining access to an otherwise inaccessible machine.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>159</signatureReferenceNumber>
+		<categoryref>RA6</categoryref>
+		<category>REMOTE ADMIN INTERFACE</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:"Terminal Services Web Connection"</querystring>
+		<shortDescription>MS Terminal services web connector pages</shortDescription>
+		<textualDescription>Microsoft Terminal Services Web Connector pages. These pages are not necessarily insecure, sine many layers of security can be wrapped around the actual use of this service, but simply being able to find these in Google gives hackers an informational advantage, and many of the sites are not implemented securely. In the worst case scenario these pages may allow an attacker to bypass a firewall gaining access to a "protected" machine.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>160</signatureReferenceNumber>
+		<categoryref>RV4</categoryref>
+		<category>REPORTED VULNS</category>
+		<querytype>DONT</querytype>
+		<querystring>inurl:footer.inc.php</querystring>
+		<shortDescription>AllMyPHP family contains several vulnerabilities</shortDescription>
+		<textualDescription>From http://www.securityfocus.com/bid/9664, the AllMyPHP family of products (Versions 0.1.2 - 0.4) contains several potential vulnerabilities, som elalowing an attacker to execute malicious code on the web server.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.securityfocus.com/bid/9664</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>161</signatureReferenceNumber>
+		<categoryref>RV5</categoryref>
+		<category>REPORTED VULNS</category>
+		<querytype>DONT</querytype>
+		<querystring>inurl:info.inc.php</querystring>
+		<shortDescription>AllMyPHP family contains several vulnerabilities</shortDescription>
+		<textualDescription>From http://www.securityfocus.com/bid/9664, the AllMyPHP family of products (Versions 0.1.2 - 0.4) contains several potential vulnerabilities, som elalowing an attacker to execute malicious code on the web server.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.securityfocus.com/bid/9664</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>162</signatureReferenceNumber>
+		<categoryref>RA7</categoryref>
+		<category>REMOTE ADMIN INTERFACE</category>
+		<querytype>DONT</querytype>
+		<querystring>inurl:manyservers.htm</querystring>
+		<shortDescription>MS Terminal services multiple clients pages</shortDescription>
+		<textualDescription>Microsoft Terminal Services Multiple Clients pages. These pages are not necessarily insecure, sine many layers of security can be wrapped around the actual use of this service, but simply being able to find these in Google gives hackers an informational advantage, and many of the sites are not implemented securely.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>163</signatureReferenceNumber>
+		<categoryref>RV6</categoryref>
+		<category>REPORTED VULNS</category>
+		<querytype>DONT</querytype>
+		<querystring>inurl:search.php vbulletin</querystring>
+		<shortDescription>Version 3.0.0 candidate 4 and  below have vulnerabilites</shortDescription>
+		<textualDescription>Version 3.0.0 candidate 4 and earlier of Vbulletin may have a cross-site scripting vulnerability. See http://www.securityfocus.com/bid/9656 </textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.securityfocus.com/bid/9656 </cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>164</signatureReferenceNumber>
+		<categoryref>E36</categoryref>
+		<category>ERROR MESSAGES</category>
+		<querytype>DONT</querytype>
+		<querystring>"seeing this instead" intitle:"test page for apache"</querystring>
+		<shortDescription>Helps to determine the version of the web page</shortDescription>
+		<textualDescription>This is the default web page for Apache 1.3.11 - 1.3.26. Hackers can use this information to determine the version of the web server, or to search Google for vulnerable targets. In addition, this indicates that the web server is not well maintained.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>165</signatureReferenceNumber>
+		<categoryref>C25</categoryref>
+		<category>CONFIG MANAGEMENT</category>
+		<querytype>DONT</querytype>
+		<querystring>aboutprinter.shtml</querystring>
+		<shortDescription>Printers on the internet.</shortDescription>
+		<textualDescription>Xerox printers on the internet. Google found these printers. </textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>166</signatureReferenceNumber>
+		<categoryref>C26</categoryref>
+		<category>CONFIG MANAGEMENT</category>
+		<querytype>DONT</querytype>
+		<querystring>allintitle:Netscape FastTrack Server Home Page</querystring>
+		<shortDescription>Default installation of Netscape Fastrack server is insecure</shortDescription>
+		<textualDescription>This finds default installations of Netscape Fasttrack Server. In many cases, default installations can be insecure especially considering that the administrator hasn't gotten past the first few installation steps.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>167</signatureReferenceNumber>
+		<categoryref>C27</categoryref>
+		<category>CONFIG MANAGEMENT</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:"Apache HTTP Server" intitle:"documentation"</querystring>
+		<shortDescription>Naiver Web site builder</shortDescription>
+		<textualDescription>Manuals indicate a default Apache web root. This is not a security best practice.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>168</signatureReferenceNumber>
+		<categoryref>C28</categoryref>
+		<category>CONFIG MANAGEMENT</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:"Welcome to IIS 4.0"</querystring>
+		<shortDescription>Indicates poor administration.</shortDescription>
+		<textualDescription>Default installs are not secure.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>169</signatureReferenceNumber>
+		<categoryref>C29</categoryref>
+		<category>CONFIG MANAGEMENT</category>
+		<querytype>DONT</querytype>
+		<querystring>i_index.shtml "Ready"</querystring>
+		<shortDescription>Could be used to lock administrators out.</shortDescription>
+		<textualDescription>These printers are on the Internet.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>170</signatureReferenceNumber>
+		<categoryref>C30</categoryref>
+		<category>CONFIG MANAGEMENT</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:"Test Page for Apache" "It Worked!"</querystring>
+		<shortDescription>Dertermine the web server</shortDescription>
+		<textualDescription>This is the default web page for Apache 1.2.6 - 1.3.9. Hackers can use this information to determine the version of the web server, or to search Google for vulnerable targets. In addition, this indicates that the web server is not well maintained.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>171</signatureReferenceNumber>
+		<categoryref>E37</categoryref>
+		<category>ERROR MESSAGES</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:"Test Page for Apache" "It Worked!" "on this web"</querystring>
+		<shortDescription>Dertermine the web server</shortDescription>
+		<textualDescription>This is the default web page for Apache 1.2.6 - 1.3.9. Hackers can use this information to determine the version of the web server, or to search Google for vulnerable targets. In addition, this indicates that the web server is not well maintained.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>172</signatureReferenceNumber>
+		<categoryref>C31</categoryref>
+		<category>CONFIG MANAGEMENT</category>
+		<querytype>DONT</querytype>
+		<querystring>inurl:tech-support inurl:show Cisco</querystring>
+		<shortDescription>Find cisco products with open web interface</shortDescription>
+		<textualDescription>This is a way to find Cisco products with an open web interface. These are generally supposed to be user and password protected. </textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>173</signatureReferenceNumber>
+		<categoryref>C32</categoryref>
+		<category>CONFIG MANAGEMENT</category>
+		<querytype>DONT</querytype>
+		<querystring>"powered by openbsd" +"powered by apache"</querystring>
+		<shortDescription>Known vulnerabilities with apache on openbsd</shortDescription>
+		<textualDescription>Banner disclosure.</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>175</signatureReferenceNumber>
+		<categoryref>RA8</categoryref>
+		<category>REMOTE ADMIN INTERFACE</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:admin intitle:login</querystring>
+		<shortDescription>Admin Login page</shortDescription>
+		<textualDescription>Potential admin Login pages. </textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>176</signatureReferenceNumber>
+		<categoryref>B7</categoryref>
+		<category>BACKUP FILES</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:"Index of" index.html.bak</querystring>
+		<shortDescription>May contain interesting info</shortDescription>
+		<textualDescription>Has old html pages that may contain interesting information</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>177</signatureReferenceNumber>
+		<categoryref>B8</categoryref>
+		<category>BACKUP FILES</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:"Index of" index.php.bak</querystring>
+		<shortDescription>May contain interesting info</shortDescription>
+		<textualDescription>Holds old php files</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>178</signatureReferenceNumber>
+		<categoryref>B9</categoryref>
+		<category>BACKUP FILES</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:"Index of" index.html~</querystring>
+		<shortDescription>May contain interesting info</shortDescription>
+		<textualDescription>Holds old html files</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>179</signatureReferenceNumber>
+		<categoryref>B10</categoryref>
+		<category>BACKUP FILES</category>
+		<querytype>DONT</querytype>
+		<querystring>intitle:"Index of" index.php~</querystring>
+		<shortDescription>May contain interesting info</shortDescription>
+		<textualDescription>Holds old php files</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+	<signature>
+		<signatureReferenceNumber>180</signatureReferenceNumber>
+		<categoryref>P29</categoryref>
+		<category>PRIVACY RELATED</category>
+		<querytype>DONT</querytype>
+		<querystring>inurl:"MultiCameraFrame?Mode="</querystring>
+		<shortDescription>Open security webcams</shortDescription>
+		<textualDescription>Finds security webcams, somtimes private and confidential</textualDescription>
+		<cveNumber>1002</cveNumber>
+		<cveLocation>http://www.1000.com</cveLocation>
+	</signature>
+</searchEngineSignature>

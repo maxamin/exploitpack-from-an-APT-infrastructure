@@ -1,0 +1,38 @@
+D2 Exploitation Pack
+====================
+
+Copyright (c) 2007-2009 DSquare Security, LLC
+
+
+License information
+-------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Description
+-------------
+
+NetBSD ISO(4) Buffer Overflow Vulnerability
+
+Multiple buffer overflows in the ISO network protocol support in the 
+NetBSD kernel 2.0 through 4.0_BETA2, and NetBSD-current before 20070329,
+allow local users to execute arbitrary code via long parameters to certain
+functions, as demonstrated by a long sockaddr structure argument to the 
+clnp_route function. 
+
+This exploit work only for version NetBSD >= 2.0 and < 4.0 for i386
+
+Tested on NetBSD 3.1:
+
+$ id
+uid=1000(user) gid=100(users) groups=100(users)
+$ uname -srm
+NetBSD 3.1 i386
+$ ./netbsd-iso
+# id
+uid=0(root) gid=0(wheel) groups=100(users)
+# 
+
+CVE reference: CVE-2007-1677

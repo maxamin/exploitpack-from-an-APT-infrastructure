@@ -1,0 +1,20 @@
+'
+' Proprietary D2 Exploitation Pack source code - use only under the license
+' agreement specified in LICENSE.txt in your D2 Exploitation Pack
+'
+' Copyright DSquare Security, LLC, 2007-2009
+'
+
+strComputer = "."
+Set objWMIService = GetObject("winmgmts:" _
+     & "{impersonationLevel=impersonate}!\\" & strComputer & "\root\cimv2" )
+
+Set colServices = objWMIService.ExecQuery("Select * from Win32_Service")
+
+For each objService in colServices
+	WScript.Echo "[#] Name:" & vbTab & objService.Properties_("Name").Value
+	WScript.Echo "DisplayName:" & vbTab & objService.Properties_("DisplayName").Value
+	WScript.Echo "StartMode:" & vbTab & objService.Properties_("StartMode").Value
+	WScript.Echo "State:" & vbTab & vbTab & objService.Properties_("State").Value
+	WScript.Echo
+Next

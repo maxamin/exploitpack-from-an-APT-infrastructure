@@ -1,0 +1,6 @@
+#Fuzzer for fuzzing tftp
+
+#0x03 is Dat : could be a variable here to fuzz other opcodes
+spk.s_int(0x03, "BIGENDIANHALFWORD")
+spk.s_int(0x04, "BIGENDIANHALFWORD") #block number 
+spk.s_string_variable("Hello.txt") # n bytes of data

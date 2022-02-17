@@ -1,0 +1,135 @@
+CANVAS Linux Installation guide
+==============================================
+Last updated: September 18 2019
+
+This document will guide you through the installation of all the required CANVAS
+dependencies (NOTE: Optional dependencies are not covered and should be taken care of manually).
+
+These packages are not able to be distributed or integrated with CANVAS for licensing
+reasons, you will need to install them seperately prior to being able to run CANVAS for
+the first time.
+
+Installation of the packages is fairly straight forward and should only take a few
+minutes. Immunity provides the option to automatically install all the required
+dependencies through an automated installer available both for Linux and Windows.
+
+
+Installation steps
+==================
+1. Change the current directory to where you want to install CANVAS, then decompress
+the package with command below:
+
+  $ tar -zxvf canvas-x.x.tar.gz
+
+
+Package Installation Steps
+==========================
+Immunity recommends using the CANVAS Dependency Installer (CANVAS_ROOT/installer/linux_installer.sh)
+to perform steps 2 through 8 below. This script supports Red Hat and Debian based systems
+(Ubuntu, CentOS, Fedora, Kali, etc.). The script also allow to install python packages
+in a virtual environment if chosen.
+
+Running CANVAS Dependency Installer:
+
+$ sudo CANVAS_ROOT/installer/linux_installer.sh
+
+[Mon Sep 17 13:31:03 -03 2018] This will begin the Python virtualenv CANVAS dependency process.
+[Mon Sep 17 13:31:07 -03 2018] The following packages will have to be installed/updated in your
+system:  python python-virtualenv git wget intltool automake gtk2.0 itstool python-gtk2
+build-essential python-dev libgirepository1.0-dev libcanberra-gtk3-module libncurses5-dev libgeoip-dev
+Do you agree? (y/N)
+[Mon Sep 17 13:31:19 -03 2018] Trying to install system packages via apt-get...
+Do you want to install python dependecies in a virtual environment (Y/n):
+[Mon Sep 17 13:31:24 -03 2018] Setting up a virtual environment ...
+[Mon Sep 17 13:31:26 -03 2018] Installing Python packages ...
+[Mon Sep 17 13:31:30 -03 2018] Downloading pygobject-2.28.7.tar.xz...
+[Mon Sep 17 13:31:33 -03 2018] Expected   SHASUM: bb9d25a3442ca7511385a7c01b057492095c263784ef31231ffe589d83a96a5a
+[Mon Sep 17 13:31:33 -03 2018] Downloading libglade-2.6.4.tar.bz2...
+[Mon Sep 17 13:31:35 -03 2018] Expected   SHASUM: 64361e7647839d36ed8336d992fd210d3e8139882269bed47dc4674980165dec
+[Mon Sep 17 13:31:35 -03 2018] Downloading vte_0.28.2.orig.tar.xz...
+[Mon Sep 17 13:31:37 -03 2018] Expected   SHASUM: 86cf0b81aa023fa93ed415653d51c96767f20b2d7334c893caba71e42654b0ae
+[Mon Sep 17 13:31:37 -03 2018] Downloading vte_0.28.2-5ubuntu4.debian.tar.xz...
+[Mon Sep 17 13:31:38 -03 2018] Expected   SHASUM: f50ead3db07cf55a6ecd7ecd732aa5404d980b8acc20bba5d2303417f74e41ce
+[Mon Sep 17 13:31:38 -03 2018] Downloading py2cairo-1.10.0.tar.bz2...
+[Mon Sep 17 13:31:40 -03 2018] Expected   SHASUM: d30439f06c2ec1a39e27464c6c828b6eface3b22ee17b2de05dc409e429a7431
+[Mon Sep 17 13:31:40 -03 2018] Downloading pygtk-2.24.0.tar.bz2...
+[Mon Sep 17 13:31:43 -03 2018] Expected   SHASUM: cd1c1ea265bd63ff669e92a2d3c2a88eb26bcd9e5363e0f82c896e649f206912
+[Mon Sep 17 13:31:43 -03 2018] Processing py2cairo...
+[Mon Sep 17 13:31:43 -03 2018] Processing pygobject...
+[Mon Sep 17 13:31:58 -03 2018] Processing libglade...
+[Mon Sep 17 13:32:06 -03 2018] Processing pygtk...
+[Mon Sep 17 13:32:47 -03 2018] Processing vte_0.28.2.orig...
+Do you want to download and install GeoIP database? (Y/n):
+[Mon Sep 17 13:33:35 -03 2018] Downloading GeoIP database...
+[Mon Sep 17 13:33:38 -03 2018] All dependencies installed, start canvas: /media/immunity/canvas/runcanvas.sh
+
+You are done, *remember* to use runcanvas.sh if you use the automated installer.
+
+2. You need to update your system:
+
+   	 - Debian based: sudo apt-get update
+
+	   - Red Hat based: sudo yum update
+
+3. Install or update the system packages required by Canvas:
+
+     - Debian based, in a terminal execute the following command:
+        * sudo apt-get -y install python2.7 python-virtualenv git wget intltool
+          automake python-pip gtk2.0 itstool python-gtk2 build-essential python-dev
+          libgirepository1.0-dev libcanberra-gtk3-module libncurses5-dev libgeoip-dev
+          libglade2-0 libglade2-0-dev libvte9 libvte-dev python-vte
+
+     - Red Hat based, in a terminal execute the following command:
+        * sudo yum -y install python2 python-virtualenv git wget intltool
+          automake python-pip make gcc gcc-c++ kernel-devel gtk2 python-devel
+          gobject-introspection gobject-introspection-devel geoip-devel vte vte-devel
+          libcanberra-gtk3 ncurses-libs ncurses-devel cairo-devel libglade2
+          libglade2-devel
+
+4. Install various python required modules througth pip:
+
+     - In a terminal execute the following command.
+        * sudo python2.7 pip install numpy pyopenssl pyzmq pyasn1 pycrypto pyyaml bcrypt pynacl geoip
+
+5. Install various python required modules througth package manager:
+
+     - Debian based, in a terminal execute the following command:
+        * sudo apt-get -y install python-cairo python-gobject-2 python-gtk2 python-gtk2-dev python-vte
+
+     - Red Hat based, in a terminal execute the following command:
+        * sudo yum -y install pycairo pygobject2 pygtk2 pygtk2-devel
+
+6. If you would like to use the World Map IP address for the geographical location mapping
+   feature there are some further packages which need to installed.
+
+   6.1 The GeoIP mapping database needs to be downloaded, this can be found at:
+     - wget -q -c http://www.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz
+
+   6.2 Uncompress the downloaded file with the following command:
+
+     - gunzip GeoLiteCity.dat.gz
+
+   6.3 You want rename the file to GeoIPCity.dat and move to CANVAS_ROOT/gui/WorldMap/ directory:
+
+     - mv GeoLiteCity.dat CANVAS_ROOT/gui/WorldMap/GeoIPCity.dat
+
+   6.4 Correct installation of World Map dependencies can be verified by the absence of a
+       red message box in the top left corner of the World Map tab in the CANVAS GUI.
+
+7. You should have now successfully completed the CANVAS dependencies installation. CANVAS
+   can now be started via the runcanvas.sh script in the CANVAS directory.
+
+8. Further information regarding CANVAS usage can be found in the Documentation subdirectory
+   or by going to the g at the CANVAS Tutorial section located at:
+   - https://www.immunityinc.com/products/canvas/tutorials.html
+
+
+Problems
+=============
+If you have any problems in running CANVAS after following the above steps please email
+support@immunityinc.com with a detailed description of the problems you are seeing and
+attach the CRASH.log file if it is present in the CANVAS directory.
+
+
+Thank you for choosing Immunity CANVAS
+The CANVAS team

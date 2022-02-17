@@ -1,0 +1,42 @@
+THINGS TO KNOW:
+
+Run from gui and set filehide and passwd
+*Rootkit hides files that contain the filehide string.
+*Programs that contain this string are given root priviledges when
+runned and are hidden.
+*Childs of this programs are also root and hidden, no matter what
+there name is
+*TCP sockets of programs/childs are hidden
+*A backdoor is installed along with rootkit, you can use linrootkit
+inject to retrieve a MOSDEF shell at any time. You need to remember
+the password you set.
+*Rootkit is loaded at runtime automatically
+
+USAGE:
+*You need to make the module for the exact kernel you are going to
+attack, else the module won't load.
+-First figure out what distribution and kernel they are using, then
+recreate enviroment in a VM(same kernel). You need gcc and the kernel
+headers. Move immrt.c immrt.h and Makefile to the VM and run make. If
+everything goes right, you will end up with a immrt.ko file, overwrite
+the immrt.ko file in CANVA/linux/rootkit with that one. Everything
+should work now.
+
+CLEANING UP:
+
+*When you want to clean things up you can do the following.
+(replace immrt with your filehide string everywere)
+cp /bin/bash /bin/immrtbash
+run immrtbash
+Delete:
+/lib/modules/immrt.ko
+/etc/init.d/immrt
+/etc/rc0.d/S01immrt
+/etc/rc1.d/S01immrt
+/etc/rc2.d/S01immrt
+/etc/rc3.d/S01immrt
+/etc/rc4.d/S01immrt
+/etc/rc5.d/S01immrt
+/etc/rc6.d/S01immrt
+
+Use find to find any other file you created and delete those too.

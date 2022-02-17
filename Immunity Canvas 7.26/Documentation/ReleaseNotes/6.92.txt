@@ -1,0 +1,44 @@
+########################################################################
+#                       *CANVAS Release 6.92*                          #
+########################################################################
+
+*Date*: 30 January 2014
+
+*Version*: 6.92
+
+*Download URL*: https://canvas.immunityinc.com/cgi-bin/getcanvas.py
+
+*Release Notes*:
+
+For this release we bring you a recent Acrobat Reader clientside
+exploit, a Windows XP/2003 local privilege escalation (ndproxy),
+a flexible Wordpress fingerprinting module and a remote file inclusion
+exploit for Zabbix <= 2.0.8.
+
+==New Modules==
+
+o acrobat_toolbutton (Adobe Acrobat Reader ToolButton Use After Free)
+
+o ndproxy (Windows NDProxy.sys Local Privilege Escalation)
+
+o zabbix (Zabbix <= 2.0.8 PHP File inclusion exploit)
+
+o wp_finger (Fingerprint WordPress based on .css and .js files)
+
+*CANVAS Tips 'n' Tricks*:
+
+Our new Wordpress fingerprinting module is using a combination
+of css and js file fingeprinting and is very flexible regarding
+user customization. It makes an excellent module for first time
+user modification, for someone looking to understand and extend
+CANVAS.
+
+*Links*:
+
+Support email       : support@immunityinc.com
+Sales support       : sales@immunityinc.com
+Support/Sales phone : +1 786-220-0600
+
+
+########################################################################
+########################################################################

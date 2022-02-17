@@ -1,0 +1,9 @@
+share.vbs:Display Windows shares
+checkvm.vbs:iCheck if we are in a Virtual Machine
+dep.vbs:Check DEP Policy
+disableaudit.vbs:Disable audit policy
+disablefw.vbs:Disable windows firewall
+process.vbs:List processes
+services.vbs:List services
+whologon.vbs:Display who is logged on
+vnc.vbs:Get VNC password hash

@@ -1,0 +1,15 @@
+/bug/login_page.php
+/bugs/login_page.php
+/bugtracker/login_page.php
+/bugtrack/login_page.php
+/login_page.php
+/mantis/
+/mantisbt/login_page.php
+/mantis/login_page.php
+/misc/mantis/login_page.php
+/php/mantis/login_page.php
+/support/login_page.php
+/support/mantis/login_page.php
+/tools/mantis/login_page.php
+/tracker/login_page.php
+/turbo/mantis/login_page.php

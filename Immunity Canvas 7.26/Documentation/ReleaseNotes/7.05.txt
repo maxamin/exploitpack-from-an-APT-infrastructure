@@ -1,0 +1,83 @@
+########################################################################
+#                       *CANVAS Release 7.05*                          #
+########################################################################
+
+*Date*: 29 September 2015
+
+*Version*: 7.05
+
+*Download URL*: https://canvas.immunityinc.com/cgi-bin/getcanvas.py
+
+*Release Notes*:
+
+In this CANVAS release we are introducing a lot of features for our new PowerShell
+Node and modules. We are also including a new AD Browser which will let you browse
+through Active Directory domains and get more shells thanks to remote WMI!
+
+Our new modules include a local privilege escalation targeting Windows 7 SP1 32bit,
+two clientside exploits targeting Windows 7 SP 1 (32/64) and Hanword 2010SE+ on Windows
+7 32bit, a web exploit for Citrix Netscaler and our new "converttopowershell" module
+able to convert standard Windows nodes to PowerShell in order to make full use of
+our PowerShell functionalities.
+We can also run now powershell scripts directly through "runpowershellscript". To
+conclude this month release we are adding commands for PowerShell related functionalities
+that are also used by our new Active Directory Browser.
+
+==Changes==
+
+o New Active Directory Browser
+
+o Fix an issue related to big files upload on a PowerShell Node
+
+o libsmb bugfixes
+
+o switch_user bugfix
+
+o New logging mechanism for reporting information to users
+
+
+==New Modules==
+
+o ESET_LPC
+
+o ms15_100
+
+o overlayfs
+
+o hanword_exec
+
+o ad_getcomputers
+
+o ad_getlocalusers
+
+o ad_getdomainusers
+
+o ad_dlexecute_psmosdef
+
+o ad_check4PSAdmin
+
+o converttopowershell
+
+o runpowershellscript
+
+o citrix_netscaler_soap
+
+
+*CANVAS Tips 'n' Tricks*:
+
+Following what we did with our August release of CANVAS, this month we are
+including a lot of new functionalities for our new PowerShell Nodes.
+
+Now you can press <space> on a PowerShell Node to get the Active Directory Browser,
+right click on hosts and get more shells!
+
+
+*Links*:
+
+Support email       : support@immunityinc.com
+Sales support       : sales@immunityinc.com
+Support/Sales phone : +1 786-220-0600
+
+
+########################################################################
+########################################################################

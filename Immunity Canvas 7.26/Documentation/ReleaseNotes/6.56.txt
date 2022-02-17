@@ -1,0 +1,90 @@
+########################################################################
+#                       *CANVAS Release 6.56*                          #
+########################################################################
+
+*Date*: 09 February 2010
+
+*Version*: 6.56 ("BurnNotice")
+
+*Download URL*: https://canvas.immunityinc.com/cgi-bin/getcanvas.py
+
+*Release Notes*:
+
+==New Modules==
+
+GetLocale - gets the locale of a Win32 MOSDEF Node. 
+disable_windows_firewall - Turns the Firewall off on a Windows machine -
+    useful for bouncing.
+brightstor_cmdexec - CVE-2008-4397 (automatically runs a MOSDEF callback using
+    the CANVAS TFTP service)
+ie_dumpfiles - CVE-2010-0255 - downloads files off an IE client, assuming they
+    can talk to your SMB server.
+ 
+==Changes==
+
+CANVAS's GUI is now partially localized. If run on a locale such as Chinese or
+Japanese CANVAS will automatically display localized information. Feel free to
+send us better translations, of course. We will be working to extend and
+enhance this in the future. A bug that prevented CANVAS from starting in
+multi-byte directories has been fixed as well.
+
+Likewise, internal functions have largely been replaced with Unicode-friendly
+functions. This means the file browser, dir, chdir, getcwd(), and piped
+commands (Listener Shell) will work much better on non-English Windows.
+
+"quit" works better from the commandline. 
+
+The default behavior if CANVAS cannot narrow down the language pack of a remote
+Windows is now "not to attack it". Previously it was "Assume it is English". This
+can be changed via the configuration module or as a MassAttack2 option.
+
+Various bugs in reporting were also fixed.
+
+*Upcoming training*:
+
+Please email sales@immunityinc.com for further information or to sign up.
+
+USA TRAINING
+Location: 1247 Alton Road, Miami Beach, Florida 33139
+
+March 15-18, 2010: Finding 0days
+Duration: 4 days
+Cost: $4000 per person
+
+April 12-16, 2010: Unethical Hacking
+Duration: 5 days
+Cost: $5000 per person
+
+May 10-13, 2010: Heap Overflows
+Duration: 4 days
+Cost: $4000 per person
+
+June 21-22, 2010: CANVAS Training
+Duration: 2 days
+Cost: $2000 per person
+
+July 19-22, 2010: Finding 0Days
+Duration: 4 days
+Cost: $4000 per person
+
+August 16-20, 2010: Unethical Hacking
+Duration: 5 days
+Cost: $5000 per person
+
+
+*Forum*
+Still at https://forum.immunityinc.com/ :>
+
+*CANVAS Tips 'n' Tricks*:
+
+Modify startup.py for automatically running commands on new nodes!
+
+*Links*:
+
+Support email      : support@immunityinc.com
+Sales support      : sales@immunityinc.com
+Support/Sales phone: +1 786-220-0600
+
+
+########################################################################
+########################################################################

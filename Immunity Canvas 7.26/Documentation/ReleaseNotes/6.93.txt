@@ -1,0 +1,49 @@
+########################################################################
+#                       *CANVAS Release 6.93*                          #
+########################################################################
+
+*Date*: 14 April 2014
+
+*Version*: 6.93
+
+*Download URL*: https://canvas.immunityinc.com/cgi-bin/getcanvas.py
+
+*Release Notes*:
+
+For this release we bring you two clientsides that cover IE 8, 9 and 10
+and also, the STRATEGIC framework that has been previously available
+as an extra add-on, as part of CANVAS mainline.
+
+==Changes==
+
+o STRATEGIC is now part of CANVAS mainline
+
+o wp_finger has been updated with more accurate versioning
+
+o acrobat_toolbutton has been updated with more accurate versioning
+
+
+==New Modules==
+      
+o ie_cmarkup (Use-after-free exploit for IE 10)
+
+o ie_cardspaceclaimcollection (Clientside exploit for IE 8/9)
+
+
+*CANVAS Tips 'n' Tricks*:
+
+CANVAS STRATEGIC is the big feature in this release. For an overview and
+presentation, visit: https://www.immunityinc.com/products-strategic.shtml
+
+The only additional requirement is PyZMQ/ZMQ libraries. An installation
+guide can be found in Documentation/Strategic.txt.
+
+*Links*:
+
+Support email       : support@immunityinc.com
+Sales support       : sales@immunityinc.com
+Support/Sales phone : +1 786-220-0600
+
+
+########################################################################
+########################################################################

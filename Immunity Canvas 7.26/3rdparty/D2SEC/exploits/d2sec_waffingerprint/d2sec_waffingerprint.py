@@ -1,0 +1,136 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2009
+#
+
+import sys, os
+import datetime
+
+sys.path.append(".")
+sys.path.append(os.path.join(os.getcwd(), '3rdparty/D2SEC/libs'))
+
+import socket
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+import proto.http
+
+from d2sqlite import *
+
+# GUI info
+NAME = "WAF Fingerprint"
+DESCRIPTION = "Fingerprint a WAF before a website" 
+VERSION="1.1"
+
+DOCUMENTATION = {}
+DOCUMENTATION['VENDOR'] = ""
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION['Date public'] = ""
+DOCUMENTATION['References'] = ""
+DOCUMENTATION['Versions Affected'] = ""
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = ""
+DOCUMENTATION["CVE Url"] = ""
+DOCUMENTATION["Notes"] = """ 
+
+This tool fingerprints a WAF before a website. It detects only a F5 and
+IMPERVA at this moment :)
+
+"""
+
+PROPERTY={}
+PROPERTY['TYPE'] = 'Recon'
+PROPERTY['SITE'] = 'Remote'
+
+FINGERPRINT = {}
+FINGERPRINT['F5 ASM'] = ['/%00', '<html><head><title>Request Rejected</title></head><body>The requested URL was rejected. Please consult with your administrator.<br><br>Your support ID is: ']
+FINGERPRINT['IMPERVA'] = ['/param?param=<script>alert(1)</script>', 'The incident ID is: ']
+ 
+class theexploit(tcpexploit, d2sqlite):
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.name = NAME
+    self.host = ''
+    self.port = 80
+    self.https = 0
+    self.website = self.host
+    self.useragent = "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)"
+    self.proxy_host = ""
+    self.proxy_port = 0
+    self.db_name = ''
+    self.sql = []
+    self.wafs_found = 0    
+    self.h = None
+    d2sqlite.__init__(self)
+    return
+    
+  def getArgs(self):
+    self.host = self.target.interface
+    self.port = int(self.argsDict.get('port',self.port))
+    self.https = int(self.argsDict.get("https",self.https))
+    self.website = self.argsDict.get("website",self.website)
+    self.proxy_host = self.argsDict.get("hproxy",self.proxy_host)
+    self.proxy_port = self.argsDict.get("pproxy",self.proxy_port)
+    self.db_name = self.argsDict.get("db_name",self.db_name)
+    if self.db_name:
+      try:
+        os.stat(self.db_name)
+      except:
+        self.log("[D2 LOG] %s database not found" % self.db_name)
+        return 1
+    return 0
+
+  def init_http_request(self):
+    self.h.setparam('Host', self.website)
+    self.h.setparam('User-agent', self.useragent)
+
+  def run(self):
+    if self.getArgs():
+      self.setInfo(' %s attacking %s:%d - done (failed)' % (NAME, self.host, self.port))
+      return 0
+
+    self.log('[D2 LOG] %s running against %s:%d' % (NAME, self.host, self.port))
+    self.setInfo('%s attacking %s:%d - running' % (NAME, self.host, self.port))
+
+    self.h = proto.http.apihttp(self.host, self.port)
+    if self.https: self.h.usehttps(https)
+    if self.proxy_host and self.proxy_port != 0: self.h.setproxy(self.proxy_host, self.proxy_port)
+    self.init_http_request()
+
+    for waf, fingerprint in FINGERPRINT.iteritems():
+      self.h.cnx = self.h.connect()
+      if self.h.cnx is None:
+        return 0
+      resp = self.h.request("GET", fingerprint[0])
+      if resp is None:
+        continue
+
+      data = resp.read()
+      if data.find(fingerprint[1]) > -1:
+        self.log("WAF: %s" % waf)
+        self.wafs_found += 1
+
+      self.h.cnx.close()
+
+    if self.wafs_found == 0:
+      self.log("Is there a WAF ?")
+
+    if self.db_name:
+      self.db_savelog("%s;d2sec_waffingerprint;WAF: %s;%s" % (self.host, server, str(datetime.datetime.now())))
+
+    self.setInfo('%s attacking %s:%d - done' % (NAME, self.host, self.port))
+    return 1
+
+  def usage(self):
+    print 'Usage: %s -t host -p port -O https:[0|1] -O website:url -O hproxy:host -O pproxy:port -O db_name:<database name>' % (sys.argv[0])
+    return
+
+
+if __name__ == '__main__':
+  print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

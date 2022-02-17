@@ -1,0 +1,6 @@
+document
+========
+
+.. automodule:: libs.reports.document
+    :members:
+    :undoc-members:

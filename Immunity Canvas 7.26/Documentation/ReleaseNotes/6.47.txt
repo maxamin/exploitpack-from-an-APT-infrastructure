@@ -1,0 +1,169 @@
+########################################################################
+#                       *CANVAS Release 6.47*                          #
+########################################################################
+
+*Date*: 02 June 2009
+
+*Version*: 6.47 (IceIceBaby)
+
+*Release Notes*:
+
+The June release of CANVAS is here and brings with it a big bunch of new 
+CANVAS modules. Kostya's eagerly awaited CLOUDBURST (CVE-2009-1244) VMWare
+breakout bug is now included! For those of you who don't know, CLOUDBURST 
+exploits a vulnerability in VMware Display functions in order to execute
+code from a Guest VM into the Host. Once exploited, the exploit tunnels a
+MOSDEF connection over the Frame Buffer of the Guest to communicate with
+the Host.
+
+The current version of the exploit has some requirements that *have* to
+be met for the exploit to succeed:
+
+- VMware version must be Workstation 6.5.0 or 6.5.1 or the associated
+Player versions
+- Guest must be a Windows VM (exploit is a .sys driver)
+- User must have administrative privileges in the Guest (to install the
+driver)
+- VMware Tools must be installed in the VM (the driver relies on them)
+- Guest must have the latest DirectX End-user Redistributable installed
+(for MOSDEF Over Direct3D to work)
+- Only Windows Hosts are currently supported
+
+Breaking out of your virtual confines has never been so much fun :) 
+
+Also included this month is an update to the iis_webdav module which now 
+includes support for the IIS 6.0 unicode translation authentication bypass
+bug (CVE-2009-1535). There is also a commandline 'davshell' option that allows you to do 
+interactive PUT and MOVE commands. One of those silly bugs that is actually
+likely to come in really useful one day.
+
+There are also 6 more new exploits: joomlagooglebase_rfi (CVE-2008-6483), 
+joomlarss_rfi (CVE-2008-5053), dokeos_rce (No CVE), phplinkadmin_rfi (CVE-2009-1025),
+slogin_rfi (CVE-2008-5763) & pluck_lfi (CVE-2009-1765) included for your web hacking
+pleasure.
+
+Post attack command modules have also seen some new additions with two new
+modules for recording video from a webcam attached to a target, and one for
+recording audio from a microphone attached to a target. The other webcam
+modules released last months have also seen some tweaks and improvements. 
+
+The last new module this month is WiFi_key_dumper which grabs the SSID's and 
+the associated WEP/WPA keys which are governed by the Wireless Zero 
+Configuration service which is the default for Windows.
+
+The Node Management interface has also seen a new tweak, with the 't' key now
+being bound to redisplay the nodes in their original tree formation. So if
+you have moved everything around or deleted a ton of nodes and just want to 
+get it tidied up, 't' is what you want to be pressing.
+
+A number cleanups and of bugs have also been fixed with the following modules 
+being renamed:
+
+FELINE        => ms05_040
+BABYBOTTLE    => ms06_014
+MS06_24       => ms06_024
+msparsing_xml => ms08_078 
+
+So if you have scripts relying on the names of these modules you should make 
+the relevant alterations now.
+
+Until next month, Cheers
+Team Immunity
+
+
+*Changelog*:
+
+==Exploits==
+CLOUDBURST: VMWare Workstation/Player 6.5.0/6.5.1 guest breakout(CVE-2009-1244)
+iis_webdav: Microsoft IIS WebDAV Remote Authentication Bypass (CVE-2009-1535)
+dokeos_rce: Dokeos LMS <= 1.8.5 Remote Code Execution (No CVE)
+pluck_lfi:  Pluck 4.6.2 Local File Include (CVE-2009-1765)
+joomlagooglebase_rfi: Joomla com_googlebase Remote File Include (CVE-2008-6483)
+joomlarss_rfi: Joomla Simple RSS Reader Remote File Include (CVE-2008-5053)
+phplinkadmin_rfi: PHPLinkAdmin Remote File Include (CVE-2009-1025)
+slogin_rfi: SLogin Remote File Include (CVE-2008-5763)
+
+==Commands==
+recordaudio: Record audio from the microphone
+recordvideo: Record video from the webcam
+WiFi_key_dumper: Dump WEP/WPA Encryption Keys
+Tree redisplay in Node Management GUI - press 't' key
+
+==Bug Fixes==
+'Check for listener' remote listener callback check now implemented in
+         the Node Management GUI not just in Classic View
+sniffer.py fixed to sniff by default when launched as root
+Stopped 0.0.0.0 appearing in Node Management right click menu
+Download behaviour unified across CANVAS :
+         all downloads appear in relevant session directory under the target
+         IP address in 'downloaded files'
+Improved error messages when running a canvas session previously run by a 
+         different user
+Moved old release notes from CANVAS root directory to 
+         /Documentation/OldReleaseNotes. New release notes live in 
+         /Documentation/ReleaseNotes
+Typos fixed
+
+
+*Postscript*:
+
+Tutorial: MOSDEFinitely ActiveX (mosdef_activex):
+http://forum.immunityinc.com/index.php?topic=379.0
+
+Tutorial: MOSDEFinitely a Service (installmosdefservice):
+http://forum.immunityinc.com/index.php?topic=377.0
+
+CANVAS Dependencies page:
+http://www.immunityinc.com/canvas-dependencies.shtml
+
+
+*Upcoming training*:
+
+USA TRAINING
+Location: 1247 Alton Road, Miami Beach, Florida
+
+July 20-23, 2009: Finding 0days
+Duration: 4 days
+Cost: $4000 per person
+
+August 17-21, 2009: Unethical Hacking
+Duration: 5 days
+Cost: $5000 per person
+
+September 14-17, 2009: Heap Overflows
+Duration: 4 days
+Cost: $4000 per person
+
+
+AUSTRALIA TRAINING
+Location: Canberra, Australia
+
+June 22-26, 2009: Unethical Hacking
+Duration: Five 8-hour class days
+Trainer: David Aitel -- Immunity's Founder, CTO and President
+For more details about the class, please click here.
+
+For more information contact admin@immunityinc.com
+
+
+*CANVAS Tips 'n' Tricks*:
+
+Want to add a bunch of hosts? Put them in a file with one IP per line
+and then either use the 'addhostsfromfile' module or the shortcut to
+this module from the Node Management right click menu:
+Knowledge - > Add Hosts From File
+
+
+*Links*:
+
+CANVAS forums      : http://forum.immunityinc.com
+Support email      : support@immunityinc.com
+Sales support      : sales@immunityinc.com
+Support/Sales phone: +1 786-220-0600
+
+CANVAS Release RSS :
+http://forum.immunityinc.com/index.php?type=rss;action=.xml;board=2.0
+
+
+########################################################################
+########################################################################

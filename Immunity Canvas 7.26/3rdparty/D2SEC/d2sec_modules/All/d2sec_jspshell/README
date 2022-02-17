@@ -1,0 +1,39 @@
+D2 Exploitation Pack
+
+Copyright (c) 2007-2010 DSquare Security, LLC
+All rights reserved.
+
+License information
+---------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Description
+-------------
+
+d2sec_jspshell is useful when you have upload access to a webserver that's
+running Tomcat for example with manager application available. Also, you can
+deploy d2sec_jspshell and use it. For example :
+
+http://127.0.0.1:8080/d2sec_webshell/index.jsp?cmd=pwd
+
+And Linux and Windows mosdef callback binaries are added in d2sec_jspshell :
+
+$ unzip -l d2sec_jspshell.war 
+Archive:  d2sec_jspshell.war
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+        0  2010-04-03 11:39   bin/
+    12407  2010-04-03 11:39   bin/mosdef_callback_linux_i386
+    23369  2010-04-03 11:39   bin/mosdef_callback.exe
+      995  2010-04-03 11:00   index.jsp
+        0  2010-04-03 10:58   META-INF/
+       40  2010-04-03 10:58   META-INF/MANIFEST.MF
+        0  2010-04-03 11:00   WEB-INF/
+      359  2010-04-03 11:00   WEB-INF/web.xml
+---------                     -------
+    37170                     8 files
+
+d2sec_jspshell has been tested on Linux and Windows.

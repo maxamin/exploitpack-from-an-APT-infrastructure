@@ -1,0 +1,170 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2009
+#
+
+import sys, os, string
+
+sys.path.append(".")
+sys.path.append("../../")
+
+import canvasengine
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+NAME = "SNMP Enumeration Tool"
+VERSION = "0.1"
+DESCRIPTION = "SNMP Enumeration Tool"
+
+DOCUMENTATION={}
+DOCUMENTATION['VENDOR']=''
+DOCUMENTATION["Date public"]=''
+DOCUMENTATION["CERT Advisory"]=''
+DOCUMENTATION["Repeatability"]="Infinite"
+DOCUMENTATION["References"]=''
+DOCUMENTATION["CVE Name"]=''
+DOCUMENTATION["CVE Url"]=''
+DOCUMENTATION["Notes"]=''
+
+PROPERTY={}
+PROPERTY['TYPE']="Tool"
+PROPERTY['SITE']="Remote"
+PROPERTY['ARCH']=[ ["All"] ]
+
+class theexploit (tcpexploit):
+    
+	def __init__(self):
+		tcpexploit.__init__(self)
+		self.host = ""
+		self.arch = ""
+		self.snmpver = "1"
+		self.community = "public"
+		self.name = NAME
+		return
+	
+	def snmpenum(self, h_oids, title):
+		try:
+			from pysnmp import asn1, v1, v2c
+			from pysnmp import role
+		except:
+			self.log("Error: you need pysnmp to use this exploit")
+			return 1
+
+		client = role.manager((self.host, 161))
+		client.timeout = 1
+		client.retries = 5
+		t = 0
+	
+		req = eval('v' + self.snmpver).GETREQUEST()
+		nextReq = eval('v' + self.snmpver).GETNEXTREQUEST()
+		rsp = eval('v' + self.snmpver).GETRESPONSE()
+
+		encoded_oids = map(asn1.OBJECTID().encode, h_oids)
+
+		while 1:
+			try:
+				(answer, src) = client.send_and_receive(req.encode(community=self.community, encoded_oids=encoded_oids))
+			except:
+				self.log("%s : bad community ?" % self.community);
+				return 1
+
+			rsp.decode(answer)
+
+			if req != rsp:
+				raise 'Unmatched response: %s vs %s' % (str(req), str(rsp))
+
+			oids = map(lambda x: x[0], map(asn1.OBJECTID().decode, rsp['encoded_oids']))
+
+			vals = map(lambda x: x[0](), map(asn1.decode, rsp['encoded_vals']))
+
+			if rsp['error_status']:
+				if rsp['error_status'] == 2:
+					if not (req is nextReq):
+						req = nextReq
+						continue
+					for l in oids, vals, h_oids:
+						del l[rsp['error_index']-1]
+				else:
+					raise 'SNMP error #' + str(rsp['error_status']) + ' for OID #' + str(rsp['error_index'])
+
+			while 1:
+				for idx in range(len(h_oids)):
+					if not asn1.OBJECTID(h_oids[idx]).isaprefix(oids[idx]):
+						for l in oids, vals, h_oids:
+							del l[idx]
+						break
+				else:
+					break
+
+			if not h_oids:
+				return 0
+
+			if not t:
+				self.log("[#] %s" % title)
+				t += 1
+
+			for (oid, val) in map(None, oids, vals):
+				self.log(str(val))
+			
+			encoded_oids = map(asn1.OBJECTID().encode, oids)
+
+			req['request_id'] = req['request_id'] + 1
+
+			if not (req is nextReq):
+				req = nextReq
+		return 0
+
+	def run(self):
+		self.host = self.target.interface
+		self.arch = self.argsDict.get("arch",self.arch)
+		self.snmpver = self.argsDict.get("snmpver",self.snmpver)
+		self.community = self.argsDict.get("community",self.community)
+
+		if self.snmpver not in ["1", "2c"]:
+			self.log("[D2 LOG] SNMP protocol version %s not supported" % self.snmpver)
+			self.setInfo("%s attacking %s - failed" % (NAME,self.host))
+			return 0
+			
+		self.setInfo("%s attacking %s" % (NAME,self.host))
+
+		t_archs = ["windows", "linux", "cisco", "aix", "solaris"]
+
+		self.arch = string.lower(self.arch)
+
+		if self.arch not in t_archs:
+		 self.log("[D2 LOG] Platform %s not supported" % self.arch)
+		 self.setInfo("%s attacking %s - failed" % (NAME,self.host))
+		 return 0
+
+		f = open(os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_scsnmp/%s.oid" % self.arch, "r")
+		head_oids = f.readlines()
+		f.close()
+
+		for h in head_oids:
+			if len(h) < 2:
+				continue
+			h_oids = []
+			h = h.strip()
+			h = h.split(";")
+			h_oids.append(h[1])
+			i = self.snmpenum(h_oids, h[0])
+			if i:
+				break
+			self.log("\n")
+
+		self.setInfo("%s attacking %s - finished" %(NAME,self.host))
+		return 1
+
+	def usage(self):
+		print "Usage: "+sys.argv[0]+" -t target -O arch:[windows|linux|cisco|aix|solaris] -O snmpver:[1|2c] -O community:[comm]"
+		sys.exit(0)
+    
+if __name__ == '__main__':
+	print "Running CANVAS %s v %s" % (NAME,VERSION)
+	app = theexploit()
+	ret = standard_callback_commandline(app)

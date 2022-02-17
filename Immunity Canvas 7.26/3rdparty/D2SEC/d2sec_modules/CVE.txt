@@ -1,0 +1,30 @@
+CVE-2001-1080 ; d2sec_diagrpt ; AIX diagrpt Arbitrary Privileged Program Execution ; AIX
+CVE-2004-1054 ; d2sec_invscout ; AIX invscout Local Command Execution Vulnerability ; AIX 
+CVE-2007-5373 ; d2sec_bigbrother ; ldapscripts Local Command Line Information Disclosure Vulnerability ; Linux
+CVE-2008-0884 ; d2sec_pam_auth ; Red Hat 'capp-lspp-config' Local Privilege Escalation Vulnerability ; Linux
+CVE-2006-6563 ; d2sec_proftpd ; ProFTPD Controls Buffer Overflow ; Linux
+CVE-2005-0058 ; d2sec_ms05_040 ; Microsoft Windows Telephony Service Local Privilege Escalation (MS05-040) ; Windows
+CVE-2006-2373 ; d2sec_ms06_030 ; Microsoft Windows SMB Driver Local Privilege Escalation (MS06-030) ; Windows
+CVE-2007-0211 ; d2sec_ms07_006 ; Microsoft Windows Shell Hardware Detection Local Privilege Escalation (MS07-006) ; Windows
+CVE-2006-5758 ; d2sec_ms07_017 ; Microsoft Windows GDI Local Privilege Escalation (MS07-017) ; Windows
+CVE-2007-5587 ; d2sec_mssecdrv ; Macrovision SafeDisc SECDRV IOCTL Local Privilege Escalation ; Windows
+CVE-2007-2174 ; d2sec_srescan ; Check Point Zone Labs SRESCAN IOCTL Local Privilege Escalation ; Windows
+CVE-2007-5671 ; d2sec_vmhgfs ; VMware Tools HGFS IOCTL Local Privilege Escalation ; Windows
+CVE-2007-4216 ; d2sec_vsdatant ; Check Point Zone Labs VSDATANT IOCTL Local Privilege Escalation ; Windows
+CVE-2002-1296 ; d2sec_priocntl ; Solaris priocntl() System Call Local Root Vulnerability ; Solaris
+CVE-2005-2072 ; d2sec_ldaudit ; Solaris Runtime Linker LD_AUDIT Privilege Escalation Vulnerability ; Solaris
+CVE-2008-2666 ; d2sec_phpshell ; PHP 5.2.6 chdir(), ftok() safe_mode bypass Vulnerability ; All
+CVE-2008-2665 ; d2sec_phpshell ; PHP 5.2.6 posix_access() safe_mode bypass Vulnerability ; All
+CVE-2008-3531 ; d2sec_mount ; nmount local arbitrary code execution Vulnerability ; FreeBSD
+CVE-2007-1677 ; d2sec_iso ; NetBSD ISO(4) Buffer Overflow Vulnerability ; NetBSD
+CVE-2007-5758 ; d2sec_db2dasrrm ; IBM DB2 Universal Database db2dasrrm Buffer Overflow Vulnerability ; Linux
+CVE-2008-5736 ; d2sec_netgraph ; FreeBSD netgraph and bluetooth Local Privilege Escalation Vulnerabilities ; FreeBSD
+CVE-2002-1374 ; d2sec_mychangeuser ; MySQL COM_CHANGE_USER Password Length Account Compromise Vulnerability ; Linux
+CVE-2004-0360 ; d2sec_passwd ; Solaris Passwd Vulnerability ; Solaris
+CVE-2009-0686 ; d2sec_tmis ; Trend Micro Internet Security 2008/2009 IOCTL Request Local Privilege Escalation ; Windows
+CVE-2008-3464 ; d2sec_ms08_066 ; Microsoft Windows AFD Driver Local Privilege Escalation ; Windows
+CVE-2008-0779 ; d2sec_forti ; Fortinet FortiClient fortimon.sys Local Privilege Escalation ; Windows
+CVE-2009-4146 ; d2sec_rtld ; FreeBSD 'execl()' Local Privilege Escalation Vulnerability ; FreeBSD
+CVE-2009-1185 ; d2sec_udedv ; Linux udevd NETLINK messaging Vulnerability ; Linux
+CVE-2010-1646 ; d2sec_sudo_cve_2010_1646 ; Sudo 'secure path' Security Bypass Vulnerability ; Linux
+CVE-2010-2693 ; d2sec_mbuf ; FreeBSD Kernel 7.x/8.x mbuf M_RDONLY Privilege Escalation ; FreeBSD

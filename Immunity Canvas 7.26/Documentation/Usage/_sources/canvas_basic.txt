@@ -1,0 +1,18 @@
+******************
+CANVAS Basic Usage
+******************
+Now that you are familiar with Canvas terms, available options and the GUI, we can start going through basic usage of CANVAS. We will cover how to run exploits against different targets from the GUI and command-line interface in simple scenarios and how to use the ListenerNode to interact with the compromised hosts. We will also cover how to use some of the more common modules that are useful during a penetration test such as the Recon and Trojan modules. It is recommended to have a Windows 7 or Windows 2003 Server on a virtual machine to use as a test target.
+
+
+
+ 
+ 
+ 
+ 
+
+
+
+
+
+
+

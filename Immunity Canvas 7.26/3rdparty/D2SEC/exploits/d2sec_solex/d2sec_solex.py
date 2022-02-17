@@ -1,0 +1,123 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2008
+#
+
+import sys, os, socket, string
+
+sys.path.append(".")
+
+from canvasexploit import canvasexploit
+
+from exploitutils import *
+import libs.canvasos as canvasos
+import canvasengine
+
+NAME = "Solaris local vulnerabilities scanner"
+DESCRIPTION = "Suggest local exploits to run on a Solaris server"
+DOCUMENTATION = {}
+DOCUMENTATION["Notes"] = ""
+
+VERSION = "1.0"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Post-Intrusion"
+PROPERTY['ARCH'] = [ ["Solaris"] ]
+
+runAnExploit_gtk2 = canvasengine.runAnExploit_gtk2
+runExploit = canvasengine.runExploit
+
+D2SEC_SOLEX_TXT = "/3rdparty/D2SEC/exploits/d2sec_solex/d2sec_solex.txt"
+
+class theexploit(canvasexploit):
+	def __init__(self):
+		canvasexploit.__init__(self)
+		self.name = NAME
+		self.supportedNodeArgs = [["solarisNode"]]
+		self.node = ""
+		self.version = ""
+		self.arch = ""
+		self.patchs = []
+		self.checked = 0
+		self.path = os.getcwd() + D2SEC_SOLEX_TXT
+		return
+
+	def uname(self):
+		str = self.node.runcommand("/bin/uname -r")
+		self.version = str[:-1]
+		str = self.node.runcommand("/bin/uname -p")
+		self.arch = str[:-1]
+	
+	def showrev(self):
+		str = self.node.runcommand("/usr/bin/showrev -p")
+		tmp = str.split("\n")
+		for t in tmp:
+			if len(t) > 0:
+				t = t.split(" ")[1]
+				self.patchs.append(t)
+
+	def print_solex(self, desc, pack, name_exploit, exploited):
+		self.log("[D2 LOG] " + desc)
+		self.log("[D2 LOG] exploit by %s" % pack)
+		self.log("[D2 LOG] name exploit : %s" % name_exploit)
+		if not exploited:
+			self.log("[D2 LOG] not tested")
+		if exploited:
+			self.log("[D2 LOG] tested")
+		self.log("\n")
+
+	def check_vuln(self):
+		try:
+			f = open(self.path, "r")
+			vulns = f.readlines()
+			f.close()
+		except:
+			self.log("[D2 LOG] Error: file %s is missing" % self.path)
+			return 1
+		return 0
+
+		for v in vulns:
+			self.checked = 0
+			(patch, min, max, vers, arch, desc, pack, name_exploit, exploited) = v.split(":")
+			if self.version == vers and self.arch == arch:
+				for p in self.patchs:
+					(num, rev) = p.split("-")
+					# if patch is installed
+					if num == patch:
+						min = int(min)
+						max = int(max)
+						rev = int(rev)
+						if rev >= min and rev <= max:
+							self.print_solex(desc, pack, name_exploit, exploited)
+						self.checked = 1
+				# if patch is not installed
+				if self.checked == 0:
+					self.print_solex(desc, pack, name_exploit, exploited)
+
+	def run(self):
+		self.setInfo("%s (in progress)"%(NAME))
+
+		for node in self.argsDict["passednodes"]:
+			type = node.nodetype
+			if type not in self.supportedNodeArgs[0]:
+				self.log("[D2 LOG] %s node type not supported"%type)
+				continue
+
+			self.node = node
+
+			self.uname()
+			self.showrev()
+
+			if self.check_vuln():
+				return 0
+
+		return 1
+	
+if __name__=="__main__":
+    print "This module is meant to be run only within CANVAS"
+
+

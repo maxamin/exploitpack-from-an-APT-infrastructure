@@ -1,0 +1,61 @@
+########################################################################
+#                       *CANVAS Release 6.74*                          #
+########################################################################
+
+*Date*: 30 November 2011
+
+*Version*: 6.74 ("Further")
+
+*Download URL*: https://canvas.immunityinc.com/cgi-bin/getcanvas.py
+
+*Release Notes*:
+
+We include two new modules in this release. The first, frontpage_rpc_fileupload,
+takes advantage of frontpage server extensions in order to upload a file
+that will trigger a MOSDEF callback. 
+
+The second, java_rhino, is our new client side for the Java Rhino engine
+vulnerability (CVE-2011-3544) that is being exploited in the wild. 
+
+Finally, we include improvements to the PyELF framework and our underlying
+MOSDEF support for Android and fixes to padding_oracle, thunderbird_backdoor
+and jboss_jmxconsole_deployer.
+
+
+==Changes==
+
+o Improvements to PyELF framework
+
+o Improvements to padding_oracle, thunderbird backdoor,
+  jboss_jmxconsole_deployer
+
+o Improvements to Android MOSDEF & listener
+
+
+==New Modules==
+
+o frontpage_rpc_fileupload (FrontPage Server Extension RPC File Upload)
+
+o java_rhino (Sandbox bypass through Rhino engine: JDK/JRE <= 6 Update 27)
+
+
+*Forum*
+
+Still at https://forum.immunityinc.com/ . Useful for all your many questions!
+
+*CANVAS Tips 'n' Tricks*:
+
+The Java client side exploits are very reliable across underlying platforms and
+browsers. All they require is a vulnerable Java installation that manifests via
+the Java plugin in a browser. This months exploit, java_rhino, works nicely
+on Windows, Linux and OSX in all major browsers. You should try it!
+
+*Links*:
+
+Support email      : support@immunityinc.com
+Sales support      : sales@immunityinc.com
+Support/Sales phone: +1 786-220-0600
+
+
+########################################################################
+########################################################################

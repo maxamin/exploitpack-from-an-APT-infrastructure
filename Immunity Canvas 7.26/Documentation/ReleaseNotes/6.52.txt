@@ -1,0 +1,91 @@
+########################################################################
+#                       *CANVAS Release 6.52*                          #
+########################################################################
+
+*Date*: 05 November 2009
+
+*Version*: 6.52 (Bumblebee)
+
+*Release Notes*:
+
+This release includes VisualSploit, a graphical way to create
+CANVAS exploits. VisualSploit has long been used for Immunity's
+Unethical Hacking, Windows Overflows, and Heap Overflows trainings.
+It has a Japanese translation in it, if you are running it on 
+Japanese Linux. We'll have more information on how to use it,
+tutorials and such, on the forum sometime this month. For starters
+though, use: python VisualSploit/main.py to start it, and hack
+away! 
+
+This release also includes a module to help you verify Qualys scans.
+
+==New Modules==
+
+twiki_search - (NoCVE)
+acrobat_u3d_mesh - (CVE-2009-2994)
+java_deserialize_win32 - (CVE-2008-5353) (updated to bypass ISA server for large enterprises)
+modify_registry - (NoCVE)
+zeroconf_recon - (NoCVE)
+qgverify - (NoCVE)
+ms09_051 - (CVE-2009-0555)
+ms09_059 - (CVE-2009-2524)
+aixcmsd  - (CVE-2009-3699)
+
+
+=Changes==
+
+Splashscreen disabled by default except for OS X (was causing some issues on older PyGTK installs)
+
+Interface code moved to ctypes/pure Python. This avoids problems with some people
+who have overly anxious anti-virus programs installed (and GETIFS2.exe is now removed).
+
+
+==Bug Fixes==
+
+Bug fixed for people with over 2000 CANVAS modules installed (all the exploit packs!).
+
+Bug in the the file tree viewer fixed for Win32Nodes that triggered in certain
+uncommon circumstances.
+
+
+*Upcoming training*:
+
+NORWAY TRAINING
+Location: mnemonic AS, Wergelandsveien 25, N-0167 OSLO, Norway
+
+February 15-19, 2010: Unethical Hacking
+Duration: 5 Days
+Cost: 35000 NOK
+
+USA TRAINING
+Location: 1247 Alton Road, Miami Beach, Florida
+
+November 2-5, 2009: Finding 0days
+Duration: 4 days
+Cost: $4000 per person
+
+December 8-9, 2009: CANVAS Training
+Duration: 2 days
+Cost: $2000 per person
+
+December 14-18, 2009: Unethical Hacking
+Duration: 5 days
+Cost: $5000 per person
+
+For more information contact admin@immunityinc.com
+
+
+*CANVAS Tips 'n' Tricks*:
+
+Use the search option to find modules - easier than sorting through the list of 2000 modules 
+by hand!
+
+*Links*:
+
+Support email      : support@immunityinc.com
+Sales support      : sales@immunityinc.com
+Support/Sales phone: +1 786-220-0600
+
+
+########################################################################
+########################################################################

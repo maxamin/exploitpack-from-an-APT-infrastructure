@@ -1,0 +1,60 @@
+########################################################################
+#                       *CANVAS Release 6.64*                          #
+########################################################################
+
+*Date*: 23 November 2010 
+
+*Version*: 6.64 ("Thanksgiving")
+
+*Download URL*: https://canvas.immunityinc.com/cgi-bin/getcanvas.py
+
+*Release Notes*:
+
+Here at Immunity we would say the most useful CANVAS exploit of the
+past few months has been the ASP.Net Padding Oracle and Download
+modules, one of which we are releasing with 6.64. In our own
+penetration tests, we find that this often leads to full compromise of
+unpatched web sites.
+
+Once you have access to an ASP.Net web site, you will likely find the
+ms_tokenkidnapping module of great use. Then you can install the CANVAS
+kernel rootkit, and have persistance. Or you can simply write up the 
+report with pretty screenshots - it's up to you! 
+
+
+==Changes==
+
+o Added Android Node for upcoming phone exploits
+
+o Fixed bug in callback creation for local exploits run on Windows 2003 (needed DEP-safe shellcode)
+
+o Fixed bugs in the padding oracle library (related to block sizes)
+
+==New Modules==
+
+CVE_2010_3856
+firefox_appendchild
+ie_setuserclip
+adobe_flash_button
+aspnet_download
+ms_tokenkidnapping
+adobe_shockwave_rcslchunk
+
+
+*Forum*
+Still at https://forum.immunityinc.com/ . Useful for all your many questions!
+
+*CANVAS Tips 'n' Tricks*:
+
+Exporting your clientd logs into XML format is easy with the
+client_side_report module!
+
+*Links*:
+
+Support email      : support@immunityinc.com
+Sales support      : sales@immunityinc.com
+Support/Sales phone: +1 786-220-0600
+
+
+########################################################################
+########################################################################

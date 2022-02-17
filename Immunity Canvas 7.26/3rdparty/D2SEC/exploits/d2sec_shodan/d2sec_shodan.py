@@ -1,0 +1,141 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2009
+#
+
+import os
+import sys
+import urllib
+import re
+
+sys.path.append('.')
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+import libs.spkproxy as spkproxy
+
+NAME = 'D2 Shodan Interface'
+DESCRIPTION='Module to query Shodan search engine'
+VERSION='0.2'
+
+DOCUMENTATION = {}
+DOCUMENTATION['VENDOR'] = ""
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION['Date public'] = ""
+DOCUMENTATION['References'] = ""
+DOCUMENTATION['Versions Affected'] = ""
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = ""
+DOCUMENTATION["CVE Url"] = ""
+DOCUMENTATION["Notes"] = """
+This module allows to query the search engine shodan (http://shodan.surtri.com)
+and automatically obtain the full results. It's much faster than manually 
+browse the results on the site Shodan. 
+"""
+
+PROPERTY = {}
+PROPERTY['TYPE'] = 'Tools'
+PROPERTY['SITE'] = 'Remote'
+PROPERTY['ARCH'] = [ ['All'] ]
+
+class theexploit(tcpexploit):
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.name = NAME
+    self.keyword = ''
+    self.apikey = ''
+    self.ip = ''
+    self.base_url = 'http://www.shodanhq.com/api/'
+
+  def _request(self, function, params):
+    try:
+      from simplejson import dumps, loads
+    except:
+      self.log('[D2] Module simplejson not present. You can download and install this module at this url: http://pypi.python.org/pypi/simplejson/')
+      return None
+    params['key'] = self.apikey
+    data = spkproxy.urlopen(self.base_url + function + '?' + urllib.urlencode(params), exploit=self).read()
+    return loads(data)
+
+  def search_keyword(self):
+    return self._request('search', {'q': self.keyword})
+
+  def search_ip(self):
+    return self._request('host', {'ip': self.ip})
+
+  def getargs(self):
+    self.keyword = self.argsDict.get('keyword', self.keyword)
+    self.apikey = self.argsDict.get('apikey',self.apikey)
+    self.ip = self.argsDict.get('ip',self.ip)
+
+  def shodan_keyword(self):
+    if not self.keyword:
+      return
+    self.log('[+] keyword: %s' % self.keyword)
+    self.log('\n')
+    result = self.search_keyword()
+    if not result:
+      return 0
+    self.log('Total hosts found: %s' % result['total'])
+    self.log('\n')
+    for nfo in result['matches']:
+      if not nfo:
+        break
+      self.log('%s - port %s' % (nfo['ip'], nfo['port']))
+      [self.log('%s' % data) for data in nfo['data'].split('\n')]
+      self.log('\n')
+
+  def shodan_ip(self):
+    if not self.ip:
+      return
+    self.log('[+] target ip: %s' % self.ip)
+    self.log('\n')
+    result = self.search_ip()
+    if not result:
+      return 0
+    fields = {'country': 'str', 
+      'ip': 'str',
+      'hostnames': 'tab',
+      'os': 'str',
+      'data': 'tab'
+    } 
+    for field, nfo in result.items():
+      for x, y in fields.items():
+        if field == x:
+          if y == 'str': self.log('%s: %s' % (field, nfo))
+          if y == 'tab':
+            if field == 'data':
+              for w, z in nfo[0].items():
+                self.log('%s: %s' % (w, ''.join(str(z))))
+            else:
+              self.log('%s: %s' % (field, ''.join(nfo)))
+
+  def run(self):
+    self.log('[D2] %s running' % NAME)
+    self.setInfo('[D2] %s running' % NAME)
+    self.getargs()
+    if not self.apikey:
+      self.log('[D2] You must specify a shodan API key. For more information, see the shodan website at http://www.shodanhq.com/account/register')
+      self.setInfo('[D2] %s failed' % NAME)
+      return 0
+    if not self.keyword and not self.ip:
+      self.log('[D2] You must specify a keyword and/or a target ip')
+      self.setInfo('[D2] %s failed' % NAME)
+      return 0
+    self.shodan_keyword()
+    self.shodan_ip()
+    self.setInfo('[D2] %s done' % NAME)
+    return 1
+
+  def usage(self):
+    print 'Usage: %s -O keyword:<string> -O ip:<target ip> -O apikey:<shodan API key>\n' % sys.argv[0]
+    sys.exit(0)
+
+if __name__=='__main__':
+  print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

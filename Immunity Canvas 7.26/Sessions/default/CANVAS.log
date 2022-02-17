@@ -1,0 +1,158 @@
+2020-09-22 09:06:36,750 [              dep_check.py] - INFO - Required version of Python found: 2.7.17
+2020-09-22 09:06:42,095 [              dep_check.py] - ERROR - The following dependencies required by CANVAS
+could not be found:
+
+gtk, gobject, cairo, gtk.glade
+
+2020-09-22 09:06:42,095 [              runcanvas.py] - CRITICAL - Failed dependency check - Exiting
+2020-09-22 09:37:46,015 [              dep_check.py] - INFO - Required version of Python found: 2.7.17
+2020-09-22 09:37:56,566 [              dep_check.py] - ERROR - The following dependencies required by CANVAS
+could not be found:
+
+gtk.glade
+
+2020-09-22 09:37:56,566 [              runcanvas.py] - CRITICAL - Failed dependency check - Exiting
+2020-09-22 09:42:26,252 [              dep_check.py] - INFO - Required version of Python found: 2.7.17
+2020-09-22 09:42:46,937 [              dep_check.py] - ERROR - The following dependencies required by CANVAS
+could not be found:
+
+gtk.glade
+
+2020-09-22 09:42:46,937 [              runcanvas.py] - CRITICAL - Failed dependency check - Exiting
+2020-09-22 10:54:54,716 [              dep_check.py] - INFO - Required version of Python found: 2.7.15
+2020-09-22 10:54:57,653 [              dep_check.py] - ERROR - The following dependencies required by CANVAS
+could not be found:
+
+pyasn1, Crypto, bcrypt, nacl
+
+2020-09-22 10:54:57,654 [              runcanvas.py] - CRITICAL - Failed dependency check - Exiting
+2020-09-22 10:58:51,043 [              dep_check.py] - INFO - Required version of Python found: 2.7.15
+2020-09-22 10:58:54,954 [              dep_check.py] - ERROR - The following dependencies required by CANVAS
+could not be found:
+
+pyasn1, Crypto, bcrypt, nacl
+
+2020-09-22 10:58:54,954 [              runcanvas.py] - CRITICAL - Failed dependency check - Exiting
+2020-10-03 10:01:02,454 [              dep_check.py] - INFO - Required version of Python found: 2.7.15
+2020-10-03 10:01:02,526 [              dep_check.py] - INFO - dep_check passed: All dependencies satisfied
+2020-10-03 10:01:02,976 [               features.py] - INFO - pyOpenSSL loaded: OpenSSL 19.1.0
+2020-10-03 10:01:03,167 [           canvasengine.py] - WARNING - Setting CANVAS session to: default
+2020-10-03 10:01:03,950 [           canvasengine.py] - INFO - Parse tables successfully generated
+2020-10-03 10:01:05,647 [           canvasengine.py] - INFO - Registering modules...
+2020-10-03 10:01:05,709 [           canvasengine.py] - INFO - Initializing exploit pack: [D2 Exploitation Pack]
+2020-10-03 10:01:05,710 [           canvasengine.py] - INFO - Exploit pack [D2 Exploitation Pack] initialized correctly
+2020-10-03 10:01:05,755 [           canvasengine.py] - INFO - Initializing exploit pack: [White Phosphorus Exploit Pack]
+2020-10-03 10:01:05,755 [           canvasengine.py] - INFO - Exploit pack [White Phosphorus Exploit Pack] initialized correctly
+2020-10-03 10:01:13,466 [           canvasengine.py] - ERROR - Error while loading BLUEKEEP
+2020-10-03 10:01:14,078 [      VAASeline_Control.py] - WARNING - VAASeline_Control: name 'RFBNetworkClient' is not defined
+2020-10-03 10:01:14,078 [      VAASeline_Control.py] - WARNING - Please see /libs/VAASeline/README for instructions on how to get the dependencies
+2020-10-03 10:01:14,078 [           canvasengine.py] - ERROR - Error while loading VAASeline_Control
+2020-10-03 10:01:20,726 [              pty_shell.py] - WARNING - pty_shell: No module named fcntl
+2020-10-03 10:01:20,727 [              pty_shell.py] - WARNING - Note: pty_shell only works with CANVAS running on Linux
+2020-10-03 10:01:20,727 [           canvasengine.py] - ERROR - Error while loading pty_shell
+2020-10-03 10:01:21,828 [                clientd.py] - ERROR - Could not load geoip database
+2020-10-03 10:01:25,757 [           canvasengine.py] - ERROR - Error while loading d2sec_trx_addons
+2020-10-03 10:01:25,997 [           canvasengine.py] - ERROR - Error while loading d2sec_upnp_location
+2020-10-03 10:01:25,997 [           exploitutils.py] - WARNING - crash file hit the threshold
+2020-10-03 10:01:25,997 [           exploitutils.py] - INFO - Removing old crash file .\CRASH.bak
+2020-10-03 10:01:25,999 [           exploitutils.py] - INFO - Renaming .\CRASH.log to .\CRASH.bak
+2020-10-03 10:01:27,848 [           canvasengine.py] - INFO - Registered 1604 modules
+2020-10-03 10:01:27,881 [           canvasengine.py] - INFO - Checking launching preconditions...
+2020-10-03 10:01:27,897 [              gui_queue.py] - INFO - Local GUI Queue listening on port 4323
+2020-10-03 10:01:28,158 [           canvasengine.py] - WARNING - No country exclude list loaded
+2020-10-03 10:01:28,165 [           exploitutils.py] - INFO - Discovered interfaces:
+2020-10-03 10:01:28,165 [           exploitutils.py] - INFO -  - ['#3', '0.0.0.0', '0.0.0.0']
+2020-10-03 10:01:28,167 [           exploitutils.py] - INFO -  - ['#2', '0.0.0.0', '0.0.0.0']
+2020-10-03 10:01:28,167 [           exploitutils.py] - INFO -  - ['#1', '169.254.242.156', '255.255.0.0']
+2020-10-03 10:01:28,167 [           exploitutils.py] - INFO -  - ['#0', '192.168.0.106', '255.255.255.0']
+2020-10-03 10:01:28,167 [           exploitutils.py] - INFO -  - ['#5', '0.0.0.0', '0.0.0.0']
+2020-10-03 10:01:28,167 [           exploitutils.py] - INFO -  - ['#4', '0.0.0.0', '0.0.0.0']
+2020-10-03 10:01:37,914 [           canvasengine.py] - ERROR - Sniffer open failed - Sniffing and some modules disabled
+2020-10-03 10:01:37,914 [           canvasengine.py] - INFO - Universal MOSDEF Listener Startup Requested on 0.0.0.0:5555 (LocalNode)
+2020-10-03 10:01:38,104 [                immterm.py] - INFO - Immunity terminal: using font: Monospace
+2020-10-03 10:01:38,681 [          canvasguigtk2.py] - INFO - Your use of CANVAS is subject to certain terms and conditions, as specified in the CANVAS License. By using CANVAS, you agree to these terms.
+2020-10-03 10:01:38,683 [          canvasguigtk2.py] - INFO - One of these conditions is that the CANVAS license, as included with this package, is the sole description of your rights.
+2020-10-03 10:01:38,683 [          canvasguigtk2.py] - INFO - Your CANVAS subscription is registered to (0day@0day.cc) and expires on 2099-12-31 16:23:00
+2020-10-03 10:01:38,683 [          canvasguigtk2.py] - INFO - If you are getting close to the expiration date, contact us at +1-786-220-0600 or admin@immunityinc.com to renew!
+2020-10-03 10:02:05,052 [          canvasguigtk2.py] - INFO - Stopping QueryListener
+2020-10-03 10:04:40,174 [              dep_check.py] - INFO - Required version of Python found: 2.7.15
+2020-10-03 10:04:40,230 [              dep_check.py] - INFO - dep_check passed: All dependencies satisfied
+2020-10-03 10:04:40,391 [               features.py] - INFO - pyOpenSSL loaded: OpenSSL 19.1.0
+2020-10-03 10:04:40,460 [           canvasengine.py] - WARNING - Setting CANVAS session to: default
+2020-10-03 10:04:40,535 [           canvasengine.py] - INFO - Registering modules...
+2020-10-03 10:04:40,721 [           canvasengine.py] - INFO - Initializing exploit pack: [D2 Exploitation Pack]
+2020-10-03 10:04:40,723 [           canvasengine.py] - INFO - Exploit pack [D2 Exploitation Pack] initialized correctly
+2020-10-03 10:04:40,813 [           canvasengine.py] - INFO - Initializing exploit pack: [White Phosphorus Exploit Pack]
+2020-10-03 10:04:40,813 [           canvasengine.py] - INFO - Exploit pack [White Phosphorus Exploit Pack] initialized correctly
+2020-10-03 10:04:46,536 [           canvasengine.py] - ERROR - Error while loading BLUEKEEP
+2020-10-03 10:04:46,868 [      VAASeline_Control.py] - WARNING - VAASeline_Control: name 'RFBNetworkClient' is not defined
+2020-10-03 10:04:46,868 [      VAASeline_Control.py] - WARNING - Please see /libs/VAASeline/README for instructions on how to get the dependencies
+2020-10-03 10:04:46,868 [           canvasengine.py] - ERROR - Error while loading VAASeline_Control
+2020-10-03 10:04:49,710 [              pty_shell.py] - WARNING - pty_shell: No module named fcntl
+2020-10-03 10:04:49,710 [              pty_shell.py] - WARNING - Note: pty_shell only works with CANVAS running on Linux
+2020-10-03 10:04:49,710 [           canvasengine.py] - ERROR - Error while loading pty_shell
+2020-10-03 10:04:49,964 [                clientd.py] - ERROR - Could not load geoip database
+2020-10-03 10:04:51,447 [           canvasengine.py] - ERROR - Error while loading d2sec_trx_addons
+2020-10-03 10:04:51,447 [           exploitutils.py] - WARNING - crash file hit the threshold
+2020-10-03 10:04:51,447 [           exploitutils.py] - INFO - Removing old crash file .\CRASH.bak
+2020-10-03 10:04:51,447 [           exploitutils.py] - INFO - Renaming .\CRASH.log to .\CRASH.bak
+2020-10-03 10:04:51,555 [           canvasengine.py] - ERROR - Error while loading d2sec_upnp_location
+2020-10-03 10:04:52,081 [           canvasengine.py] - INFO - Registered 1604 modules
+2020-10-03 10:04:52,082 [           canvasengine.py] - INFO - Checking launching preconditions...
+2020-10-03 10:04:52,101 [              gui_queue.py] - INFO - Local GUI Queue listening on port 4913
+2020-10-03 10:04:52,367 [           canvasengine.py] - WARNING - No country exclude list loaded
+2020-10-03 10:04:52,372 [           exploitutils.py] - INFO - Discovered interfaces:
+2020-10-03 10:04:52,374 [           exploitutils.py] - INFO -  - ['#3', '0.0.0.0', '0.0.0.0']
+2020-10-03 10:04:52,374 [           exploitutils.py] - INFO -  - ['#2', '0.0.0.0', '0.0.0.0']
+2020-10-03 10:04:52,375 [           exploitutils.py] - INFO -  - ['#1', '169.254.242.156', '255.255.0.0']
+2020-10-03 10:04:52,375 [           exploitutils.py] - INFO -  - ['#0', '192.168.0.106', '255.255.255.0']
+2020-10-03 10:04:52,375 [           exploitutils.py] - INFO -  - ['#5', '0.0.0.0', '0.0.0.0']
+2020-10-03 10:04:52,375 [           exploitutils.py] - INFO -  - ['#4', '0.0.0.0', '0.0.0.0']
+2020-10-03 10:05:02,717 [           canvasengine.py] - ERROR - Sniffer open failed - Sniffing and some modules disabled
+2020-10-03 10:05:02,719 [           canvasengine.py] - INFO - Universal MOSDEF Listener Startup Requested on 0.0.0.0:5555 (LocalNode)
+2020-10-03 10:05:02,881 [                immterm.py] - INFO - Immunity terminal: using font: Monospace
+2020-10-03 10:05:03,460 [          canvasguigtk2.py] - INFO - Your use of CANVAS is subject to certain terms and conditions, as specified in the CANVAS License. By using CANVAS, you agree to these terms.
+2020-10-03 10:05:03,460 [          canvasguigtk2.py] - INFO - One of these conditions is that the CANVAS license, as included with this package, is the sole description of your rights.
+2020-10-03 10:05:03,460 [          canvasguigtk2.py] - INFO - Your CANVAS subscription is registered to (0day@0day.cc) and expires on 2099-12-31 16:23:00
+2020-10-03 10:05:03,461 [          canvasguigtk2.py] - INFO - If you are getting close to the expiration date, contact us at +1-786-220-0600 or admin@immunityinc.com to renew!
+2020-10-03 10:06:02,594 [          canvasguigtk2.py] - INFO - Stopping QueryListener
+2020-10-03 10:06:56,910 [              dep_check.py] - INFO - Required version of Python found: 2.7.15
+2020-10-03 10:06:56,963 [              dep_check.py] - INFO - dep_check passed: All dependencies satisfied
+2020-10-03 10:06:57,122 [               features.py] - INFO - pyOpenSSL loaded: OpenSSL 19.1.0
+2020-10-03 10:06:57,190 [           canvasengine.py] - WARNING - Setting CANVAS session to: default
+2020-10-03 10:06:57,266 [           canvasengine.py] - INFO - Registering modules...
+2020-10-03 10:06:57,401 [           canvasengine.py] - INFO - Initializing exploit pack: [D2 Exploitation Pack]
+2020-10-03 10:06:57,401 [           canvasengine.py] - INFO - Exploit pack [D2 Exploitation Pack] initialized correctly
+2020-10-03 10:06:57,414 [           canvasengine.py] - INFO - Initializing exploit pack: [White Phosphorus Exploit Pack]
+2020-10-03 10:06:57,414 [           canvasengine.py] - INFO - Exploit pack [White Phosphorus Exploit Pack] initialized correctly
+2020-10-03 10:07:03,069 [           canvasengine.py] - ERROR - Error while loading BLUEKEEP
+2020-10-03 10:07:03,335 [      VAASeline_Control.py] - WARNING - VAASeline_Control: name 'RFBNetworkClient' is not defined
+2020-10-03 10:07:03,335 [      VAASeline_Control.py] - WARNING - Please see /libs/VAASeline/README for instructions on how to get the dependencies
+2020-10-03 10:07:03,335 [           canvasengine.py] - ERROR - Error while loading VAASeline_Control
+2020-10-03 10:07:06,068 [              pty_shell.py] - WARNING - pty_shell: No module named fcntl
+2020-10-03 10:07:06,068 [              pty_shell.py] - WARNING - Note: pty_shell only works with CANVAS running on Linux
+2020-10-03 10:07:06,068 [           canvasengine.py] - ERROR - Error while loading pty_shell
+2020-10-03 10:07:06,069 [           exploitutils.py] - WARNING - crash file hit the threshold
+2020-10-03 10:07:06,069 [           exploitutils.py] - INFO - Removing old crash file .\CRASH.bak
+2020-10-03 10:07:06,069 [           exploitutils.py] - INFO - Renaming .\CRASH.log to .\CRASH.bak
+2020-10-03 10:07:06,371 [                clientd.py] - ERROR - Could not load geoip database
+2020-10-03 10:07:07,878 [           canvasengine.py] - ERROR - Error while loading d2sec_trx_addons
+2020-10-03 10:07:08,030 [           canvasengine.py] - ERROR - Error while loading d2sec_upnp_location
+2020-10-03 10:07:08,572 [           canvasengine.py] - INFO - Registered 1604 modules
+2020-10-03 10:07:08,573 [           canvasengine.py] - INFO - Checking launching preconditions...
+2020-10-03 10:07:08,592 [              gui_queue.py] - INFO - Local GUI Queue listening on port 2245
+2020-10-03 10:07:08,845 [           canvasengine.py] - WARNING - No country exclude list loaded
+2020-10-03 10:07:08,851 [           exploitutils.py] - INFO - Discovered interfaces:
+2020-10-03 10:07:08,851 [           exploitutils.py] - INFO -  - ['#3', '0.0.0.0', '0.0.0.0']
+2020-10-03 10:07:08,851 [           exploitutils.py] - INFO -  - ['#2', '0.0.0.0', '0.0.0.0']
+2020-10-03 10:07:08,852 [           exploitutils.py] - INFO -  - ['#1', '169.254.242.156', '255.255.0.0']
+2020-10-03 10:07:08,852 [           exploitutils.py] - INFO -  - ['#0', '192.168.0.106', '255.255.255.0']
+2020-10-03 10:07:08,854 [           exploitutils.py] - INFO -  - ['#5', '0.0.0.0', '0.0.0.0']
+2020-10-03 10:07:08,854 [           exploitutils.py] - INFO -  - ['#4', '0.0.0.0', '0.0.0.0']
+2020-10-03 10:07:19,226 [           canvasengine.py] - ERROR - Sniffer open failed - Sniffing and some modules disabled
+2020-10-03 10:07:19,226 [           canvasengine.py] - INFO - Universal MOSDEF Listener Startup Requested on 0.0.0.0:5555 (LocalNode)
+2020-10-03 10:07:19,390 [                immterm.py] - INFO - Immunity terminal: using font: Monospace
+2020-10-03 10:07:19,970 [          canvasguigtk2.py] - INFO - Your use of CANVAS is subject to certain terms and conditions, as specified in the CANVAS License. By using CANVAS, you agree to these terms.
+2020-10-03 10:07:19,970 [          canvasguigtk2.py] - INFO - One of these conditions is that the CANVAS license, as included with this package, is the sole description of your rights.
+2020-10-03 10:07:19,970 [          canvasguigtk2.py] - INFO - Your CANVAS subscription is registered to (0day@0day.cc) and expires on 2099-12-31 16:23:00
+2020-10-03 10:07:19,970 [          canvasguigtk2.py] - INFO - If you are getting close to the expiration date, contact us at +1-786-220-0600 or admin@immunityinc.com to renew!

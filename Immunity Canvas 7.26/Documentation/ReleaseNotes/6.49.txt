@@ -1,0 +1,94 @@
+########################################################################
+#                       *CANVAS Release 6.49*                          #
+########################################################################
+
+*Date*: 04 August 2009
+
+*Version*: 6.49 (SinCity Release)
+
+*Release Notes*:
+
+The August release contains the following changes and new modules:
+
+==Exploits==
+
+Acrobat + Flash exploit (CVE-2009-1862)
+Firefox 3.5 Memory Corruption (CVE-2009-2477)
+Microsoft Embedded OpenType Font Engine Vulnerability DOS (MS09-029)
+(CVE-2009-0232)
+Microsoft DirectShow (msvidctl.dll) Exploit for Windows XP (MS09-032)
+(CVE-2008-0015)
+Nagios < 3.1.1 Command Injection (CVE-2009-2288)
+Zen Cart <= 1.3.8a Remote Code Execution (CVE-2009-2255) 
+
+==Bug Fixes==
+
+secdrv module renamed to ms07_067 and the shellcode changed from a connectback to a token stealing - far more reliable
+
+Missing resource files for Safari file stealing exploits added
+
+Fixed GUI race condition bug for Win32
+
+Fixed raw packet creation for portscan
+
+Fixed HTTP Proxy NAT issues (Note below):
+
+'The client id / NAT problem. Now every payload generation
+uses a time.time() based X-id that is unique to that generated payload.
+So per-exploit on same machine will have unique client ID (every exploit
+calls down into the payload generation function, which will then X-id to
+a unique ID).
+It now works okay with multiple hosts coming from the same source IP'
+
+Updated phpexploit.py to work with the new zencart exploit
+
+Documentation fixes to qt73_rtsp and mos09_002
+
+Until next month, Cheers
+Team Immunity
+
+
+*Postscript*:
+
+Forums down for maintenance sorry :(
+
+
+*Upcoming training*:
+
+USA TRAINING
+Location: 1247 Alton Road, Miami Beach, Florida
+
+August 17-21, 2009: Unethical Hacking
+Duration: 5 days
+Cost: $5000 per person
+
+September 14-17, 2009: Heap Overflows
+Duration: 4 days
+Cost: $4000 per person
+
+November 2-5, 2009: Finding 0days
+Duration: 4 days
+Cost: $4000 per person
+
+For more information contact admin@immunityinc.com
+
+
+*CANVAS Tips 'n' Tricks*:
+
+To shut down a child node you have established on an exploited system simply
+select it in the Node Management view and press 'delete' and confirm the
+prompt. The LocalNode is special and can never be deleted though.
+
+*Links*:
+
+CANVAS forums      : http://forum.immunityinc.com
+Support email      : support@immunityinc.com
+Sales support      : sales@immunityinc.com
+Support/Sales phone: +1 786-220-0600
+
+CANVAS Release RSS :
+http://forum.immunityinc.com/index.php?type=rss;action=.xml;board=2.0
+
+
+########################################################################
+########################################################################

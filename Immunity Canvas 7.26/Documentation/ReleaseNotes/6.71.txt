@@ -1,0 +1,57 @@
+########################################################################
+#                       *CANVAS Release 6.71*                          #
+########################################################################
+
+*Date*: 8 August 2011
+
+*Version*: 6.71 ("Slacker")
+
+*Download URL*: https://canvas.immunityinc.com/cgi-bin/getcanvas.py
+
+*Release Notes*:
+
+New in this release are two new exploits for Windows. ms11_054 is capable
+of escalating privileges on XP, 2003, Vista, 2008 and Windows 7. On the
+clientside, flash_APSB11_18 targets Flash player, 10.3.181.23 and earlier.
+
+We also expand our support of the DNS MOSDEF listener to the
+padding_oracle exploit, add Android 2.2.1 support to android_hotplug, and
+fix several minor bugs throughout CANVAS.
+
+==Changes==
+
+o Android 2.2.1 support for android_hotplug
+
+o Improvements to padding_oracle, including support for the DNS payload
+
+o Improvements to thunderbird_backdoor
+
+==New Modules==
+
+o BuildDNSCallback
+
+o flash_APSB11_18
+
+o ms11_054
+
+*Forum*
+Still at https://forum.immunityinc.com/ . Useful for all your many questions!
+
+*CANVAS Tips 'n' Tricks*:
+
+Using clientd, one could serve any of our clientsides (such as the new
+flash_APSB11_18 exploit) to a host of unsuspecting targets. For each
+successful compromise, a quick attack with ms11_054 can provide complete
+Administrator access to their system, including the ability to install
+unsigned kernel drivers on 64-bit systems without alerting the user in
+any way.
+
+*Links*:
+
+Support email      : support@immunityinc.com
+Sales support      : sales@immunityinc.com
+Support/Sales phone: +1 786-220-0600
+
+
+########################################################################
+########################################################################

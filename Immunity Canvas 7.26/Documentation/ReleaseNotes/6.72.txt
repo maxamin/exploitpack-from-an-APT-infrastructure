@@ -1,0 +1,57 @@
+########################################################################
+#                       *CANVAS Release 6.72*                          #
+########################################################################
+
+*Date*: 30 September 2011
+
+*Version*: 6.72 ("Hammer")
+
+*Download URL*: https://canvas.immunityinc.com/cgi-bin/getcanvas.py
+
+*Release Notes*:
+
+This releases comes with a new remote exploit for JBoss versions
+4, 5 and 6 running on both Windows and Linux. The exploit uses
+services exposed by the Web JMX console in order to deploy
+an application that will connect back to CANVAS.
+
+Moreover, we include two new client-side exploits (Firefox and
+Safari on Windows) that can bypass ASLR on Win7 by using a Java
+installation on the targets.
+
+==Changes==
+
+o Improvements to padding_oracle for better reliability and speed
+
+o GetBrowserInfo will now grab Firefox credentials from Windows nodes
+
+==New Modules==
+
+o jboss_jmxconsole_deployer
+
+o firefox_channelredirect
+
+o safari_renderdestroy
+
+o BuildMOSDEFDLL
+
+*Forum*
+
+Still at https://forum.immunityinc.com/ . Useful for all your many questions!
+
+*CANVAS Tips 'n' Tricks*:
+
+The new BuildMOSDEFDLL module can be used in order to create 
+a DLL that contains a MOSDEF callback (Win32 only for now).
+If injected into a remote process, it will connect back to CANVAS,
+and establish a new MOSDEF connection and node!
+
+*Links*:
+
+Support email      : support@immunityinc.com
+Sales support      : sales@immunityinc.com
+Support/Sales phone: +1 786-220-0600
+
+
+########################################################################
+########################################################################

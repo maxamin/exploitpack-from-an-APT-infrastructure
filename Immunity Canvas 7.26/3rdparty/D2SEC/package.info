@@ -1,0 +1,17 @@
+[main]
+name = D2ExploitPack
+longName = D2 Exploitation Pack
+author = DSquare Security, LLC
+version = 2.51
+demo = No 
+contactUrl = http://www.d2sec.com
+contactEmail = sales@d2sec.com
+contactPhone =
+# Filenames of README and LICENSE
+license = license.txt
+readme = readme.txt
+# This directory and all subdirs are pushed into the python sys.path
+libdirs = libs
+
+[exploits]
+

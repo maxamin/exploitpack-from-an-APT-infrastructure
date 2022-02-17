@@ -1,0 +1,229 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Exploiting Windows Locally (Privilege Escalation) &mdash; Immunity CANVAS 1 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="Immunity CANVAS 1 documentation" href="index.html"/>
+        <link rel="next" title="Exploiting Client-Side Vulnerablities" href="basics_clientside.html"/>
+        <link rel="prev" title="Exploiting Windows Remotely" href="basics_win_remote.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Immunity CANVAS
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="license.html">CANVAS EULA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installing CANVAS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="terminology.html">Terminology</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_intro.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_basics.html">CANVAS Basic Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basics_win_remote.html">Exploiting Windows Remotely</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Exploiting Windows Locally (Privilege Escalation)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basics_clientside.html">Exploiting Client-Side Vulnerablities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="post_exploitation.html">Post-Exploitation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_tips.html">Canvas Tips and Tricks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_videos.html">Canvas Video Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_advanced.html">CANVAS Advanced Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_strategic.html">CANVAS Strategic</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">Immunity CANVAS</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Exploiting Windows Locally (Privilege Escalation)</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/basics_win_local.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="exploiting-windows-locally-privilege-escalation">
+<h1>Exploiting Windows Locally (Privilege Escalation)<a class="headerlink" href="#exploiting-windows-locally-privilege-escalation" title="Permalink to this headline">¶</a></h1>
+<p>Often there are scenarios in which we have successfully exploited a node, but the access rights are limited on the system. For example, a client-side attack with clientD might have been used to exploit a vulnerability in Internet Explorer and the MOSDEF shell is running under the privileges of the logged in user. If the target is a member of a Windows domain, it is most probably a limited user account that does not have administrative access on the exploited machine. This limits what can be done on the system. The user will not have the rights to install software, add users or access services. In many cases when you are exploiting browser vulnerablities on Windows, even if the exploited user is a member of administrators group, the MOSDEF shell will have limited access rights due to the restrictions provided by two security mechanisms introduced in Windows (and Internet Explorer or Chrome): User Account Control (UAC) and browser sandboxing. While bypassing UAC is often easy and there are many known tricks around it, escaping from the browser Sandbox usually requires  exploiting a second vulnerability in the OS, typically a kernel vulnerablity.</p>
+<p>In such cases, privilege escalation may be accomplished  by exploiting a vulnerability in a Windows OS components or service, or any 3rd party softwares and services that are running with administrator/SYSTEM privileges.</p>
+<p>To use any of the privilege escalation exploits available in CANVAS, the target machine must be running an active MOSDEF callback, for instance a remote web or client-side exploit was used to gain  access or possibly the target executed a MOSDEF trojan.</p>
+<p>Once the target node(s) has been selected in the GUI, run the local exploit. Local exploits in Canvas are usually fully automated, which means in most cases there are no options to deal with. If it succeed a new MOSDEF listener window pop up. The new listener window will have the elevated privileges. Some local exploits will apply the elevated to the existing MOSDEF listener. The Canvas Log tab should be consulted for details.</p>
+<p>One method to check if a Windows machine is vulnerable to any windows local exploits available in CANVAS is to run the <code class="docutils literal"><span class="pre">get_installed_updates</span></code> module to get a list of installed hotfixes.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Always check the <em>Repeatablity</em> and <em>Note</em> section of exploits before using them. Some exploits might be single shot, while some other might require more than one attempt to succeed.</p>
+</div>
+<p>On a fully patched Windows machine that is not vulnerable to any of the recently reported and exploited vulnerablities, look for installed 3rd party programs. Often there are programs running with elevated privileges and these programs might have known vulnerabilities depending on their version. At Immunity we often find our way to SYSTEM by exploiting vulnerabilities in installed security softwares! Symantec products are a good example for having a rich history of exploitable privilege escalation vulnerabilities.</p>
+<p>There are many ways in Windows to obtain list of installed programs. One of the easiest ways that works against recent versions of Windows is using the <code class="docutils literal"><span class="pre">wmic</span> <span class="pre">product</span> <span class="pre">get</span> <span class="pre">/format:csv</span></code> command. An alternative way would be using Powershell, using the following command in an active Powershell session or saving and executing it as a Powershell script:</p>
+<div class="highlight-Powershell"><div class="highlight"><pre>Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* | Select-Object DisplayName, DisplayVersion, Publisher, InstallDate | Format-Table –AutoSize
+</pre></div>
+</div>
+<p>Of course you can pipe the output of both commands into a local file and download them, but that means touching the disk, which is sometimes not what you want to do as it will leave traces on the remote machine.</p>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="basics_clientside.html" class="btn btn-neutral float-right" title="Exploiting Client-Side Vulnerablities" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="basics_win_remote.html" class="btn btn-neutral" title="Exploiting Windows Remotely" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Immunity Inc..
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

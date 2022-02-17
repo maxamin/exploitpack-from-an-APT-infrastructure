@@ -1,0 +1,412 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Installing CANVAS &mdash; Immunity CANVAS 1 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="Immunity CANVAS 1 documentation" href="index.html"/>
+        <link rel="next" title="Terminology" href="terminology.html"/>
+        <link rel="prev" title="CANVAS EULA" href="license.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Immunity CANVAS
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="license.html">CANVAS EULA</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Installing CANVAS</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#supported-platforms">Supported Platforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hardware-requirements">Hardware Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#canvas-dependencies">CANVAS dependencies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#linux">Linux:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#windows">Windows:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#osx">OSX:</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="terminology.html">Terminology</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_intro.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_basics.html">CANVAS Basic Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basics_win_remote.html">Exploiting Windows Remotely</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basics_win_local.html">Exploiting Windows Locally (Privilege Escalation)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basics_clientside.html">Exploiting Client-Side Vulnerablities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="post_exploitation.html">Post-Exploitation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_tips.html">Canvas Tips and Tricks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_videos.html">Canvas Video Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_advanced.html">CANVAS Advanced Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas_strategic.html">CANVAS Strategic</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">Immunity CANVAS</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Installing CANVAS</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/install.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="installing-canvas">
+<h1>Installing CANVAS<a class="headerlink" href="#installing-canvas" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="supported-platforms">
+<h2>Supported Platforms<a class="headerlink" href="#supported-platforms" title="Permalink to this headline">¶</a></h2>
+<p>CANVAS is a product developed completely using Python, thus technically any platform and operating system that can run python and meet the package dependencies of CANVAS, can be used to run CANVAS. However Immunity officially supports installation of CANVAS only on Windows, Linux (Ubuntu) and OS X. Basic instructions for Installing
+CANVAS on these platforms are provided in this document. CANVAS can also be installed and used within a virtual machine. This is our recommended method of using CANVAS if you are using CANVAS on an unsupported platform, or you want to have a clean and isolated enviroment. Users who are using CANVAS on restricted environments might also prefer to use a virtual machine for CANVAS instead.</p>
+<p>CANVAS is mainly developed and tested to run on Linux, and it is the platform that CANVAS shines on. You might notice that you may loose a few features of CANVAS if you run it on Windows. Some of the features of CANVAS (a few number of modules and tools) also require privilaged access to the operating system to perform correctly. For this reason, we always recommend our users to try to start using CANVAS on Linux. If you have been a Windows user, this is a good chance for you to practice your Linux skills too!</p>
+</div>
+<div class="section" id="hardware-requirements">
+<h2>Hardware Requirements<a class="headerlink" href="#hardware-requirements" title="Permalink to this headline">¶</a></h2>
+<p>CANVAS is very lightweight and can be used on any system that is capable of running Linux or Windows. It is recommended to have at least 5GB of disk space and 1GB of memory on the system or virtual machine that is being used for CANVAS. CANVAS can be also run out of the box on Kali/Backtrack live operating system. One of the interesting features of CANVAS is that it can also run on headless systems in command line mode, in which it requires even less hardware resources. This means you can even run CANVAS on your Android based phones or tablets, although it is not officially supported by Immunity.</p>
+</div>
+<div class="section" id="canvas-dependencies">
+<h2>CANVAS dependencies<a class="headerlink" href="#canvas-dependencies" title="Permalink to this headline">¶</a></h2>
+<p>CANVAS dependes on the following (free) software packages to run</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li>Python 2.6 or 2.7</li>
+<li>GTK</li>
+<li>PyCrypto (some modules require it)</li>
+<li>Py-GTK, and its associated libraries</li>
+<li>Pyasn1</li>
+<li>ZeroMQ/PyZMQ (Only for CANVAS STRATEGIC)</li>
+</ol>
+</div></blockquote>
+<div class="section" id="linux">
+<h3>Linux:<a class="headerlink" href="#linux" title="Permalink to this headline">¶</a></h3>
+<p>If you are going to run CANVAS on Linux, you need to install the following listed packages by either using the paclkage management solution that your distro provides (apt, yum, aptitude...) or compile them from source code. Note that
+whatever architecture you are using (x86/64bit) and your Python installation is, your packages must be for the same architecture of the Python that is installed. You can get your python version by running the following command <code class="docutils literal"><span class="pre">python</span> <span class="pre">--version</span></code>.
+If you are using a different Linux distribution package names might be different, so you need to use the package search commands available to find the right name for your distribution. Python (pip) package names are often the same across distributions though.</p>
+<ol class="arabic simple">
+<li>python26 or python27</li>
+<li>GTK2</li>
+<li>pycairo</li>
+<li>pygobject</li>
+<li>pycrypto</li>
+<li>pygtk</li>
+<li>pyasn1</li>
+</ol>
+<blockquote>
+<div><p>Above packages can be installed in Ubuntu (16.04, 16.10) with the following command.</p>
+<div class="highlight-python"><div class="highlight"><pre>sudo apt-get install python-pip
+sudo pip install pycrypto
+sudo pip install pyasn1
+sudo apt-get install gtk2.0
+sudo apt-get install python-glade2
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="windows">
+<h3>Windows:<a class="headerlink" href="#windows" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt>Windows users can download a zip file with all the dependencies (except <em>pycrypto</em>) and installation instructions for that from Immunity web site. The package is available at the following link:</dt>
+<dd><a class="reference external" href="http://www.immunityinc.com/downloads/CANVAS_WIN32_DEPS_01_2015.zip">http://www.immunityinc.com/downloads/CANVAS_WIN32_DEPS_01_2015.zip</a></dd>
+<dt>Due to export-control restrictions, we can not ship the pycrypto libraries. You can download a binary installer for windows that matches your Python version from here:</dt>
+<dd><a class="reference external" href="http://www.voidspace.org.uk/python/modules.shtml">http://www.voidspace.org.uk/python/modules.shtml</a></dd>
+</dl>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">Since Python 2.7.9, Python on windows is also provided with the <em>pip</em> tool for managing python libraries. The pip command is not included in the PATH by default.
+If you want to use <em>pip</em> on windows, you should update your system PATH to include <code class="docutils literal"><span class="pre">c:\\python27\\scripts</span></code>. After that you should be able to install libraries
+with <em>pip</em>, for example <code class="docutils literal"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">pyopenssl</span></code>. Note that you should run the command in an elevated-access command prompt.</p>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">As of 2/27/2017, it has come to our attention that PyCrypto will not properly install on many 64 bit Windows platforms. The solution to this is to install the 32-bit version of Python on top of a 64 bit Windows and use the 32 bit versions of all libraries</p>
+</div>
+<p>After extracting the downloaded zip file, follow the installation steps as below:</p>
+<ol class="arabic">
+<li><p class="first">Install the python package by double clicking <strong>python-2.7.5.msi</strong>. This will install the base Python 2.7 runtime
+and its standard libraries, and add Python to the system PATH.</p>
+</li>
+<li><p class="first">Install the <em>pywin32</em> package by double clicking <strong>pywin32-218.win32-py2.7.exe</strong> and use the default installation options.</p>
+</li>
+<li><p class="first">Install the GTK+ package by double clicking <strong>pygtk-all-in-one-2.24.2.win32-py2.7.msi</strong>. GTK+ is the cross platform library CANVAS
+uses to create its graphical user interface (GUI). This installer package also contains other required GUI dependencies <em>GObject</em> and <em>Cairo</em>.
+Please follow the default installation options.</p>
+</li>
+<li><p class="first">Install the pyasn1 module:</p>
+<blockquote>
+<div><p>4.1  Open a cmd.exe console and set the current directory to the ./pyasn1-0.1.7 which you previously extracted from downloaded zip file.
+4.2  Type the following command which will install the <em>pyasn1</em> library: <code class="docutils literal"><span class="pre">python.exe</span> <span class="pre">setup.py</span> <span class="pre">install</span></code></p>
+</div></blockquote>
+</li>
+<li><p class="first">(Optional) For <a class="reference external" href="http://security.alien8.net/new_immunity_products">CANVAS STRATEGIC</a>, you need to install <em>pyzmq</em> library
+as well, by double clocking <strong>pyzmq-13.1.0.win32-py2.7.exe</strong>.</p>
+</li>
+<li><p class="first">If you would like to use the World Map IP address to geographical location mapping
+feature of the CANVAS GUI then there are some further packages which need to installed.</p>
+</li>
+</ol>
+<blockquote>
+<div><dl class="docutils">
+<dt>6.1 Install the GeoIP com object.</dt>
+<dd><ul class="first last simple">
+<li>The source code can be downloaded from <a class="reference external" href="https://github.com/maxmind/geoip-api-mscom/tree/master/GeoIpComEx">here</a></li>
+<li>Compile the source code</li>
+</ul>
+</dd>
+<dt>6.2 Once downloaded unzip the GeoIP com object and install it by copying <em>GeoIpComEx.dll</em> to the <em>SYSTEM32</em> folder.</dt>
+<dd><p class="first">After this open cmd.exe as Administrator, cd into the SYSTEM32 directory and run:</p>
+<div class="last highlight-python"><div class="highlight"><pre>regsvr32 GeoIpComEx.dll
+</pre></div>
+</div>
+</dd>
+</dl>
+<p>6.3 The GeoIP mapping database also needs to be downloaded, this can be found at <a class="reference external" href="http://www.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz">http://www.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz</a>
+6.4 Uncompress the downloaded file. If your system does not recognise the .gz extension try using a different decompression program such as <a class="reference external" href="http://www.7-zip.org/">7zip</a> or <a class="reference external" href="http://www.rarlab.com/">winrar</a> which understands this filetype.
+6.5 You want to name the decompressed database file <em>GeoIPCity.dat</em> and place it in the <em>CANVAS-&lt;your username here&gt;\gui\WorldMap\</em> directory.
+6.6 Correct installation of World Map dependencies can be be veried by the absence of a red message box in the top left corner of the World Map tab in the CANVAS GUI.</p>
+</div></blockquote>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">CANVAS requires to make a lot of network connections, and in most of exploit modules also needs to be able to open
+ports and listen to them. In windows this often causes problems if you have the windows firewall enabled (by defailt).
+To avoid that, you should either disable the windows firewall, or properly configure it to whitelist Python process,
+and also allowing inbound traffic to the ports you tend to use for reverse connections.</p>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Canvas does not get along well with any antivirus software, or the built-in malware protection that is included in Windows.
+Please make sure you have your antivirus product uninstalled
+before extracting Canvas. Another solution would be excluding Canvas directory from scanning and live monitor in running antivirus softwares and Windows Defender.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Windows by default have multiple services running, such as RPC and Netbios, that listen on ports 135, 139 and 445 TCP and UDP.
+Normally this will not interfear with CANVAS, however if you are planning to use any of the modules in CANVAS that needs to run
+its own RPC or SMB server on those ports, you will not be able to do that in windows! The only reasonable solution for this is
+to run CANVAS in a Linux virtual machine.</p>
+</div>
+<p>If you feel you need more visual and step by step guide about installing CANVAS on windows, you can also check out the video we have
+created that walks you through every step from downloading to lunching CANVAS on windows from ` this link &lt;<a class="reference external" href="https://vimeo.com/album/3385053/video/131572388">https://vimeo.com/album/3385053/video/131572388</a>&gt;`_.
+More Canvas videos and installation guides can be found at our Vimeo Canvas album available at <a class="reference external" href="https://vimeo.com/album/3385053">https://vimeo.com/album/3385053</a> .</p>
+</div>
+<div class="section" id="osx">
+<h3>OSX:<a class="headerlink" href="#osx" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt>OSX users can download an installer with most dependencies for that plafform from Immunity web-site from:</dt>
+<dd><a class="reference external" href="http://immunityinc.com/downloads/PyGTK.pkg">http://immunityinc.com/downloads/PyGTK.pkg</a></dd>
+</dl>
+<p>OS X has its own version of Python so beside the GTK dependencies, you probably need to only install the <em>Pyasn1</em> library which is missing.</p>
+<p>Having <em>macports</em> or <em>homebrew</em> installed on your OSX, you can also use these pakcage managers to automatically download and install required
+dependencies for you. If you use this method instead of downloading the pyGTK package, please make sure you only use one of them for your package
+managements on the system, and avoid installing both <em>macports</em> and <em>homebrew</em> on the system. This will cause package version conflics that are often
+not easy to  find and resolve. As OSX comes with Python 2.7 pre-installed you should also consider the Python version your system is using,
+before installing dependencies using any package manager. The <em>Pyasn1</em> library is often causing such conflicts, and although you may have installed the library using the package manager, CANVAS still fails to start because of not meeting all required dependencies.</p>
+<p>Macports downlads and installs packages from source, so building a large package such as pyGTK and all of its dependencies will take some time!
+To install PyGTK using <em>macports</em>, you can use the following command</p>
+<div class="highlight-python"><div class="highlight"><pre>$ port install py-pyGTK
+</pre></div>
+</div>
+<p>or the following command if you are using Homebrew instead of Macports</p>
+<div class="highlight-python"><div class="highlight"><pre>$ brew install pygtk
+</pre></div>
+</div>
+<p>If even after trying above command  in <em>brew</em> and trying to run Canvas you still get an error message regarding missing <em>gtk.glade</em> dependency, try the following command instead</p>
+<div class="highlight-python"><div class="highlight"><pre>$ brew install --verbose --with-libglade pygtk
+</pre></div>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">Immunity does not support Macports or Homebrew, however if you decide to use any of them as an alternative pakage
+manager, we do recommend using Homebrew.</p>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">If you use Homebrew package manager to install Python dependencies, note that Homebrew installs its own version of Python and dependencies
+and packages installed for it will NOT be shared with the builtin OSX python. This is a benefit, as you will not alter the OS python installation
+and you can easily cleanup things and remove installed packages, if something goes wrong.</p>
+</div>
+<p>To install pyasn1 you can use the <em>pip</em> command</p>
+<div class="highlight-python"><div class="highlight"><pre>$ sudo pip install pyasn1
+</pre></div>
+</div>
+<p>To make sure you have the latest version of pyasn1 installed, check if a version already exists using <code class="docutils literal"><span class="pre">pip</span> <span class="pre">show</span> <span class="pre">pyasn1</span></code> command and then
+you can include the <code class="docutils literal"><span class="pre">sudo</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">pyasn1</span> <span class="pre">--upgrade</span></code> switch to upgrade the library to its latest version.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If you are installing CANVAS within a virtual machine, where possible, it is highly recommended use the VM network adapter in <em>bridge</em> mode. CANVAS uses connect-back shellcodes by default, which means exploited hosts will need to call back to the IP address of the machine running CANVAS. If the virtual machine is not connected directly to the network (via bridge mode), this will fail because the virtual machine will not be accessible directly becase of virtualization software NAT.</p>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">Every time you lunch CANVAS, it creates or appends detailed logs to a file in its directory named canvas.log which is the first place you
+should look at if you start experiencing problems. If you are contacting Immunity for support, we may ask you to provide us a copy of that
+file for troubleshooting.</p>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="terminology.html" class="btn btn-neutral float-right" title="Terminology" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="license.html" class="btn btn-neutral" title="CANVAS EULA" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Immunity Inc..
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,50 @@
+########################################################################
+#                       *CANVAS Release 6.97*                          #
+########################################################################
+
+*Date*: 23 December 2014
+
+*Version*: 6.97
+
+*Download URL*: https://canvas.immunityinc.com/cgi-bin/getcanvas.py
+
+*Release Notes*:
+
+In this CANVAS release we are bringing you 3 new modules and bugfixes for MOSDEF
+over PHP and Linux x86_64.
+New modules include 2 web exploits (Cacti and WP-Symposium), and the infamous
+sandworm exploit (ms14-060).
+
+==Changes==
+
+o Linux x86_64 MOSDEF fixes
+
+o PHP MOSDEF fixes
+
+o converttomosdef x86_64 fix
+
+==New Modules==
+
+o CVE_2014_5261 (Cacti post-auth command injection)
+
+o wpsymposium_rce (WP-Symposium pre-auth RCE)
+
+o sandworm (ms14-060 Windows OLE RCE)
+
+
+*CANVAS Tips 'n' Tricks*:
+
+We bring you important fixes for our MOSDEF protocol (Linux, PHP) in our current
+release. Now you can fully take advantage of our PHP exploits, transforming a
+php node into a full x86_64 mosdef node and combining that with our local privilege
+escalation modules!
+
+*Links*:
+
+Support email       : support@immunityinc.com
+Sales support       : sales@immunityinc.com
+Support/Sales phone : +1 786-220-0600
+
+
+########################################################################
+########################################################################

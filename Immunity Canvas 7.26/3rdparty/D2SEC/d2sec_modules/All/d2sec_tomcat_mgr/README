@@ -1,0 +1,39 @@
+D2 Exploitation Pack
+====================
+
+Copyright (c) 2007-2015 DSquare Security, LLC
+
+
+License information
+-------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Description
+---------------
+
+This tools manage a tomcat server from the command line:
+$ d2sec_tomcat_mgr [-u userid] [-p password] [-c command] [-b] manager_url 
+
+__with__ :
+    
+  -u    the user to use for authentication
+        with the tomcat application
+  -p    the password to use for authentication
+        with the tomcat application
+  -c    command to run : 
+          + deploy : deploy tomcat-test WAR
+          + undeploy : undeploy tomcat-test WAR
+          + start : start an app 
+          + stop : stop an app 
+          + reload : reload an app 
+  -b   brure-force auth if user and password are defined
+  -t   if it's a tomcat 7 
+  -h   display this help and exit
+
+For example:
+$ python3 d2sec_tomcat_mgr.py -b http://10.0.2.5:8080/manager
+$ python3 d2sec_tomcat_mgr.py -u a -p a http://10.0.2.5:8080/manager
+

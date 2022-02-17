@@ -1,0 +1,65 @@
+########################################################################
+#                       *CANVAS Release 7.01*                          #
+########################################################################
+
+*Date*: 07 May 2015
+
+*Version*: 7.01
+
+*Download URL*: https://canvas.immunityinc.com/cgi-bin/getcanvas.py
+
+*Release Notes*:
+
+In this CANVAS release we are bringing you 7 new modules and bugfixes.
+
+One of the things we pride ourselves on at Immunity is listening to
+customer requests. The psexec module released in CANVAS 6.99 was a direct
+result of that as an example. This development cycle one of our customers
+reached out to us to request the ability to import Nexpose vulnerability
+reports. So we are releasing the nexposeimport module to fill that need.
+
+
+==Changes==
+
+o ms14_064_ie_oleaut32 now supports Windows 8/8.1 targets
+
+o dependency checker fix for MacOS (pyasn1 issue)
+
+o BuildCallbackTrojan fix for correctly generating Solaris (SPARC) callbacks
+
+o getpasswordhashes works only locally, removed the host field
+
+o psexec refactoring and improvements
+
+
+==New Modules==
+
+o adobe_flash_domainMemory_uaf (CVE-2015-0313)
+
+o ms14_070
+
+o rootpipe (CVE-2015-1130)
+
+o lnk_exec (MS15-020)
+
+o elasticsearch_CVE_2015_1427
+
+o CVE_2014_9222 (misfortune cookie)
+
+o nexposeimport
+
+
+*CANVAS Tips 'n' Tricks*:
+
+Don't forget that CANVAS can import data from many of your favorite tools like
+Nessus, NMAP, Qualys and Nexpose. Check out the modules under Import/Export.
+
+*Links*:
+
+Support email       : support@immunityinc.com
+Sales support       : sales@immunityinc.com
+Support/Sales phone : +1 786-220-0600
+
+
+########################################################################
+########################################################################

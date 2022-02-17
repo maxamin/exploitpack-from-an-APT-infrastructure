@@ -1,0 +1,3198 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-03-04 13:27-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#, fuzzy
+#: canvasgui2_default.glade:524 canvasgui2_default.glade:537
+#: canvasgui2_default.glade:947 canvasgui2_default.glade:991
+#: ../canvasgui2_default.glade:524 ../canvasgui2_default.glade:537
+#: ../canvasgui2_default.glade:947 ../canvasgui2_default.glade:991
+msgid " "
+msgstr ""
+
+#: canvasgui2_default.glade:1979 ../canvasgui2_default.glade:1979
+msgid " Target(s) "
+msgstr "ターゲット"
+
+#: canvasgui2_default.glade:752 ../canvasgui2_default.glade:752
+msgid "(Gets Current Working Directory)"
+msgstr "（カレントディレクトリの取得）"
+
+#: canvasgui2_default.glade:738 ../canvasgui2_default.glade:738
+msgid "."
+msgstr "。"
+
+#: canvasgui2_default.glade:1418 ../canvasgui2_default.glade:1418
+#: ../canvasgui2_default.glade:405
+msgid "0.0.0.0"
+msgstr "0.0.0.0"
+
+#: canvasgui2_default.glade:2477 ../canvasgui2_default.glade:2477
+#: ../canvasgui2_default.glade:2130
+msgid "<b>Canvas Log</b>"
+msgstr "<b>キャンバスログ</b>"
+
+#: canvasgui2_default.glade:2447 ../canvasgui2_default.glade:2447
+#: ../canvasgui2_default.glade:2071
+msgid "<b>Current Status</b>"
+msgstr "<b>ステータス</b>"
+
+#: canvasgui2_default.glade:2548 ../canvasgui2_default.glade:2548
+#: ../canvasgui2_default.glade:2253
+msgid "<b>Data View</b>"
+msgstr "<b>データビュー</b>"
+
+#: canvasgui2_default.glade:2508 ../canvasgui2_default.glade:2508
+#: ../canvasgui2_default.glade:2189
+msgid "<b>Debug Log</b>"
+msgstr "<b>デバッグログ</b>"
+
+#: canvasgui2_default.glade:2258 ../canvasgui2_default.glade:2258
+#: ../canvasgui2_default.glade:1994
+msgid "<b>Exploit Description</b>"
+msgstr "<b>モジュールの概要</b>"
+
+#: canvasgui2_default.glade:2675 ../canvasgui2_default.glade:2675
+msgid "<b>Host to Add:</b>"
+msgstr "<b>ホストを追加：</b>"
+
+#: canvasgui2_default.glade:1285 ../canvasgui2_default.glade:1285
+msgid "<b>HostName or IP:</b>"
+msgstr "<b>ホスト名またはIPアドレス：</b>"
+
+#: canvasgui2_default.glade:1065 canvasgui2_default.glade:3183
+#: ../canvasgui2_default.glade:1065 ../canvasgui2_default.glade:3183
+#: ../canvasgui2_default.glade:3052
+msgid "<b>Listening Port:</b>"
+msgstr "<b>リスニングポート：</b>"
+
+#: canvasgui2_default.glade:2226 ../canvasgui2_default.glade:2226
+#: ../canvasgui2_default.glade:1935
+msgid "<b>Node Tree</b>"
+msgstr "<b>ノードツリー</b>"
+
+#: canvasgui2_default.glade:2399 ../canvasgui2_default.glade:2399
+msgid "<b>Search Modules</b>"
+msgstr "<b>検索モジュール</b>"
+
+#: canvasgui2_default.glade:2582 ../canvasgui2_default.glade:2582
+#: ../canvasgui2_default.glade:2309
+msgid "<b>Set Covertness:</b>"
+msgstr "<b>Set Covertness:</b>"
+
+#: canvasgui2_default.glade:3059 ../canvasgui2_default.glade:3059
+#: ../canvasgui2_default.glade:2870
+msgid "<b>Third Party Exploit Pack Information</b>"
+msgstr "<b>サードパーティのエクスプロイトPackの情報</b>"
+
+#: canvasgui2_default.glade:1080 canvasgui2_default.glade:3198
+#: ../canvasgui2_default.glade:1080 ../canvasgui2_default.glade:3198
+#: ../canvasgui2_default.glade:3024
+msgid "<b>Type of Listener:</b>"
+msgstr "<b>リスナーのタイプ：</b>"
+
+#: canvasgui2_default.glade:1271 canvasgui2_default.glade:2688
+#: ../canvasgui2_default.glade:1271 ../canvasgui2_default.glade:2688
+msgid "<b>Type of OS:</b>"
+msgstr "<b>OSの種類：</b>"
+
+#: canvasgui2_default.glade:1338 ../canvasgui2_default.glade:1338
+#: ../canvasgui2_default.glade:140
+msgid "Add New Interface"
+msgstr "新しいインターフェイスを追加"
+
+#: canvasgui2_default.glade:1908 ../canvasgui2_default.glade:1908
+#: ../canvasgui2_default.glade:968
+msgid "Add Target Host"
+msgstr "ターゲットホストを追加"
+
+#: canvasgui2_default.glade:174 ../canvasgui2_default.glade:174
+msgid "Add To Targets"
+msgstr "ターゲットに追加"
+
+#: canvasgui2_default.glade:2631 ../canvasgui2_default.glade:2631
+msgid "Add a Host"
+msgstr "ホストの追加"
+
+#: canvasgui2_default.glade:1227 ../canvasgui2_default.glade:1227
+msgid "Add a host"
+msgstr "ホストを追加する"
+
+#: canvasgui2_default.glade:2108 ../canvasgui2_default.glade:2108
+#: ../canvasgui2_default.glade:1743
+msgid "Add to Target"
+msgstr "ターゲットに追加する"
+
+#: canvasgui2_default.glade:2783 ../canvasgui2_default.glade:2783
+#: ../canvasgui2_default.glade:2427
+msgid "All commands to be ran are located here"
+msgstr "すべてのコマンドはここに配置され実行される"
+
+#: canvasgui2_default.glade:354 ../canvasgui2_default.glade:354
+msgid "As Covert As Possible"
+msgstr "として、隠密としての可能性"
+
+#: canvasgui2_default.glade:381 ../canvasgui2_default.glade:381
+msgid "As Reliable as Possible"
+msgstr "できるだけ信頼性の高い"
+
+#: canvasgui2_default.glade:684 canvasgui2_default.glade:2815
+#: ../canvasgui2_default.glade:684 ../canvasgui2_default.glade:2815
+#: ../canvasgui2_default.glade:2491
+msgid "Browse"
+msgstr "参照"
+
+#: canvasgui2_default.glade:3032 ../canvasgui2_default.glade:3032
+#: ../canvasgui2_default.glade:2803
+msgid "CANVAS Exploit Packs"
+msgstr "CANVAS エクスプロイトパック"
+
+#: canvasgui2_default.glade:261 ../canvasgui2_default.glade:261
+msgid "CANVAS Log"
+msgstr "キャンバスログ"
+
+#: canvasgui2_default.glade:3049 ../canvasgui2_default.glade:3049
+#: ../canvasgui2_default.glade:2847
+msgid ""
+"CANVAS Professional has loaded the third party exploit packs listed below.\n"
+"These exploit packs add extra features and exploits to CANVAS Professional, "
+"but are not provided or supported by Immunity Inc. Use of third party "
+"exploit packs is subject to the license of the exploit pack, so be sure to "
+"be familiar with these terms before using third party functionality. "
+msgstr ""
+"キャンバスProfessionalは、第三者にエクスプロイトパック下記のロードしています。\n"
+"これらのパックをエクスプロイト、余分な機能やCANVASをProfessionalへの攻撃を追加する"
+"が提供されない、または免疫株式会社使用してサードパーティによるサポート"
+"パックを利用するので、必ずパックをエクスプロイトするのは、ライセンスが適用されます"
+"これらの用語でサードパーティ製の機能を使用する前に精通している。"
+
+#: canvasgui2_default.glade:2208 ../canvasgui2_default.glade:2208
+#: ../canvasgui2_default.glade:1856
+msgid "CANVAS World Map"
+msgstr "IPアドレスの位置情報"
+
+#: canvasgui2_default.glade:1675 ../canvasgui2_default.glade:1675
+msgid "CANVAS World Service"
+msgstr "キャンバスワールドサービス"
+
+#: canvasgui2_default.glade:1962 ../canvasgui2_default.glade:1962
+msgid "Callback "
+msgstr "コールバック"
+
+#: canvasgui2_default.glade:2877 ../canvasgui2_default.glade:2877
+#: ../canvasgui2_default.glade:2585
+msgid "Change Directory"
+msgstr "ディレクトリの移動"
+
+#: canvasgui2_default.glade:709 ../canvasgui2_default.glade:709
+msgid "Change the current directory"
+msgstr "カレントディレクトリを変更する"
+
+#: canvasgui2_default.glade:2183 ../canvasgui2_default.glade:2183
+#: ../canvasgui2_default.glade:1813
+msgid "Classic Node View"
+msgstr "クラシックノードビュー"
+
+#: canvasgui2_default.glade:368 ../canvasgui2_default.glade:368
+msgid "Covertness Bar"
+msgstr "Covertness バー"
+
+#: canvasgui2_default.glade:1011 canvasgui2_default.glade:3115
+#: ../canvasgui2_default.glade:1011 ../canvasgui2_default.glade:3115
+#: ../canvasgui2_default.glade:2952
+msgid "Create A New Listener"
+msgstr "新しいリスナーを作成します。"
+
+#: canvasgui2_default.glade:24 ../canvasgui2_default.glade:24
+msgid "Current Callback IP"
+msgstr "現在のコールバックIPアドレス"
+
+#: canvasgui2_default.glade:287 ../canvasgui2_default.glade:287
+msgid "Debug Log"
+msgstr "デバッグログ"
+
+#: canvasgui2_default.glade:783 ../canvasgui2_default.glade:783
+msgid "Delete a file"
+msgstr "ファイルを削除"
+
+#: canvasgui2_default.glade:596 ../canvasgui2_default.glade:596
+msgid "Dir"
+msgstr "ディレクトリ"
+
+#: canvasgui2_default.glade:660 ../canvasgui2_default.glade:660
+#: ../canvasgui2_default.glade:3783
+msgid "Download"
+msgstr "ダウンロード"
+
+#: canvasgui2_default.glade:2855 ../canvasgui2_default.glade:2855
+#: ../canvasgui2_default.glade:2553
+msgid "Download a file"
+msgstr "ファイルのダウンロード"
+
+#: canvasgui2_default.glade:497 ../canvasgui2_default.glade:497
+msgid "Download a file from the remote server (source file)"
+msgstr "リモートサーバーからファイルをダウンロードする (source file)"
+
+#: canvasgui2_default.glade:1444 ../canvasgui2_default.glade:1444
+#: ../canvasgui2_default.glade:352
+msgid "End Port"
+msgstr "エンドポート"
+
+#: canvasgui2_default.glade:1855 ../canvasgui2_default.glade:1855
+#: ../canvasgui2_default.glade:831
+msgid "Exit CANVAS GUI"
+msgstr "終了"
+
+#: canvasgui2_default.glade:1854 ../canvasgui2_default.glade:1854
+#: ../canvasgui2_default.glade:830
+msgid "Exits CANVAS GUI"
+msgstr "終了"
+
+#: canvasgui2_default.glade:3251 ../canvasgui2_default.glade:3251
+#: ../canvasgui2_default.glade:3158
+msgid "Filesystem Browser"
+msgstr "ファイルシステムブラウザ"
+
+#: canvasgui2_default.glade:2310 ../canvasgui2_default.glade:2310
+#: ../canvasgui2_default.glade:1475
+msgid "GO"
+msgstr "GO"
+
+#: canvasgui2_default.glade:2899 ../canvasgui2_default.glade:2899
+#: ../canvasgui2_default.glade:2617
+msgid "Get Directory Listing"
+msgstr "ディレクトリの一覧を取得"
+
+#: canvasgui2_default.glade:737 ../canvasgui2_default.glade:737
+msgid "Get directory listing"
+msgstr "ディレクトリの一覧を取得"
+
+#: canvasgui2_default.glade:797 canvasgui2_default.glade:815
+#: canvasgui2_default.glade:833 canvasgui2_default.glade:851
+#: canvasgui2_default.glade:869 canvasgui2_default.glade:887
+#: canvasgui2_default.glade:905 canvasgui2_default.glade:923
+#: ../canvasgui2_default.glade:797 ../canvasgui2_default.glade:815
+#: ../canvasgui2_default.glade:833 ../canvasgui2_default.glade:851
+#: ../canvasgui2_default.glade:869 ../canvasgui2_default.glade:887
+#: ../canvasgui2_default.glade:905 ../canvasgui2_default.glade:923
+msgid "Go"
+msgstr "ωGOω"
+
+#: canvasgui2_default.glade:1921 ../canvasgui2_default.glade:1921
+#: ../canvasgui2_default.glade:986
+msgid "Halt Current Exploit"
+msgstr "現在のエクスプロイトを停止する"
+
+#: canvasgui2_default.glade:1757 ../canvasgui2_default.glade:1757
+msgid "Host"
+msgstr "ホスト"
+
+#: canvasgui2_default.glade:1497 ../canvasgui2_default.glade:1497
+#: ../canvasgui2_default.glade:240
+msgid "IP (external IP for NAT)"
+msgstr "NAT用の外部IPアドレス"
+
+#: canvasgui2_default.glade:8 canvasgui2_default.glade:1835
+#: ../canvasgui2_default.glade:8 ../canvasgui2_default.glade:1835
+#: ../canvasgui2_default.glade:759
+msgid "Immunity CANVAS (http://www.immunityinc.com/)"
+msgstr "Immunity CANVAS (http://www.immunityinc.com/)"
+
+#: canvasgui2_default.glade:1510 ../canvasgui2_default.glade:1510
+#: ../canvasgui2_default.glade:212
+msgid "Interface Name"
+msgstr "インターフェイス名"
+
+#: canvasgui2_default.glade:115 ../canvasgui2_default.glade:115
+msgid "List of exploits and utility modules"
+msgstr "エクスプロイトとユーティリティの一覧"
+
+#: canvasgui2_default.glade:417 canvasgui2_default.glade:2756
+#: ../canvasgui2_default.glade:417 ../canvasgui2_default.glade:2756
+#: ../canvasgui2_default.glade:2365
+msgid "Listener Shell"
+msgstr "リスナーシェル"
+
+#: canvasgui2_default.glade:3288 ../canvasgui2_default.glade:3288
+#: ../canvasgui2_default.glade:3242
+msgid "Module Log"
+msgstr "モジュールのログ"
+
+#: canvasgui2_default.glade:2068 ../canvasgui2_default.glade:2068
+#: ../canvasgui2_default.glade:1246 ../canvasgui2_default.glade:1272
+msgid "Modules"
+msgstr "モジュール"
+
+#: canvasgui2_default.glade:1560 ../canvasgui2_default.glade:1560
+#: ../canvasgui2_default.glade:517
+msgid "My Screenshots"
+msgstr "思い出のアルバム"
+
+#: canvasgui2_default.glade:1385 ../canvasgui2_default.glade:1385
+#: ../canvasgui2_default.glade:445
+msgid "NAT"
+msgstr "NAT"
+
+#: canvasgui2_default.glade:1470 ../canvasgui2_default.glade:1470
+#: ../canvasgui2_default.glade:296
+msgid "NAT Interface"
+msgstr "NATのインターフェイス"
+
+#: canvasgui2_default.glade:1484 ../canvasgui2_default.glade:1484
+#: ../canvasgui2_default.glade:268
+msgid "Netmask Bits (24 is class C)"
+msgstr "ネットマスクのビット長"
+
+#: canvasgui2_default.glade:1149 canvasgui2_default.glade:1175
+#: ../canvasgui2_default.glade:1149 ../canvasgui2_default.glade:1175
+#: ../canvasgui2_default.glade:8 ../canvasgui2_default.glade:80
+msgid "Network Dump Filter String"
+msgstr "ネットワークダンプフィルタ文字列"
+
+#: canvasgui2_default.glade:1590 ../canvasgui2_default.glade:1590
+#: ../canvasgui2_default.glade:592
+msgid "Network Dump Window"
+msgstr "ネットワークダンプウィンドウ"
+
+#: canvasgui2_default.glade:1432 ../canvasgui2_default.glade:1432
+#: ../canvasgui2_default.glade:384
+msgid "New Interface"
+msgstr "新しいインターフェイス"
+
+#: canvasgui2_default.glade:2151 ../canvasgui2_default.glade:2151
+#: ../canvasgui2_default.glade:1675
+msgid "Node Management"
+msgstr "ノード管理"
+
+#: canvasgui2_default.glade:1608 ../canvasgui2_default.glade:1608
+#: ../canvasgui2_default.glade:642
+msgid "Note to Add"
+msgstr "メモの追加"
+
+#: canvasgui2_default.glade:2919 ../canvasgui2_default.glade:2919
+#: ../canvasgui2_default.glade:2646
+msgid "PWD - Gets current working Directory"
+msgstr "現在のディレクトリを取得"
+
+#: canvasgui2_default.glade:1770 ../canvasgui2_default.glade:1770
+msgid "Password"
+msgstr "パスワード"
+
+#: canvasgui2_default.glade:2790 ../canvasgui2_default.glade:2790
+#: ../canvasgui2_default.glade:2447
+msgid "Pick file to upload"
+msgstr "アップロードファイルの選択"
+
+#: canvasgui2_default.glade:564 canvasgui2_default.glade:2930
+#: ../canvasgui2_default.glade:564 ../canvasgui2_default.glade:2930
+#: ../canvasgui2_default.glade:2662
+msgid "Piped Command"
+msgstr "コマンドの実行"
+
+#: canvasgui2_default.glade:1744 ../canvasgui2_default.glade:1744
+msgid "Port"
+msgstr "ポート"
+
+#: canvasgui2_default.glade:2331 ../canvasgui2_default.glade:2331
+#: ../canvasgui2_default.glade:1505
+msgid "Raw"
+msgstr "部分一致"
+
+#: canvasgui2_default.glade:2345 ../canvasgui2_default.glade:2345
+#: ../canvasgui2_default.glade:1524
+msgid "Regex"
+msgstr "正規表現"
+
+#: canvasgui2_default.glade:1864 ../canvasgui2_default.glade:1864
+#: ../canvasgui2_default.glade:821
+msgid "Reload CANVAS Modules"
+msgstr "キャンバスモジュールのリロード"
+
+#: canvasgui2_default.glade:1863 ../canvasgui2_default.glade:1863
+#: ../canvasgui2_default.glade:820
+msgid "Reloads CANVAS Modules"
+msgstr "キャンバスモジュールのリロード"
+
+#: canvasgui2_default.glade:2119 ../canvasgui2_default.glade:2119
+#: ../canvasgui2_default.glade:1759
+msgid "Remove from Target"
+msgstr "ターゲットから削除"
+
+#: canvasgui2_default.glade:187 ../canvasgui2_default.glade:187
+msgid "Remove from Targets"
+msgstr "ターゲットから削除"
+
+#: canvasgui2_default.glade:768 ../canvasgui2_default.glade:768
+msgid "Run a command and get the standard output."
+msgstr "実行コマンドの標準出力を取得する"
+
+#: canvasgui2_default.glade:2016 ../canvasgui2_default.glade:2016
+#: ../canvasgui2_default.glade:1161
+msgid "Screen Shots"
+msgstr "スクリーンショット"
+
+#: canvasgui2_default.glade:1934 ../canvasgui2_default.glade:1934
+#: ../canvasgui2_default.glade:1004
+msgid "Set OS Configuration"
+msgstr "OSの設定"
+
+#: canvasgui2_default.glade:1092 canvasgui2_default.glade:3133
+#: ../canvasgui2_default.glade:1092 ../canvasgui2_default.glade:3133
+#: ../canvasgui2_default.glade:3128
+msgid "Set fromcreatethread"
+msgstr "セットfromcreatethread"
+
+#: canvasgui2_default.glade:612 ../canvasgui2_default.glade:612
+msgid "Spawn Process"
+msgstr "スポーンプロセス"
+
+#: canvasgui2_default.glade:2888 ../canvasgui2_default.glade:2888
+#: ../canvasgui2_default.glade:2601
+msgid "Spawn a Process"
+msgstr "スポーンプロセス"
+
+#: canvasgui2_default.glade:1883 ../canvasgui2_default.glade:1883
+#: ../canvasgui2_default.glade:854
+msgid "Start New MOSDEF Listener"
+msgstr "MOSDEFリスナーの開始"
+
+#: canvasgui2_default.glade:1457 ../canvasgui2_default.glade:1457
+#: ../canvasgui2_default.glade:324
+msgid "Start Port"
+msgstr "スタートポート"
+
+#: canvasgui2_default.glade:3273 ../canvasgui2_default.glade:3273
+#: ../canvasgui2_default.glade:3213
+msgid "Status Bar"
+msgstr "ステータスバー"
+
+#: canvasgui2_default.glade:162 canvasgui2_default.glade:2097
+#: ../canvasgui2_default.glade:162 ../canvasgui2_default.glade:2097
+#: ../canvasgui2_default.glade:1727
+msgid "Target"
+msgstr "ターゲット"
+
+#: canvasgui2_default.glade:2170 ../canvasgui2_default.glade:2170
+#: ../canvasgui2_default.glade:1782
+msgid "The information such as targets and interfaces"
+msgstr "ターゲットとインターフェイスなどの情報"
+
+#: canvasgui2_default.glade:118 ../canvasgui2_default.glade:118
+msgid "This lets you look at all the modules you can use"
+msgstr "この場合、すべてのモジュールで使用できるようすることができます"
+
+#: canvasgui2_default.glade:2941 ../canvasgui2_default.glade:2941
+#: ../canvasgui2_default.glade:2678
+msgid "Unlink"
+msgstr "リンクを解除する"
+
+#: canvasgui2_default.glade:644 ../canvasgui2_default.glade:644
+msgid "Upload"
+msgstr "アップロード"
+
+#: canvasgui2_default.glade:2866 ../canvasgui2_default.glade:2866
+#: ../canvasgui2_default.glade:2569
+msgid "Upload a File"
+msgstr "ファイルをアップロード"
+
+#: canvasgui2_default.glade:677 ../canvasgui2_default.glade:677
+msgid ""
+"Upload a file to the remote server (click browse to pick, or type directly)"
+msgstr ""
+"リモートサーバへファイルアップロード（ファイルを参照して選択・直接入力）"
+
+#: canvasgui2_default.glade:1783 ../canvasgui2_default.glade:1783
+msgid "Username"
+msgstr "ユーザー名"
+
+#: canvasgui2_default.glade:1847 ../canvasgui2_default.glade:1847
+#: ../canvasgui2_default.glade:802 ../canvasgui2_default.glade:3936
+msgid "_File"
+msgstr "_File"
+
+#: canvasgui2_default.glade:1876 ../canvasgui2_default.glade:1876
+#: ../canvasgui2_default.glade:844
+msgid "_Listeners"
+msgstr "_Listeners"
+
+#: canvasgui2_default.glade:628 ../canvasgui2_default.glade:628
+msgid "cd"
+msgstr "cd"
+
+#: canvasgui2_default.glade:1706 ../canvasgui2_default.glade:1706
+msgid "localhost"
+msgstr "localhost"
+
+#: canvasgui2_default.glade:117 ../canvasgui2_default.glade:117
+msgid "module_treeview"
+msgstr "module_treeview"
+
+#: canvasgui2_default.glade:580 ../canvasgui2_default.glade:580
+msgid "pwd"
+msgstr "pwd"
+
+#: canvasgui2_default.glade:723 ../canvasgui2_default.glade:723
+msgid "spawn() on Windows, fexecve() on Unix"
+msgstr "spawn() on Windows, fexecve() on Unix"
+
+#: canvasgui2_default.glade:548 ../canvasgui2_default.glade:548
+msgid "unlink"
+msgstr "unlink"
+
+#: canvasgui2_default.glade:1581 ../canvasgui2_default.glade:1581
+#: ../canvasgui2_default.glade:564
+msgid "window2"
+msgstr "window2"
+
+#: ../canvasgui2_default.glade:811
+msgid "Install GeoIP database...."
+msgstr "GeoIPデータベースのインストール"
+
+#: ../canvasgui2_default.glade:853
+msgid "Start a MOSDEF listener service on the current callback interface"
+msgstr "現在のコールバックインターフェイスでMOSDEFリスナサービスを開始する"
+
+#: ../canvasgui2_default.glade:867
+msgid "_Session"
+msgstr "_Session"
+
+#: ../canvasgui2_default.glade:877
+msgid "Define the name of the CANVAS session and switch to that session."
+msgstr "キャンバスのセッションの名前を定義し、そのセッションに切り替えます。"
+
+#: ../canvasgui2_default.glade:878
+msgid "Set CANVAS Session Name"
+msgstr "セッション名を設定する"
+
+#: ../canvasgui2_default.glade:887
+msgid "Save as much data from this session as we can"
+msgstr "我々がこのセッションから多くのデータを保存"
+
+#: ../canvasgui2_default.glade:888
+msgid "Save CANVAS Session"
+msgstr "セッションの保存"
+
+#: ../canvasgui2_default.glade:897
+msgid "Restore data from a previous session"
+msgstr "前回のセッションを復元"
+
+#: ../canvasgui2_default.glade:898
+msgid "Restore CANVAS Session"
+msgstr "セッションの復元"
+
+#: ../canvasgui2_default.glade:911
+msgid "_Help"
+msgstr "_Help"
+
+#: ../canvasgui2_default.glade:921
+msgid "About this CANVAS release"
+msgstr "このバージョンについて"
+
+#: ../canvasgui2_default.glade:922
+msgid "About"
+msgstr "CANVASについて"
+
+#: ../canvasgui2_default.glade:931
+msgid "Check to see if this is the latest version of CANVAS available"
+msgstr "CANVASの最新バージョンが入手可能か確認してください。"
+
+#: ../canvasgui2_default.glade:932
+msgid "Check for updates..."
+msgstr "更新チェック..."
+
+#: ../canvasgui2_default.glade:1048
+msgid ""
+"Current\n"
+"Callback"
+msgstr ""
+"コールバック"
+
+#: ../canvasgui2_default.glade:1094
+msgid ""
+"Current \n"
+"Target(s) "
+msgstr ""
+"ターゲット"
+
+#: ../canvasgui2_default.glade:1322
+msgid "ALL"
+msgstr "すべて"
+
+#: ../canvasgui2_default.glade:1337
+msgid "MODULE NAME"
+msgstr "モジュール名"
+
+#: ../canvasgui2_default.glade:1346
+msgid "CVE Name"
+msgstr "CVE Name"
+
+#: ../canvasgui2_default.glade:1355
+msgid "CVE Url"
+msgstr "CVE Url"
+
+#: ../canvasgui2_default.glade:1364
+msgid "VENDOR"
+msgstr "ベンダ"
+
+#: ../canvasgui2_default.glade:1373
+msgid "MSADV"
+msgstr "MSADV"
+
+#: ../canvasgui2_default.glade:1382
+msgid "OS"
+msgstr "OS"
+
+#: ../canvasgui2_default.glade:1391
+msgid "TYPE"
+msgstr "TYPE"
+
+#: ../canvasgui2_default.glade:1400
+msgid "SITE"
+msgstr "SITE"
+
+#: ../canvasgui2_default.glade:1409
+msgid "ARCH"
+msgstr "ARCH"
+
+#: ../canvasgui2_default.glade:1418
+msgid "VERSION"
+msgstr "VERSION"
+
+#: ../canvasgui2_default.glade:1427
+msgid "KERNELVER"
+msgstr "KERNELVER"
+
+#: ../canvasgui2_default.glade:1436
+msgid "THIRD PARTY"
+msgstr "サードパーティ"
+
+#: ../canvasgui2_default.glade:1595
+msgid "Search"
+msgstr "検索"
+
+#: ../canvasgui2_default.glade:1899
+msgid "CmdLine"
+msgstr "コマンドライン"
+
+#: ../canvasgui2_default.glade:2695
+msgid "Open filesystem browser"
+msgstr "ファイルシステムブラウザを起動"
+
+#: ../canvasgui2_default.glade:3293
+msgid "Set CANVAS session name"
+msgstr "セットキャンバスのセッション名"
+
+#: ../canvasgui2_default.glade:3366
+msgid "<b>Session name:</b>"
+msgstr "<b>セッション名：</b>"
+
+#: ../canvasgui2_default.glade:3398
+msgid "session_name"
+msgstr "セッション名"
+
+#: ../canvasgui2_default.glade:3426
+msgid "Add a contact route"
+msgstr "連絡ルートを追加します"
+
+#: ../canvasgui2_default.glade:3499
+msgid "<b>Email/IM/RSS</b>"
+msgstr "<b>電子メール/ IM/ RSSフィード</b>"
+
+#: ../canvasgui2_default.glade:3527
+msgid "<b>Type of Route:</b>"
+msgstr "<b>ルートの種類：</b>"
+
+#: ../canvasgui2_default.glade:3604
+msgid "Application Name"
+msgstr "アプリケーション名"
+
+#: ../canvasgui2_default.glade:3605
+msgid "Immunity Inc"
+msgstr "Immunity Inc"
+
+#: ../canvasgui2_default.glade:3609
+msgid "translator-credits"
+msgstr "translator-credits"
+
+#: ../canvasgui2_default.glade:3634
+msgid "CANVAS Error"
+msgstr "キャンバスエラー"
+
+#: ../canvasgui2_default.glade:3684
+msgid "error goes here"
+msgstr "エラーを見る"
+
+#: ../canvasgui2_default.glade:3711
+msgid "Update check"
+msgstr "更新チェック"
+
+#: ../canvasgui2_default.glade:3865
+msgid ""
+"Version update msg here\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+msgstr ""
+"バージョンアップのメッセージ\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+
+#: ../canvasgui2_default.glade:3946
+msgid "Test1"
+msgstr "Test1の"
+
+#: ../canvasgui2_default.glade:3954
+msgid "tes2"
+msgstr "tes2"
+
+#: ../canvasgui2_default.glade:3968
+msgid "Delete node ..."
+msgstr "ノードの削除..."
+
+#: ../canvasgui2_default.glade:4031
+msgid "Are you sure you want to delete this node?"
+msgstr "選択したノードを削除してもいいですか？"
+
+#: ../canvasgui2_default.glade:4061
+msgid "Knowledge"
+msgstr "ノード管理"
+
+#: ../canvasgui2_default.glade:4083
+msgid "Add new host"
+msgstr "ホストの追加"
+
+#: ../canvasgui2_default.glade:4092
+msgid "Forget all knowledge"
+msgstr "全ての作業履歴を消去"
+
+#: ../canvasgui2_default.glade:4101
+msgid "Add hosts from file"
+msgstr "ファイルからホストを追加"
+
+#: ../canvasgui2_default.glade:4120
+msgid "Interfaces"
+msgstr "インターフェイス"
+
+#: ../canvasgui2_default.glade:4142
+msgid "Add interface"
+msgstr "インターフェイスを追加"
+
+#: ../canvasgui2_default.glade:4211
+msgid "Help text goes here - overide in your python code!"
+msgstr "ヘルプテキストをここに記述 - より優先pythonのコードで！"
+
+#: ../canvasgui2_default.glade:4240
+msgid "All Knowledge"
+msgstr "すべての知識"
+
+#: ../canvasgui2_default.glade:4334
+msgid "Select the GeoIP data file ....."
+msgstr "GeoIP のデータファイルを選択 ....."
+
+#: ../WorldMap/graph_base.glade:7
+msgid "CANVAS Nodes"
+msgstr "CANVAS ノード"
+
+#: ../WorldMap/graph_base.glade:31
+msgid "close"
+msgstr "閉じる"
+
+#: ../license_view.glade:46
+msgid "Accept"
+msgstr "許可"
+
+#: ../license_view.glade:55
+msgid "Decline"
+msgstr "減少"
+
+#: ../canvasguigtk2.py:1775 ../canvasguigtk2.py:1809
+msgid "Recon Tools"
+msgstr "調査・検出ツール"
+
+#: ../canvasguigtk2.py:800
+msgid ""
+"Your use of CANVAS is subject to certain terms and conditions, as specified "
+"in the CANVAS License. By using CANVAS, you agree to these terms."
+msgstr ""
+"CANVASのご利用には、特定の条件が科せられます。"
+"CANVASを使用することにより、これらの条項に同意します。"
+
+#: ../canvasguigtk2.py:801
+msgid ""
+"One of these conditions is that the CANVAS license, as included with this "
+"package, is the sole description of your rights."
+msgstr ""
+"次のいずれかの条件には、キャンバスのライセンスとして、これに含まれている"
+"パッケージは、お客様の権利を唯一の説明です。"
+
+#: ../canvasguigtk2.py:802
+msgid "Have you visited the CANVAS forum yet? https://forum.immunityinc.com"
+msgstr "キャンバスフォーラムには有益な情報があります https://forum.immunityinc.com"
+
+#: ../canvasguigtk2.py:803
+msgid "Local IP="
+msgstr "ローカルIP ="
+
+#: ../canvasguigtk2.py:805
+msgid "Your CANVAS subscription expires"
+msgstr "CANVASサブスクリプションの有効期限"
+
+#: ../canvasguigtk2.py:806
+msgid "Your CANVAS subscription is registered to"
+msgstr "CANVASサブスクリプションの登録状況"
+
+#: ../canvasguigtk2.py:807
+msgid ""
+"If you are getting close to expiring, contact +1-786-220-0600 or "
+"admin@immunityinc.com to renew!"
+msgstr ""
+"期限切れや更新時期が迫っている場合、+1-786-220-0600 もしくは"
+"admin@immunityinc.comへご連絡ください。"
+
+#: ../canvasguigtk2.py:1542
+msgid "Status"
+msgstr "ステータス"
+
+#: ../canvasguigtk2.py:1547
+msgid "Action"
+msgstr "アクション"
+
+#: ../canvasguigtk2.py:1552
+msgid "Start Time"
+msgstr "開始時間"
+
+#: ../canvasguigtk2.py:1557
+msgid "End Time"
+msgstr "終了時間"
+
+#: ../canvasguigtk2.py:1562
+msgid "Information"
+msgstr "情報"
+
+#: ../canvasguigtk2.py:1794
+msgid "CANVAS Exploits"
+msgstr "エクスプロイト"
+
+#: ../canvasguigtk2.py:1797
+msgid "Control Active Listener"
+msgstr "リスナーの制御"
+
+#: ../canvasguigtk2.py:1798
+msgid "For the active node"
+msgstr "リスナーシェルの起動"
+
+#: ../canvasguigtk2.py:1801
+msgid "3rd Party Exploit Packs"
+msgstr "サードパーティ エクスプロイト"
+
+#: ../canvasguigtk2.py:1806
+msgid "Commands For Nodes"
+msgstr "ノードコマンドの実行"
+
+#: ../canvasguigtk2.py:1807
+msgid "Post Exploit Control"
+msgstr "リモートコントロール"
+
+#: ../canvasguigtk2.py:1808
+msgid "Misc Tools"
+msgstr "その他ツール"
+
+#: ../canvasguigtk2.py:1810
+msgid "Recon Tools For Nodes"
+msgstr "ゴーストリコンツールのノードについて"
+
+#: ../canvasguigtk2.py:1811
+msgid "Remote recon tools that run against a target"
+msgstr "リモート調査・検出ツールをターゲットに実行する"
+
+#: ../canvasguigtk2.py:1812
+msgid "Denial of Service Modules"
+msgstr "サービス拒否攻撃"
+
+#: ../canvasguigtk2.py:1813
+msgid "Configuration Modules"
+msgstr "構成オプション"
+
+#: ../canvasguigtk2.py:1814
+msgid "CANVAS Servers"
+msgstr "CANVAS サーバ"
+
+#: ../canvasguigtk2.py:1815
+msgid "Fuzzing Modules"
+msgstr "ファジング"
+
+#: ../canvasguigtk2.py:1816
+msgid "Cross Tool Interface"
+msgstr "インポートとエクスポート"
+
+#: ../canvasguigtk2.py:1817
+msgid "Various tools for use post-intrusion."
+msgstr "使用後は、さまざまなツールの侵入。"
+
+#: ../canvasguigtk2.py:1818
+msgid "CANVAS Reports"
+msgstr "レポート"
+
+#: ../canvasguigtk2.py:1823
+msgid "Local attacks that run against a node"
+msgstr "ノード上でのローカルアタック"
+
+#: ../canvasguigtk2.py:1824
+msgid "Client side attacks"
+msgstr "クライアントサイドの攻撃"
+
+#: ../canvasguigtk2.py:1825
+msgid "Remote attacks"
+msgstr "リモートからの攻撃"
+
+#: ../canvasguigtk2.py:1826
+msgid "Attacks against Microsoft platforms"
+msgstr "マイクロソフトのプラットフォームへの攻撃"
+
+#: ../canvasguigtk2.py:1827
+msgid "Attacks against unix platforms"
+msgstr "unixのプラットフォームへの攻撃"
+
+#: ../canvasguigtk2.py:1828
+msgid "Attacks against web applications"
+msgstr "Webアプリケーションに対する攻撃"
+
+#: ../canvasguigtk2.py:2145
+msgid "Various tools for exploiting custom web applications"
+msgstr "カスタムWebアプリケーションをエクスプロイトするための各種ツール"
+
+msgid "User Defined Modules"
+msgstr "お気に入り"
+
+msgid "New Monthly Modules"
+msgstr "最新モジュール"
+
+msgid "1024 CMS <= 1.4.4 Remote File Include"
+msgstr "1024年のCMS\"= 1.4.4リモートファイルを含める"
+
+msgid "3com's TFTP Server (UDP port 69) version 2.0.1 overflow in mode"
+msgstr "3ComのTFTPサーバ（UDPポート69）のバージョン2.0.1フローモードで"
+
+msgid "Misdesign in RDS.DataStore allows for arbitrary object execution"
+msgstr "Misdesign RDS.DataStore内の任意のオブジェクトを実行することができます"
+
+msgid "Creates an executable that will call back to MOSDEF"
+msgstr "バックMOSDEF実行可能ファイルをコールします作成"
+
+msgid "Creates an hlp file that will call back to MOSDEF"
+msgstr "バックMOSDEFにコールされますhlpファイルを作成する"
+
+msgid ""
+"Creates an executable that will call back to download and execute a file "
+"over HTTP/s"
+msgstr ""
+"そのバックアップをダウンロードしてファイルを実行する実行可能ファイルの呼び出しが作成"
+"HTTP経由で/秒"
+
+msgid ""
+"Create a working RSS reader widget that silently connects back to a CANVAS "
+"host"
+msgstr ""
+"をサイレントに戻るCANVASを接続する作業のRSSリーダーのウィジェットを作成します。"
+"主人"
+
+msgid "CLOUDBURST VMware Workstation Guest Escape"
+msgstr "土砂降りVMware Workstationのユーザーのエスケープ"
+
+msgid "Local privilege escalation for AIX 5.x"
+msgstr "のAIX 5.xのローカルでの特権の昇格"
+
+msgid "Local privilege escalation for Solaris 10"
+msgstr "Solaris 10のローカルでの特権の昇格"
+
+msgid "Creates a process given a token"
+msgstr "プロセスは、トークンの指定を作成する"
+
+msgid "DNS Baliwick attack"
+msgstr "DNSのBaliwick攻撃"
+
+msgid "prctl PR_SET_DUMPABLE Linux Local (2.6.13 < 2.6.17.4)"
+msgstr "は、prctl PR_SET_DUMPABLE Linuxのローカル（2.6.13\"2.6.17.4）"
+
+msgid "Creates a primary token from another token"
+msgstr "を作成し、トークンから、別のプライマリトーク"
+
+msgid "EXPLOITDESCRIPTION"
+msgstr "EXPLOITDESCRIPTION"
+
+msgid ""
+"An obvious memory exaustion bug in Exchange Server 2000's MSRPC endpoint"
+msgstr ""
+"のExchange Server 2000のMSRPCをエンドポイントで明らかにメモリexaustionバグ"
+
+msgid "Exits Windows - this will return, and then windows will shut down"
+msgstr "終了するWindowsの - このして、ウィンドウをシャットダウンされますが返されます"
+
+msgid "Tapi Stack Overflow"
+msgstr "のTAPIのスタックオーバーフロー"
+
+msgid "Foxit PDF reader permission bypass"
+msgstr "Foxit PDFリーダーのアクセス許可をバイパスする"
+
+msgid ""
+"A vulnerability in the way Windows 2000/XP handles GDI structures allows for "
+"writing to kernel space"
+msgstr ""
+"Windows 2000/XPのGDIの構造を処理する方法に脆弱性に対応可能"
+"カーネルにスペースを書く"
+
+msgid "Get as much info as we can from Outlook Address Book"
+msgstr "多くの情報などを入手し我々がOutlookのアドレス帳から"
+
+msgid ""
+"Get as much info as we can from the installed web browsers of the current "
+"user: histories, bookmarks, cached password etc\n"
+"NOTE: If FF3 is open the sqlite files cannot be grabbed - I assume they are "
+"locked ?"
+msgstr ""
+"多くの情報のインストール済みのWebブラウザとして私たちすることができますからの取得は、現在の"
+"ユーザー：履歴、ブックマーク、キャッシュされたパスワード等\n"
+"注：FF3エクスポートすることができないのsqliteファイルを開いている - 私がいると仮定"
+"ロック？"
+
+msgid "COMMANDDESCRIPTION"
+msgstr "COMMANDDESCRIPTION"
+
+msgid "Gets the language of the node"
+msgstr "ノードの言語を取得します"
+
+msgid ""
+"This module attempts to determine if a user is actively moving the mouse or "
+"typing on all selected nodes."
+msgstr ""
+"このモジュールは、試行を決定する場合は、ユーザーが積極的には、マウスまたは動いている"
+"選択したすべてのノード上で入力します。"
+
+msgid "IA WebMail <= 3.1 Stack Overflow"
+msgstr "イアWebMailの\"= 3.1、スタックオーバーフロー"
+
+msgid "Compaq Insight CIM-XML exploit"
+msgstr "は、Compaq InsightのCIM -エクスプロイトのXML"
+
+msgid "Gets a primary token given a username and password"
+msgstr "取得プライマリトークのユーザー名とパスワードを指定"
+
+msgid "MailEnable WebMail Authorization Buffer Overflow"
+msgstr "MailEnable WebMailの承認のバッファオーバーフロー"
+
+msgid ""
+"Microsoft Windows Media Player Malformed PNG Remote Code Execution "
+"Vulnerability"
+msgstr ""
+"は、Microsoft Windows Media Playerで不正な形式のPNG、リモートでコードが実行される"
+"脆弱性"
+
+msgid ""
+"A stack overflow in the SUBSCRIBE IMAP call allows for a post-auth compromise"
+msgstr ""
+"は、SUBSCRIBEのIMAPの呼び出しでスタックオーバーフローのポストを可能に- authの妥協"
+
+msgid "Check to see if NTLM auth worked on a web server"
+msgstr "場合、NTLM認証は、Webサーバー上で作業を確認してください。"
+
+msgid ""
+"Incorrect DBUS deny statement setting allows access to NetworkManager "
+"secrets of other users (such WEP/WPA keys)"
+msgstr ""
+"不適切なdbusのステートメントの設定を拒否することができますNetworkManagerをへのアクセス"
+"他のユーザーの秘密（などのWEP / WPAキー）"
+
+msgid "PROC FS Linux 2.6.x local root exploit"
+msgstr "文集FsをLinuxの2.6.xでは、ローカルのrootのエクスプロイト"
+
+msgid "Test not for release"
+msgstr "テストを解放しないため"
+
+msgid "Get a Win32 Node on a VNC system"
+msgstr "VNCのシステム上では、Win32のノードを取得"
+
+msgid "Safe Vulnerability Assessment Tool"
+msgstr "安全性評価ツール"
+
+msgid "Poor input validation allows remote users to include remote files"
+msgstr "入力検証が不十分な為、リモートユーザーがリモートファイルをインクルードすることができる"
+
+msgid "WS_FTPD Stack Overflow"
+msgstr "WS_FTPDスタックオーバーフロー"
+
+msgid "Get WEP and WPA keys off the target system"
+msgstr "WEPとは、ターゲットシステムの電源をWPAキーを取得"
+
+msgid "Abyss Web Server Overflow"
+msgstr "アビスWebサーバーのオーバーフロー"
+
+msgid "Adobe Acrobat Reader 9.1.3/8.1.6 Heap Overflow leads to code execution"
+msgstr "Adobe Acrobat Readerの9.1.3/8.1.6ヒープオーバーフローの実行コードにつながる"
+
+msgid "Adobe Acrobat Flash Uninitialized object"
+msgstr "は、Adobe Acrobatフラッシュ初期化されないオブジェクト"
+
+msgid "Adobe Acrobat Reader 9.0 Stack Overflow"
+msgstr "Adobe Acrobat Reader 9.0 スタックオーバーフロー"
+
+msgid "Adobe Acrobat Reader Stack Overflow"
+msgstr "Adobe Acrobat Reader スタックオーバーフロー"
+
+msgid "Adobe Acrobat Reader Stack Overflow (Collab.getIcon)"
+msgstr "Adobe Acrobat Readerがスタックオーバーフロー（Collab.getIcon）"
+
+msgid "Adobe Acrobat Reader Use After Free (DocMedia.newplayer)"
+msgstr "Adobe Acrobat Readerを使用して無料（DocMedia.newplayer）"
+
+msgid "Adobe Acrobat Reader Heap Overflow (ClodMeshDeclaration CVE-2009-2994)"
+msgstr "Adobe Acrobat Readerのヒープオーバーフロー（ClodMeshDeclaration CVE - 2009 - 2994）"
+
+msgid ""
+"Sends an activation packet to a host that has the MOSDEF rootkit running. "
+"Returns a Win32Node. Can take up to 60 seconds.Doesn't matter if the remote "
+"host has the Windows firewall turned on, because our rootkit sits below it."
+msgstr ""
+"そのMOSDEF rootkitの動作しているホストへの活性化パケットを送信します。"
+"戻り値Win32Node。場合は、リモートにt問題60 seconds.Doesn'を取ることはできます"
+"ホストのため、当社のrootkitの下に座ってオンにしては、Windowsファイアウォールがあります。"
+
+msgid "Adds a host to the host knowledge tree"
+msgstr "ホストの知識の木にホストを追加します"
+
+msgid "Adds a list of hosts from a file to the host knowledge tree"
+msgstr "ファイルは、ホストの知識の木からのホストのリストを追加"
+
+msgid "adds a null share on the local or remote machine"
+msgstr "ローカルまたはリモートのマシン上では、nullを共有に追加"
+
+msgid ""
+"Calls popen2() or equivalent to issue local command to add a user. Uses "
+"first selected node."
+msgstr ""
+"コールpopen2（ローカル）またはコマンドを発行するユーザーを追加するに相当する。を使用して"
+"最初に選択したノード。"
+
+msgid ""
+"Poor input validation allows remote users to insert php code into the blog "
+"and execute commands"
+msgstr ""
+"入力検証が不十分な為、リモートユーザーがブログにPHPコードを挿入することができます"
+"とコマンドを実行する"
+
+msgid "Calendar Manager stack overflow for AIX"
+msgstr "カレンダーマネージャAIXの場合、スタックオーバーフロー"
+
+msgid "ttdbserver libtt.a _tt_internal_realpath stack overflow"
+msgstr "ttdbserver libtt.a _tt_internal_realpathスタックオーバーフロー"
+
+msgid "Alt-N Security Gateway 1.0.1 - Admin HTTP Server Overflow"
+msgstr "AltキーÑセキュリティゲートウェイ1.0.1 - 管理者HTTP Serverのオーバーフロー"
+
+msgid "Windows Animated Cursor Stack Overflow"
+msgstr "Windowsアニメーションカーソルのスタックオーバーフロー"
+
+msgid ""
+"\n"
+"Apache 2.0.46-52 and IBM HTTP Web Server 2.0.42-47 are vulnerable to DoS via "
+"excessive use of spaces in an HTTP GET Request"
+msgstr ""
+"\n"
+"Apacheの2.0.46-52とIBM HTTP Webサーバ2.0.42-47 DoS攻撃を介して脆弱性があります"
+"内のスペースの過度の使用は、HTTP GETリクエスト"
+
+msgid "Apache Chunked encoding exploit for win32"
+msgstr "Apacheのチャンクwin32用のエクスプロイトのエンコーディング"
+
+msgid ""
+"Finds all the hosts on the local network interfaces using an brute force arp "
+"scan"
+msgstr ""
+"ローカルネットワークでの検索のすべてのホストブルートフォースarpを使用してインターフェイス"
+"スキャン"
+
+msgid "Performs an ARP scan"
+msgstr "を実行するためのARPのスキャン"
+
+msgid "SAMBA api_lsa_lookup_sids Heap Overflow"
+msgstr "SAMBAのヒープオーバーフローが発生api_lsa_lookup_sids"
+
+msgid "Microsoft Scheduler Service NetrJobAdd"
+msgstr "マイクロソフトスケジューラサービスNetrJobAdd"
+
+msgid "Assess the exposure of a given box"
+msgstr "指定されたボックスの査定の露出"
+
+msgid "Try to hack into the given box"
+msgstr "指定されたボックスに侵入しようとする"
+
+msgid "Tries to escalate privilege on a node"
+msgstr "しようとするノード上の権限を昇格させる"
+
+msgid "awservices.exe stack overflow"
+msgstr "スタックオーバーフローawservices.exe"
+
+msgid "barryvancompo-0.3 Remote file include"
+msgstr "barryvancompo - 0.3リモートファイルを含める"
+
+msgid "Basic Authentication Bruteforce"
+msgstr "基本認証Bruteforce"
+
+msgid "Big Ant Messenging Server 2.2 - HTTP GET Stack Overflow"
+msgstr "ビッグAntのMessengingではServer 2.2は - HTTPのスタックオーバーフローのGET"
+
+msgid ""
+"It allows us to inject an executable file inside an OLE2 docfile and execute "
+"it using VBA."
+msgstr ""
+"それは私達OLE2を複合ファイル内の実行可能ファイルを挿入すると実行することができます"
+"それを使用してVBAの。"
+
+msgid "BlackIce stack overflow"
+msgstr "からBlackIceスタックオーバーフロー"
+
+msgid "Blind ISAPI stack overflow brute forcer"
+msgstr "視覚障害者のISAPIブルート収納箱スタックオーバーフロー"
+
+msgid "Blind SQL Injection"
+msgstr "ブラインドSQLインジェクション"
+
+msgid ""
+"Borland Interbase ibserver.exe Create-Request Buffer Overflow Vulnerability"
+msgstr ""
+"ボーランドインターベースibserver.exe作成リクエストバッファオーバーフローの脆弱性"
+
+msgid "Break Chroot on old Linux 2.2/2.4"
+msgstr "古いLinux 2.2/2.4で休憩chrootで"
+
+msgid "CA BrightStor ARCserve Backup Arbitrary Command Execution"
+msgstr "CAのBrightStor ARCserve Backupでは、任意のコマンドが実行される"
+
+msgid "CA BrightStor ARCserve Backup Discovery Service Stack Overflow"
+msgstr "カリフォルニア州は、BrightStor ARCserve Backupディスカバリサービスのスタックオーバーフロー"
+
+msgid "CA BrightStor ARCserve Backup Media Server RPC Interface Stack Overflow"
+msgstr "CAのBrightStor ARCserve BackupのMedia ServerのRPCインターフェイスのスタックオーバーフロー"
+
+msgid "CA BrightStor ARCserve Backup RPC Interface ascore.dll Stack Overflow"
+msgstr "CAのBrightStor ARCserve BackupのRPCインターフェイスのascore.dllスタックオーバーフロー"
+
+msgid "CA License Manager Stack Overflow"
+msgstr "CAのライセンスマネージャのスタックオーバーフロー"
+
+msgid "cachefsd .cfs_mnt File Stack Overflow (requires in.lpd for file upload)"
+msgstr "。cfs_mntファイルでスタックオーバーフローcachefsd（ファイルのアップロード）in.lpdが必要です"
+
+msgid "Flexible MOSDEF callbacks"
+msgstr "柔軟なMOSDEFバック"
+
+msgid "cam.exe stack overflow."
+msgstr "スタックオーバーフローcam.exe。"
+
+msgid "CesarFTP Stack Overflow on MKD command"
+msgstr "CesarFTPスタックオーバーフローのMKDのコマンド"
+
+msgid "Changes directory. Uses first selected node."
+msgstr "変更ディレクトリにあります。最初に選択されたノードを使用します。"
+
+msgid "Checks to see if we're inside a VM"
+msgstr "もし我々は、VMの内部にいるどうかを確認する"
+
+msgid "Local privilege escalation via chfn escape character"
+msgstr "chfnは、エスケープ文字を介してローカルでの特権の昇格"
+
+msgid "CitectSCADA ODBC Buffer Overflow"
+msgstr "CitectSCADA ODBCのバッファオーバーフロー"
+
+msgid "Citrix IMA Heap Overflow Demo"
+msgstr "CitrixのIMAのヒープオーバーフローのデモ"
+
+msgid "Citrix MetaFrame XP Print Provider Stack Overflow"
+msgstr "Citrix MetaFrame XPのプリントプロバイダのスタックオーバーフロー"
+
+msgid ""
+"Completely Clears the Application, System, And Security Event Logs in Windows"
+msgstr ""
+"完全に消去しますアプリケーション、システム、およびセキュリティイベントログ、Windowsの"
+
+msgid ""
+"Creates spreadsheet and charts from SploitD pickles. Requires Open Office >= "
+"3.0"
+msgstr ""
+"SploitD漬物からスプレッドシートやグラフを作成します。が必要ですオープンオフィス\"="
+"3.0"
+
+msgid "HTTP Server for client side vulnerabilities"
+msgstr "クライアント側の脆弱性確認用HTTP Server"
+
+msgid "rpc.cmsd xdr_array heap overflow"
+msgstr "rpc.cmsdのxdr_arrayヒープオーバーフロー"
+
+msgid ""
+"Poor input validation allows remote users to call eval with their own "
+"contents"
+msgstr ""
+"入力検証が不十分な為のリモートユーザeval独自に呼び出すことができます"
+"内容"
+
+msgid "Ask for a file in MOSDEF C and create a tiny .exe"
+msgstr "MOSDEF C言語でファイルを求めようと小型を作成します。exeファイル"
+
+msgid "Get the computer name"
+msgstr "コンピュータ名を取得する"
+
+msgid "Connects to remote MOSDEF service via TCP"
+msgstr "TCPを介してリモートMOSDEFサービスに接続します。"
+
+msgid ""
+"Builds, uploads and runs a MOSDEF callback trojan. This is useful when you "
+"have a less full-featured Node such as a PHP ScriptNode, JavaNode or "
+"UnixShell, and want the full MOSDEF capability."
+msgstr ""
+"ビルドでは、アップロードとMOSDEFコールトロイの木馬を実行します。この場合に便利です"
+"以下のフルPHPのScriptNode、JavaNodeまたはノードのような機能が"
+"UnixShell、およびフルMOSDEF機能します。"
+
+msgid "Remote vulnerablility in Coppermine gets Shell"
+msgstr "Coppermineでリモートvulnerablilityシェルを取得"
+
+msgid "Attack Corptax"
+msgstr "攻撃Corptax"
+
+msgid "cpCommerce 1.2.x Remote File Include"
+msgstr "cpCommerce 1.2.xをリモートファイルを含める"
+
+msgid "CreateReport"
+msgstr "CreateReport"
+
+msgid "Creates a service on all selected nodes"
+msgstr "選択したすべてのノード上でサービスを作成します"
+
+msgid "cutenews/strawberry Remote Code Execution"
+msgstr "cutenews /イチゴ、リモートでコードが実行される"
+
+msgid "Stack overflow vulnerability in IBM DB2 JDBC Applet Server"
+msgstr "IBM DB2のJDBCのアプレットでスタックオーバーフローの脆弱性サーバ"
+
+msgid "DCE Dumper"
+msgstr "DCEのダンパ"
+
+msgid "Threaded SSH password bruteforcer"
+msgstr "スレッドSSHパスワードbruteforcer"
+
+msgid "Deletes a service on all selected nodes"
+msgstr "すべて削除選択されたノード上のサービス"
+
+msgid ""
+"Calls popen2() or equivalent to issue local command to remove a user. Uses "
+"first selected node."
+msgstr ""
+"コールpopen2（ローカル）またはコマンドを発行するユーザーを削除するに相当する。を使用して"
+"最初に選択したノード。"
+
+msgid ""
+"Deploys a PINK drone to the remote workstation. Also generates the necessary "
+"text for the blog posting."
+msgstr ""
+"展開は、リモートワークステーションにピンク無人。また、必要に応じ生成"
+"ブログの投稿のためのテキスト。"
+
+msgid "Gets directory listing"
+msgstr "ディレクトリのリストを取得します"
+
+msgid ""
+"Weakness where the Windows Defender API allows you to zero out a flag that "
+"bypasses a code signing check. This allows unsigned code to disable Windows "
+"Defender."
+msgstr ""
+"弱点は、Windows DefenderのAPIを使用するフラグをゼロにすることができますが"
+"コード署名のチェックをバイパスします。これにより、無効にするWindowsへの未署名のコード"
+"ディフェンダー。"
+
+msgid ""
+"Disable Windows Firewall through COM interface in XP/2003 (Instantly) or by "
+"registry in Win7/Vista/2008 (need service restart to take effect)"
+msgstr ""
+"Windowsファイアウォールを無効XP/2003のでCOMインターフェイス（すぐ）またはを介して"
+"Win7/Vista/2008のレジストリ（必要なサービスを有効にする）を再起動"
+
+msgid ""
+"Searches a remote node for a file pattern. Optionally can download all "
+"matching files automatically.Please note that searching the primary hard "
+"drive and/or downloading files can take a few minutes,unless CANVAS reports "
+"an error just be patient and you should see results."
+msgstr ""
+"ファイルのパターンのためにリモートノードを検索します。必要に応じて、すべてをダウンロードすることができます"
+"一致するファイルをメモautomatically.Pleaseには、プライマリハードを検索"
+"ドライブおよび/またはファイルをダウンロードすることができます数分の場合を除き、CANVASをレポート"
+"エラーだけで、患者にし、結果を確認してください。"
+
+msgid "Enumerate hosts in a domain based on a dictionary attack"
+msgstr "ドメインには、辞書攻撃に基づいて列挙するホスト"
+
+msgid "Dokeos LMS <= 1.8.5 Remote Code Execution"
+msgstr "DokeosのLMS\"= 1.8.5、リモートでコードが実行される"
+
+msgid "DokuWiki Spell Checker Embedded Link Arbitrary PHP Code Execution  "
+msgstr "DokuWikiのスペルチェッカーを組み込み、任意のPHPコードが実行されるリンク"
+
+msgid "DokuWiki 2009-02-14 Globals overwrite / Code execeution"
+msgstr "DokuWikiは2009年2月14日グローバル変数を上書きする/コードexeceution"
+
+msgid "Lotus Domino IMAP4 Server CRAM-MD5 Stack Overflow"
+msgstr "Lotus DominoのIMAP4サーバーはCRAM - MD5、スタックオーバーフロー"
+
+msgid "Denial of service tool"
+msgstr "サービス拒否のツール"
+
+msgid "Downloads files through a supplied directory traversal vulnerability"
+msgstr "指定されたディレクトリを介してファイルをダウンロードの脆弱性トラバーサル"
+
+msgid "Download file. Uses first selected node."
+msgstr "ファイルをダウンロード。最初に選択されたノードを使用します。"
+
+msgid "Dragoon 0.1 Remote File Include"
+msgstr "パンツァードラグーン0.1リモートファイルを含める"
+
+msgid "Provides a useful drink coaster! (drive D: is used)"
+msgstr "便利なドリンクコースターを提供します！ （Dドライブ：使用されます）"
+
+msgid "dtspcd heap overflow"
+msgstr "dtspcdのヒープオーバーフロー"
+
+msgid "e107 CMS Code execution"
+msgstr "e107 CMSのコードの実行"
+
+msgid "Easy File Sharing Stack Overflow on PASS command"
+msgstr "簡単にファイルのパス上のコマンドは、スタックオーバーフローを共有する"
+
+msgid "Easy Px 41 CMS v09.00.00B1 (fiche) Local File Include"
+msgstr "簡単にピクセル41のCMS v09.00.00B1（fiche）ローカルファイルを含める"
+
+msgid "Stack overflow vulnerability in Novell eDirectory HTTP stack"
+msgstr "Novell eDirectory内のスタックオーバーフローの脆弱性はHTTPスタック"
+
+msgid "Sends email to every currently selected contact route of type 'email'"
+msgstr "型'のすべての現在の選択した連絡先のルートに送信電子メールメール'"
+
+msgid "Sends email via SMTP"
+msgstr "SMTP経由で送信する電子メール"
+
+msgid "Gets the services and their state"
+msgstr "サービスとその状態を取得します"
+
+msgid "Exit the process"
+msgstr "終了処理"
+
+msgid "Exit the current thread"
+msgstr "を終了し、現在のスレッド"
+
+msgid "EZNet stack overflow"
+msgstr "EZNetスタックオーバーフロー"
+
+msgid "Detect if someone is on the compromised computer with a webcam"
+msgstr "を検出する場合、誰かが侵入先のコンピュータ上でウェブカメラを利用して"
+
+msgid "Grab a picture from a webcam"
+msgstr "ウェブカメラからの在庫画像"
+
+msgid "FileCOPA Stack Overflow on LIST command"
+msgstr "FileCOPAスタックオーバーフローリスト上のコマンド"
+
+msgid "Find Non-authenticated VNC Servers"
+msgstr "を見つける以外のVNCサーバの認証"
+
+msgid "Firefox 3.5 Remote Code Execution"
+msgstr "Firefox 3.5では、リモートでコードが実行される"
+
+msgid ""
+"A flaw in the way Mozilla Firefox Javascript Engine handle the defineSetter "
+"method allows to simulate a JSObject from an arbitrary memory area"
+msgstr ""
+"Mozilla FirefoxのJavaScriptエンジンdefineSetter処理する方法に脆弱性"
+"メソッドに、任意のメモリ領域からJSObjectをシミュレートすることができます"
+
+msgid "FireFox UTF8 Stack Overflow"
+msgstr "FireFoxのUTF8のスタックオーバーフロー"
+
+msgid ""
+"Adobe Flash Player (<= 9.0.115.0) DefineSceneAndFrameLabelData Tag Integer "
+"Overflow"
+msgstr ""
+"Adobe Flash Playerを（\"= 9.0.115.0）DefineSceneAndFrameLabelDataタグ整数"
+"オーバーフロー"
+
+msgid ""
+"A flaw in the way Adobe Flash handle the Long String Tags could lead into a "
+"buffer overflow."
+msgstr ""
+"のAdobe Flashにつながる可能性がある長い文字列タグを処理する方法に脆弱性"
+"バッファオーバーフローです。"
+
+msgid "Foxit PDF Reader Action Overflow"
+msgstr "PDFドキュメントリーダーアクションフロー"
+
+msgid "Foxit Reader Javascript Function util.printf()"
+msgstr "Foxit ReaderのJavascript機能をutil.printf（）"
+
+msgid "FP30REG.DLL Chunked Heap Overflow (MS03-051)"
+msgstr "FP30REG.DLLチャンクヒープオーバーフローのプログラム（MS03 - 051）"
+
+msgid "Imports data from Foundstone scans into CANVAS"
+msgstr "ファウンドストーン社からの輸入データをキャンバスにスキャン"
+
+msgid "Checks an FTP server for remote access with a few default usernames"
+msgstr "いくつかのデフォルトのユーザ名とリモートアクセスのためかどうか、FTPサーバ"
+
+msgid "fuzzylime cms <= 3.01 Remote File include"
+msgstr "fuzzylimeのCMS\"= 3.01リモートのファイルを含める"
+
+msgid "GREENAPPLE mrxsmb.sys remote ring0 exploit"
+msgstr "GREENAPPLE Mrxsmb.sysでリモートring0エクスプロイト"
+
+msgid ""
+"Grab the local DNS cache from the compromised host, useful for backtracking "
+"any old queries."
+msgstr ""
+"バックトラックのため、侵入したホストからの在庫は、ローカルDNSキャッシュに便利"
+"任意の以前のクエリ。"
+
+msgid "Gets a dump of one process's memory"
+msgstr "1つのプロセスのメモリダンプを取得"
+
+msgid "Calls getcwd() or equivalent. Uses first selected node."
+msgstr "（）の呼び出し、または同等のgetcwd。最初に選択されたノードを使用します。"
+
+msgid "Gets all the emails from a certain website/url."
+msgstr "特定のWebサイトから/ URLはすべての電子メールを取得します。"
+
+msgid "resolves a host to an ip"
+msgstr "ipのホストを解決する"
+
+msgid "Get a key from the remote host"
+msgstr "リモートホストからのキーを取得する"
+
+msgid "Get user password hashes for offline cracking"
+msgstr "オフライン割れのユーザーのパスワードハッシュを取得"
+
+msgid "Gets process id on selected node"
+msgstr "取得プロセスを選択されたノードのID"
+
+msgid "Get the print providers on a remote Windows machine"
+msgstr "リモートのWindowsマシン上でのプリントプロバイダを取得"
+
+msgid "Enables a privilege"
+msgstr "を可能にする権限"
+
+msgid "Gets process name of our current process"
+msgstr "当社の現在のプロセスのプロセス名を取得"
+
+msgid "Get the language pack of a remote Windows machine"
+msgstr "リモートのWindowsマシンの言語パックを入手し"
+
+msgid "XXXXXXXXXXXXXXXXXXXXXXXXX"
+msgstr "XXXXXXXXXXXXXXXXXXXXXXXXX"
+
+msgid "Windows Remote Services Enumeration"
+msgstr "Windowsのリモートサービスの列挙"
+
+msgid "Gets information on each thread in the process for all nodes"
+msgstr "プロセス内の各スレッド上ですべてのノードの情報を取得"
+
+msgid "Gathers WWW hostnames for an IP address"
+msgstr "IPアドレスの収集WWWのホスト名"
+
+msgid ""
+"A buffer overflow in the OpenURL function allows us execute arbitrary code"
+msgstr ""
+"のOpenURL関数内でバッファオーバーフローの私たちの任意のコードを実行することができます"
+
+msgid ""
+"Overflow on commands issued by authenticated users in the Goodtech SSH server"
+msgstr ""
+"オーバーフローのコマンドは、Goodtech SSHサーバに認証されたユーザーによって発行された"
+
+msgid "gpsd"
+msgstr "gpsdの"
+
+msgid "Grape Web Statistics Remote File include"
+msgstr "ブドウのWeb統計リモートのファイルを含める"
+
+msgid ""
+"Overflow in URL handler SDSurf.dll that is injected into all browser "
+"processes by Green Dam."
+msgstr ""
+"オーバーフローのURLハンドラSDSurf.dllでは、すべてのブラウザに注入され"
+"緑のダムによって処理されます。"
+
+msgid "GROUP-E 1.6.41 Remote file include"
+msgstr "グループメール1.6.41リモートファイルを含める"
+
+msgid ""
+"There exists an Accept-Language Buffer Overflow in Novell GroupWise "
+"Messenger 2.0"
+msgstr ""
+"ようこそNovell GroupWiseでのAccept - Languageのバッファオーバーフローが存在する"
+"メッセンジャー2.0"
+
+msgid "Novell GroupWise WebAccess Base64 Decoding Stack Overflow"
+msgstr "は、Novell GroupWise WebAccessでは、Base64でデコード、スタックオーバーフロー"
+
+msgid "Harbor Listen.exe"
+msgstr "Harbor Listen.exe"
+
+msgid ""
+"Configure beacon callback host and port for HCN rootkit. The beacon interval "
+"determines how often the rootkit will attempt to connect to CANVAS. A "
+"successful beacon connection will give you a win32Node with full SYSTEM "
+"privileges.\n"
+"\n"
+"When running hcn_beaconlistener, make sure to set the same host/pair "
+"combination for the Beacon Host and Beacon Port settings."
+msgstr ""
+"構成するビーコンのコールバックのホストとポートHCNのキットです。ビーコン間隔"
+"どのくらいの頻度rootkitのキャンバスに接続しようとすると決定されます。"
+"成功したビーコンの接続を完全なシステムとwin32Nodeを与える"
+"特権。\n"
+"\n"
+"を実行する場合hcn_beaconlistener、同じホストを設定することを確認/ペア"
+"ビーコンホストとBeaconのポートの設定の組み合わせです。"
+
+msgid ""
+"\n"
+"This sets up the necessary listeners for the Windows rootkit to call to "
+"CANVAS and establish a SYSTEM shell. The Beacon Host and Beacon Port should "
+"be set to the same host/port that was set in hcn_beaconconfig. The CANVAS "
+"host/port is where the callback shell will call, you can have this set to a "
+"local CANVAS instance (it will start a listener on its own), or a remote "
+"listening post where you already have a WIN32MOSDEF callback listening.\n"
+"\n"
+"Note: Make sure to set the \"fromcreatethread\" option when starting your "
+"listener on a different host.\n"
+msgstr ""
+"\n"
+"Windowsのルートキットに必要なリスナーを、この設定するために呼び出す"
+"CANVASをし、システムのシェルを確立します。ビーコンホストとBeaconポートする必要があります"
+"同じホストに設定される/そのhcn_beaconconfigに設定されたポートです。キャンバス"
+"ホスト/ポートでは、コールバックシェル、あなたにこれを設定することができますを呼び出すことです"
+"CANVASをインスタンスをローカル（自身で）、またはリモートリスナーが開始されます"
+"リスニングポストが既にWIN32MOSDEFコールバックをリッスンしている。\n"
+"\n"
+"注意：\\\"fromcreatethreadを設定することを確認します\\\"オプションを起動したときに"
+"別のホスト上のリスナーです。\n"
+
+msgid ""
+"Hides a directory in the target node. Simply enter the directory like: c:"
+"\\MOSDEF and it will disappear from view."
+msgstr ""
+"ターゲットノードの非表示ディレクトリにあります。単純のようにディレクトリを入力する言語：C："
+"\\ \\ MOSDEFし、表示されなくなります。"
+
+msgid ""
+"\n"
+"Hides network connection stats from programs like netstat.\n"
+"\n"
+"Some examples, assuming your target lives on 192.168.244.123 and your CANVAS "
+"host is at 192.168.244.1:\n"
+"\n"
+"Source: 192.168.244.123\n"
+"Dest  : 192.168.244.1\n"
+"\n"
+"This will hide the ports of your choosing where the connection was outbound "
+"to your CANVAS host. If you had a trojaned service running on your target "
+"and you wanted to hide the inbound connection you would do it like this:\n"
+"\n"
+"Source: 192.168.244.1\n"
+"Dest  : 192.168.244.123\n"
+"\n"
+"You must discard Dest address and port range for UDP port hide. Such "
+"information is not available inside internal Windows Kernel Network "
+"Structures.\n"
+msgstr ""
+"\n"
+"netstatのようなプログラムからのものを隠しますネットワーク接続を見てみよう。\n"
+"\n"
+"いくつかの例では、192.168.244.123とキャンバス上のターゲットの生活を想定"
+"ホスト192.168.244.1です：\n"
+"\n"
+"ソース：192.168.244.123\n"
+"転送先：192.168.244.1\n"
+"\n"
+"これはあなたの選択のポートを非表示にしますアウトバウンドは、接続された"
+"あなたのCANVASをホストします。あなたのターゲット上で動作するトロイの木馬のサービスが"
+"、あなたは、このようにしないと着信接続を非表示にしたい：\n"
+"\n"
+"ソース：192.168.244.1\n"
+"転送先：192.168.244.123\n"
+"\n"
+"UDPポートを隠すための範囲を転送先アドレスとポートを破棄する必要があります。そのような"
+"情報は内部Windowsカーネルのネットワーク内部で利用されていません"
+"構造。\n"
+
+msgid ""
+"Hides a running process from view of the operating system. Uses the process "
+"PID."
+msgstr ""
+"オペレーティングシステムの観点からのものを隠します実行中のプロセス。を使用してプロセス"
+"pidを。"
+
+msgid ""
+"Hides a registry key in the target node. Reg names must follow kernel "
+"registry names:\n"
+"\n"
+"    * HKEY_LOCAL_MACHINE = \\Registry\\Machine\n"
+"    * HKEY_USERS                = \\Registry\\User\n"
+"    * HKEY_CURRENT_USER  = \\Registry\\User\\User_SID\n"
+"    \n"
+"For example, to hide:\n"
+"\n"
+"HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\Run"
+"\\canvastrojan.exe\n"
+"\n"
+"you would use the following:\n"
+"\n"
+"\\REGISTRY\\MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\run"
+"\\canvastrojan.exe"
+msgstr ""
+"ターゲットノードで非表示にするレジストリキーです。登録名はカーネルに従わなければならない"
+"レジストリの名前：\n"
+"\n"
+"    * HKEY_LOCAL_MACHINE = \\Registry\\Machine\n"
+"    * HKEY_USERS                = \\Registry\\User\n"
+"    * HKEY_CURRENT_USER  = \\Registry\\User\\User_SID\n"
+"\n"
+"隠す例：\n"
+"\n"
+"HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\Run"
+"\\canvastrojan.exe\n"
+"\n"
+"場合は、次を使用します：\n"
+"\n"
+"\\REGISTRY\\MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\run"
+"\\canvastrojan.exe"
+
+msgid "Installs the HCN rootkit."
+msgstr "HCN rootkitをインストール"
+
+msgid "Removes HCN rootkit from target host."
+msgstr "ターゲットホストからのHCN rootkitを削除する。"
+
+msgid ""
+"Uses the Windows rootkit to hide files on the remote host. Renames an "
+"existing file with the 'mosdef' prefix. Keep in mind that running processes "
+"cannot have their executable's filename changed until they are stopped."
+msgstr ""
+"Windowsのルートキットを使用してリモートホスト上のファイルを非表示にする。名前を変更します"
+"'mosdef'で既存のファイルの接頭辞。覚えておいては、実行中のプロセス"
+"までは停止され、自分たちの実行可能ファイルのファイル名は変更できない。"
+
+msgid ""
+"Hides a TCP port from the view of the operating system. Needs to have the "
+"MOSDEF rootkit loaded first."
+msgstr ""
+"オペレーティングシステムの観点からのものを隠しますTCPポート。ニーズが"
+"MOSDEF rootkitの最初にロードされます。"
+
+msgid ""
+"Hides a running process from view of the operating system. Uses the process "
+"name (no extension)."
+msgstr ""
+"オペレーティングシステムの観点からのものを隠します実行中のプロセス。を使用してプロセス"
+"名（拡張子なし）。"
+
+msgid ""
+"Hides a running process from view of the operating system. Uses the process "
+"PID (no extension)."
+msgstr ""
+"オペレーティングシステムの観点からのものを隠します実行中のプロセス。を使用してプロセス"
+"pidを（拡張子なし）。"
+
+msgid ""
+"Connects to HP Printers and provides basic file access (dir/upload/download)"
+msgstr ""
+"HPプリンタに接続し、基本的なファイルへのアクセスを提供します（ディレクトリ/アップロード/ダウンロード）"
+
+msgid "HTTP Proxy for MOSDEF Callbacks"
+msgstr "HTTPプロキシをMOSDEFコールバック用の"
+
+msgid "Fingerprint an HTTP Server"
+msgstr "指紋認証は、HTTPサーバー"
+
+msgid "HTTP Server that uploads files for you"
+msgstr "HTTP Serverにはあなたのファイルをアップロード"
+
+msgid "Driver Impersonation Attack Could Allow Local Privilege Escalation"
+msgstr "ドライバの偽装攻撃性により、ローカル権限の昇格"
+
+msgid "ICECAST exploit"
+msgstr "Icecastのエクスプロイト"
+
+msgid "ICMP Proxy for MOSDEF Callbacks"
+msgstr "ICMPのプロキシMOSDEFコールバック用の"
+
+msgid "Checks for ICMP messages against remote hosts"
+msgstr "チェックICMPメッセージのリモートホストに対して"
+
+msgid ""
+"A flaw in the way of handling special characters in URIs. Requires IE7 + WMP"
+msgstr ""
+"URIの中に特殊文字を処理する方法に脆弱性。が必要ですIE7 +は間WMP"
+
+msgid "Microsoft IE Comments Use-After-Free bug (Aurora)"
+msgstr "Microsoftは、IEのコメントを使用し、無料のバグ（オーロラ後）"
+
+msgid ""
+"A flaw in the MIME/type comprobation in IE that can be used to force IE to "
+"interpret non-html files."
+msgstr ""
+"MIMEで欠陥/ IEのことにはIEを強制するために使用することができますタイプcomprobation"
+"以外の解釈のhtmlファイル。"
+
+msgid "Client-Side vulnerability in IE"
+msgstr "クライアントのIEのサイドの脆弱性"
+
+msgid ""
+"A flaw in the way of handling special characters in URIs. Requires IE7 + "
+"Adobe Acrobat Reader"
+msgstr ""
+"URIの中に特殊文字を処理する方法に脆弱性。が必要ですIE7 +は"
+"Adobe Acrobat Readerが"
+
+msgid "DCE Interface ID's Query Tool"
+msgstr "DCEのインターフェイスIDのクエリツール"
+
+msgid "IIS 5.0 Webdav Indexed Directory Disclosure"
+msgstr "IIS 5.0のWebDAVをインデックスディレクトリ開示"
+
+msgid "IIS 5.0 .asp Heap Overflow"
+msgstr "IIS 5.0の。ヒープオーバーフローのASP"
+
+msgid "Poor input validation allows remote users to execute arbitrary commands"
+msgstr "入力検証が不十分な為のリモートユーザが任意のコマンドを実行することができます"
+
+msgid ""
+"IIS 5.0 Webdav Indexed Directory Disclosure - IIS 6.0 Webdav Auth bypass"
+msgstr ""
+"IIS 5.0のWebDAVをインデックスディレクトリ開示 - IIS 6.0のwebdavの認証をバイパスする"
+
+msgid "IIS FTP GLOBBING Stack Exhaustion"
+msgstr "IISのFTPはglobスタックの枯渇"
+
+msgid "IIS FTP NLST Stack Overflow"
+msgstr "IISのFTP NLSTのスタックオーバーフロー"
+
+msgid "IMAIL Imap4 stack overflow in Login field"
+msgstr "IMAILはIMAP4のログインにフィールドにスタックオーバーフロー"
+
+msgid "IMail SMTPD32 Stack Overflow"
+msgstr "IMailのSMTPD32スタックオーバーフロー"
+
+msgid "LSASRV.DLL LSASS.EXE stack overflow"
+msgstr "LSASRV.DLL LSASS.EXEは、スタックオーバーフロー"
+
+msgid "Imports a port/vulnerability scan from an external tool"
+msgstr "輸入港/脆弱性、外部ツールからスキャン"
+
+msgid "in.lpd command execution (Solaris 8)"
+msgstr "in.lpdのコマンドを実行される（『Solaris 8）"
+
+msgid "Upload a DLL and inject into a running process."
+msgstr "アップロードするDLLを実行中のプロセスに注入します。"
+
+msgid "Installs MOSDEF service"
+msgstr "インストールさMOSDEFサービス"
+
+msgid "Installs remote MOSDEF service over SMB"
+msgstr "SMBを経由インストールリモートMOSDEFサービス"
+
+msgid ""
+"Misdesign in a component of Macrovision InstallShield 2008 ActiveX version "
+"5.01.100.47363 allows for arbitrary code execution"
+msgstr ""
+"Misdesign MacrovisionのInstallShieldの2008のActiveX版のコンポーネントに"
+"5.01.100.47363任意のコードを実行することができます"
+
+msgid "NULL Pointer Dereference bug in win32k.sys"
+msgstr "win32k.sysのNULLポインタのデリファレンスバグ"
+
+msgid "Gathers data needed for IP Fingerprinting from a remote host"
+msgstr "収集データのIPフィンガープリントのためのリモートホストから必要な"
+
+msgid ""
+"Parse the results we get from OSDETECT/ipfingerpring to determine OS info"
+msgstr ""
+"解析我々OSDETECTから得られる結果/ OSの情報を確認するipfingerpring"
+
+msgid "iPlanet Chunked Encoding Overflow"
+msgstr "iPlanetのチャンクエンコーディングのオーバーフロー"
+
+msgid "IpSwitch Calendar Directory Traversal"
+msgstr "サイレックステクノロジーCalendarディレクトリトラバーサル"
+
+msgid "Jaf-CMS Statistics Remote File include"
+msgstr "JAFの- CMSの統計リモートのファイルを含める"
+
+msgid "Misdesign in Java deserializing allows JVM sandbox escape"
+msgstr "Misdesign Javaで逆シリアル化するJVMのサンドボックスをエスケープできます"
+
+msgid "Joomla 12pic Component Remote File Inclusion"
+msgstr "joomlaの12picコンポーネントにRemote File Inclusion"
+
+msgid "Joomla! 1.5 Beta code execution"
+msgstr "joomlaの！ 1.5ベータ版のコードの実行"
+
+msgid "Joomla Chronoforms Component Remote File Inclusion"
+msgstr "joomlaのChronoformsコンポーネントにRemote File Inclusion"
+
+msgid "Joomla com_colorlab Component Remote File Inclusion"
+msgstr "joomlaのcom_colorlabコンポーネントにRemote File Inclusion"
+
+msgid "Joomla Component custompages Remote File Inclusion "
+msgstr "joomlaのコンポーネントにRemote File Inclusion custompages"
+
+msgid "Joomla Flashfun Component Remote File Inclusion"
+msgstr "joomlaのFlashfunコンポーネントにRemote File Inclusion"
+
+msgid "Joomla FlashUploader Component Remote File Inclusion"
+msgstr "joomlaのFlashUploaderコンポーネントにRemote File Inclusion"
+
+msgid "Joomla jContentSubscription Component Remote File Inclusion"
+msgstr "joomlaのjContentSubscriptionコンポーネントにRemote File Inclusion"
+
+msgid "Joomla JUser Component Remote File Inclusion"
+msgstr "joomlaの好む人コンポーネントにRemote File Inclusion"
+
+msgid "Joomla mosDirectory Component Remote File Inclusion"
+msgstr "joomlaのmosDirectoryコンポーネントにRemote File Inclusion"
+
+msgid "Joomla mosMedia Component Remote File Inclusion"
+msgstr "joomlaのmosMediaコンポーネントにRemote File Inclusion"
+
+msgid "Joomla com_mp3_allopass Component Remote File Inclusion"
+msgstr "joomlaのコンポーネントにRemote File Inclusion com_mp3_allopass"
+
+msgid "Joomla FlashQuiz 1.0.2 Remote File Inclusion "
+msgstr "joomlaのFlashQuiz 1.0.2にRemote File Inclusion"
+
+msgid "Joomla Slideshow Component Remote File Inclusion"
+msgstr "joomlaのスライドショーをコンポーネントにRemote File Inclusion"
+
+msgid "Joomla panoramic Component Remote File Inclusion"
+msgstr "joomlaのパノラマコンポーネントにRemote File Inclusion"
+
+msgid "Journalness <= 4.1 Remote Code Execution exploit"
+msgstr "Journalness\"= 4.1、リモートでコードが実行されるエクスプロイト"
+
+msgid "Retrieves installed browser plugin info"
+msgstr "取得するブラウザのプラグイン情報をインストール"
+
+msgid "Simple Win32 Keylogger"
+msgstr "単純なWin32キーロガー"
+
+msgid "Sends a terminate signal to the process identified by a PID"
+msgstr "送信するプロセスは、PIDによって識別される信号の終了"
+
+msgid "Lamasoftware Remote file include"
+msgstr "Lamasoftwareリモートを含むファイル"
+
+msgid "Linksys WRT54G apply.cgi buffer overflow"
+msgstr "LinksysのWRT54G apply.cgiバッファオーバーフロー"
+
+msgid "Interacts with linux rootkit"
+msgstr "Linuxのルートキットとの相互作用"
+
+msgid "Loads a LKM based 2.6 rootkit"
+msgstr "負荷LKMを2.6キットベース"
+
+msgid "Installs the CANVAS Ring0 node."
+msgstr "をインストールするキャンバスRing0ノードです。"
+
+msgid "Local LPC privilege escalation [ Windows 2000 / XP / 2003 ]"
+msgstr "ローカルのLPCの特権の昇格【Windows 2000 / XPの/ 2003]"
+
+msgid "Locates a node"
+msgstr "位置ノード"
+
+msgid "LookStrike Lan Manager v0.9 Remote file include"
+msgstr "LookStrikeのLan Manager v0.9リモートファイルを含める"
+
+msgid "Lotus Domino 8.0.0 HTTP Server - Accept-Language Overflow"
+msgstr "Lotus Dominoの8.0.0 HTTPサーバ - のAccept - Languageのオーバーフロー"
+
+msgid "Loudblog Remote Code Execution"
+msgstr "Loudblog、リモートでコードが実行される"
+
+msgid "Litespeed HTTPD file disclosure"
+msgstr "ライトスピードHTTPDのファイルを開示"
+
+msgid "MailEnable Stack Overflow"
+msgstr "MailEnableスタックオーバーフロー"
+
+msgid "MailEnable IMAP Login overflow"
+msgstr "MailEnable IMAPのログインのオーバーフロー"
+
+msgid "Mantis BugTracker => 1.1.3 Remote Code Execution"
+msgstr "カマキリバグトラッカー=\"1.1.3リモートでコードが実行される"
+
+msgid "Multi-threaded attack tool"
+msgstr "マルチスレッドの攻撃ツール"
+
+msgid "Multi-threaded attack tool (With improved threading)"
+msgstr "マルチスレッドの攻撃ツール(スレッド改善版)"
+
+msgid "MDaemon Stack Overflow"
+msgstr "MDaemonのスタックオーバーフロー"
+
+msgid ""
+"Parses a memory dump for common pieces of information like email addresses, "
+"IP addresses, and more."
+msgstr ""
+"解析してメモリの電子メールアドレスなどの情報の一般的な作品のため、ダンプ"
+"IPアドレス、およびもっと。"
+
+msgid "Mindmeld Remote file include"
+msgstr "Mindmeldリモートを含むファイル"
+
+msgid "Man In the Middle Attack"
+msgstr "男性は中東攻撃で"
+
+msgid "Create/Modify a registry key "
+msgstr "作成/レジストリキーを変更します"
+
+msgid ""
+"Serves an installable ActiveX control to the target host. The ActiveX calls "
+"back a shell."
+msgstr ""
+"ターゲットホストにインストール可能なActiveXコントロールをお楽しみいただけます。 ActiveXの呼び出し"
+"バックシェルです。"
+
+msgid "MOSDEF Process Migration"
+msgstr "MOSDEFプロセスへの移行"
+
+msgid "Detect if there is motion on the remote computer (using the webcam)"
+msgstr "がある場合は、リモートコンピュータ上での動きが検出（）は、ウェブカメラを使用して"
+
+msgid "IIS 5.0 IPP ISAPI (.printer) Overflow"
+msgstr "IIS 5.0でのIPPのISAPI（。プリンタ）のオーバーフロー"
+
+msgid "IIS 5.0 Index Server ISAPI (.ida) Overflow"
+msgstr "IIS 5.0でのIndex ServerのISAPI（。イダ）のオーバーフロー"
+
+msgid "Microsoft Windows RPC Locator locator.exe Stack Overflow"
+msgstr "Microsoft WindowsのRPC Locatorのlocator.exeスタックオーバーフロー"
+
+msgid "Microsoft IIS 5.0 WebDav ntdll.dll Buffer Overflow"
+msgstr "Microsoft IIS 5.0のWebDAVをntdll.dllのバッファオーバーフロー"
+
+msgid "IIS 5.0 Windows Media Services ISAPI (nsisslog.dll) Overflow"
+msgstr "IIS 5.0では、Windows MediaサービスのISAPI（nsisslog.dll）オーバーフロー"
+
+msgid "Microsoft Windows RPC Interface Stack Overflow"
+msgstr "Microsoft WindowsのRPCインターフェイスのスタックオーバーフロー"
+
+msgid "Microsoft Windows Workstation Service RPC Stack Overflow"
+msgstr "Microsoft WindowsのWorkstationサービスのRPCスタックオーバーフロー"
+
+msgid "MSASN1.DLL bitstring decoding heap overwrite"
+msgstr "MSASN1.DLLビット列を復号化ヒープを上書きする"
+
+msgid "Microsoft Windows LsaSs RPC lsasrv.dll Stack Overflow"
+msgstr "Microsoft Windows LSASSのRPCのlsasrv.dllスタックオーバーフロー"
+
+msgid "Microsoft SSL PCT Hello Stack Overflow"
+msgstr "マイクロソフトのSSL PCT出願人こんにちは、スタックオーバーフロー"
+
+msgid "Microsoft Windows NetDDE RPC netdde.exe Stack Overflow"
+msgstr "は、Microsoft WindowsのNetDDEのRPC Netdde.exeでスタックオーバーフロー"
+
+msgid "WINS Name Validation Stack Overflow"
+msgstr "WINSの名前の検証のスタックオーバーフロー"
+
+msgid "Microsoft License Logging Service .data Buffer Overflow"
+msgstr "Microsoftライセンスログサービス。データのバッファオーバーフロー"
+
+msgid ""
+"Microsoft Message Queuing Service GetQueueIdForDirectFormatName() Stack "
+"Overflow"
+msgstr ""
+"MicrosoftメッセージキューサービスGetQueueIdForDirectFormatName（）スタック"
+"オーバーフロー"
+
+msgid ""
+"MS Exchange 2000 contains a heap overflow flaw when handling the XLINK2STATE "
+"command"
+msgstr ""
+"MS Exchangeの2000には、ヒープオーバーフローの欠陥がXLINK2STATE処理が含まれて"
+"コマンド"
+
+msgid "Microsoft Windows PnP umpnpmgr.dll RPC Stack Overflow"
+msgstr "Microsoft WindowsのPnPのumpnpmgr.dll RPCのスタックオーバーフロー"
+
+msgid "Windows Telephony Service Stack Overflow"
+msgstr "Windowsのテレフォニーサービスのスタックオーバーフロー"
+
+msgid "Windows Print Spooler win32spl.dll Heap Overflow"
+msgstr "Windowsの印刷スプーラwin32spl.dllヒープオーバーフロー"
+
+msgid "Microsoft Netware Service RPC Stack Overflow"
+msgstr "マイクロソフトNetWareサービスのRPCスタックオーバーフロー"
+
+msgid "Microsoft Windows Media Player Malformed PNG Vulnerability"
+msgstr "は、Microsoft Windows Media Playerで不正な形式のPNG形式の脆弱性"
+
+msgid "RasMan RPC Server Signedness Bug"
+msgstr "RasManのRPCサーバー符号のバグ"
+
+msgid "RasMan RPC Server Stack Overflow"
+msgstr "RasManのRPCサーバーでスタックオーバーフロー"
+
+msgid "Windows Server Service CanonicalizePathName() Stack Overflow"
+msgstr "Windows Serverサービス CanonicalizePathName()関数のスタックオーバーフロー"
+
+msgid "Internet Explorer Vector Markup Language Stack Overflow"
+msgstr "Internet ExplorerのVector Markup Languageのスタックオーバーフロー"
+
+msgid "Internet Explorer WebViewFolderIcon setSlice() Overflow"
+msgstr "Internet ExplorerのコントロールWebViewFolderIcon setSlice（）のオーバーフロー"
+
+msgid "Microsoft Netware RPC Interface Stack Overflow"
+msgstr "マイクロソフトのNetWare RPCインターフェイスのスタックオーバーフロー"
+
+msgid "Microsoft Workstation Service Overflow"
+msgstr "マイクロソフトWorkstationサービスオーバーフロー"
+
+msgid "Microsoft XML Core Services 4.0 Vulnerability"
+msgstr "は、Microsoft XML Core Services 4.0の脆弱性により、"
+
+msgid "Microsoft SNMP Service Remote Arbitrary GlobalFree"
+msgstr "マイクロソフトのSNMPサービスをリモートで任意のGlobalFreeを"
+
+msgid "Microsoft Windows VML recolorinfo Bug"
+msgstr "は、Microsoft WindowsのVML recolorinfoバグ"
+
+msgid ""
+"Windows XP UPnP upnphost.dll CHttpRequest::GetServerVariable Stack Overflow"
+msgstr ""
+"Windows XPのUPnPのupnphost.dll CHttpRequestの：：GetServerVariableスタックオーバーフロー"
+
+msgid "Microsoft DNS Server RPC Interface Stack Overflow"
+msgstr "Microsoft DNS ServerのRPCインターフェイスのスタックオーバーフロー"
+
+msgid ""
+"\n"
+"From CVE: vulnerability in the Windows Schannel Security Package for \n"
+"Microsoft Windows 2000 SP4, XP SP2, and Server 2003 SP1 and SP2, allows \n"
+"remote servers to execute arbitrary code or cause a denial of service \n"
+"via crafted digital signatures that are processed during an SSL \n"
+"handshake."
+msgstr ""
+"\n"
+"CVE投稿者：WindowsのSchannelのセキュリティパッケージの脆弱性について\n"
+"マイクロソフトのWindows 2000 SP4、XPのSP2、およびServer 2003 SP1およびSP2のことができます\n"
+"リモートサーバーの任意のコードを実行したり、サービス拒否を引き起こす\n"
+"は、SSLの中に処理さを介して作成されたデジタル署名\n"
+"握手。"
+
+msgid "Microsoft Agent URL InternetCanonicalizeUrlW Stack Overflow"
+msgstr "MicrosoftエージェントのURL InternetCanonicalizeUrlWスタックオーバーフロー"
+
+msgid "Outlook Express NNTP Heap Overflow"
+msgstr "Outlook ExpressのNNTPのヒープオーバーフロー"
+
+msgid ""
+"Microsoft Message Queuing Service ReplaceDNSNameWithNetBiosName() Stack "
+"Overflow"
+msgstr ""
+"MicrosoftメッセージキューサービスReplaceDNSNameWithNetBiosName（）スタック"
+"オーバーフロー"
+
+msgid "Microsoft Vista ALPC Dangling Pointer Overwrite"
+msgstr "MicrosoftがVista ALPC宙ぶらりんのポインタを上書きする"
+
+msgid "Macrovision SecDrv.sys Arbitrary Overwrite"
+msgstr "MacrovisionのSecDrv.sys任意の上書き"
+
+msgid ""
+"Vulnerability in Windows Media File Format Could Allow Remote Code Execution"
+msgstr ""
+"脆弱性はWindows Mediaファイル形式を許可する、リモートでコードが実行される"
+
+msgid "Windows TCP/IP IGMPv3 Kernel Pool Overflow"
+msgstr "WindowsのTCP / IPのIGMPv3のカーネルプールのオーバーフロー"
+
+msgid "Integer Overflow in "
+msgstr "整数オーバーフローの"
+
+msgid ""
+"Vulnerability in VBScript and JScript Scripting Engines Could Allow Remote "
+"Code Execution"
+msgstr ""
+"脆弱性は、VBScriptおよびJScriptスクリプトエンジンの脆弱リモート"
+"コードが実行される"
+
+msgid "Vulnerability in Windows Kernel Could Allow Elevation of Privilege"
+msgstr "Windows カーネルの脆弱性により、特権が昇格される"
+
+msgid "Microsoft SAMI Buffer Overflow"
+msgstr "マイクロソフトのSAMIのバッファオーバーフロー"
+
+msgid "Microsoft WINS Server Vulnerability"
+msgstr "WINS の脆弱性により、特権が昇格される"
+
+msgid ""
+"Vulnerability in InternalOpenProfile function Could Allow Remote Code "
+"Execution"
+msgstr ""
+"脆弱性InternalOpenProfile機能により、リモートでコード"
+"実行"
+
+msgid "Vulnerabilities in Event System Could Allow Remote Code Execution"
+msgstr "イベント システムの脆弱性により、リモートでコードが実行される"
+
+msgid ""
+"A buffer overflow in the GetDetailString allows us execute arbitrary code"
+msgstr ""
+"GetDetailStringのバッファオーバーフローの私たちの任意のコードを実行することができます"
+
+msgid "Microsoft Host Integration Server RPC Interface Vulnerability"
+msgstr "は、Microsoft Host Integration ServerのRPCインターフェイスの脆弱性"
+
+msgid "Windows Internet Printing Service Overflow"
+msgstr "Windowsインターネット印刷サービスのオーバーフロー"
+
+msgid "Windows SMB Server Overflow"
+msgstr "WindowsのSMBサーバーのオーバーフロー"
+
+msgid "Windows Server Service CanonicalizePathName() Stack Underflow"
+msgstr "Windows Serverサービス CanonicalizePathName() スタックアンダーフロー"
+
+msgid "SMB Credential Reflection"
+msgstr "SMBの資格リフレクション"
+
+msgid "MS Internet Explorer XML Parsing Vulnerability"
+msgstr "MS Internet ExplorerでXMLの解析の脆弱性"
+
+msgid ""
+"Memory corruption in Internet Explorer 7 allows arbitrary code execution."
+msgstr ""
+"Internet Explorer 7で、メモリ破損が任意のコードを実行ことができます。"
+
+msgid "Windows HTTP Service Integer Underflow"
+msgstr "WindowsのHTTPサービスの整数のアンダーフロー"
+
+msgid "Microsoft Windows Print Spooler Overflow"
+msgstr "Microsoft Windowsの印刷スプーラのオーバーフロー"
+
+msgid "Microsoft Windows Print Spooler Arbitrary DLL Loading"
+msgstr "Microsoft Windowsの印刷スプーラの任意のDLLを読み込んでいます"
+
+msgid "Microsoft Embedded OpenType Font Engine Vulnerability"
+msgstr "マイクロソフトOpenTypeフォントエンジンの脆弱性により、組込み"
+
+msgid "Microsoft DirectShow (msvidctl.dll) Vulnerability"
+msgstr "Microsoft DirectShowは（msvidctl.dll）の脆弱性"
+
+msgid "WINS Integer Overflow"
+msgstr "WINSの整数オーバーフロー"
+
+msgid "Windows Server Service NetrGetJoinDomainInformation() Double Free"
+msgstr "Windows ServerサービスのNetrGetJoinDomainInformation（）ダブル無料"
+
+msgid "ASF_Audio_media Parsing bug"
+msgstr "ASF_Audio_media解析のバグ"
+
+msgid "LSASS NTLM Authenticate Vulnerability"
+msgstr "LSASSのはNTLM認証の脆弱性"
+
+msgid "MS09-061 Microsoft .NET CAS Type Verification Vulnerability"
+msgstr "MS09 - 061のMicrosoft。NET CAのタイプ検証の脆弱性"
+
+msgid "ADFS Remote Code Execution"
+msgstr "ADFSは、リモートでコードが実行される"
+
+msgid "msdtc MIDL_user_allocate bug"
+msgstr "msdtcとMIDL_user_allocateバグ"
+
+msgid ""
+"A VDM process can trick a cs:eip check to allow access to a trusted function "
+"thru a #GP trap handler"
+msgstr ""
+"VDMのプロセスはCSのトリックをすることができます：eipチェック信頼された関数へのアクセスを許可する"
+"＃Gpのトラップハンドラを介して"
+
+msgid "Enables an identity token and setthreadtokens it"
+msgstr "を有効にIDトークンとsetthreadtokens"
+
+msgid "MSRPC MESSENGER Heap Overflow"
+msgstr "MSRPCをメッセンジャーのヒープオーバーフロー"
+
+msgid "MS Internet Explorer 7 XML Parsing Stack Overflow"
+msgstr "はMS Internet Explorer 7のXML解析のスタックオーバーフロー"
+
+msgid "[0day] MSRPC Crash (INSTANTREPLAY)"
+msgstr "[0day] MSRPCをクラッシュ（INSTANTREPLAY）"
+
+msgid "Fuzzer for MSRPC Endpoints"
+msgstr "Fuzzer MSRPCをエンドポイントに"
+
+msgid "Authentication with or without a pass"
+msgstr "認証を使用するかを渡すことなく"
+
+msgid "replwritetovarbin stored procedure overflow."
+msgstr "replwritetovarbinプロシージャのオーバーフローが格納されます。"
+
+msgid "MS SQL Hello Stack Overflow"
+msgstr "のMS SQLのハロースタックオーバーフロー"
+
+msgid "MS SQL Injection Routines"
+msgstr "のMS SQLインジェクションのルーチン"
+
+msgid "MS SQL Resolver Ping"
+msgstr "のMS SQLのリゾルバの平"
+
+msgid "MS SQL Resolver Stack Overflow"
+msgstr "のMS SQLのリゾルバのスタックオーバーフロー"
+
+msgid "WINS Pointer hijacking exploit"
+msgstr "WINSのポインタをエクスプロイトハイジャック"
+
+msgid "MS Exchange 2000 contains a flaw when handling the XEXCH50 command"
+msgstr "MS Exchangeの2000には、欠陥がXEXCH50コマンドの処理が含まれて"
+
+msgid "MacOS X 10.4 mDNSResponder UPNP Remote Root Exploit"
+msgstr "はMacOS X 10.4 mDNSResponder UPnPのリモートルートエクスプロイト"
+
+msgid "Authentication bypass with zeroed-string password"
+msgstr "との認証をバイパスがゼロの文字列のパスワード"
+
+msgid "Nagios < 3.1.1 statuswml.cgi Command Injection Vulnerability"
+msgstr "Nagiosの\"3.1.1 statuswml.cgiコマンドインジェクションの脆弱性"
+
+msgid "NAI Enterprise Virus 7.0 Stack Overflow"
+msgstr "NAIは企業ウイルス7.0スタックオーバーフロー"
+
+msgid "Imports data from other tools into CANVAS"
+msgstr "キャンバスに、他のツールからの輸入データ"
+
+msgid "VERITAS NetBackup Java User Interface Format String"
+msgstr "VERITAS NetBackupのJavaユーザインターフェイスのフォーマット文字列"
+
+msgid "NETDDE.EXE Exploit through NetBIOS"
+msgstr "Netdde.exeでエクスプロイトのNetBIOSを介して"
+
+msgid "Novell NetMail Login Stack Overflow"
+msgstr "NovellのNetMailのログインスタックオーバーフロー"
+
+msgid "Novell Netmail WebAdmin Stack Overflow"
+msgstr "NovellのNetMailのWebAdminをスタックオーバーフロー"
+
+msgid "Netopia ADSL/Wireless information gathering"
+msgstr "Netopia社のADSL /無線情報収集"
+
+msgid "netRisk Remote file include"
+msgstr "netRiskリモートファイルを含める"
+
+msgid "NewsOffice 1.1 Remote File Include Vulnerabilitiy"
+msgstr "NewsOffice 1.1リモートファイルを含めるVulnerabilitiy"
+
+msgid "NIPrint stack overflow"
+msgstr "NIPrintスタックオーバーフロー"
+
+msgid "Imports a port scan from an nmap xml output"
+msgstr "ポートxml出力nmapのからの輸入をスキャン"
+
+msgid "Symantec/Norton UPX overflow."
+msgstr "シマンテック/ノートンUPXのオーバーフローです。"
+
+msgid "Netscape NSS Library Remote Compromise"
+msgstr "ネットスケープのNSSライブラリ、リモートの危殆"
+
+msgid "Novell Netware Client for Windows Print Providor Stack Overflow"
+msgstr "Novell Netware ClientをWindowsプリントProvidorスタックオーバーフロー"
+
+msgid "Novell Netware Client for Windows Print Provider Stack Overflow"
+msgstr "Novell Netware ClientをWindowsのプリントプロバイダのスタックオーバーフロー"
+
+msgid ""
+"Create one pdf file that has multiple exploits for different pdf readers."
+msgstr ""
+"は、さまざまなpdf読者のために、複数の攻撃が1つのpdfファイルを作成します。"
+
+msgid ""
+"A flaw in the java support over SQL queries allows an attacker to execute "
+"any static java method"
+msgstr ""
+"SQLクエリの上にJavaサポートでの欠陥が攻撃を実行することができます"
+"任意の静的Javaメソッド"
+
+msgid "OpenAds 2.4.0 <= x <= 2.4.2 Remote Code Execution"
+msgstr "OpenAdsの2.4.0\"= Xの\"= 2.4.2、リモートでコードが実行される"
+
+msgid "Open-Realty <= 2.4.3 Remote Code Execution"
+msgstr "オープンリアルティ\"= 2.4.3、リモートでコードが実行される"
+
+msgid "OpenSSL key_arg_len Overflow"
+msgstr "OpenSSLのkey_arg_lenオーバーフロー"
+
+msgid "HP OpenView Trace Service OVTrace.exe Stack Overflow"
+msgstr "HP OpenViewのトレースサービスOVTrace.exeスタックオーバーフロー"
+
+msgid "Oracle8i <= 8.1.7 TNS Listener Argument stack overflow"
+msgstr "は、Oracle8i\"= 8.1.7 TNS Listenerの引数スタックオーバーフロー"
+
+msgid "Oracle <= Oracle Info"
+msgstr "オラクル\"=オラクル情報"
+
+msgid "Oracle <= Password"
+msgstr "オラクル\"=パスワード"
+
+msgid "Oracle <= Usernames"
+msgstr "オラクル\"=ユーザ名"
+
+msgid "OS Detection"
+msgstr "OSの検出"
+
+msgid "PacerCMS 0.6 Remote Code Execution"
+msgstr "PacerCMS 0.6、リモートでコードが実行される"
+
+msgid "Performs passive os detection"
+msgstr "を実行する受動的なOSの検出"
+
+msgid "PGP wdef IOCTL bug"
+msgstr "PGPのwdef IOCTLのバグ"
+
+msgid "PHP <= 4.3.7 memory_limit exploit"
+msgstr "PHPの\"= 4.3.7エクスプロイトのmemory_limit"
+
+msgid "PHP 5.2.1 Rejected Session ID Double Free Exploit"
+msgstr "PHP 5.2.1以降で拒否されたセッションをダブル無料エクスプロイト番号"
+
+msgid "PHPauction GPL 2.51 Remote File include"
+msgstr "PHPauction GPLの2.51リモートのファイルを含める"
+
+msgid "phpBB Highlight code execution"
+msgstr "phpBBのハイライトのコードの実行"
+
+msgid "PHPBlock Remote File include"
+msgstr "PHPBlockリモートのファイルを含める"
+
+msgid "php_callback client"
+msgstr "php_callbackクライアント"
+
+msgid "PHPlinks Remote file include"
+msgstr "PHPlinksリモートを含むファイル"
+
+msgid "PHPList <= 2.10.7 Local File Include"
+msgstr "PHPList\"= 2.10.7ローカルファイルを含める"
+
+msgid "phpMyAdmin PHP injection 2.11.x - 2.11.9.4 and 3.x - 3.1.3.0"
+msgstr "phpMyAdminのPHPを注入2.11.x - 2.11.9.4および3.x - 3.1.3.0"
+
+msgid ""
+"Poor input validation allows remote users to insert php code into the forum "
+"and execute commands"
+msgstr ""
+"入力検証が不十分な為のリモートユーザフォーラムにPHPコードを挿入することができます"
+"とコマンドを実行する"
+
+msgid "phporacle Remote file include"
+msgstr "phporacleリモートファイルを含める"
+
+msgid "phpProfiles Remote file include"
+msgstr "phpProfilesリモートファイルを含める"
+
+msgid "phpQLAdmin 2.2.7 Remote file include"
+msgstr "phpQLAdmin 2.2.7リモートファイルを含める"
+
+msgid "PHPSlash <= 0.8.1.1 Remote Code Execution"
+msgstr "PHPSlash\"= 0.8.1.1、リモートでコードが実行される"
+
+msgid "phpUserBase Remote file include"
+msgstr "phpUserBaseリモートファイルを含める"
+
+msgid "PHPyabs 0.1.2 Remote File Include"
+msgstr "PHPyabs 0.1.2リモートファイルを含める"
+
+msgid "Piwik Remote Code Execution"
+msgstr "Piwik、リモートでコードが実行される"
+
+msgid "Pluck 4.6.2 Local File Include"
+msgstr "Pluckの4.6.2ローカルファイルを含める"
+
+msgid "PNphpBB2 1.2i Local File Include"
+msgstr "PNphpBB2 1.2iローカルファイルを含める"
+
+msgid "Podcast Generator <= 1.0 BETA 2 Remote file include"
+msgstr "ポッドキャストジェネレータ\"= 1.0ベータ2リモートファイルを含める"
+
+msgid "Portail Web Php Remote file include"
+msgstr "PortailのWeb PHPのリモートを含むファイル"
+
+msgid "Portscanner"
+msgstr "Portscanner"
+
+msgid "Scans for one port on many hosts"
+msgstr "多くのホスト上で1つのポートをスキャン"
+
+msgid "Injects a callback shellcode into a process"
+msgstr "注入プロセスにコールバックシェル"
+
+msgid ""
+"proto ops / udp_sendmsg null deref Linux Kernel local root (2.6.X 32bit "
+"Edition)"
+msgstr ""
+"原始協/ nullにderefがLinuxカーネルのローカルのルート（2.6.Xの32 udp_sendmsg"
+"版）"
+
+msgid "Gets a listing of the processes on all selected nodes"
+msgstr "選択したすべてのノード上のプロセスのリストを取得します"
+
+msgid "CVS pserverd heap overflow"
+msgstr "CVSのpserverdヒープオーバーフロー"
+
+msgid "PunBB RC1 Remote Code Execution"
+msgstr "PunBB RC1を、リモートでコードが実行される"
+
+msgid "PunBB user language include => code execution"
+msgstr "PunBBのユーザ言語=\"のコードの実行を含む"
+
+msgid "Imports data from QualysGuard 6.5 scans into CANVAS"
+msgstr "QualysGuardのからの輸入データをキャンバスに6.5をスキャン"
+
+msgid "Quantum Game Library 0.7.2c Remote file include"
+msgstr "量子ゲームライブラリ0.7.2cリモートファイルを含める"
+
+msgid "Attacks hosts with exploits imported from Qualysreport"
+msgstr "エクスプロイトQualysreportから輸入した攻撃ホスト"
+
+msgid ""
+"Misdesign in a component of QuickTime 7.2 permits arbitrary code execution"
+msgstr ""
+"Misdesign QuickTimeのコンポーネントで7.2許可するコードの実行を任意の"
+
+msgid ""
+"A misdesign in the RTSP parser allows arbitrary execution using the Content-"
+"Type header"
+msgstr ""
+"RTSPのパーサーでmisdesign任意の実行は、コンテンツを使用することができます-"
+"Typeヘッダ"
+
+msgid "Apple QuickTime rtsp URL Handler Stack Overflow"
+msgstr "Apple QuickTimeにRTSP URLハンドラのスタックオーバーフロー"
+
+msgid "QuickTeam Remote File Include"
+msgstr "QuickTeamリモートファイルを含める"
+
+msgid "Quinsonnas Mail Checker 1.55 Remote File Inclusion "
+msgstr "Quinsonnasメールチェッカー1.55にRemote File Inclusion"
+
+msgid "Attacks hosts with exploits imported from Rapid7 Reports"
+msgstr "エクスプロイトRapid7 Reportsからのインポートと攻撃ホスト"
+
+msgid "Novadigm 3.1 radexecd.exe stack overflow."
+msgstr "Novadigm 3.1 radexecd.exeスタックオーバーフロー。"
+
+msgid ""
+"Dumps all physical RAM available on target machine. Uses a kernel driver to "
+"bypass usermode restrictions in some versions of Windows."
+msgstr ""
+"すべての物理RAMをターゲットマシン上で利用可能にダンプします。を使用してカーネルドライバに"
+"Windowsの一部のバージョンではユーザーモードの制限をバイパスします。"
+
+msgid "Real Player ActiveX Import Stack Overflow"
+msgstr "リアルプレーヤーのActiveXのインポート、スタックオーバーフロー"
+
+msgid "RealServer ../../ stack overflow"
+msgstr "RealServerは../../スタックオーバーフロー"
+
+msgid "Helix Server Content-Length overflow."
+msgstr "Helix Serverは、Content - Lengthのオーバーフローです。"
+
+msgid "Detect buggy authentication in RealVNC Servers"
+msgstr "RealVNCのサーバーの検出バグの認証"
+
+msgid "Record audio from the microphone"
+msgstr "マイクからの録音音声"
+
+msgid "Record video from a webcam"
+msgstr "ウェブカメラからの記録ビデオ"
+
+msgid "Make a remark into the logs"
+msgstr "ログに発言する"
+
+msgid "Creates spreadsheet from CANVAS session pickles. Requires Open Office."
+msgstr "キャンバスセッションの漬物からスプレッドシートを作成します。開いているOfficeが必要です。"
+
+msgid "Restarts a service on all selected nodes"
+msgstr "再起動、選択したすべてのノード上のサービス"
+
+msgid "Rexd remote \"exploit\""
+msgstr "rexdは、リモート\\\"をエクスプロイト\\\""
+
+msgid "Remove a Directory. Uses first selected node."
+msgstr "ディレクトリを削除します。最初に選択されたノードを使用します。"
+
+msgid "RoundCube Webmail Pre-Authentication Code Execution"
+msgstr "のroundcubeウェブメール事前認証コードが実行される"
+
+msgid "SunRPC Port Mapper"
+msgstr "SunRPCポートマッパー"
+
+msgid "Rsync Heap Overflow"
+msgstr "rsyncのヒープオーバーフロー"
+
+msgid "Test of RTSP library"
+msgstr "テストはRTSPのライブラリ"
+
+msgid "Calls popen2() or equivalent. Uses first selected node."
+msgstr "コールpopen2（）または同等品。最初に選択されたノードを使用します。"
+
+msgid "Starts up a sniffer instance"
+msgstr "起動時にスニファインスタンスを"
+
+msgid "Sadmind Remote Exploit for Solaris"
+msgstr "SadmindリモートエクスプロイトSolaris用"
+
+msgid "Steal files from target machine through Safari local file:/// URI"
+msgstr "Safariのローカルファイルを介してターゲットマシンからスティールファイル：/ / / URIの"
+
+msgid "Steal files from target machine through Safari XSL local file access"
+msgstr "サファリのXSLは、ローカルファイルへのアクセスを介してターゲットマシンからスティールファイル"
+
+msgid "Samba Nttrans Overflow"
+msgstr "SambaのNttransオーバーフロー"
+
+msgid "Samba Trans2 Stack Overflow"
+msgstr "SambaのTrans2スタックオーバーフロー"
+
+msgid "SamiFTP Stack Overflow on USER command"
+msgstr "SamiFTPスタックオーバーフローのユーザでコマンド"
+
+msgid "SAPDB Stack Overflow"
+msgstr "SAPDBスタックオーバーフロー"
+
+msgid "savant web server stack overflow."
+msgstr "SavantのWebサーバのスタックオーバーフロー。"
+
+msgid "Grab a picture of the screen"
+msgstr "スクリーン画像を取得"
+
+msgid ""
+"Stack overflow on parsing the Cookie/Session paramater of a HTTP POST "
+"request."
+msgstr ""
+"クッキーをパースするスタックオーバーフロー/は、HTTP POSTのセッションparamater"
+"要望。"
+
+msgid "Set the osdetection configuration information"
+msgstr "セットosdetection構成情報"
+
+msgid "Sets the thread token (0 for reverttoself)"
+msgstr "を設定するスレッドのトークン（0にRevertToSelf用）"
+
+msgid "Sets the user ID on Unix-family systems"
+msgstr "セットは、ユーザのUnixのIDファミリシステム"
+
+msgid ""
+"Get a list of shares from the remote machine using srvsvc::NetrShareEnum"
+msgstr ""
+"リモートマシンSrvSvcを使用してから株式の一覧を取得する：：NetrShareEnum"
+
+msgid "Format string exploit for versions 1.9.4 and 1.9.2"
+msgstr "書式指定文字列のバージョン1.9.4と1.9.2のエクスプロイト"
+
+msgid "SiteX <= 0.7.4.418 Local File Include"
+msgstr "SiteX\"= 0.7.4.418ローカルファイルを含める"
+
+msgid "SL Web Supervisor HTTP Subversion Stack Overflow"
+msgstr "旅行記のWebスーパーバイザのHTTP Subversionのスタックオーバーフロー"
+
+msgid "Smallaxe Remote file include"
+msgstr "Smallaxeリモートを含むファイル"
+
+msgid "SmarTag Bug on Microsoft Word"
+msgstr "Microsoft WordでバグSmarTag"
+
+msgid "Smart Publisher 1.0.1 PHP code execution"
+msgstr "スマート発行1.0.1 PHPのコードの実行"
+
+msgid "SMB2 Negotiate Pointer Dereference Vulnerability"
+msgstr "SMB2ネゴシエートポインタ参照の脆弱性"
+
+msgid "Slow SMB bruteforcer"
+msgstr "低速のSMB bruteforcer"
+
+msgid "smbclient"
+msgstr "smbclientを"
+
+msgid "Simple Machines Forum => 1.1.6 CSRF Remote Code Execution"
+msgstr "簡単な機械フォーラム=\"1.1.6 CSRF、リモートでコードが実行される"
+
+msgid "Simple Machines Forum 1.1.2 - 1.1.3 Remote Code Execution"
+msgstr "簡単な機械フォーラム1.1.2 - 1.1.3、リモートでコードが実行される"
+
+msgid "Simple Machines Forum => 1.1.6 Remote Code Execution"
+msgstr "簡単な機械フォーラム=\"1.1.6リモートでコードが実行される"
+
+msgid "Fingerprints SMTP servers by sending various requests"
+msgstr "様々な要求を送信することによって指紋のSMTPサーバー"
+
+msgid ""
+"Use a web search query to generate a list of SMTP servers for fingerprinting"
+msgstr ""
+"ウェブ検索クエリを使用し指紋のためにSMTPサーバのリストを生成する"
+
+msgid "snmpXdmid Buffer Overflow"
+msgstr "snmpXdmidのバッファオーバーフロー"
+
+msgid "Snort <= 2.6.2 DCE/RPC reassembly exploit"
+msgstr "Snortは\"= 2.6.2 DCE / RPCを再利用する"
+
+msgid "Solaris printer configuration stack overflow"
+msgstr "Solarisのプリンタ設定、スタックオーバーフロー"
+
+msgid "Local privilege escalation [ Solaris 7/8/9 (sun4u) ]"
+msgstr "ローカルでの特権の昇格[『Solaris 7/8/9（のsun4u）]"
+
+msgid ""
+"Telnet to host without having to authenticate due to flaw in environment "
+"variable passing"
+msgstr ""
+"Telnetの欠陥の環境では原因を認証することなく、ホストに"
+"変数を渡す"
+
+msgid "Local privilege escalation for Solaris"
+msgstr "Solaris用のローカルでの特権の昇格"
+
+msgid "Sourdough Remote FIle Include"
+msgstr "サワードウリモートファイルを含める"
+
+msgid "spawns an executable on the remote host"
+msgstr "リモートホスト上で実行可能ファイルを生成します"
+
+msgid "Windows Service Pack Detection"
+msgstr "Windows Service Packの検出"
+
+msgid ""
+"Misdesign in a component of Microsoft Speech API 4 allows for arbitrary code "
+"execution"
+msgstr ""
+"MisdesignのMicrosoft Speech APIの4コンポーネントで任意のコードが可能になります"
+"実行"
+
+msgid ""
+"Run a web proxy as if you were on a remote box, with specialized attack "
+"functionality"
+msgstr ""
+"を実行すると、Webプロキシの場合は、リモートボックスで、特殊な攻撃をされた"
+"機能"
+
+msgid ""
+"Dumps connection settings (including passwords) from SQL Server Management "
+"Studio 2008"
+msgstr ""
+"SQL Serverの管理から、パスワードを含むダンプの接続設定（）"
+"Studio 2008の"
+
+msgid "Create a reverse SSH tunnel between you and the target"
+msgstr "使用すると、ターゲットの間に、逆にSSHトンネルを作成します。"
+
+msgid ""
+"Stack-based buffer overflow in the pdg2.dll ActiveX control in SSReader 4.0"
+msgstr ""
+"スタックSSReader 4.0 pdg2.dllのActiveXコントロールベースのバッファオーバーフロー"
+
+msgid "Starts a remote service over SMB"
+msgstr "を開始しますSMBを経由のリモートサービス"
+
+msgid "Starts a service on all selected nodes"
+msgstr "始まるすべての選択されたノード上のサービス"
+
+msgid "Snort <= 2.4.2 BO pp exploit"
+msgstr "Snortは\"= 2.4.2ボー所蔵エクスプロイト"
+
+msgid "Stops a service on all selected nodes"
+msgstr "を停止、選択したすべてのノード上のサービス"
+
+msgid "Configuration setting TEMPLATE"
+msgstr "構成設定のテンプレート"
+
+msgid "Strawberry 1.1.1 Local File Include"
+msgstr "イチゴ1.1.1ローカルファイルを含める"
+
+msgid "SugarCRM <= 5.2.0e Remote Code Execution"
+msgstr "SugarCRMは\"= 5.2.0e、リモートでコードが実行される"
+
+msgid "Sun Java HsbParser.getSoundBank Stack Buffer Overflow Vulnerability"
+msgstr "『Sun Java HsbParser.getSoundBankスタックバッファオーバーフローの脆弱性"
+
+msgid "Solaris Login Overflow"
+msgstr "Solarisのログインのオーバーフロー"
+
+msgid "Solaris Login pamh Overflow"
+msgstr "Solarisのログインpamhはオーバーフロー"
+
+msgid "Subversion utf-8 Apache2/WebDAV Stack Overflow"
+msgstr "SubversionのUTF - 8をApache2/WebDAVスタックオーバーフロー"
+
+msgid "Switch our user context to another user with a username/password combo."
+msgstr "ユーザ名/パスワードの組み合わせを持つ別のユーザーに当社のユーザーコンテキストに切り替えます。"
+
+msgid "Symantec Alert Management System 2 Stack Overflow"
+msgstr "Symantecのアラート管理システム2は、スタックオーバーフロー"
+
+msgid "Symantec Remote Management Rtvscan.exe Stack Overflow"
+msgstr "シマンテック、リモート管理Rtvscan.exeスタックオーバーフロー"
+
+msgid ""
+"Gets basic OS information from a node. It's like osdetect, but for running "
+"on a node, instead of against a target."
+msgstr ""
+"ノードからの基本的なOSの情報を取得します。これはosdetectのようだが、実行するための"
+"ノードの代わりに、ターゲットに対してします。"
+
+msgid "TCP Hello World test (for bouncing tests)"
+msgstr "TCPのHello Worldのテスト（テストのバウンス用）"
+
+msgid "Finds all the hosts on the local network interfaces"
+msgstr "ローカルネットワークでの検索のすべてのホストインターフェイス"
+
+msgid "Telnet Brute Force"
+msgstr "Telnetのブルートフォース"
+
+msgid "Telnet Banner Grabber (used for osdetect)"
+msgstr "Telnetのバナーグラバ（osdetectに使用）"
+
+msgid "Poor input validation allows remote users to call system(command)"
+msgstr "入力検証が不十分な為のリモートユーザのシステム（コマンド）を呼び出すことができます"
+
+msgid "Test module for the PHP safemode bypass"
+msgstr "PHPのセーフモードをバイパスするためのテストモジュール"
+
+msgid "Scan the box for exploitability."
+msgstr "exploitabilityのためのボックスをスキャンします。"
+
+msgid ""
+"Used in the testomatic framework to connect and send commands to a remote "
+"testomatic node."
+msgstr ""
+"testomatic枠組みの中で接続し、リモートにコマンドを送信に使用"
+"testomaticノードです。"
+
+msgid "testsploit (Used for MOSDEF testing)"
+msgstr "testsploit（MOSDEFテスト用に）使用される"
+
+msgid "Fuzzer for TFTP Servers"
+msgstr "Fuzzer TFTPサーバの"
+
+msgid "TFTP Server for uploading files"
+msgstr "TFTPサーバのファイルのアップロード"
+
+msgid "[0day] TightVNC integer overflow (client-side)"
+msgstr "[0day] TightVNCに、整数オーバーフロー（クライアント側）"
+
+msgid "TikiWiki function create exploit"
+msgstr "TikiWiki機能をエクスプロイトを作成する"
+
+msgid "IBM Tivoli Storage Manager Express CAD Service Buffer Overflow"
+msgstr "のIBM Tivoli Storage Manager ExpressはCADサービスのバッファオーバーフロー"
+
+msgid "Trend Micro ServerProtect StCommon.dll RPC Stack Overflow"
+msgstr "Trend MicroのServerProtect StCommon.dll RPCのスタックオーバーフロー"
+
+msgid "Trend Micro ServerProtect Agent RPC Stack Overflow"
+msgstr "Trend MicroのServerProtectエージェントのRPCスタックオーバーフロー"
+
+msgid "Change file access and modification time on selected node"
+msgstr "変更ファイルにアクセスすると、選択したノード上での変更時刻"
+
+msgid ""
+"Change file access and modification time srcfile->dstfile on selected node"
+msgstr ""
+"変更するファイルへのアクセスや変更時刻srcfileを選択されたノード上で\"dstfile"
+
+msgid "CANVAS Traceroute"
+msgstr "CANVASをtracerouteの"
+
+msgid "TrixBox (Asterisk) PBX Remote Command Execution"
+msgstr "TrixBox（アスタリスク）のPBXのリモートコマンド実行"
+
+msgid "rpc.ttdbserverd xdr_array Heap Overflow"
+msgstr "rpc.ttdbserverdはxdr_arrayヒープオーバーフロー"
+
+msgid "TWiki SEARCH variable arbitrary shell command execution"
+msgstr "TWiki検索変数を任意のシェルコマンドの実行"
+
+msgid "udevd NETLINK messaging exploit"
+msgstr "udevd netlinkを利用するメッセージング"
+
+msgid "Scans for open UDP Ports"
+msgstr "オープンUDPポートのスキャン"
+
+msgid ""
+"Scans for one port on many hosts - reports hosts that have the port closed"
+msgstr ""
+"多くのホスト上で1つのポートをスキャン - そのポートが閉じられているレポートをホスト"
+
+msgid "umpnpmgr.dll/srvsvc memory exhaustion via msrpc"
+msgstr "を介してumpnpmgr.dll / SrvSvcをメモリ枯渇MSRPCを"
+
+msgid ""
+"Tries to connect to a host and port and convert that into a Unix Shell Server"
+msgstr ""
+"しようとするホストとポートに接続し、変換するには、UnixシェルServerに"
+
+msgid "CANVAS Unlink"
+msgstr "キャンバスのリンクを解除"
+
+msgid "Removes the CANVAS rootkit."
+msgstr "キャンバスのrootkitを削除します。"
+
+msgid "Upload and Excute a shell-giving Exploit Binary"
+msgstr "アップロードしてExcuteシェルを与えるエクスプロイトバイナリ"
+
+msgid "Upload file. Uses first selected node."
+msgstr "アップロードするファイルです。最初に選択されたノードを使用します。"
+
+msgid "Create domains to check for phishing"
+msgstr "ドメインの作成フィッシングをチェックする"
+
+msgid "Get a list of users"
+msgstr "ユーザーのリストを取得する"
+
+msgid "Break PHP Safemode with Usort Vulnerability"
+msgstr "内訳はPHP SafeModeをUsortの脆弱性と"
+
+msgid "ut2004 stack overflow with \\secure\\"
+msgstr "ut2004 \\を\\安全\\スタックオーバーフロー\\"
+
+msgid "Utorrent announcement overflow"
+msgstr "utorrentの発表のオーバーフロー"
+
+msgid "Veritas Backup Exec stack overflow"
+msgstr "Veritas Backup Execのスタックオーバーフロー"
+
+msgid "VisualPic 0.3.1 Remote File Include"
+msgstr "VisualPic 0.3.1リモートファイルを含める"
+
+msgid "vmsplice Linux Kernel local root"
+msgstr "ところvmsplice Linuxカーネルのローカルのルート"
+
+msgid "VMware dhcpd Stack Overflow"
+msgstr "VMwareのスタックオーバーフローのdhcpd"
+
+msgid ""
+"A flaw in the way MS Excel handle the Shared String Table could lead into an "
+"integer overflow."
+msgstr ""
+"MS Excelの問題につながる可能性がある共有文字列テーブルを処理する方法に脆弱性"
+"整数オーバーフローです。"
+
+msgid "Exchangepop3 Stack Based overflow in rcpt to: command"
+msgstr "Exchangepop3スタック、RCPT TOをオーバーフローに基づく：コマンド"
+
+msgid "Remote Buffer Overflow on Login"
+msgstr "リモートバッファオーバーフローのログインに"
+
+msgid "Winamp 5.12 .pls overflow"
+msgstr "Winampの5.12。PLSのオーバーフロー"
+
+msgid "Winproxy Stack Overflow"
+msgstr "Winproxyスタックオーバーフロー"
+
+msgid "w3who.dll stack overflow"
+msgstr "スタックオーバーフローw3who.dll"
+
+msgid "WarFTP 1.65 Stack Overflow on USER command"
+msgstr "WarFTP 1.65スタックオーバーフローのユーザでコマンド"
+
+msgid "Tries to exploit all known web vulnerabilities against a server"
+msgstr "しようとすると、サーバーに対して既知のすべてのウェブサイトの脆弱性をエクスプロイトする"
+
+msgid "Attempt to brute force POST based web logins given a password dict"
+msgstr "力ずくのPOSTベースのWebしようとするとパスワードのdict与えログイン"
+
+msgid ""
+"Remote root exploit for Perl efix svarg index bug, through webmin miniserv.pl"
+msgstr ""
+"リモートからのrootのPerl、Webminにminiserv.plを通じてsvargインデックスバグefixのエクスプロイト"
+
+msgid "wFTPD Stack Overflow on the SIZE command"
+msgstr "wFTPDスタックオーバーフローのSIZEコマンドに"
+
+msgid "Gets the first external IP off of a traceroute"
+msgstr "tracerouteの最初の外部IPアドレスを取得"
+
+msgid "Gets id result on each selected node"
+msgstr "選択された各ノード上でIDを結果を取得します"
+
+msgid "Windows 7 Netbios Crash"
+msgstr "Windows 7のNetBIOSのクラッシュ"
+
+msgid "Wingate 6.1.1 stack overflow"
+msgstr "ウィンゲート6.1.1スタックオーバーフロー"
+
+msgid ""
+"A vulnerability in the way NPF.sysd handles IOCTL arguments allows for "
+"writing to kernel space"
+msgstr ""
+"NPF.sysd IOCTLの引数を処理する方法に脆弱性に対応可能"
+"カーネルにスペースを書く"
+
+msgid "Misdesign in WMF file parser allows for shellcode execution"
+msgstr "Misdesign WMFファイルパーサーでシェルコードを実行することができます"
+
+msgid "Eudora Qualcomm WorldMail 3.0 IMAP4 stack overflow"
+msgstr "Eudoraは、QUALCOMM WorldMail 3.0 IMAP4のスタックオーバーフロー"
+
+msgid "WordPress plugin BackUpWordPress <= 0.4.2b Remote File Inclusion"
+msgstr "WordPressのプラグインBackUpWordPress\"= 0.4.2bにRemote File Inclusion"
+
+msgid "WordPress 2.2.2 SQL injection/Command execution"
+msgstr "ワードプレス2.2.2のSQLインジェクション/コマンドの実行"
+
+msgid "Wordpress plugin myflash Remote File Inclusion"
+msgstr "WordpressのプラグインmyflashにRemote File Inclusion"
+
+msgid "Wordpress Plugin Sniplets 1.1.2 Remote Code Execution exploit"
+msgstr "WordpressのプラグインSniplets 1.1.2、リモートでコードが実行されるエクスプロイト"
+
+msgid "WordPress Plugin Sniplets 1.1.2 Remote File Include"
+msgstr "ワードプレスプラグインSniplets 1.1.2リモートファイルを含める"
+
+msgid "Ipswitch WS_FTP Server XCRC Stack Overflow"
+msgstr "サイレックステクノロジーWS_FTP ServerはXCRCスタックオーバーフロー"
+
+msgid "WuFTPD SITE EXEC Formatstring Bug"
+msgstr "WuFTPD SITE EXECのformatStringのバグ"
+
+msgid "WuFTPD Globbing Arbitrary Free"
+msgstr "WuFTPDグロビング任意無料"
+
+msgid "Vulnerability in XFS allows for remote compromise as NOBODY user"
+msgstr "脆弱性のXFSのnobodyユーザーとしてリモートからの不正が可能になります"
+
+msgid "Buffer overflow in If-Modified-Since gets a remote shell"
+msgstr "がIf - Modifiedのバッファオーバーフロー- Sinceのリモートシェルを取得"
+
+msgid "XML RPC For CANVAS Web Service"
+msgstr "れたXML RPC CANVASをWebサービスについて"
+
+msgid "X11 server for local vulnerabilities"
+msgstr "ローカルの脆弱性をX11サーバ"
+
+msgid "Test"
+msgstr "テスト"
+
+msgid "ypbind YPBINDPROC_DOMAIN Stack Overflow"
+msgstr "ypbindのYPBINDPROC_DOMAINスタックオーバーフロー"
+
+msgid "yppasswdd YPPASSWD_UPDATE Stack Overflow"
+msgstr "yppasswddがYPPASSWD_UPDATEスタックオーバーフロー"
+
+msgid "imail imap4 stack overflow in Login field"
+msgstr "IMAILのログイン内のフィールド、スタックオーバーフローのIMAP4"
+
+msgid "ZenCart 1.3.8 Remote Code Execution"
+msgstr "ZenCart改訂1.3.8、リモートでコードが実行される"
+
+msgid "Discovers services on the .local. domain advertised over zeroconf"
+msgstr "地元のサービスを検出します。ドメインのZeroconf以上の宣伝"
+
+msgid "Set as target host"
+msgstr "ターゲットにする"
+
+msgid "Set as additional target host"
+msgstr "ターゲットに追加する"
+
+msgid "Unset as targeted host"
+msgstr "ターゲットから外す"
+
+msgid "Forget this host knowledge"
+msgstr "作業履歴の消去"
+
+msgid "Save host to file"
+msgstr "ファイルに保存する"
+
+msgid "Don't try to delete the loopback interface, please"
+msgstr "ループバックインターフェイスを削除しようとしないで下さい"
+
+msgid "Add note to host"
+msgstr "メモ"
+
+msgid "Set as callback interface"
+msgstr "コールバックインターフェイスにする"
+
+msgid "Check for listener connection"
+msgstr "リスナの接続をチェック"
+
+msgid "View all knowledge"
+msgstr "作業履歴"
+
+msgid "Active Listeners"
+msgstr "アクティブリスナー"
+
+msgid "Unset FromCreateThread"
+msgstr "Unset FromCreateThread"
+
+msgid "Set FromCreateThread"
+msgstr "Set FromCreateThread"
+
+msgid "Target Host"
+msgstr "ターゲットの追加"
+
+msgid "Stop Exploit"
+msgstr "エクスプロイトを停止"
+
+msgid "OS Config"
+msgstr "OS検出用設定"

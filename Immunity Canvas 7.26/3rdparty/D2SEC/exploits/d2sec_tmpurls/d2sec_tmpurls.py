@@ -1,0 +1,85 @@
+#!/usr/bin/env python
+
+#
+# Proprietary D2 Exploitation Pack source code - use only under the license 
+# agreement specified in LICENSE.txt in your D2 Exploitation Pack
+#
+# Copyright DSquare Security, LLC, 2007-2009
+#
+
+import sys
+import os
+
+if '.' not in sys.path:
+    sys.path.append('.')
+
+from canvasexploit import canvasexploit
+import canvasengine
+from exploitutils import *
+
+NAME = 'D2SEC TmpUrls'
+VERSION = '1.0'
+DESCRIPTION = 'Tool to create URLs lists. To use with d2sec_urlbrute.'
+
+DOCUMENTATION = {}
+DOCUMENTATION['Repeatability'] = 'Infinite'
+DOCUMENTATION['Notes'] = '''
+You must create this file
+$CANVAS/3rdparty/D2SEC/exploits/d2sec_urlbrute/urls/webcrawler.txt. It
+must contain an URLs list (from a webcrawler for example) and this tool
+will update it with suffix for each URLs. Suffixes are for example .bak,
+.old, etc.
+'''
+
+PROPERTY = {}
+PROPERTY['TYPE'] = 'Tools'
+PROPERTY['SITE'] = 'Local'
+PROPERTY['ARCH'] = [ ["Linux"], ["Windows"], ["Solaris"], ["AIX"], ["FreeBSD"], ["MacOSX"], ["HP-UX"] ]
+
+class d2sec_tmpurls(canvasexploit):
+	def __init__(self):
+		canvasexploit.__init__(self)
+
+		self.webcrawler = os.getcwd() + "/3rdparty/D2SEC/exploits/d2sec_urlbrute/urls/webcrawler.txt"
+		self.patterns = [".bak", "-bak", "_bak", ".tmp", "-tmp", "_tmp",
+										".old", "-old", "_old", ".log", "-log", "_log",
+										".test", "-test", "_test", "~"]
+		return
+        
+	def exploit(self):
+		self.setInfo('%s' % NAME)
+
+		try:
+			fd = open(self.webcrawler, "r")
+		except:
+			self.log("[D2 LOG] can't open %s" % self.webcrawler)
+			self.log("[D2 LOG] you must create  %s" % self.webcrawler)
+			return 1
+		
+		webcrawl = fd.readlines()
+		fd.close()
+
+		try:
+			fd = open(self.webcrawler, "w")
+		except:
+			self.log("[D2 LOG] can't open %s" % self.webcrawler)
+			return 1
+
+		for w in webcrawl:
+			for pattern in self.patterns:
+				fd.write("%s%s\n" % (w[:-1], pattern))
+			
+		fd.close()
+				
+		self.setInfo('%s - (finished)' % NAME)
+		return 0
+    
+class theexploit(canvasexploit):
+    def __init__(self):
+        canvasexploit.__init__(self)
+        self.name = "D2SEC TmpUrls"
+        return
+
+    def run(self):
+        self.log("This module is used from d2sec_createdico tool")
+        return False

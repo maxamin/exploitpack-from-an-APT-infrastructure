@@ -1,0 +1,229 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Tutorial &mdash; CANVAS Reports 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="CANVAS Reports 0.1 documentation" href="index.html" />
+    <link rel="next" title="Reference" href="reference.html" />
+    <link rel="prev" title="Welcome to the CANVAS Reports documentation!" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="reference.html" title="Reference"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to the CANVAS Reports documentation!"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">CANVAS Reports 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="tutorial">
+<h1>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="reporting-events">
+<h2>Reporting Events<a class="headerlink" href="#reporting-events" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="creating-reporting-events">
+<h3>Creating reporting events<a class="headerlink" href="#creating-reporting-events" title="Permalink to this headline">¶</a></h3>
+<p>Begin by importing the <tt class="xref py py-mod docutils literal"><span class="pre">libs.reports</span></tt> module and creating a
+<a class="reference internal" href="reporter.html#libs.reports.reporter.Reporter" title="libs.reports.reporter.Reporter"><tt class="xref py py-class docutils literal"><span class="pre">Reporter</span></tt></a> instance:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">libs.reports</span> <span class="kn">import</span> <span class="n">Reporter</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">Reporter</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>To create a new event use the <a class="reference internal" href="reporter.html#libs.reports.reporter.Reporter.new_event" title="libs.reports.reporter.Reporter.new_event"><tt class="xref py py-meth docutils literal"><span class="pre">new_event()</span></tt></a> method:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">r</span><span class="o">.</span><span class="n">new_event</span><span class="p">(</span><span class="s">&#39;new host&#39;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s">&#39;ip&#39;</span><span class="p">:</span> <span class="n">ip</span><span class="p">,</span>
+    <span class="p">})</span>
+</pre></div>
+</div>
+<p><a class="reference internal" href="reporter.html#libs.reports.reporter.Reporter.new_event" title="libs.reports.reporter.Reporter.new_event"><tt class="xref py py-meth docutils literal"><span class="pre">new_event()</span></tt></a> takes two required arguments: an event name, and the
+event data. The event data can be of any type, though in practice it is
+usually a <cite>dict</cite>. If a third argument is provided, it should be the name
+of the object calling <a class="reference internal" href="reporter.html#libs.reports.reporter.Reporter.new_event" title="libs.reports.reporter.Reporter.new_event"><tt class="xref py py-meth docutils literal"><span class="pre">new_event()</span></tt></a>. This value defaults to &#8220;canvas&#8221;.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">All arguments to <a class="reference internal" href="reporter.html#libs.reports.reporter.Reporter.new_event" title="libs.reports.reporter.Reporter.new_event"><tt class="xref py py-meth docutils literal"><span class="pre">new_event()</span></tt></a> must be pickleable.</p>
+</div>
+</div>
+<div class="section" id="creating-reporting-events-from-a-canvas-exploit">
+<h3>Creating reporting events from a CANVAS exploit<a class="headerlink" href="#creating-reporting-events-from-a-canvas-exploit" title="Permalink to this headline">¶</a></h3>
+<p>For convenience, the <tt class="xref py py-mod docutils literal"><span class="pre">canvasexploit</span></tt> base class has a <tt class="xref py py-meth docutils literal"><span class="pre">new_event()</span></tt>
+method:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">Exploit</span><span class="p">(</span><span class="n">canvasexploit</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c"># ...</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">new_event</span><span class="p">(</span><span class="s">&#39;passwordz&#39;</span><span class="p">,</span> <span class="n">password_data</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><tt class="xref py py-meth docutils literal"><span class="pre">canvasexploit.new_event()</span></tt> accepts only 2 arguments. The event will
+automatically be passed the name of the exploit.</p>
+</div>
+<div class="section" id="retrieving-events-from-an-event-file">
+<h3>Retrieving events from an event file<a class="headerlink" href="#retrieving-events-from-an-event-file" title="Permalink to this headline">¶</a></h3>
+<p>The <a class="reference internal" href="reporter.html#libs.reports.reporter.Reporter" title="libs.reports.reporter.Reporter"><tt class="xref py py-class docutils literal"><span class="pre">Reporter</span></tt></a> class provides a <a class="reference internal" href="reporter.html#libs.reports.reporter.Reporter.events" title="libs.reports.reporter.Reporter.events"><tt class="xref py py-meth docutils literal"><span class="pre">events()</span></tt></a> method that
+returns all the events in a event file:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">events</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">module</span> <span class="o">==</span> <span class="s">&#39;canvas&#39;</span><span class="p">:</span>
+        <span class="k">print</span> <span class="n">event</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">data</span>
+</pre></div>
+</div>
+<p><a class="reference internal" href="reporter.html#libs.reports.reporter.Reporter.events" title="libs.reports.reporter.Reporter.events"><tt class="xref py py-meth docutils literal"><span class="pre">events()</span></tt></a> accepts two optional arguments: <em>name</em>, which returns
+only those events that matched <em>name</em>, and <em>pattern</em> which filters the returned
+events based on a regex pattern.</p>
+</div>
+</div>
+<div class="section" id="generating-reports">
+<h2>Generating Reports<a class="headerlink" href="#generating-reports" title="Permalink to this headline">¶</a></h2>
+<p>The <tt class="xref py py-mod docutils literal"><span class="pre">libs.reports</span></tt> module provides 2 ways to generate OpenOffice
+documents.</p>
+<p>The first method uses a template created in OpenOffice that
+contains markup that is then processed by the <tt class="xref py py-mod docutils literal"><span class="pre">libs.py3o.template</span></tt>
+library to produce a document.</p>
+<p>The second method uses the <tt class="xref py py-mod docutils literal"><span class="pre">libs.odfpy</span></tt> library to directly manipulate
+the XML document data of an OpenOffice document.</p>
+<p>A combination of these two methods can be used, for example, to generate the
+overall report using a template, and then add structures such as charts using
+XML.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">For examples of complete report generation modules demonstrating both
+methods see the CANVAS report generator (<tt class="file docutils literal"><em><span class="pre">CANVAS</span></em><span class="pre">/libs/reports/canvas_report.py</span></tt>)
+or the ClientD report generator (<tt class="file docutils literal"><em><span class="pre">CANVAS</span></em><span class="pre">/exploits/clientd/report.py</span></tt>).</p>
+</div>
+<div class="section" id="generating-template-based-reports">
+<h3>Generating template-based reports<a class="headerlink" href="#generating-template-based-reports" title="Permalink to this headline">¶</a></h3>
+<p>The benefit to using template-based generation is that the report can be
+designed and formatted visually within OpenOffice. The drawback is that
+certain structures within a document can not be manipulated, such as charts.
+It can also sometimes be tricky to correctly place the <tt class="xref py py-mod docutils literal"><span class="pre">libs.py3o.template</span></tt>
+markup so that the report generates as expected.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">For examples of the templates actually in use to generate reports, see the
+CANVAS report template (<tt class="file docutils literal"><em><span class="pre">CANVAS</span></em><span class="pre">/Resources/report_template.odt</span></tt>) or
+the ClientD report template (<tt class="file docutils literal"><em><span class="pre">CANVAS</span></em><span class="pre">/exploits/clientd/report_template.odt</span></tt>).</p>
+</div>
+</div>
+<div class="section" id="generating-xml-based-reports">
+<h3>Generating XML-based reports<a class="headerlink" href="#generating-xml-based-reports" title="Permalink to this headline">¶</a></h3>
+<p>The benefit to using XML-based generation is that every possible structure
+within an OpenOffice document can be directly accessed and manipulated. The
+drawback is that finding and generating the exact structures and properties
+needed to format the document correctly requires looking through unhelpful
+documentation and lots of trial-and-error.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Tutorial</a><ul>
+<li><a class="reference internal" href="#reporting-events">Reporting Events</a><ul>
+<li><a class="reference internal" href="#creating-reporting-events">Creating reporting events</a></li>
+<li><a class="reference internal" href="#creating-reporting-events-from-a-canvas-exploit">Creating reporting events from a CANVAS exploit</a></li>
+<li><a class="reference internal" href="#retrieving-events-from-an-event-file">Retrieving events from an event file</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#generating-reports">Generating Reports</a><ul>
+<li><a class="reference internal" href="#generating-template-based-reports">Generating template-based reports</a></li>
+<li><a class="reference internal" href="#generating-xml-based-reports">Generating XML-based reports</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to the CANVAS Reports documentation!</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="reference.html"
+                        title="next chapter">Reference</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/tutorial.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="reference.html" title="Reference"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to the CANVAS Reports documentation!"
+             >previous</a> |</li>
+        <li><a href="index.html">CANVAS Reports 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012 Immunity, Inc..
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
